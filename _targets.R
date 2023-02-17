@@ -13,6 +13,7 @@ library(hrbrthemes)
 library(directlabels)
 library(grid)
 library(extrafont)
+library(stringr) 
 # library(unikn)
 
 # Set target options:
@@ -30,13 +31,24 @@ options(clustermq.scheduler = "multicore")
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-# source("other_functions.R") # Source other scripts as needed. # nolint
+source("plot_settings.R") # Source other scripts as needed. # nolint
 
 # Replace the target list below with your own:
 list(
   
-  # file paths
+  # set main path
   tar_target(name = main_path, command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
+  
+  # module settings
+  tar_target(name = ref_threshold, command = 0.6),
+  tar_target(name = ren_threshold, command = 0.9),
+  tar_target(name = pred_years, command = 2020:2045),
+  tar_target(name = drop_in_perc, command = 1),
+  tar_target(name = kern_perc, command = 0.9375),
+  # tar_target(name = a, command = 4),
+  # tar_target(name = ccs_capture_rate, command = 0.474),
+  
+  # set remaining file paths
   tar_target(name = file_scen, command = file.path(main_path, "project-materials/scenario-inputs/refinery_scenario_inputs.csv"), format = "file"),
   tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
   tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
@@ -51,21 +63,12 @@ list(
   tar_target(name = file_renref, command = file.path(main_path, "data/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"),
   tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"),
   
-  
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
   tar_target(name = ei_gasoline, command = 5.052), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_4.pdf
   tar_target(name = ei_diesel, command = 5.770), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   tar_target(name = ei_jet, command = (5.670 + 5.355)/2), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   
-  # module settings
-  tar_target(name = ref_threshold, command = 0.6),
-  tar_target(name = ren_threshold, command = 0.9),
-  tar_target(name = pred_years, command = 2020:2045),
-  tar_target(name = drop_in_perc, command = 1),
-  tar_target(name = kern_perc, command = 0.9375),
-  # tar_target(name = a, command = 4),
-  # tar_target(name = ccs_capture_rate, command = 0.474),
   
   # scenarios and regions
   
@@ -174,7 +177,10 @@ list(
   # state level outputs
   tar_target(name = state_prod_output, command = gather_state_prod_output(indiv_prod_output)),
   tar_target(name = state_cons_output, command = gather_state_cons_output(indiv_cons_output)),
-  tar_target(name = state_ghg_output, command = gather_state_cons_output(indiv_ghg_output))
+  tar_target(name = state_ghg_output, command = gather_state_cons_output(indiv_ghg_output)),
+  
+  # paper figures
+  tar_target(name = fig_demand, command = plot_its_demand(dt_its, dt_intra, dt_jet))
   
 
 )
