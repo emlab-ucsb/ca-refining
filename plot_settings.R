@@ -36,3 +36,12 @@ pal_fuel = c('HDV Hydrogen'	=	'#fbb4ae',
              'Diesel'	=	'#ABC7E3',
              'Renewable Gasoline'	=	'#3C6255',
              'Gasoline'	=	'#A6BB8D')
+
+pal_fuel_title = c('Sustainable Aviation Fuel'	=	'#D3756B',
+                   'Jet Fuel'	=	'#FFC3A1',
+                   'Renewable Diesel'	=	'#366BA1',
+                   'Diesel'	=	'#ABC7E3',
+                   'Renewable Gasoline'	=	'#3C6255',
+                   'Gasoline'	=	'#A6BB8D',
+                   'Exports' = '#dadbdf')
+pal_label = c('GHG emissions' = '#000000')

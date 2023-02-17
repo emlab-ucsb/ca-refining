@@ -71,8 +71,6 @@ list(
   
   
   # scenarios and regions
-  
-  # list scenarios and regions ------
   tar_target(name = dem_scens, command = c('BAU', 'LC1')),
   tar_target(name = ref_scens, command = c('historic exports', 'historic production', 'low exports')),
   tar_target(name = clus, command = c('North', 'South')),
@@ -178,9 +176,13 @@ list(
   tar_target(name = state_prod_output, command = gather_state_prod_output(indiv_prod_output)),
   tar_target(name = state_cons_output, command = gather_state_cons_output(indiv_cons_output)),
   tar_target(name = state_ghg_output, command = gather_state_cons_output(indiv_ghg_output)),
+  tar_target(name = tot_fuel_demand_exports, command = combine_state_gjd_demand_and_exports(crude_refined_week, refined_movements_annual, dt_rediesel,
+                                                                                            res_equiv_demand, res_renew_demand,
+                                                                                            dem_scens, ref_scens, ei_crude, ei_gasoline, ei_diesel, ei_jet)),
   
   # paper figures
-  tar_target(name = fig_demand, command = plot_its_demand(dt_its, dt_intra, dt_jet))
+  tar_target(name = fig_demand, command = plot_its_demand(dt_its, dt_intra, dt_jet)), 
+  tar_target(name = fig_refined_production_ghg, command = plot_refined_products_and_ghg(tot_fuel_demand_exports, state_ghg_output))
   
 
 )
