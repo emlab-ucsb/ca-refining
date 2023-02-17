@@ -773,3 +773,121 @@ combine_state_outputs <- function(state_prod_output, state_cons_output, state_gh
   
 }
 
+
+
+# GJD production at all refineries -- state level (area plot) --------
+
+# get historic demand of GJD
+
+combine_state_gjd_demand_and_exports <- function(crude_refined_week, refined_movements_annual, dt_rediesel,
+                                                 res_equiv_demand, res_renew_demand,
+                                                 dem_scens, ref_scens, ei_crude, ei_gasoline, ei_diesel, ei_jet) {
+  agg_hist_tot = melt(crude_refined_week, 
+                      id.vars = c('year'),
+                      measure.vars = c('crude_gge', 'gasoline_gge', 'diesel_gge', 'jet_gge'),
+                      value.name = 'consumption_gge',
+                      variable.name = 'fuel')
+  agg_hist_tot[, fuel := gsub('_gge', '', fuel)]
+  agg_hist_tot = agg_hist_tot[year < 2020, .(consumption_gge = sum(consumption_gge, na.rm = T)), by = .(year, fuel)]
+  agg_hist_tot[, consumption_bge := consumption_gge / 42]
+  
+  agg_hist_exp = refined_movements_annual[, .(consumption_bbl = sum(abs(net_export_bbl), na.rm = T)), by = .(year, fuel)]
+  agg_hist_exp[fuel == 'gasoline', consumption_gge := consumption_bbl * 42]
+  agg_hist_exp[fuel == 'diesel', consumption_gge := consumption_bbl * 42 * (ei_diesel/ei_gasoline)]
+  agg_hist_exp[fuel == 'jet', consumption_gge := consumption_bbl * 42 * (ei_jet/ei_gasoline)]
+  agg_hist_exp[, export_bge := consumption_gge / 42]
+  
+  agg_hist_tot = merge(agg_hist_tot,
+                       agg_hist_exp[, .(year, fuel, export_bge)],
+                       by = c('year', 'fuel'))
+  agg_hist_tot[, consumption_bge_new := consumption_bge - export_bge]
+  agg_hist_tot[, consumption_gge_new := consumption_bge_new * 42]
+  
+  agg_hist_tot = agg_hist_tot[, .(year, fuel, consumption_gge_new, consumption_bge_new)]
+  setnames(agg_hist_tot, 'consumption_gge_new', 'consumption_gge')
+  setnames(agg_hist_tot, 'consumption_bge_new', 'consumption_bge')
+  
+  # aggregate exports
+  agg_hist_exp = agg_hist_exp[, .(consumption_gge = sum(consumption_gge, na.rm = T)), by = .(year)]
+  agg_hist_exp[, fuel := 'exports']
+  agg_hist_exp[, consumption_bge := consumption_gge / 42]
+  
+  # get historic demand of renewable diesel 
+  agg_hist_rediesel = dt_rediesel[, .(consumption_gal = sum(consumption_gal, na.rm = T)), by = .(year, fuel)]
+  agg_hist_rediesel[, consumption_gge := consumption_gal * (ei_diesel/ei_gasoline)]
+  agg_hist_rediesel[, consumption_bge := consumption_gge / 42]
+  agg_hist_rediesel = agg_hist_rediesel[, .(year, fuel, consumption_gge, consumption_bge)]
+  
+  # combine RE diesel with GJD 
+  agg_hist_tot = rbindlist(list(agg_hist_tot, agg_hist_rediesel), use.names = T, fill = T)
+  
+  # create full data table of historic fuel demand for all scenarios
+  agg_hist_tot_full = CJ(demand_scenario = dem_scens, refining_scenario = ref_scens, year = 2014:2019,
+                         fuel = c('gasoline', 'drop-in gasoline', 'diesel', 'renewable diesel', 'jet', 'sustainable aviation fuel'))
+  agg_hist_tot_full = agg_hist_tot[agg_hist_tot_full, on = .(year, fuel), allow.cartesian = T]
+  agg_hist_tot_full = agg_hist_tot_full[! fuel == 'crude', .(demand_scenario, refining_scenario, year, fuel, consumption_bge)]
+  agg_hist_tot_full[fuel %in% c('drop-in gasoline', 'sustainable aviation fuel'), consumption_bge := 0]
+  setorder(agg_hist_tot_full, demand_scenario, refining_scenario, year, fuel)
+  
+  agg_hist_exp_full = CJ(demand_scenario = dem_scens, refining_scenario = ref_scens, year = 2007:2019)
+  agg_hist_exp_full = agg_hist_exp_full[agg_hist_exp, on = 'year', allow.cartesian = T]
+  agg_hist_exp_full = agg_hist_exp_full[, .(demand_scenario, refining_scenario, year, fuel, consumption_bge)]
+  setorder(agg_hist_exp_full, demand_scenario, refining_scenario, year, fuel)
+  
+  # get in-state GJD demand
+  tot_petro_demand = res_equiv_demand[, .(consumption_bge = sum(consumption_bge, na.rm = T)), 
+                                      by = .(demand_scenario, refining_scenario, year, fuel_equiv)]
+  setnames(tot_petro_demand, 'fuel_equiv', 'fuel')
+  
+  # get in-state reGJD demand at crude refineries
+  tot_renew_demand_crude = res_equiv_demand[, .(consumption_bge = sum(residual_consumption_bge, na.rm = T)), 
+                                            by = .(demand_scenario, refining_scenario, year, fuel_equiv)]
+  setnames(tot_renew_demand_crude, 'fuel_equiv', 'fuel')
+  tot_renew_demand_crude[fuel == 'gasoline', fuel := 'drop-in gasoline']
+  tot_renew_demand_crude[fuel == 'diesel', fuel := 'renewable diesel']
+  tot_renew_demand_crude[fuel == 'jet', fuel := 'sustainable aviation fuel']
+  
+  # get in-state reGJD demand at renewables refineries
+  
+  tot_renew_demand_ren = res_renew_demand[, .(consumption_bge = sum(renewable_refinery_consumption_bge, na.rm = T)), 
+                                          by = .(demand_scenario, refining_scenario, year, fuel_equiv)]
+  setnames(tot_renew_demand_ren, 'fuel_equiv', 'fuel')
+  tot_renew_demand_ren[fuel == 'gasoline', fuel := 'drop-in gasoline']
+  tot_renew_demand_ren[fuel == 'diesel', fuel := 'renewable diesel']
+  tot_renew_demand_ren[fuel == 'jet', fuel := 'sustainable aviation fuel']
+  
+  # combine all reGJD demand
+  
+  tot_renew_demand = rbindlist(list(tot_renew_demand_crude, tot_renew_demand_ren))
+  tot_renew_demand = tot_renew_demand[, .(consumption_bge = sum(consumption_bge, na.rm = T)), 
+                                      by = .(demand_scenario, refining_scenario, year, fuel)]
+  
+  # get exports
+  tot_exports = res_equiv_demand[, .(demand_scenario, refining_scenario, region, year, fuel_equiv, export_bge)]
+  tot_exports[, export_bge := abs(export_bge)]
+  tot_exports = tot_exports[, .(consumption_bge = sum(abs(export_bge), na.rm = T)), 
+                            by = .(demand_scenario, refining_scenario, fuel_equiv, year)]
+  setnames(tot_exports, 'fuel_equiv', 'fuel')
+  tot_exports[, fuel := 'exports']
+  tot_exports = tot_exports[, .(consumption_bge = sum(consumption_bge, na.rm = T)), by = .(demand_scenario, refining_scenario, year, fuel)]
+  
+  # combine together
+  tot_fuel_demand_exports = rbindlist(list(agg_hist_tot_full,
+                                   agg_hist_exp_full,
+                                   tot_petro_demand, 
+                                   tot_renew_demand, 
+                                   tot_exports), use.names = T, fill = T)
+  setorder(tot_fuel_demand_exports, demand_scenario, refining_scenario, year, fuel)
+  tot_fuel_demand_exports[, fuel := factor(fuel, levels = rev(c('gasoline', 'drop-in gasoline', 'diesel', 'renewable diesel', 'jet', 'sustainable aviation fuel', 'exports')))]
+  
+  tot_fuel_demand_exports
+}
+
+
+
+
+
+
+
+
+
