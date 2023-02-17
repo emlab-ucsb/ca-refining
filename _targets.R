@@ -15,7 +15,6 @@ library(directlabels)
 library(grid)
 library(extrafont)
 library(stringr) 
-# library(unikn)
 
 # Set target options:
 tar_option_set(
@@ -66,6 +65,10 @@ list(
   tar_target(name = file_raw_cec_jet, command = file.path(main_path, "data/stocks-flows/raw/5-20 Jet Fuel Demand.xlsx"), format = "file"),
   tar_target(name = file_raw_mil_jet, command = file.path(main_path, "data/stocks-flows/raw/California Transportion Fuel Consumption - Summary 2020-06-01 GDS_rename.xlsx"), format = "file"),
   tar_target(name = file_raw_fpm, command = file.path(main_path, "data/stocks-flows/raw/Finished_Products_Movements.xlsx"), format = "file"),
+  tar_target(name = file_refcap, command = file.path(main_path, "data/stocks-flows/processed/refinery_loc_cap_manual.csv"), format = "file"), # this is a manually created file
+  tar_target(name = file_rediesel, command = file.path(main_path, "data/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"), format = "file"),
+  tar_target(name = file_renref, command = file.path(main_path, "data/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
+  tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -77,6 +80,11 @@ list(
   tar_target(name = raw_fpm_gasoline, command = read_raw_fpm_data(file_raw_fpm, input_sheet = "Gasoline Chart Data", start_row_input = 3)),
   tar_target(name = raw_fpm_diesel, command = read_raw_fpm_data(file_raw_fpm, input_sheet = "Diesel Chart Data", start_row_input = 4)),
   tar_target(name = raw_fpm_jet, command = read_raw_fpm_data(file_raw_fpm, input_sheet = "Jet Fuel Chart Data", start_row_input = 3)),
+  tar_target(name = dt_refcap, command = read_refcap_data(file_refcap)),
+  tar_target(name = dt_rediesel, command = read_rediesel_data(file_rediesel, "Fig10", input_rows = c(2, 15), input_cols = seq(1, 10))),
+  tar_target(name = dt_renref, command = simple_read_xlsx(file_renref, "Sheet1")[, .(installation_year, refinery_name, installation_capacity_bpd, retired_capacity_bpd)]),
+  tar_target(name = renewables_info, command = simple_read_xlsx(file_renref, "Sheet1")[, .(site_id, refinery_name, location, region, cluster)]),
+  tar_target(name = dt_altair, command = read_altair_data(file_altair, "Sheet1", ei_crude, ei_gasoline)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
@@ -90,11 +98,7 @@ list(
   # tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
   # tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
   tar_target(name = file_fw, command = file.path(main_path, "data/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
-  tar_target(name = file_refcap, command = file.path(main_path, "data/stocks-flows/processed/refinery_loc_cap_manual.csv"), format = "file"),
   tar_target(name = file_ghgfac, command = file.path(main_path, "outputs/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
-  tar_target(name = file_rediesel, command = file.path(main_path, "data/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"), format = "file"),
-  tar_target(name = file_renref, command = file.path(main_path, "data/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"),
-  tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"),
   
   # read in processed data files
   # tar_target(name = dt_its, command = simple_fread(file_its)),
@@ -102,14 +106,8 @@ list(
   # tar_target(name = dt_jet, command = simple_fread(file_jet)),
   # tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
-  tar_target(name = dt_refcap, command = read_refcap_data(file_refcap)),
   tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),
-  tar_target(name = dt_rediesel, command = read_rediesel_data(file_rediesel, "Fig10", input_rows = c(2, 15), input_cols = seq(1, 10))),
-  tar_target(name = dt_renref, command = simple_read_xlsx(file_renref, "Sheet1")[, .(installation_year, refinery_name, installation_capacity_bpd, retired_capacity_bpd)]),
-  tar_target(name = renewables_info, command = simple_read_xlsx(file_renref, "Sheet1")[, .(site_id, refinery_name, location, region, cluster)]),
-  tar_target(name = dt_altair, command = read_altair_data(file_altair, "Sheet1", ei_crude, ei_gasoline)),
-  
-  
+
   # prep for module
   tar_target(name = prod_refined_week_wide, command = calculate_weekly_refined_products(dt_fw)), 
   tar_target(name = crude_refined_week, command = calculate_weekly_refined_crude(dt_fw, prod_refined_week_wide, ei_crude, ei_gasoline, ei_diesel, ei_jet)), 
