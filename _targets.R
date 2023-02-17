@@ -6,8 +6,9 @@
 # Load packages required to define the pipeline:
 library(targets)
 library(data.table)
-library(lubridate)
 library(openxlsx)
+library(lubridate)
+library(lspline)
 library(ggplot2)
 library(hrbrthemes)
 library(directlabels)
@@ -62,21 +63,26 @@ list(
   # set raw data paths
   tar_target(name = file_raw_its, command = file.path(main_path, "data/stocks-flows/raw/Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx"), format = "file"),
   tar_target(name = file_raw_avgas, command = file.path(main_path, "data/stocks-flows/raw/Distillates 10-10.xlsx"), format = "file"),
+  tar_target(name = file_raw_cec_jet, command = file.path(main_path, "data/stocks-flows/raw/5-20 Jet Fuel Demand.xlsx"), format = "file"),
+  tar_target(name = file_raw_mil_jet, command = file.path(main_path, "data/stocks-flows/raw/California Transportion Fuel Consumption - Summary 2020-06-01 GDS_rename.xlsx"), format = "file"),
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
   tar_target(name = raw_its_lc1, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 23:34), input_cols = c(2:37))),
   tar_target(name = raw_avgas, command = simple_read_xlsx(file_raw_avgas, input_sheet = "Sheet1", input_rows = c(4, 16), input_cols = c(3:38))),
   tar_target(name = raw_intra_jet, command = simple_read_xlsx(file_raw_avgas, input_sheet = "Sheet1", input_rows = c(4, 14), input_cols = c(3:38))),
+  tar_target(name = raw_cec_jet, command = simple_read_xlsx(file_raw_cec_jet, input_sheet = "Jet Fuel Demand", input_rows = NULL, input_cols = c(1:4))),
+  tar_target(name = raw_mil_jet, command = simple_read_xlsx(file_raw_mil_jet, input_sheet = "CA Fuel Consumption Data", input_rows = c(7, 9:26), input_cols = c(1, 16))),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
   tar_target(name = dt_intra, command = get_intrastate_jet_forecast(raw_intra_jet)),
-
+  tar_target(name = dt_jet, command = get_cec_interstate_jet_forecast(raw_cec_jet, raw_mil_jet, ei_gasoline, ei_jet)),
+  
   # set remaining file paths
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
   # tar_target(name = file_intra, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_intrastate_jet_2020_2045.csv"), format = "file"),
-  tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
+  # tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
   tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
   tar_target(name = file_fw, command = file.path(main_path, "data/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
   tar_target(name = file_refcap, command = file.path(main_path, "data/stocks-flows/processed/refinery_loc_cap_manual.csv"), format = "file"),
@@ -88,7 +94,7 @@ list(
   # read in processed data files
   # tar_target(name = dt_its, command = simple_fread(file_its)),
   # tar_target(name = dt_intra, command = simple_fread(file_intra)),
-  tar_target(name = dt_jet, command = simple_fread(file_jet)),
+  # tar_target(name = dt_jet, command = simple_fread(file_jet)),
   tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
   tar_target(name = dt_refcap, command = read_refcap_data(file_refcap)),
