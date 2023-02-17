@@ -1,5 +1,6 @@
 # Distributional and climate impacts of low-carbon transition pathways for California's oil refining (repo)
 
+## Setting up
 This repo relies on the R package ``targets`` to maintain the pipeline of the scripts and the reproducibility of the project.
 Install the package if you have not already done so:
 
@@ -29,6 +30,7 @@ tar_target(name = main_path, command = "/Volumes/GoogleDrive-1031593110762895141
 
 And replace the path above with your own path that points to the calepa-cn folder. Everything is relative to this one main path.
 
+### Debugging the pipeline
 In order to check the pipeline is engineered properly, run the following command:
 
 ```
@@ -53,6 +55,9 @@ The output should look something like:
 # … with 80 more rows
 # ℹ Use `print(n = ...)` to see more rows
 ```
+If there are any issues (missing targets, bugs, etc), you should receive an error message.
+
+## Running the pipeline
 
 To build and run the pipeline (this will execute everything), run:
 
@@ -78,7 +83,9 @@ If you are running this for the first time, it should take a few minutes, but th
 ...
 ```
 
-Assuming none of the targets change, the next time(s) you run ``tar_make()``, ``targets`` will skip building targets. 
+Assuming none of the targets change, the next time(s) you run ``tar_make()``, ``targets`` will skip building targets that are already up-to-date. 
+
+## Viewing and loading targets
 
 If you are new to ``targets`` you might be confused that there are no objects in your environment. That's because the objects are stored locally in a folder called ``_targets`` (in your local repo).
 
@@ -97,6 +104,14 @@ tar_load(dt_its)
 ```
 
 You'll notice the object is in your environment.
+
+You can also view plots. Running the following line should either load the plot in your Plots window or open a new window with the plot:
+
+```
+tar_read(fig_demand)
+```
+
+## Visualizing the pipeline
 
 If you want to visualize the pipeline, run:
 
