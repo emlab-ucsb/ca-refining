@@ -65,6 +65,7 @@ list(
   tar_target(name = file_raw_avgas, command = file.path(main_path, "data/stocks-flows/raw/Distillates 10-10.xlsx"), format = "file"),
   tar_target(name = file_raw_cec_jet, command = file.path(main_path, "data/stocks-flows/raw/5-20 Jet Fuel Demand.xlsx"), format = "file"),
   tar_target(name = file_raw_mil_jet, command = file.path(main_path, "data/stocks-flows/raw/California Transportion Fuel Consumption - Summary 2020-06-01 GDS_rename.xlsx"), format = "file"),
+  tar_target(name = file_raw_fpm, command = file.path(main_path, "data/stocks-flows/raw/Finished_Products_Movements.xlsx"), format = "file"),
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -73,17 +74,21 @@ list(
   tar_target(name = raw_intra_jet, command = simple_read_xlsx(file_raw_avgas, input_sheet = "Sheet1", input_rows = c(4, 14), input_cols = c(3:38))),
   tar_target(name = raw_cec_jet, command = simple_read_xlsx(file_raw_cec_jet, input_sheet = "Jet Fuel Demand", input_rows = NULL, input_cols = c(1:4))),
   tar_target(name = raw_mil_jet, command = simple_read_xlsx(file_raw_mil_jet, input_sheet = "CA Fuel Consumption Data", input_rows = c(7, 9:26), input_cols = c(1, 16))),
+  tar_target(name = raw_fpm_gasoline, command = read_raw_fpm_data(file_raw_fpm, input_sheet = "Gasoline Chart Data", start_row_input = 3)),
+  tar_target(name = raw_fpm_diesel, command = read_raw_fpm_data(file_raw_fpm, input_sheet = "Diesel Chart Data", start_row_input = 4)),
+  tar_target(name = raw_fpm_jet, command = read_raw_fpm_data(file_raw_fpm, input_sheet = "Jet Fuel Chart Data", start_row_input = 3)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
   tar_target(name = dt_intra, command = get_intrastate_jet_forecast(raw_intra_jet)),
   tar_target(name = dt_jet, command = get_cec_interstate_jet_forecast(raw_cec_jet, raw_mil_jet, ei_gasoline, ei_jet)),
+  tar_target(name = dt_fpm, command = get_finished_products_movements(raw_fpm_gasoline, raw_fpm_diesel, raw_fpm_jet)),
   
   # set remaining file paths
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
   # tar_target(name = file_intra, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_intrastate_jet_2020_2045.csv"), format = "file"),
   # tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
-  tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
+  # tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
   tar_target(name = file_fw, command = file.path(main_path, "data/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
   tar_target(name = file_refcap, command = file.path(main_path, "data/stocks-flows/processed/refinery_loc_cap_manual.csv"), format = "file"),
   tar_target(name = file_ghgfac, command = file.path(main_path, "outputs/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
@@ -95,7 +100,7 @@ list(
   # tar_target(name = dt_its, command = simple_fread(file_its)),
   # tar_target(name = dt_intra, command = simple_fread(file_intra)),
   # tar_target(name = dt_jet, command = simple_fread(file_jet)),
-  tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
+  # tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
   tar_target(name = dt_refcap, command = read_refcap_data(file_refcap)),
   tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),

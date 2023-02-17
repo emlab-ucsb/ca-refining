@@ -50,8 +50,11 @@ read_raw_its_data <- function(file, input_sheet, input_rows=NULL, input_cols=NUL
   dt
 }
 
-
-
+read_raw_fpm_data <- function(file, input_sheet, start_row_input) {
+  dt = setDT(read.xlsx(file, sheet = input_sheet, startRow = start_row_input, detectDates = T))
+  colnames(dt)[2] = 'code'
+  dt
+}
 
 
 
