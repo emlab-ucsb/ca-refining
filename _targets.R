@@ -74,7 +74,6 @@ list(
   tar_target(name = dt_intra, command = get_intrastate_jet_forecast(raw_intra_jet)),
 
   # set remaining file paths
-  tar_target(name = file_scen, command = file.path(main_path, "project-materials/scenario-inputs/refinery_scenario_inputs.csv"), format = "file"),
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
   # tar_target(name = file_intra, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_intrastate_jet_2020_2045.csv"), format = "file"),
   tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
@@ -87,7 +86,6 @@ list(
   tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"),
   
   # read in processed data files
-  tar_target(name = dt_scen, command = simple_fread(file_scen)),
   # tar_target(name = dt_its, command = simple_fread(file_its)),
   # tar_target(name = dt_intra, command = simple_fread(file_intra)),
   tar_target(name = dt_jet, command = simple_fread(file_jet)),
