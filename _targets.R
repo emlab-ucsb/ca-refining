@@ -48,11 +48,36 @@ list(
   # tar_target(name = a, command = 4),
   # tar_target(name = ccs_capture_rate, command = 0.474),
   
+  # energy intensities
+  tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
+  tar_target(name = ei_gasoline, command = 5.052), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_4.pdf
+  tar_target(name = ei_diesel, command = 5.770), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
+  tar_target(name = ei_jet, command = (5.670 + 5.355)/2), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
+  
+  # scenarios and regions
+  tar_target(name = dem_scens, command = c('BAU', 'LC1')),
+  tar_target(name = ref_scens, command = c('historic exports', 'historic production', 'low exports')),
+  tar_target(name = clus, command = c('North', 'South')),
+  
+  # set raw data paths
+  tar_target(name = file_raw_its, command = file.path(main_path, "data/stocks-flows/raw/Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx"), format = "file"),
+  tar_target(name = file_raw_avgas, command = file.path(main_path, "data/stocks-flows/raw/Distillates 10-10.xlsx"), format = "file"),
+  
+  # read in raw data files
+  tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
+  tar_target(name = raw_its_lc1, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 23:34), input_cols = c(2:37))),
+  tar_target(name = raw_avgas, command = simple_read_xlsx(file_raw_avgas, input_sheet = "Sheet1", input_rows = c(4, 16), input_cols = c(3:38))),
+  tar_target(name = raw_intra_jet, command = simple_read_xlsx(file_raw_avgas, input_sheet = "Sheet1", input_rows = c(4, 14), input_cols = c(3:38))),
+  
+  # create processed data
+  tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
+  tar_target(name = dt_intra, command = get_intrastate_jet_forecast(raw_intra_jet)),
+
   # set remaining file paths
   tar_target(name = file_scen, command = file.path(main_path, "project-materials/scenario-inputs/refinery_scenario_inputs.csv"), format = "file"),
-  tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
+  # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
+  # tar_target(name = file_intra, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_intrastate_jet_2020_2045.csv"), format = "file"),
   tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
-  tar_target(name = file_intra, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_intrastate_jet_2020_2045.csv"), format = "file"),
   tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
   tar_target(name = file_fw, command = file.path(main_path, "data/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
   tar_target(name = file_ei, command = file.path(main_path, "data/stocks-flows/processed/fuel-energy-intensities.csv"), format = "file"),
@@ -63,30 +88,18 @@ list(
   tar_target(name = file_renref, command = file.path(main_path, "data/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"),
   tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"),
   
-  # energy intensities
-  tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
-  tar_target(name = ei_gasoline, command = 5.052), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_4.pdf
-  tar_target(name = ei_diesel, command = 5.770), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
-  tar_target(name = ei_jet, command = (5.670 + 5.355)/2), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
-  
-  
-  # scenarios and regions
-  tar_target(name = dem_scens, command = c('BAU', 'LC1')),
-  tar_target(name = ref_scens, command = c('historic exports', 'historic production', 'low exports')),
-  tar_target(name = clus, command = c('North', 'South')),
-  
-  # read in files
+  # read in processed data files
   tar_target(name = dt_scen, command = simple_fread(file_scen)),
-  tar_target(name = dt_its, command = simple_fread(file_its)),
+  # tar_target(name = dt_its, command = simple_fread(file_its)),
+  # tar_target(name = dt_intra, command = simple_fread(file_intra)),
   tar_target(name = dt_jet, command = simple_fread(file_jet)),
-  tar_target(name = dt_intra, command = simple_fread(file_intra)),
   tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
   tar_target(name = dt_ei, command = simple_fread(file_ei)),
   tar_target(name = dt_dac, command = simple_fread(file_dac)),
   tar_target(name = dt_refcap, command = read_refcap_data(file_refcap)),
   tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),
-  tar_target(name = dt_rediesel, command = read_rediesel_data(file_rediesel, input_sheet="Fig10", input_rows=c(2, 15), input_cols=seq(1, 10))),
+  tar_target(name = dt_rediesel, command = read_rediesel_data(file_rediesel, "Fig10", input_rows = c(2, 15), input_cols = seq(1, 10))),
   tar_target(name = dt_renref, command = simple_read_xlsx(file_renref, "Sheet1")[, .(installation_year, refinery_name, installation_capacity_bpd, retired_capacity_bpd)]),
   tar_target(name = renewables_info, command = simple_read_xlsx(file_renref, "Sheet1")[, .(site_id, refinery_name, location, region, cluster)]),
   tar_target(name = dt_altair, command = read_altair_data(file_altair, "Sheet1", ei_crude, ei_gasoline)),

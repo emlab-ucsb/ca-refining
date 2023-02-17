@@ -43,6 +43,12 @@ read_altair_data <- function(file, input_sheet, ei_crude_input, ei_gasoline_inpu
   dt
 }
 
+read_raw_its_data <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
+  dt = setDT(read.xlsx(file, sheet = input_sheet, rows = input_rows, cols = input_cols))
+  colnames(dt) = c('fuel', 'units', 2017:2050)
+  dt[, fuel := tolower(fuel)]
+  dt
+}
 
 
 
