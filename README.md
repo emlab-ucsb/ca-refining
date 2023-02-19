@@ -120,3 +120,37 @@ tar_visnetwork()
 ```
 
 You'll notice the diagram is very small -- you can use your mouse to zoom in on the objects if you'd like. If you make changes to the targets/pipeline and run ``tar_visnetwork()`` before running ``tar_make``, you can see the colors of the objects change.
+
+## Example of target changes and impacts on the pipeline
+
+Want an example of what happens when a target is changed? Here's an easy one:
+
+1. Find the target ``ei_crude`` in ``_targets.R``:
+
+```
+tar_target(name = ei_crude, command = 5.698)
+```
+
+2. Change the command value to something else, say 10 for example:
+
+```
+tar_target(name = ei_crude, command = 10)
+```
+
+3. Save the script. Then run:
+
+```
+tar_visnetwork()
+```
+
+4. You'll see the diagram now looks different, with a few lines and points assigned a different color, representing "Outdated". These are the targets affected by the updated ``ei_crude``. Run ``tar_make()`` to rerun the pipeline with the new ``ei_crude`` value:
+
+```
+tar_make()
+```
+
+In the outputs you'll see that the targets that are affected are being updated, while the ones that are unaffected are not being rebuilt.
+
+If you run ``tar_visnetwork()`` everything should be up-to-date now in the diagram.
+
+**Remember to change the value of the target back to normal (by ctrl + z for example).**
