@@ -56,13 +56,43 @@ read_raw_fpm_data <- function(file, input_sheet, start_row_input) {
   dt
 }
 
+read_raw_ces_data <- function(file) {
+  setDT(read_xlsx(file))
+}
 
+read_census_data <- function(file){
+  fread(file, header = T, stringsAsFactors = F)
+}
 
+read_ghg_2019_data <- function(file){
+  dt = fread(file, header = T)
+  dt_complete <- dt[boundary == "complete", .(year, value)]
+  dt_complete[, mtco2e := value / 1e9]
+  dt_complete[, value := NULL]
+  
+  dt_complete
+}
 
+read_inmap_data <- function(inmap_path, bsite) {
 
+  nh3 = simple_fread(paste0(inmap_path, "/nh3/srm_nh3_site", bsite, ".csv"))
+  nox = simple_fread(paste0(inmap_path, "/nox/srm_nox_site", bsite, ".csv"))
+  pm25 = simple_fread(paste0(inmap_path, "/pm25/srm_pm25_site", bsite, ".csv"))
+  sox = simple_fread(paste0(inmap_path, "/sox/srm_sox_site", bsite, ".csv"))
+  voc = simple_fread(paste0(inmap_path, "/voc/srm_voc_site", bsite, ".csv"))
 
+  nh3[, pollutant := "nh3"]
+  nox[, pollutant := "nox"]
+  pm25[, pollutant := "pm25"]
+  sox[, pollutant := "sox"]
+  voc[, pollutant := "voc"]
 
-
+  all_pollutants = rbind(nh3, nox, pm25, sox, voc)
+  all_pollutants[, site := bsite]
+  
+  as.data.table(all_pollutants)
+  
+}
 
 
 # track_files_basic <- function(file) {

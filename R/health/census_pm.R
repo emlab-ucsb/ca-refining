@@ -1,0 +1,313 @@
+get_ces_county <- function(raw_ces) {
+  
+  dt = raw_ces[, c("Census Tract", "California County")]
+  setnames(dt, c("Census Tract", "California County"), c("census_tract", "county"))
+  dt[, census_tract := paste0("0", census_tract, sep = "")]
+  dt
+  
+}
+
+get_county_dac <- function(dt_ces, ces_county) {
+  
+    processed_ces = dt_ces[, .(census_tract, population, CES3_score, disadvantaged)]
+    processed_ces[, census_tract := paste0("0", census_tract, sep="")]
+    
+    ces3_county = merge(processed_ces, ces_county, by = c("census_tract"))
+    
+    return(ces3_county)
+    
+}
+
+
+
+# get_county_dac_share <- function(dt_ces, ces_county){
+# 
+#   processed_ces = dt_ces[, .(census_tract, population, CES3_score, disadvantaged)]
+#   processed_ces[, census_tract := paste0("0", census_tract, sep="")]
+# 
+#   ces3_county = merge(processed_ces, ces_county, by = c("census_tract"))
+# 
+#   county_dac= dcast(ces3_county, county + census_tract ~ disadvantaged, value.var = "population")
+#   county_dac[, Yes := fifelse(is.na(Yes), 0, Yes)]
+#   county_dac[, No := fifelse(is.na(No), 0, No)]
+#   county_dac[, total_pop := No + Yes]
+#   county_dac[, dac_share := Yes / total_pop]
+# 
+#   mean_county_dac = county_dac[, .(dac_share = weighted.mean(dac_share, total_pop, na.rm = T)), by = .(county)]
+# 
+#   mean_county_dac
+# 
+# }
+
+get_median_household_income <- function(raw_income_house) {
+  
+  dt = raw_income_house[, .(GEOID, estimate)]
+  dt[, census_tract := paste0("0", GEOID)]
+  setnames(dt, "estimate", "median_hh_income")
+  dt = dt[, .(census_tract, median_hh_income)]
+  dt
+  
+}
+
+get_median_county_income <- function(raw_income_county) {
+  
+  dt <- raw_income_county[, .(county, estimate)]
+  setnames(dt, "estimate", "median_hh_income")
+  dt
+  
+}
+
+get_census_population_weighted_incidence_rate <- function(dt_population) {
+  
+  dt = dt_population[, .(gisjoin, lower_age, upper_age, year, pop, incidence_2015)]
+  dt[, ct_id := paste0(stringr::str_sub(gisjoin, 2, 3),
+                       stringr::str_sub(gisjoin, 5, 7),
+                       stringr::str_sub(gisjoin, 9, 14))]
+  dt = dt[, .(ct_id, lower_age, upper_age, year, pop, incidence_2015)]
+  
+  dt_over_29 = dt[lower_age > 29]
+  dt_over_29[, ct_pop := sum(pop, na.rm = T), by = .(ct_id, year)]
+  dt_over_29[, share := pop/ct_pop, by = .(ct_id, year)]
+  dt_over_29[, weighted_incidence := sum(share * incidence_2015, na.rm = T), by = .(ct_id, year)]
+  
+  agg = dt_over_29[, .(weighted_incidence = mean(weighted_incidence),
+                       pop = sum(pop)), by = .(ct_id, year)]
+  agg
+
+}
+
+
+# get_refinery_site_ids <- function(dt_refcap) {
+#   
+#   dt = dt_refcap[, .(site_id, county)]
+#   dt
+#   
+# }
+
+get_site_level_refining_cons <- function(indiv_cons_output) {
+  
+  dt = indiv_cons_output[type == "consumption" & 
+                           fuel == "crude" &
+                           source == "total" &
+                           boundary == "complete", .(demand_scenario, refining_scenario, site_id, year, fuel, type, value)]
+  
+  dt
+  
+}
+
+get_site_level_refining_ghg <- function(indiv_ghg_output) {
+  
+  dt = indiv_ghg_output[type == "ghg" & 
+                          source == "total" &
+                          boundary == "complete", .(demand_scenario, refining_scenario, site_id, year, fuel, type, value)]
+  
+  dt
+  
+}
+
+combine_refining_site_cons_ghg <- function(refining_site_consumption, refining_site_ghg) {
+  
+  rbindlist(list(refining_site_consumption, refining_site_ghg), use.names = T)
+  
+}
+
+create_all_sites_scenarios_df <- function(refining_site_output) {
+  
+  all_scens = unique(refining_site_output[, .(demand_scenario, refining_scenario)])
+  all_scens[, scen_id := paste(demand_scenario, refining_scenario)]
+  
+  all_sites = unique(refining_site_output[, .(site_id)])
+  
+  skeleton_scens_sites_years = expand.grid(scen_id = unique(all_scens[, scen_id]),
+                                           site_id = unique(all_sites[, site_id]),
+                                           year = seq(2019, 2045, 1))
+  
+  setDT(skeleton_scens_sites_years)
+  
+  df_sites_scens = merge(skeleton_scens_sites_years, all_scens,
+                         by = c("scen_id"),
+                         all.x = T)
+  
+  setcolorder(df_sites_scens, c("scen_id", "demand_scenario", "refining_scenario", "site_id", "year"))
+  
+  df_sites_scens
+
+}
+
+# create_2019_consumption_ghg_outputs <- function(all_refining_sites_scenarios, dt_site_2019) {
+#   
+#   refining_site_scenarios_2019 = all_refining_sites_scenarios[year == 2019]
+#   
+#   full_site_2019 = merge(refining_site_scenarios_2019, dt_site_2019,
+#                          by = c("site_id", "year"),
+#                          all.x = T)
+#   
+#   full_site_2019 = full_site_2019[, .(scen_id, demand_scenario, refining_scenario,
+#                                       site_id, type, fuel, year, value_bbls)]
+#   
+#   setnames(full_site_2019, "value_bbls", "bbls_consumed")
+#   full_site_2019[, fuel := NULL]
+#   full_site_2019[, type := NULL]
+#   full_site_2019[, ghg_kg := NA]
+#   
+#   setorder(full_site_2019, demand_scenario, refining_scenario, site_id)
+#   full_site_2019
+#   
+# }
+
+organize_consumption_ghg_outputs <- function(refining_sites_scenarios,
+                                             dt_site_2019,
+                                             refining_site_output, 
+                                             indiv_cons_output) {
+  
+  # get 2019 outputs 
+  refining_site_scenarios_2019 = refining_sites_scenarios[year == 2019]
+  
+  full_site_2019 = merge(refining_site_scenarios_2019, dt_site_2019,
+                         by = c("site_id", "year"),
+                         all.x = T)
+  
+  full_site_2019 = full_site_2019[, .(scen_id, demand_scenario, refining_scenario,
+                                      site_id, type, fuel, year, value_bbls)]
+  
+  setnames(full_site_2019, "value_bbls", "bbls_consumed")
+  full_site_2019[, fuel := NULL]
+  full_site_2019[, type := NULL]
+  full_site_2019[, ghg_kg := NA]
+  
+  setorder(full_site_2019, demand_scenario, refining_scenario, site_id)
+  
+  # get projected outputs
+  dt_proj = refining_sites_scenarios[year > 2019]
+  dt_type = data.table(type = unique(refining_site_output[, type]))
+  
+  dt_scens_types = crossing(dt_proj, dt_type)
+  setDT(dt_scens_types)  
+  
+  full_site_proj = merge(dt_scens_types, refining_site_output,
+                            by = c('demand_scenario', 'refining_scenario', 
+                                   'site_id', 'year', 'type'),
+                            all.x = T)
+  full_site_proj[, fuel := NULL]
+  full_site_proj[, value := fifelse(is.na(value), 0, value)]
+  
+  full_site_proj_wide = dcast(full_site_proj, 
+                              scen_id + demand_scenario + refining_scenario + site_id + year ~ type, 
+                              value.var = "value")
+  
+  setnames(full_site_proj_wide, c("consumption", "ghg"), c("bbls_consumed", "ghg_kg"))
+  
+  # bind 2019 to projected
+  full_site_out = rbind(full_site_2019, full_site_proj_wide, use.names = T)
+  setorder(full_site_out, demand_scenario, refining_scenario, year)
+  
+  # refinery names
+  refinery_names = unique(indiv_cons_output[, .(site_id, refinery_name)])
+  
+  full_site_out_names = merge(full_site_out, refinery_names,
+                              by = "site_id",
+                              all.x = T)
+  
+  setcolorder(full_site_out_names, 
+              c('scen_id', 'demand_scenario', 'refining_scenario', 
+                'site_id', 'refinery_name', 'year', 'bbls_consumed', 'ghg_kg'))
+  
+  
+  full_site_out_names
+  
+}
+
+
+process_weighted_pm25 <- function(dt_inmap_re) {
+  
+  dt = copy(dt_inmap_re)
+  setnames(dt, "totalpm25_aw", "weighted_totalpm25")
+  
+  dt_wide = dcast(dt, GEOID + site ~ pollutant, value.var = "weighted_totalpm25")
+  setnames(dt_wide, c("nh3", "nox", "pm25", "sox", "voc"), paste0("weighted_totalpm25_", c("nh3", "nox", "pm25", "sox", "voc")))
+  setnames(dt_wide, "site", "site_id")
+  
+  dt_wide = unique(dt_wide)
+  
+  dt_wide
+  
+}
+
+
+
+calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
+                                            srm_weighted_pm25,
+                                            county_dac,
+                                            med_house_income,
+                                            ef_nh3,
+                                            ef_nox,
+                                            ef_pm25,
+                                            ef_sox,
+                                            ef_voc){
+
+  refining = copy(refining_sites_cons_ghg_2019_2045)
+  refining[ , site_id := ifelse(site_id == "t-800", "800", site_id)]
+  refining[ , site_id := ifelse(site_id == "342-2", "34222", site_id)]
+  refining[ , site_id := as.numeric(site_id)]
+  
+  refining[, `:=` (nh3 = bbls_consumed * ef_nh3 / 1000,
+                   nox = bbls_consumed * ef_nox / 1000,
+                   pm25 = bbls_consumed * ef_pm25 / 1000,
+                   sox = bbls_consumed * ef_sox / 1000,
+                   voc = bbls_consumed * ef_voc / 1000)]
+  
+  srm_weighted_census = copy(srm_weighted_pm25)
+  srm_weighted_census[, GEOID := paste0("0", GEOID, sep = "")]
+  
+  print("joining refining outputs with PM2.5 data...")
+  ref_health = merge(refining, srm_weighted_census, by = "site_id", all.y = T, allow.cartesian = T, no.dups = T)
+  
+  ref_health[, `:=` (tot_nh3 = weighted_totalpm25_nh3 * nh3,
+                     tot_nox = weighted_totalpm25_nox * nox,
+                     tot_sox = weighted_totalpm25_sox * sox,
+                     tot_pm25 = weighted_totalpm25_pm25 * pm25,
+                     tot_voc = weighted_totalpm25_voc * voc)]
+  ref_health[, total_pm25 := tot_nh3 + tot_nox + tot_pm25 + tot_sox + tot_voc]
+  ref_health[, prim_pm25 := tot_pm25]
+  
+  ## Adjust mismatch of census tract ids between inmap and benmap (census ID changed in 2012
+  ## http://www.diversitydatakids.org/sites/default/files/2020-02/ddk_coi2.0_technical_documentation_20200212.pdf)
+  ref_health[, GEOID := ifelse(GEOID == "06037137000", "06037930401", GEOID)]
+
+  ref_health_agg = ref_health[, .(total_pm25 = sum(total_pm25, na.rm = T),
+                                  prim_pm25 = sum(prim_pm25, na.rm = T)),
+                              by = .(GEOID, year, scen_id, demand_scenario, refining_scenario)]
+
+  setnames(ref_health_agg, "GEOID", "census_tract")
+  setorder(ref_health_agg, "census_tract", "year")
+  
+  ## convert all census tracts to character
+  # ref_health_agg[, census_tract := as.character(census_tract)]
+  # county_dac[, census_tract := as.character(census_tract)]
+  
+  ## add ces score, income, and dac
+  health_ces = merge(ref_health_agg,
+                     county_dac[, .(census_tract, population, CES3_score, disadvantaged)],
+                     by = c("census_tract"),
+                     all.x = T)
+  
+  ## add income
+  health_income = merge(health_ces, med_house_income,
+                        by = c("census_tract"),
+                        all.x = T)
+
+  ## set order
+  setorder(health_income, "demand_scenario", "refining_scenario", "census_tract", "year")
+
+  ## set column order
+  setcolorder(health_income,
+              c("scen_id", "demand_scenario", "refining_scenario",
+                "census_tract", "year", 
+                "population", "disadvantaged", "CES3_score",
+                "median_hh_income", "total_pm25"))
+
+  health_income[, prim_pm25 := NULL]
+
+  return(health_income)
+
+}

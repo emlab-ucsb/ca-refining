@@ -6,7 +6,10 @@
 # Load packages required to define the pipeline:
 library(targets)
 library(data.table)
+library(tidyr)
+library(stringr) 
 library(openxlsx)
+library(readxl)
 library(lubridate)
 library(lspline)
 library(ggplot2)
@@ -14,7 +17,6 @@ library(hrbrthemes)
 library(directlabels)
 library(grid)
 library(extrafont)
-library(stringr) 
 
 # Set target options:
 tar_option_set(
@@ -54,6 +56,22 @@ list(
   tar_target(name = ei_diesel, command = 5.770), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   tar_target(name = ei_jet, command = (5.670 + 5.355)/2), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   
+  # DAC analysis parameters
+  # tar_target(name = beta, command = 0.00582),
+  # tar_target(name = se, command = 0.0009628),
+  # tar_target(name = vsl_2015, command = 8705114.25462459),
+  # tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906/100),
+  # tar_target(name = income_elasticity_mort, command = 0.03),
+  # tar_target(name = discount_rate, command = 0.03),
+  tar_target(name = buff_sites, command = c(97, 119, 164, 202, 209, 226, 271, 279, 332, 342, 343, 800, 3422, 34222, 99999)),
+  
+  # emission factors
+  tar_target(name = ef_nh3, command = 0.00056),
+  tar_target(name = ef_nox, command = 0.01495),
+  tar_target(name = ef_pm25, command = 0.00402),
+  tar_target(name = ef_sox, command = 0.00851),
+  tar_target(name = ef_voc, command = 0.01247),
+  
   # scenarios and regions
   tar_target(name = dem_scens, command = c('BAU', 'LC1')),
   tar_target(name = ref_scens, command = c('historic exports', 'historic production', 'low exports')),
@@ -69,6 +87,11 @@ list(
   tar_target(name = file_rediesel, command = file.path(main_path, "data/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"), format = "file"),
   tar_target(name = file_renref, command = file.path(main_path, "data/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
   tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
+  
+  tar_target(name = file_raw_ces, command = file.path(main_path, "data/health/raw/ces3results.xlsx"), format = "file"), # this is a manually created file
+  tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), # this is a manually created file
+  tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), # this is a manually created file
+  tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # this is a manually created file
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -86,11 +109,20 @@ list(
   tar_target(name = renewables_info, command = simple_read_xlsx(file_renref, "Sheet1")[, .(site_id, refinery_name, location, region, cluster)]),
   tar_target(name = dt_altair, command = read_altair_data(file_altair, "Sheet1", ei_crude, ei_gasoline)),
   
+  tar_target(name = raw_ces, command = read_raw_ces_data(file_raw_ces)),
+  tar_target(name = raw_income_house, command = read_census_data(file_raw_income_house)),
+  tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
+  
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
   tar_target(name = dt_intra, command = get_intrastate_jet_forecast(raw_intra_jet)),
   tar_target(name = dt_jet, command = get_cec_interstate_jet_forecast(raw_cec_jet, raw_mil_jet, ei_gasoline, ei_jet)),
   tar_target(name = dt_fpm, command = get_finished_products_movements(raw_fpm_gasoline, raw_fpm_diesel, raw_fpm_jet)),
+  
+  tar_target(name = ces_county, command = get_ces_county(raw_ces)),
+  tar_target(name = med_house_income, command = get_median_household_income(raw_income_house)),
+  tar_target(name = county_income, command = get_median_county_income(raw_income_county)),
+  tar_target(name = dt_inmap_re, command = rbindlist(lapply(buff_sites, read_inmap_data, inmap_path=file_inmap_re))),
   
   # set remaining file paths
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
@@ -100,6 +132,13 @@ list(
   tar_target(name = file_fw, command = file.path(main_path, "data/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
   tar_target(name = file_ghgfac, command = file.path(main_path, "outputs/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
   
+  tar_target(name = file_processed_ces3, command = file.path(main_path, "data/health/processed/ces3_data.csv"), format = "file"),
+  tar_target(name = file_population, command = file.path(main_path, "data/benmap/processed/ct_inc_45.csv"), format = "file"),
+  # tar_target(name = file_growth_rates, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
+  tar_target(name = file_site_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/site_refining_outputs_2019.csv"), format = "file"),
+  tar_target(name = file_county_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/county_refining_outputs_2019.csv"), format = "file"),
+  tar_target(name = file_ghg_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/refining_emissions_state_2019_revised.csv"), format = "file"),
+  
   # read in processed data files
   # tar_target(name = dt_its, command = simple_fread(file_its)),
   # tar_target(name = dt_intra, command = simple_fread(file_intra)),
@@ -107,7 +146,14 @@ list(
   # tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
   tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),
-
+  tar_target(name = dt_ces, command = read_census_data(file_processed_ces3)),
+  tar_target(name = dt_population, command = read_census_data(file_population)),
+  tar_target(name = dt_site_2019, command = simple_fread(file_site_2019)),
+  tar_target(name = dt_county_2019, command = simple_fread(file_county_2019)),
+  tar_target(name = dt_ghg_2019, command = read_ghg_2019_data(file_ghg_2019)),
+  
+  # tar_target(name = dt_growth_rates, command = read_census_data(file_growth_rates)),
+  
   # prep for module
   tar_target(name = prod_refined_week_wide, command = calculate_weekly_refined_products(dt_fw)), 
   tar_target(name = crude_refined_week, command = calculate_weekly_refined_crude(dt_fw, prod_refined_week_wide, ei_crude, ei_gasoline, ei_diesel, ei_jet)), 
@@ -198,7 +244,35 @@ list(
   
   # paper figures
   tar_target(name = fig_demand, command = plot_its_demand(dt_its, dt_intra, dt_jet)), 
-  tar_target(name = fig_refined_production_ghg, command = plot_refined_products_and_ghg(tot_fuel_demand_exports, state_ghg_output))
+  tar_target(name = fig_refined_production_ghg, command = plot_refined_products_and_ghg(tot_fuel_demand_exports, state_ghg_output)),
   
-
+  # DAC / health: PM2.5 by county
+  tar_target(name = county_dac, command = get_county_dac(dt_ces, ces_county)),
+  tar_target(name = ct_inc_pop_weighted, command = get_census_population_weighted_incidence_rate(dt_population)),
+  # tar_target(name = site_ids, command = get_refinery_site_ids(dt_refcap)),
+  tar_target(name = refining_site_consumption, command = get_site_level_refining_cons(indiv_cons_output)),
+  tar_target(name = refining_site_ghg, command = get_site_level_refining_ghg(indiv_ghg_output)),
+  tar_target(name = refining_site_output, command = combine_refining_site_cons_ghg(refining_site_consumption, refining_site_ghg)),
+  tar_target(name = refining_sites_scenarios, command = create_all_sites_scenarios_df(refining_site_output)),
+  tar_target(name = refining_sites_cons_ghg_2019_2045, command = organize_consumption_ghg_outputs(refining_sites_scenarios,
+                                                                                                  dt_site_2019,
+                                                                                                  refining_site_output,
+                                                                                                  indiv_cons_output)),
+  tar_target(name = srm_weighted_pm25, command = process_weighted_pm25(dt_inmap_re)),
+  tar_target(name = refining_health_income, command = calculate_census_tract_emissions(refining_sites_cons_ghg_2019_2045,
+                                                                                       srm_weighted_pm25,
+                                                                                       county_dac,
+                                                                                       med_house_income,
+                                                                                       ef_nh3,
+                                                                                       ef_nox,
+                                                                                       ef_pm25,
+                                                                                       ef_sox,
+                                                                                       ef_voc)),
+  
+  # save outputs
+  tar_target(name = save_health_income, 
+             command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2023/health", "refining_health_income_2023.csv"), 
+             format = "file")
+  
+  
 )
