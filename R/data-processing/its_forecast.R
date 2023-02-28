@@ -1,9 +1,9 @@
 
-data_path       = '/Volumes/GoogleDrive/Shared\ drives/emlab/projects/current-projects/calepa-cn/data/stocks-flows/raw'
-its_file        = 'Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx'
-# bau_file        = 'Copy of Scenarios for 2045 Study Results Sep 7c.xlsx'
-# lc1_file        = 'CN study LC1 fuel consumption results 8oct.xlsx'
-avgas_file      = 'Distillates 10-10.xlsx'
+# data_path       = '/Volumes/GoogleDrive/Shared\ drives/emlab/projects/current-projects/calepa-cn/data/stocks-flows/raw'
+# its_file        = 'Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx'
+# # bau_file        = 'Copy of Scenarios for 2045 Study Results Sep 7c.xlsx'
+# # lc1_file        = 'CN study LC1 fuel consumption results 8oct.xlsx'
+# avgas_file      = 'Distillates 10-10.xlsx'
 # 
 # # outputs ----------------
 # 
