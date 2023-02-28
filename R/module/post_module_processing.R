@@ -570,14 +570,14 @@ gather_state_cons_output <- function(indiv_cons_output) {
   
 }
 
-gather_state_ghg_output <- function(indiv_ghg_output) {
-  
-  state_ghg_output = indiv_ghg_output[, .(value = sum(value, na.rm = T)),
-                                      by = .(demand_scenario, refining_scenario,
-                                             year, fuel, source, boundary, type, units)]
-  state_ghg_output
-  
-}
+# gather_state_ghg_output <- function(indiv_ghg_output) {
+#   
+#   state_ghg_output = indiv_ghg_output[, .(value = sum(value, na.rm = T)),
+#                                       by = .(demand_scenario, refining_scenario,
+#                                              year, fuel, source, boundary, type, units)]
+#   state_ghg_output
+#   
+# }
 
 
 
@@ -746,32 +746,32 @@ gather_state_ghg_output <- function(indiv_ghg_output) {
 # 
 # join outputs at each spatial resolution -------
 
-combine_refinery_outputs <- function(indiv_prod_output, indiv_prod_output_bge, indiv_cons_output, indiv_cons_output_bge, indiv_ghg_output) {
-  
-  outputs_indiv = rbindlist(list(indiv_prod_output, indiv_prod_output_bge, indiv_cons_output, indiv_cons_output_bge, indiv_ghg_output), use.names = T, fill = T)
-  setcolorder(outputs_indiv, c('demand_scenario', 'refining_scenario', 'site_id', 'refinery_name', 'location', 'region', 'cluster', 'year', 'fuel', 'source', 'boundary', 'type', 'units', 'value'))
-  
-  outputs_indiv
-  
-}
+# combine_refinery_outputs <- function(indiv_prod_output, indiv_prod_output_bge, indiv_cons_output, indiv_cons_output_bge, indiv_ghg_output) {
+#   
+#   outputs_indiv = rbindlist(list(indiv_prod_output, indiv_prod_output_bge, indiv_cons_output, indiv_cons_output_bge, indiv_ghg_output), use.names = T, fill = T)
+#   setcolorder(outputs_indiv, c('demand_scenario', 'refining_scenario', 'site_id', 'refinery_name', 'location', 'region', 'cluster', 'year', 'fuel', 'source', 'boundary', 'type', 'units', 'value'))
+#   
+#   outputs_indiv
+#   
+# }
 
-combine_cluster_outputs <- function(clus_prod_output, clus_cons_output, clus_ghg_output) {
-  
-  outputs_clus = rbindlist(list(clus_prod_output, clus_cons_output, clus_ghg_output), use.names = T, fill = T)
-  setcolorder(outputs_clus, c('demand_scenario', 'refining_scenario', 'cluster', 'year', 'fuel', 'source', 'boundary', 'type', 'units', 'value'))
-  
-  outputs_clus
-  
-}
+# combine_cluster_outputs <- function(clus_prod_output, clus_cons_output, clus_ghg_output) {
+#   
+#   outputs_clus = rbindlist(list(clus_prod_output, clus_cons_output, clus_ghg_output), use.names = T, fill = T)
+#   setcolorder(outputs_clus, c('demand_scenario', 'refining_scenario', 'cluster', 'year', 'fuel', 'source', 'boundary', 'type', 'units', 'value'))
+#   
+#   outputs_clus
+#   
+# }
 
-combine_state_outputs <- function(state_prod_output, state_cons_output, state_ghg_output, in_state_ghg, out_state_ghg) {
-  
-  outputs_state = rbindlist(list(state_prod_output, state_cons_output, state_ghg_output, in_state_ghg, out_state_ghg), use.names = T, fill = T)
-  setcolorder(outputs_state, c('demand_scenario', 'refining_scenario', 'year', 'fuel', 'source', 'boundary', 'type', 'units', 'value'))
-  
-  outputs_state
-  
-}
+# combine_state_outputs <- function(state_prod_output, state_cons_output, state_ghg_output, in_state_ghg, out_state_ghg) {
+#   
+#   outputs_state = rbindlist(list(state_prod_output, state_cons_output, state_ghg_output, in_state_ghg, out_state_ghg), use.names = T, fill = T)
+#   setcolorder(outputs_state, c('demand_scenario', 'refining_scenario', 'year', 'fuel', 'source', 'boundary', 'type', 'units', 'value'))
+#   
+#   outputs_state
+#   
+# }
 
 
 
