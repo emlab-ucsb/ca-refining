@@ -39,7 +39,8 @@ source("plot_settings.R") # Source other scripts as needed. # nolint
 list(
   
   # set main path
-  tar_target(name = main_path, command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
+  tar_target(name = main_path, 
+             command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
   
   # module settings
   tar_target(name = ref_threshold, command = 0.6),
@@ -272,7 +273,28 @@ list(
   # save outputs
   tar_target(name = save_health_income, 
              command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2023/health", "refining_health_income_2023.csv"), 
+             format = "file"),
+  
+  # save figures
+  tar_target(name = save_fig_demand,
+             command = simple_ggsave(fig_demand, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "its_demand_and_production_2023", 
+                                     width = 6.5,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_fig_refined_production_ghg,
+             command = simple_ggsave(fig_refined_production_ghg, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_GJD_and_reGJD_production_and_ghg_emissions", 
+                                     width = 20,
+                                     height = 12,
+                                     dpi = 600),
              format = "file")
   
-  
+
 )
