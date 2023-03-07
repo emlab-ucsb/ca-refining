@@ -33,7 +33,7 @@ options(clustermq.scheduler = "multicore")
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-source("plot_settings.R") # Source other scripts as needed. # nolint
+source("extras/plot_settings.R") # Source other scripts as needed. # nolint
 
 # Replace the target list below with your own:
 list(
