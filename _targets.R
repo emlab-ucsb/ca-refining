@@ -89,10 +89,10 @@ list(
   tar_target(name = file_renref, command = file.path(main_path, "data/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
   tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
   
-  tar_target(name = file_raw_ces, command = file.path(main_path, "data/health/raw/ces3results.xlsx"), format = "file"), # this is a manually created file
-  tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), # this is a manually created file
-  tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), # this is a manually created file
-  tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # this is a manually created file
+  tar_target(name = file_raw_ces, command = file.path(main_path, "data/health/raw/ces3results.xlsx"), format = "file"),
+  tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), 
+  tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), 
+  tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
