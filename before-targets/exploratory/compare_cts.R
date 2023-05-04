@@ -41,13 +41,18 @@ length(unique(census_tract20$GEOID)) ## 9109
 ## antijoin for non-matching geoids
 missing_19 <- anti_join(census_tract20 %>% st_drop_geometry(), census_tract19 %>% st_drop_geometry())
 missing_20 <- anti_join(census_tract19 %>% st_drop_geometry(), census_tract20 %>% st_drop_geometry())
+match_cts <- inner_join(census_tract19 %>% st_drop_geometry(), census_tract20 %>% st_drop_geometry())
 
 ## make dfs of missing cts for plotting
 missing_19 <- missing_19 %>%
-  left_join(census_tract20)
+  left_join(census_tract20) %>%
+  rename(GEOID_2020 = GEOID) %>%
+  st_as_sf()
 
 missing_20 <- missing_20 %>%
-  left_join(census_tract19)
+  left_join(census_tract19) %>%
+  rename(GEOID_2019 = GEOID) %>%
+  st_as_sf()
 
 ## california
 states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
@@ -55,12 +60,12 @@ states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
 california <- states %>% filter(ID == "california") %>%
   st_transform(ca_crs)
 
-## plot
+## figure: 2019 cts not in 2020
 fig_missing <- ggplot() +
   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
   # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
   geom_sf(data = missing_20, mapping = aes(geometry = geometry), fill = "blue", lwd = 0.2, color = "blue", alpha = 0.5, show.legend = TRUE) +
-  geom_sf_text(data = missing_20, aes(geometry = geometry, label = GEOID)) +
+  geom_sf_text(data = missing_20, aes(geometry = geometry, label = GEOID_2019)) +
   theme_void() 
 
 
@@ -70,7 +75,7 @@ fig_missing2 <- ggplot() +
   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
   # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
   geom_sf(data = missing_19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "#C0C0C0", alpha = 0.5, show.legend = TRUE) +
-  geom_sf_text(data = missing_19, aes(geometry = geometry, label = GEOID)) +
+  geom_sf_text(data = missing_19, aes(geometry = geometry, label = GEOID_2020)) +
   theme_void() 
 
 ggplotly(fig_missing2)
@@ -92,4 +97,49 @@ test <- ggplot() +
   geom_sf(data = census_tract19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", alpha = 0.7, show.legend = TRUE) 
 
 ggplotly(test)
+
+## make a crosswalk for census tracts, tract percentage overlap
+## -------------------------------
+
+## missing in 20 merged with missing in 2019
+ct_merged <- missing_20 %>%
+  mutate(GEOID_2019_area = st_area(.)) %>%
+  st_intersection(missing_19) %>%
+  mutate(intersect_area = st_area(.),
+         rel_intersect = intersect_area / GEOID_2019_area)
+
+## test census tract
+test_ct_df <- ct_merged %>% 
+  # filter(GEOID_2019 == "06019007901")
+  filter(GEOID_2019 == "06019007902")
+
+figtest <- ggplot() +
+  geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+  # geom_sf(data = census_tract19, mapping = aes(geometry = geometry, fill = GEOID), lwd = 0.2, alpha = 0.4, show.legend = FALSE) +
+  geom_sf(data = ct_merged %>% filter(GEOID_2019 == "06019007902"), mapping = aes(geometry = geometry, fill = GEOID_2020), lwd = 0.2, alpha = 0.4, show.legend = FALSE) +
+  geom_sf(data = test_ct_df, mapping = aes(geometry = geometry, fill = GEOID_2020), lwd = 0.2, alpha = 0.4, show.legend = TRUE) 
+
+ggplotly(figtest)
+
+
+# # plot(field_boundaries %>% dplyr::select(doc_field_code), 
+# #      xlim = xcheck, 
+# #      ylim = ycheck, 
+# #      axes = TRUE)
+# # 
+# # plot(field_coverage_df_1000 %>% dplyr::select(doc_field_code), 
+# #      xlim = xcheck, 
+# #      ylim = ycheck, 
+# #      axes = TRUE,
+# #      add = TRUE, 
+# #      color = "yellow")
+# 
+# field_coverage_df_1000_2 <- field_coverage_df_1000 %>%
+#   mutate(setback_area = st_area(field_coverage_df_1000),
+#          setback_1000 = setback_area / orig_area_m2) %>%
+#   dplyr::select(doc_field_code, setback_1000) %>%
+#   st_drop_geometry() %>%
+#   as.tibble()
+
+
 
