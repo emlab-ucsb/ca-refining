@@ -13,10 +13,12 @@ library(plotly)
 main_path        <- '/Volumes/GoogleDrive/Shared drives/emlab/projects/current-projects/calepa-cn/'
 main_path        <- '/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/'
 sp_data_path     <- paste0(main_path, "data/GIS/raw/")
+save_path        <- paste0(main_path, "project-materials/refining-paper/model-prep/census-xwalk/")
 
 ## file names
 prev_ct <- "census-tract/tl_2019_06_tract.shp"
-ct_2020 <- "nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"
+ct_2020 <- "census-tract/2020/tl_2020_06_tract/tl_2020_06_tract.shp"
+# ct_2020 <- "nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"
 
 ## crs NAD83 / California Albers
 ca_crs <- 3310
@@ -26,17 +28,13 @@ census_tract19 <- read_sf(paste0(sp_data_path, prev_ct)) %>%
   select(-STATEFP:-TRACTCE,-NAME:-INTPTLON)%>%
   st_transform(crs = ca_crs)
 
-## ca FIPS code
-ca_fips_cd <- "06"
-
 census_tract20 <- read_sf(paste0(sp_data_path, ct_2020)) %>%
-  filter(STATEFP == ca_fips_cd) %>%
   select(GEOID) %>%
   st_transform(crs = ca_crs)
 
 ## number of unique census tracts
 length(unique(census_tract19$GEOID)) ## 8057
-length(unique(census_tract20$GEOID)) ## 9109
+length(unique(census_tract20$GEOID)) ## 9129
 
 ## antijoin for non-matching geoids
 missing_19 <- anti_join(census_tract20 %>% st_drop_geometry(), census_tract19 %>% st_drop_geometry())
@@ -104,23 +102,72 @@ ggplotly(test)
 ## missing in 20 merged with missing in 2019
 ct_merged <- missing_20 %>%
   mutate(GEOID_2019_area = st_area(.)) %>%
-  st_intersection(missing_19) %>%
+  st_intersection(census_tract20) %>%
   mutate(intersect_area = st_area(.),
-         rel_intersect = intersect_area / GEOID_2019_area)
+         rel_intersect = intersect_area / GEOID_2019_area) %>%
+  rename(GEOID_2020 = GEOID) %>%
+  mutate(rel_intersect = units::drop_units(rel_intersect)) %>%
+  filter(rel_intersect > 0)
 
-## test census tract
-test_ct_df <- ct_merged %>% 
-  # filter(GEOID_2019 == "06019007901")
-  filter(GEOID_2019 == "06019007902")
+## plot examples
+##  -------------------------------
 
-figtest <- ggplot() +
-  geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
-  # geom_sf(data = census_tract19, mapping = aes(geometry = geometry, fill = GEOID), lwd = 0.2, alpha = 0.4, show.legend = FALSE) +
-  geom_sf(data = ct_merged %>% filter(GEOID_2019 == "06019007902"), mapping = aes(geometry = geometry, fill = GEOID_2020), lwd = 0.2, alpha = 0.4, show.legend = FALSE) +
-  geom_sf(data = test_ct_df, mapping = aes(geometry = geometry, fill = GEOID_2020), lwd = 0.2, alpha = 0.4, show.legend = TRUE) 
+## example: one 2019 census tract matching with more than one 2020 tract
+ex1_ct_id <- "06001403300"
 
-ggplotly(figtest)
+ex1_fig <- ggplot() +
+  # geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) + 
+  geom_sf(data = ct_merged %>% filter(GEOID_2019 == ex1_ct_id), mapping = aes(geometry = geometry, fill = GEOID_2020, color = GEOID_2020), lwd = 0, color = NA, alpha = 0.8, show.legend = TRUE) +
+  geom_sf(data = census_tract19 %>% filter(GEOID == ex1_ct_id), mapping = aes(geometry = geometry, color = GEOID), fill = NA, lwd = 0.9, show.legend = TRUE) +
+  scale_color_manual(values = c("red")) +
+  labs(color = "GEOID_2019") +
+  theme_bw()
 
+ggplotly(ex1_fig)
+
+## save example 1
+ggsave(ex1_fig,
+       filename = file.path(save_path, 'xwalk_example1.png'),
+       width = 180,
+       height = 150,
+       units = "mm")
+
+## example: one 2019 census tract matching with more than one 2020 tract, small but not zero intersections
+ex2_ct_id <- "06047002600"
+
+ex2_fig <- ggplot() +
+  # geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) + 
+  geom_sf(data = ct_merged %>% filter(GEOID_2019 == ex2_ct_id), mapping = aes(geometry = geometry, fill = GEOID_2020, color = GEOID_2020), lwd = 0, color = NA, alpha = 0.8, show.legend = TRUE) +
+  geom_sf(data = census_tract19 %>% filter(GEOID == ex2_ct_id), mapping = aes(geometry = geometry, color = GEOID), fill = NA, lwd = 0.9, show.legend = TRUE) +
+  scale_color_manual(values = c("blue")) +
+  labs(color = "GEOID_2019") +
+  theme_bw()
+
+## save example 2
+ggsave(ex2_fig,
+       filename = file.path(save_path, 'xwalk_example2.png'),
+       width = 180,
+       height = 150,
+       units = "mm")
+
+
+
+
+# 
+# 
+# ## test census tract
+# test_ct_df <- ct_merged %>% 
+#   # filter(GEOID_2019 == "06019007901")
+#   filter(GEOID_2019 == "06019007902")
+# 
+# figtest <- ggplot() +
+#   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+#   # geom_sf(data = census_tract19, mapping = aes(geometry = geometry, fill = GEOID), lwd = 0.2, alpha = 0.4, show.legend = FALSE) +
+#   geom_sf(data = ct_merged %>% filter(GEOID_2019 == "06019007902"), mapping = aes(geometry = geometry, fill = GEOID_2020), lwd = 0.2, alpha = 0.4, show.legend = FALSE) +
+#   geom_sf(data = test_ct_df, mapping = aes(geometry = geometry, fill = GEOID_2020), lwd = 0.2, alpha = 0.4, show.legend = TRUE) 
+# 
+# ggplotly(figtest)
+# 
 
 # # plot(field_boundaries %>% dplyr::select(doc_field_code), 
 # #      xlim = xcheck, 
