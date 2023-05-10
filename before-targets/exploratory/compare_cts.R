@@ -15,25 +15,28 @@ main_path        <- '/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangi
 sp_data_path     <- paste0(main_path, "data/GIS/raw/")
 save_path        <- paste0(main_path, "project-materials/refining-paper/model-prep/census-xwalk/")
 
-## file names
-prev_ct <- "census-tract/tl_2019_06_tract.shp"
-ct_2020 <- "census-tract/2020/tl_2020_06_tract/tl_2020_06_tract.shp"
-# ct_2020 <- "nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"
+## file names - use cartographic boundaries, not tigerlines
+prev_ct <- "ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"
+ct_2020 <- "ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"
 
 ## crs NAD83 / California Albers
 ca_crs <- 3310
 
 ## previous version of cts
 census_tract19 <- read_sf(paste0(sp_data_path, prev_ct)) %>%
-  select(-STATEFP:-TRACTCE,-NAME:-INTPTLON)%>%
+  select(GEOID)%>%
   st_transform(crs = ca_crs)
 
+## california id
+ca_code <- "06"
+
 census_tract20 <- read_sf(paste0(sp_data_path, ct_2020)) %>%
+  filter(STATEFP == ca_code) %>%
   select(GEOID) %>%
   st_transform(crs = ca_crs)
 
 ## number of unique census tracts
-length(unique(census_tract19$GEOID)) ## 8057
+length(unique(census_tract19$GEOID)) ## 8041
 length(unique(census_tract20$GEOID)) ## 9129
 
 ## antijoin for non-matching geoids
@@ -123,7 +126,7 @@ ex1_fig <- ggplot() +
   labs(color = "GEOID_2019") +
   theme_bw()
 
-ggplotly(ex1_fig)
+ex1_fig
 
 ## save example 1
 ggsave(ex1_fig,
@@ -142,6 +145,8 @@ ex2_fig <- ggplot() +
   scale_color_manual(values = c("blue")) +
   labs(color = "GEOID_2019") +
   theme_bw()
+
+ex2_fig
 
 ## save example 2
 ggsave(ex2_fig,
