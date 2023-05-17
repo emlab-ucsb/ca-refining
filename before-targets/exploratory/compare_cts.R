@@ -61,43 +61,93 @@ states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
 california <- states %>% filter(ID == "california") %>%
   st_transform(ca_crs)
 
-## figure: 2019 cts not in 2020
-fig_missing <- ggplot() +
+# ## figure: 2019 cts not in 2020
+# fig_missing <- ggplot() +
+#   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+#   # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
+#   geom_sf(data = missing_20, mapping = aes(geometry = geometry), fill = "blue", lwd = 0.2, color = "blue", alpha = 0.5, show.legend = TRUE) +
+#   geom_sf_text(data = missing_20, aes(geometry = geometry, label = GEOID_2019)) +
+#   theme_void() 
+# 
+# 
+# ggplotly(fig_missing)
+# 
+# fig_missing2 <- ggplot() +
+#   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+#   # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
+#   geom_sf(data = missing_19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "#C0C0C0", alpha = 0.5, show.legend = TRUE) +
+#   geom_sf_text(data = missing_19, aes(geometry = geometry, label = GEOID_2020)) +
+#   theme_void() 
+# 
+# ggplotly(fig_missing2)
+# 
+# 
+# test <- ggplot() +
+#   geom_sf(data = california, mapping = aes(), fill = "white", lwd = 0.4, show.legend = FALSE) +
+#   # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
+#   geom_sf(data = missing_19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", alpha = 0.7, show.legend = TRUE) +
+#   geom_sf(data = missing_20, mapping = aes(geometry = geometry), fill = NA, lwd = 0.2, color = "#28536B", alpha = 0.9, show.legend = TRUE) +
+#   # geom_sf_text(data = missing_19, aes(geometry = geometry, label = GEOID)) +
+#   theme_void() 
+# 
+# ggplotly(test)
+# 
+# test <- ggplot() +
+#   geom_sf(data = california, mapping = aes(), fill = "white", lwd = 0.4, show.legend = FALSE) +
+#   # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
+#   geom_sf(data = census_tract19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", alpha = 0.7, show.legend = TRUE) 
+# 
+# ggplotly(test)
+
+## for cts with matches, check to see if they overlap between years
+## -----------------------------------------------------------------------
+
+## match df
+
+match_2019 <- census_tract19 %>%
+  filter(GEOID %in% c(match_cts$GEOID)) %>%
+  rename(GEOID_2019 = GEOID) %>%
+  mutate(GEOID_2019_area = st_area(.)) %>%
+  st_as_sf() %>%
+  st_intersection(census_tract20) %>%
+  mutate(intersect_area = st_area(.),
+         rel_intersect = intersect_area / GEOID_2019_area,
+         rel_intersect = units::drop_units(rel_intersect))
+
+ggplot(match_2019 %>% 
+         filter(rel_intersect > 0.01 & rel_intersect < 0.99), aes(x = rel_intersect)) +
+  geom_histogram()
+
+## example where not much overlap
+match_test_geoid <- "06013314200" ## 2019 includes water
+match_test_geoid <- "06073006300" ## 
+
+
+match_test_df <- census_tract19 %>%
+  filter(GEOID == match_test_geoid) %>%
+  mutate(year = "2019") %>%
+  rbind(census_tract20 %>%
+          filter(GEOID == match_test_geoid) %>%
+          mutate(year = "2020"))
+  
+## plot a geoid that matches in both dataset but does not have great spatial overlap
+match_test_fig <- ggplot() +
   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
-  # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
-  geom_sf(data = missing_20, mapping = aes(geometry = geometry), fill = "blue", lwd = 0.2, color = "blue", alpha = 0.5, show.legend = TRUE) +
-  geom_sf_text(data = missing_20, aes(geometry = geometry, label = GEOID_2019)) +
-  theme_void() 
+  geom_sf(data = match_test_df, mapping = aes(geometry = geometry, fill = year, color = year), lwd = 0.2, alpha = 0.5, show.legend = TRUE) +
+  theme_void()
 
+ggplotly(match_test_fig)
 
-ggplotly(fig_missing)
-
-fig_missing2 <- ggplot() +
+census_tract20_fig <- ggplot() +
   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
-  # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
-  geom_sf(data = missing_19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "#C0C0C0", alpha = 0.5, show.legend = TRUE) +
-  geom_sf_text(data = missing_19, aes(geometry = geometry, label = GEOID_2020)) +
-  theme_void() 
+  geom_sf(data = census_tract20, mapping = aes(geometry = geometry), lwd = 0.2, alpha = 0.5, show.legend = FALSE) +
+  geom_sf_text(data = census_tract20, aes(geometry = geometry, label = GEOID), size = 0.2) +
+  theme_void()
 
-ggplotly(fig_missing2)
+ggplotly(census_tract20_fig)
 
 
-test <- ggplot() +
-  geom_sf(data = california, mapping = aes(), fill = "white", lwd = 0.4, show.legend = FALSE) +
-  # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
-  geom_sf(data = missing_19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", alpha = 0.7, show.legend = TRUE) +
-  geom_sf(data = missing_20, mapping = aes(geometry = geometry), fill = NA, lwd = 0.2, color = "#28536B", alpha = 0.9, show.legend = TRUE) +
-  # geom_sf_text(data = missing_19, aes(geometry = geometry, label = GEOID)) +
-  theme_void() 
 
-ggplotly(test)
-
-test <- ggplot() +
-  geom_sf(data = california, mapping = aes(), fill = "white", lwd = 0.4, show.legend = FALSE) +
-  # geom_sf(data = missing_19 , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", show.legend = TRUE) +
-  geom_sf(data = census_tract19, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0.2, color = "black", alpha = 0.7, show.legend = TRUE) 
-
-ggplotly(test)
 
 ## make a crosswalk for census tracts, tract percentage overlap
 ## -------------------------------
@@ -155,7 +205,8 @@ ggsave(ex2_fig,
        height = 150,
        units = "mm")
 
-
+## need to look for cases where area in 2020 does not intersect with any area in 2019
+## ------------------------------------------------------------------------------------
 
 
 # 
