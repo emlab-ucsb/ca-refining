@@ -103,7 +103,6 @@ california <- states %>% filter(ID == "california") %>%
 ## -----------------------------------------------------------------------
 
 ## match df
-
 match_2019 <- census_tract19 %>%
   filter(GEOID %in% c(match_cts$GEOID)) %>%
   rename(GEOID_2019 = GEOID) %>%
@@ -114,37 +113,48 @@ match_2019 <- census_tract19 %>%
          rel_intersect = intersect_area / GEOID_2019_area,
          rel_intersect = units::drop_units(rel_intersect))
 
-ggplot(match_2019 %>% 
-         filter(rel_intersect > 0.01 & rel_intersect < 0.99), aes(x = rel_intersect)) +
-  geom_histogram()
+## cutoff
+intersect_cutoff <- 0.99
 
-## example where not much overlap
-match_test_geoid <- "06013314200" ## 2019 includes water
-match_test_geoid <- "06073006300" ## 
+## find max overlap for each ct
+match_max_overlap <- match_2019 %>%
+  group_by(GEOID_2019) %>%
+  filter(rel_intersect == max(rel_intersect)) %>%
+  ungroup() %>%
+  filter(rel_intersect < intersect_cutoff)
 
+nrow(match_max_overlap) ## 1823
+nrow(match_max_overlap)  / nrow(match_cts) ## 0.27
 
-match_test_df <- census_tract19 %>%
-  filter(GEOID == match_test_geoid) %>%
+## hhistogram of coverage
+ggplot(match_max_overlap, aes(x = rel_intersect)) +
+  geom_histogram(binwidth = 0.05) +
+  labs(x = "max relative intersection with a 2020 census tract") +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
+  theme_bw()
+
+## for how many is the max overlap ct NOT the same geoid?
+match_max_overlap <- match_max_overlap %>%
+  mutate(same_geoid = ifelse(GEOID_2019 == GEOID, 1, 0))
+
+sum(match_max_overlap$same_geoid) /  nrow(match_max_overlap)
+## all match  
+
+## plot geoids from this subset
+max_overlap_less_cutoff <- census_tract19 %>%
+  filter(GEOID %in% match_max_overlap$GEOID_2019) %>%
   mutate(year = "2019") %>%
   rbind(census_tract20 %>%
-          filter(GEOID == match_test_geoid) %>%
+          filter(GEOID %in% match_max_overlap$GEOID) %>%
           mutate(year = "2020"))
-  
-## plot a geoid that matches in both dataset but does not have great spatial overlap
+## plot
 match_test_fig <- ggplot() +
   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
-  geom_sf(data = match_test_df, mapping = aes(geometry = geometry, fill = year, color = year), lwd = 0.2, alpha = 0.5, show.legend = TRUE) +
+  geom_sf(data = max_overlap_less_90, mapping = aes(geometry = geometry, fill = year, color = year), lwd = 0.2, alpha = 0.5, show.legend = TRUE) +
+  geom_sf_text(data = max_overlap_less_90, aes(geometry = geometry, label = GEOID, color = year), size = 0.2, show.legend = TRUE) +
   theme_void()
 
 ggplotly(match_test_fig)
-
-census_tract20_fig <- ggplot() +
-  geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
-  geom_sf(data = census_tract20, mapping = aes(geometry = geometry), lwd = 0.2, alpha = 0.5, show.legend = FALSE) +
-  geom_sf_text(data = census_tract20, aes(geometry = geometry, label = GEOID), size = 0.2) +
-  theme_void()
-
-ggplotly(census_tract20_fig)
 
 
 
