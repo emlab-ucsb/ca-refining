@@ -40,3 +40,6 @@ vignettes/*.pdf
 
 # targets
 _targets/
+
+# .DS_Store
+.DS_Store
