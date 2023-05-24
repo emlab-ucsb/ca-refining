@@ -126,6 +126,14 @@ match_max_overlap <- match_2019 %>%
 nrow(match_max_overlap) ## 1823
 nrow(match_max_overlap)  / nrow(match_cts) ## 0.27
 
+## save for review
+match_max_overlap_save <- match_max_overlap %>%
+  st_drop_geometry() %>%
+  rename(GEOID_2020 = GEOID)
+
+fwrite(match_max_overlap_save, paste0(save_path, "cts_2019_overlap_review.csv"))
+
+
 ## hhistogram of coverage
 ggplot(match_max_overlap, aes(x = rel_intersect)) +
   geom_histogram(binwidth = 0.05) +
