@@ -234,6 +234,26 @@ process_weighted_pm25 <- function(dt_inmap_re) {
 }
 
 
+create_ct_xwalk = function(raw_ct_2019,
+                           raw_ct_2020){
+  
+  ct_xwalk_df <- raw_ct_2020 %>%
+    rename(GEOID_2020 = GEOID) %>%
+    mutate(GEOID_2020_area = st_area(.)) %>%
+    st_intersection(raw_ct_2019) %>%
+    mutate(intersect_area = st_area(.)) %>%
+    arrange(GEOID_2020, intersect_area) %>%
+    group_by(GEOID_2020) %>%
+    mutate(sum_intersect_area = sum(intersect_area)) %>%
+    ungroup() %>%
+    mutate(rel_intersect = intersect_area / sum_intersect_area) %>%
+    rename(GEOID_2019 = GEOID) %>%
+    mutate(rel_intersect = units::drop_units(rel_intersect)) %>%
+    select(GEOID_2020, GEOID_2020_area, GEOID_2019, intersect_area, sum_intersect_area, rel_intersect) %>%
+    st_drop_geometry()
+
+}
+
 
 calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
                                             srm_weighted_pm25,
