@@ -94,6 +94,24 @@ read_inmap_data <- function(inmap_path, bsite) {
   
 }
 
+read_ct_2019_data <- function(file) {
+  
+  dt = read_sf(file) %>%
+    select(GEOID) %>%
+    st_transform(crs = ca_crs)
+  dt
+}
+
+read_ct_2020_data <- function(file) {
+  
+  dt = read_sf(file) %>%
+      filter(STATEFP == "06") %>%
+      select(GEOID) %>%
+      st_transform(crs = ca_crs)
+  dt = st_make_valid(dt)
+  dt
+}
+
 
 # track_files_basic <- function(file) {
 #   data = fread(file, header = T)
