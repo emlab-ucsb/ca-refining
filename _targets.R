@@ -7,6 +7,7 @@
 library(targets)
 library(data.table)
 library(tidyr)
+library(tidyverse)
 library(stringr) 
 library(openxlsx)
 library(readxl)
@@ -42,7 +43,8 @@ list(
   # set main path
   tar_target(name = main_path, 
              # command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
-             command = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
+             # command = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"
+             command = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
   
   # module settings
   tar_target(name = ref_threshold, command = 0.6),
@@ -95,6 +97,7 @@ list(
   tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
   
   tar_target(name = file_raw_ces, command = file.path(main_path, "data/health/raw/ces3results.xlsx"), format = "file"),
+  tar_target(name = file_raw_dac, command = file.path(main_path, "data/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"), format = "file"),
   tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), 
   tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), 
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
@@ -120,11 +123,12 @@ list(
   tar_target(name = dt_altair, command = read_altair_data(file_altair, "Sheet1", ei_crude, ei_gasoline)),
   
   tar_target(name = raw_ces, command = read_raw_ces_data(file_raw_ces)),
+  tar_target(name = raw_dac, command = read_raw_dac_data(file_raw_dac, input_sheet = "SB535 tract list (2022)", input_cols = c(1, 2, 7, 11))),
   tar_target(name = raw_income_house, command = read_census_data(file_raw_income_house)),
   tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
   
-  tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019)),
-  tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020)),
+  tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
+  tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
@@ -286,6 +290,10 @@ list(
                                                                                        ef_sox,
                                                                                        ef_voc)),
   
+  tar_target(name = refining_health_income_2000, command = calculate_weighted_census_tract_emissions(ct_xwalk,
+                                                                                                     refining_health_income,
+                                                                                                     raw_dac)),
+  
   # save outputs
   tar_target(name = save_ct_xwalk, 
              command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2023/health", "ct_xwalk_2019_2020.csv"), 
@@ -293,6 +301,10 @@ list(
   
   tar_target(name = save_health_income, 
              command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2023/health", "refining_health_income_2023.csv"), 
+             format = "file"),
+  
+  tar_target(name = save_health_income_2000, 
+             command = simple_fwrite(refining_health_income_2000, main_path, "outputs/refining-2023/health", "refining_health_census_tract.csv"), 
              format = "file"),
   
   # save figures
