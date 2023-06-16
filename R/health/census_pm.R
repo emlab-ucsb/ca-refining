@@ -331,3 +331,48 @@ calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
   return(health_income)
 
 }
+
+calculate_weighted_census_tract_emissions = function(ct_xwalk,
+                                                    refining_health_income,
+                                                    raw_dac){
+  
+  ## select dac columns
+  dac_dt <- raw_dac[.(census_tract, ces4_score, disadvantaged)]
+  
+  ## select relevant columns from xwalk
+  setDT(ct_xwalk)
+  ct_xwalk <- ct_xwalk[, .(GEOID_2020, GEOID_2019, rel_intersect)]
+  
+  ## prepare pollution output
+  setnames(refining_health_income, "census_tract", "GEOID_2019")
+  
+  ## merge
+  health_weighted = merge(refining_health_income, ct_xwalk, 
+                          by = c("GEOID_2019"),
+                          all = TRUE,
+                          allow.cartesian = TRUE)
+  
+  ## calculate pm2.5 for 2020 census tract, weight by rel_intersection
+  health_weighted <- health_weighted[, .(weighted_total_pm25 = weighted.mean(total_pm25, rel_intersect, na.rm = T)), 
+                                     by = .(scen_id, demand_scenario, refining_scenario, GEOID_2020, year)]
+  
+  ## filter out NA GEOID_2020, NA pm2.5
+  health_weighted <- health_weighted[!is.na(GEOID_2020)]
+  health_weighted <- health_weighted[!is.na(scen_id)]
+  
+  ## rename columns
+  setnames(health_weighted, 
+           c("GEOID_2020", "weighted_total_pm25"), 
+           c("census_tract", "total_pm25"))
+  
+  ## merge with dac
+  health_weighted = merge(health_weighted, dac_dt, 
+                          by = c("census_tract"),
+                          all.x = TRUE)
+  
+  ## fill in disadvantaged
+  health_weighted[, disadvantaged := fifelse(is.na(disadvantaged), "No", disadvantaged)]
+  
+  return(health_weighteds)
+  
+}

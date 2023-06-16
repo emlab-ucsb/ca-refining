@@ -60,6 +60,21 @@ read_raw_ces_data <- function(file) {
   setDT(read_xlsx(file))
 }
 
+read_raw_dac_data <- function(file, input_sheet, input_rows = NULL, input_cols) {
+  dt = setDT(read.xlsx(file, sheet = input_sheet, cols = input_cols))
+  dt = janitor::clean_names(dt)
+  setDT(dt)
+  dt[, census_tract := as.character(paste0("0", census_tract))]
+  
+  setnames(dt,
+           c("cal_enviro_screen_4_0_score", "total_population"),
+           c("ces4_score", "population"))
+  
+  dt[, disadvantaged := "Yes"]
+
+  dt
+}
+
 read_census_data <- function(file){
   fread(file, header = T, stringsAsFactors = F)
 }
@@ -94,7 +109,7 @@ read_inmap_data <- function(inmap_path, bsite) {
   
 }
 
-read_ct_2019_data <- function(file) {
+read_ct_2019_data <- function(file, ca_crs) {
   
   dt = read_sf(file) %>%
     select(GEOID) %>%
@@ -102,7 +117,7 @@ read_ct_2019_data <- function(file) {
   dt
 }
 
-read_ct_2020_data <- function(file) {
+read_ct_2020_data <- function(file, ca_crs) {
   
   dt = read_sf(file) %>%
       filter(STATEFP == "06") %>%
