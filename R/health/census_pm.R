@@ -337,7 +337,7 @@ calculate_weighted_census_tract_emissions = function(ct_xwalk,
                                                     raw_dac){
   
   ## select dac columns
-  dac_dt <- raw_dac[.(census_tract, ces4_score, disadvantaged)]
+  dac_dt <- raw_dac[, .(census_tract, ces4_score, disadvantaged)]
   
   ## select relevant columns from xwalk
   setDT(ct_xwalk)
@@ -373,6 +373,6 @@ calculate_weighted_census_tract_emissions = function(ct_xwalk,
   ## fill in disadvantaged
   health_weighted[, disadvantaged := fifelse(is.na(disadvantaged), "No", disadvantaged)]
   
-  return(health_weighteds)
+  return(health_weighted)
   
 }
