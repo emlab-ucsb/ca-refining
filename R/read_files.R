@@ -64,6 +64,10 @@ read_census_data <- function(file){
   fread(file, header = T, stringsAsFactors = F)
 }
 
+read_ef_data <- function(file){
+  fread(file, header = T, stringsAsFactors = F)
+}
+
 read_ghg_2019_data <- function(file){
   dt = fread(file, header = T)
   dt_complete <- dt[boundary == "complete", .(year, value)]

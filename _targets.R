@@ -17,6 +17,9 @@ library(hrbrthemes)
 library(directlabels)
 library(grid)
 library(extrafont)
+library(dplyr)
+#font_import()
+#loadfonts(device = "win")
 
 # Set target options:
 tar_option_set(
@@ -40,7 +43,8 @@ list(
   
   # set main path
   tar_target(name = main_path, 
-             command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
+             #command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
+             command = "G://Shared drives/emlab/projects/current-projects/calepa-cn"),
   
   # module settings
   tar_target(name = ref_threshold, command = 0.6),
@@ -93,6 +97,7 @@ list(
   tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), 
   tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), 
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
+  tar_target(name = file_dt_ef, command = file.path(main_path, "data/health/processed/ref_emission_factor.csv"), format = "file"),
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -113,6 +118,7 @@ list(
   tar_target(name = raw_ces, command = read_raw_ces_data(file_raw_ces)),
   tar_target(name = raw_income_house, command = read_census_data(file_raw_income_house)),
   tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
+  tar_target(name = dt_ef, command = read_ef_data(file_dt_ef)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),

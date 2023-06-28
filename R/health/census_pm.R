@@ -239,22 +239,47 @@ calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
                                             srm_weighted_pm25,
                                             county_dac,
                                             med_house_income,
+                                            dt_ef,
+                                            dt_refcap,
+                                            renewables_info_altair,
                                             ef_nh3,
                                             ef_nox,
                                             ef_pm25,
                                             ef_sox,
                                             ef_voc){
-
+  
   refining = copy(refining_sites_cons_ghg_2019_2045)
+  
+  cluster_cw <- dt_refcap%>%
+    select(site_id, region)%>%
+    mutate(site_id = as.character(site_id))%>%
+    bind_rows(renewables_info_altair %>% select(site_id, region))%>% 
+    distinct()
+  
+  refining <- left_join(refining,cluster_cw, by = c("site_id"))
+  
+  dt_ef <- dt_ef %>%
+    mutate(ton_bbl = kg_bbl/1000)%>%
+    select(-kg_bbl)%>% 
+    spread(pollutant_code,ton_bbl)
+  
+  refining <- left_join(refining ,dt_ef, by = c("region"="cluster"))%>%
+    mutate(nh3 = bbls_consumed * NH3, 
+           nox = bbls_consumed * NOX,
+           pm25 = bbls_consumed * `PM25-PRI`,
+           sox = bbls_consumed * SO2,
+           voc = bbls_consumed * VOC)%>%
+    select(-NH3:-VOC)
+  
   refining[ , site_id := ifelse(site_id == "t-800", "800", site_id)]
   refining[ , site_id := ifelse(site_id == "342-2", "34222", site_id)]
   refining[ , site_id := as.numeric(site_id)]
   
-  refining[, `:=` (nh3 = bbls_consumed * ef_nh3 / 1000,
-                   nox = bbls_consumed * ef_nox / 1000,
-                   pm25 = bbls_consumed * ef_pm25 / 1000,
-                   sox = bbls_consumed * ef_sox / 1000,
-                   voc = bbls_consumed * ef_voc / 1000)]
+  # refining[, `:=` (nh3 = bbls_consumed * ef_nh3 / 1000,
+  #                  nox = bbls_consumed * ef_nox / 1000,
+  #                  pm25 = bbls_consumed * ef_pm25 / 1000,
+  #                  sox = bbls_consumed * ef_sox / 1000,
+  #                  voc = bbls_consumed * ef_voc / 1000)]
   
   srm_weighted_census = copy(srm_weighted_pm25)
   srm_weighted_census[, GEOID := paste0("0", GEOID, sep = "")]
