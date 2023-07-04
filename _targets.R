@@ -45,7 +45,7 @@ list(
   tar_target(name = main_path, 
              #command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
              command = "G://Shared drives/emlab/projects/current-projects/calepa-cn"),
-  
+
   # module settings
   tar_target(name = ref_threshold, command = 0.6),
   tar_target(name = ren_threshold, command = 0.9),
@@ -270,6 +270,9 @@ list(
                                                                                        srm_weighted_pm25,
                                                                                        county_dac,
                                                                                        med_house_income,
+                                                                                       dt_ef,
+                                                                                       dt_refcap,
+                                                                                       renewables_info_altair,
                                                                                        ef_nh3,
                                                                                        ef_nox,
                                                                                        ef_pm25,
