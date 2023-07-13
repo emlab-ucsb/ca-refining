@@ -18,6 +18,11 @@ library(directlabels)
 library(grid)
 library(extrafont)
 library(dplyr)
+library(sf)
+library(janitor)
+library(readr)
+library(fuzzyjoin)
+
 #font_import()
 #loadfonts(device = "win")
 
