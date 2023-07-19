@@ -104,7 +104,10 @@ list(
   tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), 
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
   tar_target(name = file_dt_ef, command = file.path(main_path, "data/health/processed/ref_emission_factor.csv"), format = "file"),
-  
+  tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
+  tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
+  tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
+
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
   tar_target(name = raw_its_lc1, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 23:34), input_cols = c(2:37))),
@@ -124,7 +127,10 @@ list(
   tar_target(name = raw_ces, command = read_raw_ces_data(file_raw_ces)),
   tar_target(name = raw_income_house, command = read_census_data(file_raw_income_house)),
   tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
-  tar_target(name = dt_ef, command = read_ef_data(file_dt_ef)),
+  tar_target(name = dt_ef, command = fread_data(file_dt_ef)),
+  tar_target(name = ct_inc_45, command = fread_data(file_dt_ct_inc_pop)),
+  tar_target(name = growth_rates, command = fread_data(file_dt_growth_rate)),
+  tar_target(name = health_income, command = fread_data(file_dt_health_income)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
@@ -285,9 +291,17 @@ list(
                                                                                        ef_sox,
                                                                                        ef_voc)),
   
+  tar_target(name = refining_mortality, command = calculate_census_tract_mortality(health_income,
+                                                                                   ct_inc_45,
+                                                                                   growth_rates)),
+  
   # save outputs
   tar_target(name = save_health_income, 
              command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2023/health", "refining_health_income_2023.csv"), 
+             format = "file"),
+  
+  tar_target(name = save_mortality, 
+             command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2023/health", "refining_mortality_2023.csv"), 
              format = "file"),
   
   # save figures

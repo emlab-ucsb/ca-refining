@@ -283,6 +283,8 @@ calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
   #                  sox = bbls_consumed * ef_sox / 1000,
   #                  voc = bbls_consumed * ef_voc / 1000)]
   
+  srm_weighted_pm25 <- srm_weighted_pm25 %>% mutate(GEOID = as.character(GEOID))
+  
   srm_weighted_census = copy(srm_weighted_pm25)
   srm_weighted_census[, GEOID := paste0("0", GEOID, sep = "")]
   
@@ -336,5 +338,86 @@ calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
   health_income[, prim_pm25 := NULL]
 
   return(health_income)
+
+}
+
+calculate_census_tract_mortality = function(health_income,
+                                            ct_inc_45,
+                                            growth_rates){
+  
+  #1 Calculate census-tract level population-weighted incidence rate (for age>29)
+  ct_inc_pop_45_weighted <- ct_inc_45%>%
+    select(GEO_ID:end_age, year, pop, incidence_2015)%>%
+    filter(start_age > 29) %>%
+    group_by(GEO_ID, year) %>%
+    mutate(ct_pop = sum(pop, na.rm = T),
+           share = pop/ct_pop,
+           weighted_incidence = sum(share * incidence_2015, na.rm = T)) %>%
+    summarize(weighted_incidence = unique(weighted_incidence),
+              pop = unique(ct_pop)) %>%
+    ungroup()%>%
+    mutate(GEO_ID = str_remove(GEO_ID, "US"))
+  
+  #2 Coefficients from Krewski et al (2009) for mortality impact
+  beta <- 0.00582
+  se <- 0.0009628
+  
+  #3 for monetary mortality impact - growth in income for use in WTP function
+  growth_rates <- growth_rates%>%
+    filter(year > 2019) %>%
+    mutate(cum_growth = cumprod(1 + growth_2030)) %>%
+    select(-growth_2030)
+  
+  #4 Parameters for monetized health impact
+  VSL_2015 <- 8705114.25462459
+  VSL_2019 <- VSL_2015 * 107.8645906/100 #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  income_elasticity_mort <- 0.4
+  discount_rate <- 0.03
+  
+  #5 Function to grow WTP
+  future_WTP <- function(elasticity, growth_rate, WTP){
+    return(elasticity * growth_rate * WTP + WTP) 
+  }
+  
+  #6 Delta of pollution change
+  
+  #refining pm25 BAU
+  refining_BAU<-subset(health_income,(scen_id=="BAU historic production"))%>%
+    rename(bau_total_pm25=total_pm25)%>%
+    mutate(census_tract = paste0("0",census_tract))
+  
+  #refining pm25 difference
+  deltas_refining<- health_income%>%
+    mutate(census_tract = paste0("0",census_tract))%>%
+    left_join(refining_BAU %>% select(-scen_id,-demand_scenario,-refining_scenario,-population:-median_hh_income),by=c("census_tract", "year"))%>%
+    mutate(delta_total_pm25=total_pm25-bau_total_pm25)%>%
+    select(scen_id:year,total_pm25:delta_total_pm25)
+  
+  ## Merge demographic data to pollution scenarios
+  
+  ct_incidence_ca_poll <- deltas_refining %>%
+    right_join(ct_inc_pop_45_weighted, by = c("census_tract"="GEO_ID", "year"="year"))%>%
+    drop_na(scen_id) #CURRENTLY DROPPING ALL THE MISMATCHED 2010/2022 GEOIDs
+  
+  #Mortality impact fold adults (>=29 years old)
+  ct_health <- ct_incidence_ca_poll %>%
+    mutate(mortality_delta = ((exp(beta*delta_total_pm25)-1))*weighted_incidence*pop,
+           mortality_level = ((exp(beta*total_pm25)-1))*weighted_incidence*pop)
+  
+  #Calculate the cost per premature mortality
+  
+  ct_mort_cost <- ct_health %>%
+    mutate(VSL_2019 = VSL_2019)%>%
+    left_join(growth_rates, by = c("year"="year"))%>%
+    mutate(VSL = future_WTP(income_elasticity_mort, 
+                            (cum_growth-1),
+                            VSL_2019),
+           cost_2019 = mortality_delta*VSL_2019,
+           cost = mortality_delta*VSL)%>%
+    group_by(year)%>%
+    mutate(cost_2019_PV = cost_2019/((1+discount_rate)^(year-2019)),
+           cost_PV = cost/((1+discount_rate)^(year-2019)))
+  
+  return(ct_mort_cost)
 
 }
