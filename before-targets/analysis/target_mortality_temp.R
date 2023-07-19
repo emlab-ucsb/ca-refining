@@ -134,7 +134,6 @@ cdof_pred <- cdof_raw %>%
 
 # Merge mortality incidence rates to population [NOT SURE WHY NEED TO DO FUZZY MATCH TWICE]
 
-tic()
 temp_age_match <- ct_ca %>%
   select(lower_age,upper_age)%>%
   distinct()%>%
@@ -143,7 +142,6 @@ temp_age_match <- ct_ca %>%
     by = c("lower_age" = "start_age",
            "upper_age" = "end_age"),
     match_fun = list(`>=`, `<=`))
-toc()
 
 ct_incidence_ca <- ct_ca %>%
   left_join(temp_age_match, by = c("lower_age","upper_age"))%>%
@@ -157,4 +155,128 @@ ct_incidence_ca <- ct_ca %>%
             by = c("fips","start_age", "end_age"))%>%
   rename(incidence = value)
 
-# next steps: grow population, and merge pollution scenarios
+##Projected population data and mortality incidence
+
+cdof_pred_sp <- cdof_pred %>%
+  filter(year>2020)%>%
+  select(-pop)%>%
+  spread(year,change_pct)
+
+ct_inc_45_temp <- ct_incidence_ca %>%
+  left_join(cdof_pred_sp, by = c("start_age","end_age", "name"="county"))%>%
+  mutate(pop_2020 = pop)
+
+for (i in 2021:2045){ 
+  
+  j=i-1
+  
+  ct_inc_45_temp <- ct_inc_45_temp%>%
+    #mutate("pop_{i}" := "pop_{j}" * 2)
+    mutate("pop_{i}" :=  get(paste0("pop_",i-1,sep=""))*(1+get(paste0(i,sep=""))))
+    #mutate(!!paste0("pop_",i,sep="") := get(paste0("pop_",i-1,sep=""))*(1+get(paste0(i,sep=""))))
+    #mutate(temp_var = get(paste0("pop_",i-1,sep=""))*(1+get(paste0(i,sep=""))))
+  
+}
+
+ct_inc_45 <- ct_inc_45_temp%>%
+  select(-pop,-`2021`:-`2045`)%>%
+  gather(year,pop,pop_2020:pop_2045)%>%
+  mutate(year = as.numeric(str_remove(year,"pop_")))%>%
+  filter(year>2019)%>%
+  rename(incidence_2015 = incidence)%>%
+  drop_na(pop)%>%#drops the ~20 census tracts with no population in 2020
+  distinct()
+
+# Debugging
+
+rm(list=setdiff(ls(), "ct_inc_45"))
+gc()
+
+# ct_inc_45 %>%
+#   group_by(year,start_age)%>%
+#   summarise(pop = sum(pop))%>%
+#   ungroup()%>%
+#   ggplot(aes(x=year,y=base::log(pop), color = as.factor(start_age), group = as.factor(start_age)))+
+#   geom_line()+
+#   geom_point()+
+#   theme_classic()
+
+## Output final population and mortality incidence data
+
+write.csv(ct_inc_45, "data/health/processed/ct_inc_45_2020.csv", row.names = F)
+
+# MORTALITY IMPACTS
+
+#1 load census tract population and mortality incidence rates,  
+#  and calculate census-tract level population-weighted incidence rate (for age>29)
+
+ct_inc_pop_45_weighted <- fread("data/health/processed/ct_inc_45_2020.csv", stringsAsFactors = F)%>%
+  select(GEO_ID:end_age, year, pop, incidence_2015)%>%
+  filter(start_age > 29) %>%
+  group_by(GEO_ID, year) %>%
+  mutate(ct_pop = sum(pop, na.rm = T),
+         share = pop/ct_pop,
+         weighted_incidence = sum(share * incidence_2015, na.rm = T)) %>%
+  summarize(weighted_incidence = unique(weighted_incidence),
+            pop = unique(ct_pop)) %>%
+  ungroup()%>%
+  mutate(GEO_ID = str_remove(GEO_ID, "US"))
+
+#2 Coefficients from Krewski et al (2009) for mortality impact
+beta <- 0.00582
+se <- 0.0009628
+
+#3 for monetary mortality impact - growth in income for use in WTP function
+growth_rates <- read.csv("data/benmap/processed/growth_rates.csv", stringsAsFactors = FALSE) %>%
+  filter(year > 2019) %>%
+  mutate(cum_growth = cumprod(1 + growth_2030)) %>%
+  select(-growth_2030)
+
+#4 Parameters for monetized health impact
+VSL_2015 <- 8705114.25462459
+VSL_2019 <- VSL_2015 * 107.8645906/100 #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
+income_elasticity_mort <- 0.4
+discount_rate <- 0.03
+
+#5 Function to grow WTP
+future_WTP <- function(elasticity, growth_rate, WTP){
+  return(elasticity * growth_rate * WTP + WTP) 
+}
+
+#6 Delta of pollution change
+
+#refining pm25 BAU
+refining_BAU<-subset(health_income,(scen_id=="BAU historic production"))%>%
+  rename(bau_total_pm25=total_pm25)
+
+#refining pm25 difference
+deltas_refining<- health_income%>%
+  left_join(refining_BAU %>% select(-scen_id,-demand_scenario,-refining_scenario,-population:-median_hh_income),by=c("census_tract", "year"))%>%
+  mutate(delta_total_pm25=total_pm25-bau_total_pm25)%>%
+  select(scen_id:year,total_pm25:delta_total_pm25)
+
+## Merge demographic data to pollution scenarios
+
+ct_incidence_ca_poll <- deltas_refining %>%
+  right_join(ct_inc_pop_45_weighted, by = c("census_tract"="GEO_ID", "year"="year"))%>%
+  drop_na(scen_id);ct_incidence_ca_poll #CURRENTLY DROPPING ALL THE MISMATCHED 2010/2022 GEOIDs
+
+#Mortality impact fold adults (>=29 years old)
+ct_health <- ct_incidence_ca_poll %>%
+  mutate(mortality_delta = ((exp(beta*delta_total_pm25)-1))*weighted_incidence*pop,
+         mortality_level = ((exp(beta*total_pm25)-1))*weighted_incidence*pop)
+
+#Calculate the cost per premature mortality
+
+ct_mort_cost <- ct_health %>%
+  mutate(VSL_2019 = VSL_2019)%>%
+  left_join(growth_rates, by = c("year"="year"))%>%
+  mutate(VSL = future_WTP(income_elasticity_mort, 
+                          (cum_growth-1),
+                          VSL_2019),
+         cost_2019 = mortality_delta*VSL_2019,
+         cost = mortality_delta*VSL)%>%
+  group_by(year)%>%
+  mutate(cost_2019_PV = cost_2019/((1+discount_rate)^(year-2019)),
+         cost_PV = cost/((1+discount_rate)^(year-2019)))
+

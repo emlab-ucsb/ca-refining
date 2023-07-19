@@ -64,8 +64,8 @@ read_census_data <- function(file){
   fread(file, header = T, stringsAsFactors = F)
 }
 
-read_ef_data <- function(file){
-  fread(file, header = T, stringsAsFactors = F)
+fread_data <- function(file){
+  fread(file, stringsAsFactors = F)
 }
 
 read_ghg_2019_data <- function(file){
