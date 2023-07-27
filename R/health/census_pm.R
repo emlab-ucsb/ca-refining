@@ -234,27 +234,76 @@ process_weighted_pm25 <- function(dt_inmap_re) {
 }
 
 
+create_ct_xwalk = function(raw_ct_2019,
+                           raw_ct_2020){
+  
+  ct_xwalk_df <- raw_ct_2020 %>%
+    rename(GEOID_2020 = GEOID) %>%
+    mutate(GEOID_2020_area = st_area(.)) %>%
+    st_intersection(raw_ct_2019) %>%
+    mutate(intersect_area = st_area(.)) %>%
+    arrange(GEOID_2020, intersect_area) %>%
+    group_by(GEOID_2020) %>%
+    mutate(sum_intersect_area = sum(intersect_area)) %>%
+    ungroup() %>%
+    mutate(rel_intersect = intersect_area / sum_intersect_area) %>%
+    rename(GEOID_2019 = GEOID) %>%
+    mutate(rel_intersect = units::drop_units(rel_intersect)) %>%
+    select(GEOID_2020, GEOID_2020_area, GEOID_2019, intersect_area, sum_intersect_area, rel_intersect) %>%
+    st_drop_geometry()
+
+}
+
 
 calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
                                             srm_weighted_pm25,
                                             county_dac,
                                             med_house_income,
+                                            dt_ef,
+                                            dt_refcap,
+                                            renewables_info_altair,
                                             ef_nh3,
                                             ef_nox,
                                             ef_pm25,
                                             ef_sox,
                                             ef_voc){
-
+  
   refining = copy(refining_sites_cons_ghg_2019_2045)
+  
+  cluster_cw <- dt_refcap%>%
+    dplyr::select(site_id, region)%>%
+    mutate(site_id = as.character(site_id))%>%
+    bind_rows(renewables_info_altair %>% dplyr::select(site_id, region))%>%
+    distinct()
+
+  refining = merge(refining, cluster_cw, by = "site_id", all.x = T, allow.cartesian = T, no.dups = T)
+  
+  dt_ef <- dt_ef %>%
+    mutate(ton_bbl = kg_bbl/1000)%>%
+    dplyr::select(-kg_bbl)%>%
+    spread(pollutant_code,ton_bbl)
+
+  refining = merge(refining, dt_ef, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
+  
+  refining <- refining%>%
+    mutate(nh3 = bbls_consumed * NH3,
+           nox = bbls_consumed * NOX,
+           pm25 = bbls_consumed * `PM25-PRI`,
+           sox = bbls_consumed * SO2,
+           voc = bbls_consumed * VOC)%>%
+    dplyr::select(-NH3:-VOC)
+  
   refining[ , site_id := ifelse(site_id == "t-800", "800", site_id)]
   refining[ , site_id := ifelse(site_id == "342-2", "34222", site_id)]
   refining[ , site_id := as.numeric(site_id)]
   
-  refining[, `:=` (nh3 = bbls_consumed * ef_nh3 / 1000,
-                   nox = bbls_consumed * ef_nox / 1000,
-                   pm25 = bbls_consumed * ef_pm25 / 1000,
-                   sox = bbls_consumed * ef_sox / 1000,
-                   voc = bbls_consumed * ef_voc / 1000)]
+  # refining[, `:=` (nh3 = bbls_consumed * ef_nh3 / 1000,
+  #                  nox = bbls_consumed * ef_nox / 1000,
+  #                  pm25 = bbls_consumed * ef_pm25 / 1000,
+  #                  sox = bbls_consumed * ef_sox / 1000,
+  #                  voc = bbls_consumed * ef_voc / 1000)]
+  
+  srm_weighted_pm25 <- srm_weighted_pm25 %>% mutate(GEOID = as.character(GEOID))
   
   srm_weighted_census = copy(srm_weighted_pm25)
   srm_weighted_census[, GEOID := paste0("0", GEOID, sep = "")]
@@ -311,3 +360,130 @@ calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
   return(health_income)
 
 }
+
+calculate_census_tract_mortality = function(health_income,
+                                            ct_inc_45,
+                                            growth_rates){
+  
+  #1 Calculate census-tract level population-weighted incidence rate (for age>29)
+  ct_inc_pop_45_weighted <- ct_inc_45%>%
+    select(GEO_ID:end_age, year, pop, incidence_2015)%>%
+    filter(start_age > 29) %>%
+    group_by(GEO_ID, year) %>%
+    mutate(ct_pop = sum(pop, na.rm = T),
+           share = pop/ct_pop,
+           weighted_incidence = sum(share * incidence_2015, na.rm = T)) %>%
+    summarize(weighted_incidence = unique(weighted_incidence),
+              pop = unique(ct_pop)) %>%
+    ungroup()%>%
+    mutate(GEO_ID = str_remove(GEO_ID, "US"))
+  
+  #2 Coefficients from Krewski et al (2009) for mortality impact
+  beta <- 0.00582
+  se <- 0.0009628
+  
+  #3 for monetary mortality impact - growth in income for use in WTP function
+  growth_rates <- growth_rates%>%
+    filter(year > 2019) %>%
+    mutate(cum_growth = cumprod(1 + growth_2030)) %>%
+    select(-growth_2030)
+  
+  #4 Parameters for monetized health impact
+  VSL_2015 <- 8705114.25462459
+  VSL_2019 <- VSL_2015 * 107.8645906/100 #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  income_elasticity_mort <- 0.4
+  discount_rate <- 0.03
+  
+  #5 Function to grow WTP
+  future_WTP <- function(elasticity, growth_rate, WTP){
+    return(elasticity * growth_rate * WTP + WTP) 
+  }
+  
+  #6 Delta of pollution change
+  
+  #refining pm25 BAU
+  refining_BAU<-subset(health_income,(scen_id=="BAU historic production"))%>%
+    rename(bau_total_pm25=total_pm25)%>%
+    mutate(census_tract = paste0("0",census_tract))
+  
+  #refining pm25 difference
+  deltas_refining<- health_income%>%
+    mutate(census_tract = paste0("0",census_tract))%>%
+    left_join(refining_BAU %>% select(-scen_id,-demand_scenario,-refining_scenario,-population:-median_hh_income),by=c("census_tract", "year"))%>%
+    mutate(delta_total_pm25=total_pm25-bau_total_pm25)%>%
+    select(scen_id:year,total_pm25:delta_total_pm25)
+  
+  ## Merge demographic data to pollution scenarios
+  
+  ct_incidence_ca_poll <- deltas_refining %>%
+    right_join(ct_inc_pop_45_weighted, by = c("census_tract"="GEO_ID", "year"="year"))%>%
+    drop_na(scen_id) #CURRENTLY DROPPING ALL THE MISMATCHED 2010/2022 GEOIDs
+  
+  #Mortality impact fold adults (>=29 years old)
+  ct_health <- ct_incidence_ca_poll %>%
+    mutate(mortality_delta = ((exp(beta*delta_total_pm25)-1))*weighted_incidence*pop,
+           mortality_level = ((exp(beta*total_pm25)-1))*weighted_incidence*pop)
+  
+  #Calculate the cost per premature mortality
+  
+  ct_mort_cost <- ct_health %>%
+    mutate(VSL_2019 = VSL_2019)%>%
+    left_join(growth_rates, by = c("year"="year"))%>%
+    mutate(VSL = future_WTP(income_elasticity_mort, 
+                            (cum_growth-1),
+                            VSL_2019),
+           cost_2019 = mortality_delta*VSL_2019,
+           cost = mortality_delta*VSL)%>%
+    group_by(year)%>%
+    mutate(cost_2019_PV = cost_2019/((1+discount_rate)^(year-2019)),
+           cost_PV = cost/((1+discount_rate)^(year-2019)))
+  
+  return(ct_mort_cost) 
+  
+}
+
+
+calculate_weighted_census_tract_emissions = function(ct_xwalk,
+                                                    refining_health_income,
+                                                    raw_dac) {
+  
+  ## select dac columns
+  dac_dt <- raw_dac[, .(census_tract, ces4_score, disadvantaged)]
+  
+  ## select relevant columns from xwalk
+  setDT(ct_xwalk)
+  ct_xwalk <- ct_xwalk[, .(GEOID_2020, GEOID_2019, rel_intersect)]
+  
+  ## prepare pollution output
+  setnames(refining_health_income, "census_tract", "GEOID_2019")
+  
+  ## merge
+  health_weighted = merge(refining_health_income, ct_xwalk, 
+                          by = c("GEOID_2019"),
+                          all = TRUE,
+                          allow.cartesian = TRUE)
+  
+  ## calculate pm2.5 for 2020 census tract, weight by rel_intersection
+  health_weighted <- health_weighted[, .(weighted_total_pm25 = weighted.mean(total_pm25, rel_intersect, na.rm = T)), 
+                                     by = .(scen_id, demand_scenario, refining_scenario, GEOID_2020, year)]
+  
+  ## filter out NA GEOID_2020, NA pm2.5
+  health_weighted <- health_weighted[!is.na(GEOID_2020)]
+  health_weighted <- health_weighted[!is.na(scen_id)]
+  
+  ## rename columns
+  setnames(health_weighted, 
+           c("GEOID_2020", "weighted_total_pm25"), 
+           c("census_tract", "total_pm25"))
+  
+  ## merge with dac
+  health_weighted = merge(health_weighted, dac_dt, 
+                          by = c("census_tract"),
+                          all.x = TRUE)
+  
+  ## fill in disadvantaged
+  health_weighted[, disadvantaged := fifelse(is.na(disadvantaged), "No", disadvantaged)]
+  
+  return(health_weighted)
+  
+  }
