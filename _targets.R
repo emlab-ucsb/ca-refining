@@ -51,7 +51,7 @@ list(
              #command = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
              #command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
              command = "G://Shared drives/emlab/projects/current-projects/calepa-cn"),
-
+  
   # module settings
   tar_target(name = ref_threshold, command = 0.6),
   tar_target(name = ren_threshold, command = 0.9),
@@ -107,7 +107,7 @@ list(
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
   tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
-
+  
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
   tar_target(name = raw_its_lc1, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 23:34), input_cols = c(2:37))),
@@ -252,7 +252,7 @@ list(
   tar_target(name = clus_prod_output, command = gather_cluster_prod_output(indiv_prod_output)),
   tar_target(name = clus_cons_output, command = gather_cluster_cons_output(indiv_cons_output)),
   tar_target(name = clus_ghg_output, command = gather_cluster_cons_output(indiv_ghg_output)),
-
+  
   # state level outputs
   tar_target(name = state_prod_output, command = gather_state_prod_output(indiv_prod_output)),
   tar_target(name = state_cons_output, command = gather_state_cons_output(indiv_cons_output)),
@@ -325,5 +325,5 @@ list(
                                      dpi = 600),
              format = "file")
   
-
+  
 )
