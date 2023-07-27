@@ -10,7 +10,8 @@ library(data.table)
 library(plotly)
 
 ## paths
-main_path        <- '/Volumes/GoogleDrive/Shared drives/emlab/projects/current-projects/calepa-cn/'
+#main_path        <- '/Volumes/GoogleDrive/Shared drives/emlab/projects/current-projects/calepa-cn/'
+#main_path        <- '/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/'
 main_path        <- '/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/'
 sp_data_path     <- paste0(main_path, "data/GIS/raw/")
 save_path        <- paste0(main_path, "project-materials/refining-paper/model-prep/census-xwalk/")
@@ -222,6 +223,28 @@ ggsave(ex2_fig,
        width = 180,
        height = 150,
        units = "mm")
+
+## plot census tracts taht don't overlap with any 2019
+na_vec <- c("06037137000", "06037137203", "06037137301", "06037137302",
+            "06037137402", "06037800204", "06037800206")
+
+na_fig <- ggplot() +
+  geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+  geom_sf(data = census_tract19, mapping = aes(geometry = geometry), fill = "lightblue", lwd = 0, show.legend = FALSE) +
+  geom_sf(data = census_tract20 %>% filter(GEOID %in% na_vec), mapping = aes(geometry = geometry), lwd = 0, color = NA, fill = "red", alpha = 0.5, show.legend = TRUE) +
+  # geom_sf(data = census_tract19 %>% filter(GEOID == ex2_ct_id), mapping = aes(geometry = geometry, color = GEOID), fill = NA, lwd = 0.9, show.legend = TRUE) +
+  # scale_color_manual(values = c("blue")) +
+  # labs(color = "GEOID_2019") +
+  theme_bw()
+
+ggplotly(na_fig)
+
+
+
+
+
+
+
 
 ## need to look for cases where area in 2020 does not intersect with any area in 2019
 ## ------------------------------------------------------------------------------------
