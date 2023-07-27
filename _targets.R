@@ -1,8 +1,3 @@
-# Created by use_targets().
-# Follow the comments below to fill in this target script.
-# Then follow the manual to check and run the pipeline:
-#   https://books.ropensci.org/targets/walkthrough.html#inspect-the-pipeline # nolint
-
 # Load packages required to define the pipeline:
 library(targets)
 library(data.table)
@@ -43,19 +38,22 @@ options(clustermq.scheduler = "multicore")
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-source("extras/plot_settings.R") # Source other scripts as needed. # nolint
+source("extras/plot_settings.R")
 
 # Replace the target list below with your own:
 list(
   
+  # set user
+  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
+  
+  # list paths
+  tar_target(name = list_paths, c("tracey" = "G://Shared drives/emlab/projects/current-projects/calepa-cn",
+                                  "vincent" = "G://Shared drives/emlab/projects/current-projects/calepa-cn",
+                                  "meas" = "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn")),
+  
   # set main path
   tar_target(name = main_path, 
-             #command = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
-             #command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
-             command = "G://Shared drives/emlab/projects/current-projects/calepa-cn"),
-             # command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
-            # command = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
-             # command = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
+             command = list_paths[user]),
 
   # module settings
   tar_target(name = ref_threshold, command = 0.6),
