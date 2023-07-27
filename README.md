@@ -24,13 +24,13 @@ tar_edit()
 ## Changing the file directory
 
 **IMPORTANT**: Before running the pipeline, one thing needs to be changed -- the path to the ``calepa-cn`` folder. 
-Look for the ``main_path`` target:
+Look for the ``user`` target:
 
 ```
-tar_target(name = main_path, command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
+tar_target(name = user, "meas"),
 ```
 
-And replace the path above with your own path that points to the calepa-cn folder. Everything is relative to this one main path.
+And replace the name in the quotations above with a specified user.
 
 ## Using the repo to recreate the analysis
 
