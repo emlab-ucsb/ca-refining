@@ -7,6 +7,7 @@
 library(targets)
 library(data.table)
 library(tidyr)
+library(tidyverse)
 library(stringr) 
 library(openxlsx)
 library(readxl)
@@ -22,6 +23,7 @@ library(sf)
 library(janitor)
 library(readr)
 library(fuzzyjoin)
+library(sf)
 
 #font_import()
 #loadfonts(device = "win")
@@ -51,7 +53,10 @@ list(
              #command = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
              #command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"),
              command = "G://Shared drives/emlab/projects/current-projects/calepa-cn"),
-  
+             # command = "/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
+            # command = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
+             # command = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"),
+
   # module settings
   tar_target(name = ref_threshold, command = 0.6),
   tar_target(name = ren_threshold, command = 0.9),
@@ -88,6 +93,9 @@ list(
   tar_target(name = ref_scens, command = c('historic exports', 'historic production', 'low exports')),
   tar_target(name = clus, command = c('North', 'South')),
   
+  # crs
+  tar_target(name = ca_crs, command = 3310), ## crs NAD83 / California Albers
+  
   # set raw data paths
   tar_target(name = file_raw_its, command = file.path(main_path, "data/stocks-flows/raw/Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx"), format = "file"),
   tar_target(name = file_raw_avgas, command = file.path(main_path, "data/stocks-flows/raw/Distillates 10-10.xlsx"), format = "file"),
@@ -100,6 +108,7 @@ list(
   tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
   
   tar_target(name = file_raw_ces, command = file.path(main_path, "data/health/raw/ces3results.xlsx"), format = "file"),
+  tar_target(name = file_raw_dac, command = file.path(main_path, "data/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"), format = "file"),
   tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), 
   tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), 
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
@@ -107,7 +116,9 @@ list(
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
   tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
-  
+  tar_target(name = file_raw_ct_2019, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"), format = "file"),
+  tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
+
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
   tar_target(name = raw_its_lc1, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 23:34), input_cols = c(2:37))),
@@ -125,12 +136,16 @@ list(
   tar_target(name = dt_altair, command = read_altair_data(file_altair, "Sheet1", ei_crude, ei_gasoline)),
   
   tar_target(name = raw_ces, command = read_raw_ces_data(file_raw_ces)),
+  tar_target(name = raw_dac, command = read_raw_dac_data(file_raw_dac, input_sheet = "SB535 tract list (2022)", input_cols = c(1, 2, 7, 11))),
   tar_target(name = raw_income_house, command = read_census_data(file_raw_income_house)),
   tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
   tar_target(name = dt_ef, command = fread_data(file_dt_ef)),
   tar_target(name = ct_inc_45, command = fread_data(file_dt_ct_inc_pop)),
   tar_target(name = growth_rates, command = fread_data(file_dt_growth_rate)),
   tar_target(name = health_income, command = fread_data(file_dt_health_income)),
+  
+  tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
+  tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
@@ -278,6 +293,10 @@ list(
                                                                                                   refining_site_output,
                                                                                                   indiv_cons_output)),
   tar_target(name = srm_weighted_pm25, command = process_weighted_pm25(dt_inmap_re)),
+  
+  tar_target(name = ct_xwalk, command = create_ct_xwalk(raw_ct_2019,
+                                                        raw_ct_2020)),
+  
   tar_target(name = refining_health_income, command = calculate_census_tract_emissions(refining_sites_cons_ghg_2019_2045,
                                                                                        srm_weighted_pm25,
                                                                                        county_dac,
@@ -294,14 +313,22 @@ list(
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(health_income,
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
-  
+
+  tar_target(name = refining_health_income_2000, command = calculate_weighted_census_tract_emissions(ct_xwalk,
+                                                                                                     refining_health_income,
+                                                                                                     raw_dac)),
+
   # save outputs
+  tar_target(name = save_ct_xwalk, 
+             command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2023/health", "ct_xwalk_2019_2020.csv"), 
+             format = "file"),
   tar_target(name = save_health_income, 
              command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2023/health", "refining_health_income_2023.csv"), 
              format = "file"),
-  
   tar_target(name = save_mortality, 
              command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2023/health", "refining_mortality_2023.csv"), 
+  tar_target(name = save_health_income_2000, 
+             command = simple_fwrite(refining_health_income_2000, main_path, "outputs/refining-2023/health", "refining_health_census_tract.csv"), 
              format = "file"),
   
   # save figures
