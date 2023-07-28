@@ -44,7 +44,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "vincent"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey" = "G://Shared drives/emlab/projects/current-projects/calepa-cn",
@@ -308,13 +308,14 @@ list(
                                                                                        ef_sox,
                                                                                        ef_voc)),
   
+  tar_target(name = health_weighted, command = calculate_weighted_census_tract_emissions(ct_xwalk,
+                                                                                                     refining_health_income,
+                                                                                                     raw_dac)),
+  
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(health_income,
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
 
-  tar_target(name = refining_health_income_2000, command = calculate_weighted_census_tract_emissions(ct_xwalk,
-                                                                                                     refining_health_income,
-                                                                                                     raw_dac)),
 
   # save outputs
   tar_target(name = save_ct_xwalk, 
@@ -323,11 +324,11 @@ list(
   tar_target(name = save_health_income, 
              command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2023/health", "refining_health_income_2023.csv"), 
              format = "file"),
-  tar_target(name = save_mortality, 
-             command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2023/health", "refining_mortality_2023.csv"),
-             format = "file"),
   tar_target(name = save_health_income_2000, 
-             command = simple_fwrite(refining_health_income_2000, main_path, "outputs/refining-2023/health", "refining_health_census_tract.csv"), 
+             command = simple_fwrite(health_weighted, main_path, "outputs/refining-2023/health", "refining_health_census_tract.csv"), 
+             format = "file"),
+  tar_target(name = save_mortality,
+             command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2023/health", "refining_mortality_2023.csv"),
              format = "file"),
   
   # save figures
