@@ -325,7 +325,7 @@ list(
                                                                                          refining_health_income,
                                                                                          raw_dac)),
   
-  tar_target(name = refining_mortality, command = calculate_census_tract_mortality(health_income,
+  tar_target(name = refining_mortality, command = calculate_census_tract_mortality(health_weighted,
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
 
