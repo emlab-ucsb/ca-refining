@@ -44,7 +44,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -240,13 +240,21 @@ list(
   tar_target(name = res_crude_ref_reg_capacity, command = calculate_crude_capacity_ratio(res_crude_ref_reg)),
   tar_target(name = res_renew_ref_reg_capacity, command = calculate_renewable_capacity_ratio(res_renew_ref_reg_altair)),
   
-  tar_target(name = ref_crude_gjd, command = divide_gjd_demand_crude_refineries(res_equiv_demand, res_crude_ref_reg_capacity, crude_refined_region,
-                                                                                ei_crude, ei_gasoline, ei_diesel, ei_jet)),
+  tar_target(name = ref_crude_gjd, command = divide_gjd_demand_crude_refineries(res_equiv_demand, 
+                                                                                res_crude_ref_reg_capacity, 
+                                                                                crude_refined_region,
+                                                                                ei_crude, 
+                                                                                ei_gasoline, 
+                                                                                ei_diesel, 
+                                                                                ei_jet)),
   tar_target(name = ref_crude_res_regjd, command = divide_residual_gjd_crude_refineries(res_equiv_demand, res_crude_ref_reg_capacity, crude_refined_region, 
                                                                                         ei_crude, ei_gasoline, ei_diesel, ei_jet, dem_scens, ref_scens, ave_kern_rediesel)),
   tar_target(name = ref_renew_gjd, command = divide_residual_gjd_renewable_refineries(res_renew_demand, res_renew_ref_reg_capacity, renewables_info_altair, crude_refined_tot,
                                                                                       ei_crude, ei_gasoline, ei_diesel, ei_jet)),
-  tar_target(name = ref_cons_prod, command = combine_refinery_prod_cons(ref_crude_gjd, ref_crude_res_regjd, ref_renew_gjd, dt_ghgfac)), 
+  tar_target(name = ref_cons_prod, command = combine_refinery_prod_cons(ref_crude_gjd, 
+                                                                        ref_crude_res_regjd, 
+                                                                        ref_renew_gjd, 
+                                                                        dt_ghgfac)), 
   
   # individual refinery level production
   tar_target(name = indiv_prod, command = gather_refinery_production(ref_cons_prod, ei_crude, ei_gasoline, ei_diesel, ei_jet)),
@@ -254,7 +262,11 @@ list(
   tar_target(name = indiv_prod_output_bge, command = gather_refinery_production_output_bge(indiv_prod)),
   
   # individual refinery level crude consumption
-  tar_target(name = indiv_cons, command = gather_refinery_crude_consumption(ref_cons_prod, ei_crude, ei_gasoline, ei_diesel, ei_jet)),
+  tar_target(name = indiv_cons, command = gather_refinery_crude_consumption(ref_cons_prod, 
+                                                                            ei_crude, 
+                                                                            ei_gasoline, 
+                                                                            ei_diesel, 
+                                                                            ei_jet)),
   tar_target(name = indiv_cons_output, command = gather_refinery_crude_consumption_output(indiv_cons)),
   tar_target(name = indiv_cons_output_bge, command = gather_refinery_crude_consumption_output_bge(indiv_cons)),
   
