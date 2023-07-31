@@ -310,8 +310,8 @@ list(
                                                                                        ef_voc)),
   
   tar_target(name = health_weighted, command = calculate_weighted_census_tract_emissions(ct_xwalk,
-                                                                                                     refining_health_income,
-                                                                                                     raw_dac)),
+                                                                                         refining_health_income,
+                                                                                         raw_dac)),
   
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(health_income,
                                                                                    ct_inc_45,
