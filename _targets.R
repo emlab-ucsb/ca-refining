@@ -108,8 +108,8 @@ list(
   
   tar_target(name = file_raw_ces, command = file.path(main_path, "data/health/raw/ces3results.xlsx"), format = "file"),
   tar_target(name = file_raw_dac, command = file.path(main_path, "data/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"), format = "file"),
-  tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), 
-  tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), 
+  tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), # remove from workflow
+  tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), # remove from workflow
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
   tar_target(name = file_dt_ef, command = file.path(main_path, "data/health/processed/ref_emission_factor.csv"), format = "file"),
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
