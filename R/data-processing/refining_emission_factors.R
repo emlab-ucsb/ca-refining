@@ -29,9 +29,9 @@ for (i in packages) {
 # getwd()
 
 #temporary working direction
-
-wd <- c("G:/My Drive/UCSB/research/current/efficiency/data") #Vincent's WD
-setwd(wd)
+# 
+# wd <- c("G:/My Drive/UCSB/research/current/efficiency/data") #Vincent's WD
+# setwd(wd)
 
 ## 2017 NEI
 
