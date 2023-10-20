@@ -57,24 +57,27 @@ get_median_county_income <- function(raw_income_county) {
   
 }
 
-get_census_population_weighted_incidence_rate <- function(dt_population) {
-  
-  dt = dt_population[, .(gisjoin, lower_age, upper_age, year, pop, incidence_2015)]
-  dt[, ct_id := paste0(stringr::str_sub(gisjoin, 2, 3),
-                       stringr::str_sub(gisjoin, 5, 7),
-                       stringr::str_sub(gisjoin, 9, 14))]
-  dt = dt[, .(ct_id, lower_age, upper_age, year, pop, incidence_2015)]
-  
-  dt_over_29 = dt[lower_age > 29]
-  dt_over_29[, ct_pop := sum(pop, na.rm = T), by = .(ct_id, year)]
-  dt_over_29[, share := pop/ct_pop, by = .(ct_id, year)]
-  dt_over_29[, weighted_incidence := sum(share * incidence_2015, na.rm = T), by = .(ct_id, year)]
-  
-  agg = dt_over_29[, .(weighted_incidence = mean(weighted_incidence),
-                       pop = sum(pop)), by = .(ct_id, year)]
-  agg
+## right now this is in the refining_mortality function
+## -------------------------------------------------------
 
-}
+# get_census_population_weighted_incidence_rate <- function(dt_population) {
+#   
+#   dt = dt_population[, .(gisjoin, lower_age, upper_age, year, pop, incidence_2015)]
+#   dt[, ct_id := paste0(stringr::str_sub(gisjoin, 2, 3),
+#                        stringr::str_sub(gisjoin, 5, 7),
+#                        stringr::str_sub(gisjoin, 9, 14))]
+#   dt = dt[, .(ct_id, lower_age, upper_age, year, pop, incidence_2015)]
+#   
+#   dt_over_29 = dt[lower_age > 29]
+#   dt_over_29[, ct_pop := sum(pop, na.rm = T), by = .(ct_id, year)]
+#   dt_over_29[, share := pop/ct_pop, by = .(ct_id, year)]
+#   dt_over_29[, weighted_incidence := sum(share * incidence_2015, na.rm = T), by = .(ct_id, year)]
+#   
+#   agg = dt_over_29[, .(weighted_incidence = mean(weighted_incidence),
+#                        pop = sum(pop)), by = .(ct_id, year)]
+#   agg
+# 
+# }
 
 
 # get_refinery_site_ids <- function(dt_refcap) {
@@ -408,12 +411,97 @@ calculate_weighted_census_tract_emissions = function(ct_xwalk,
 }
 
 
+## calculate race disparities and DAC/non DAC
+calculate_race_disp = function(health_weighted,
+                               raw_pop_income_2020,
+                               raw_pop_income_2021,
+                               raw_pop_poverty) {
+  
+  ## extract census tract, process
+  raw_pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]
+  raw_pop_income_2020[, year := NULL]
+  
+  ## merge with health output
+  merged_data <- merge(health_weighted, raw_pop_income_2020, 
+                       all.x = TRUE)
+ 
+  ## add non-minority column, make longer, add percentages
+  merged_data[, minority := hispanic + black + aialnative + asian]
+  merged_data[, non_minority := total_pop - minority]
+
+  merged_data <- merged_data %>%
+    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, minority, non_minority),
+                 names_to = "group",
+                 values_to = "pop") %>%
+    as.data.table()
+
+  merged_data[, pct := pop / total_pop]
+  merged_data[, num := total_pm25 * pct * total_pop]
+  merged_data[, den := pct * total_pop]
+  
+  ## create DAC and non-DAC variables
+  merged_data[, dac_population := ifelse(disadvantaged == "Yes", total_pop, 0)]
+  merged_data[, dac_num := total_pm25 * dac_population]
+  merged_data[, dac_den := dac_population]
+  merged_data[, nodac_population := ifelse(disadvantaged == "No", total_pop, 0)]
+  merged_data[, nodac_num := total_pm25 * nodac_population]
+  merged_data[, nodac_den := nodac_population]
+  
+  
+  ## filter out any census tracts with zero pop
+  merged_data <- merged_data[total_pop != 0]
+  
+  ## perform the collapse operation
+  collapsed_data <- merged_data[, .(sum_num = sum(num),
+                                    sum_den = sum(den),
+                                    dac_num = sum(dac_num),
+                                    dac_den = sum(dac_den),
+                                    nodac_num = sum(nodac_num),
+                                    nodac_den = sum(nodac_den)),
+                                by = .(scen_id, demand_scenario, refining_scenario, year, group)]
+
+  ## calculate other variables
+  collapsed_data[, num_over_den := sum_num / sum_den]
+  collapsed_data[, dac := dac_num / dac_den]
+  collapsed_data[, no_dac := nodac_num / nodac_den]
+  
+  ## non-minority value for comparisons
+  non_minority_df <- collapsed_data[group == "non_minority"]
+  non_minority_df <- non_minority_df[, .(scen_id, demand_scenario, refining_scenario, year,
+                                         num_over_den)]
+  non_minority_df[, nm_num_over_den := num_over_den]
+  non_minority_df[, num_over_den := NULL]
+ 
+  ## merge
+  merge_collapsed_df <- collapsed_data %>%
+    left_join(non_minority_df) %>%
+    ## remove white group
+    filter(group != "white") %>%
+    mutate(stat = num_over_den - nm_num_over_den,
+           stat_dac = dac - no_dac) %>%
+    as.data.table()
+  
+  ## return
+  merge_collapsed_df
+  
+  
+}
+
+
+
 #calculate_census_tract_mortality = function(health_income,
-calculate_census_tract_mortality = function(health_weighted,
+calculate_census_tract_mortality = function(beta,
+                                            se,
+                                            vsl_2015,
+                                            vsl_2019,
+                                            income_elasticity_mort,
+                                            discount_rate,
+                                            health_weighted,
                                             ct_inc_45,
                                             growth_rates){
   
-  #1 Calculate census-tract level population-weighted incidence rate (for age>29)
+  ## is this in a separate function?
+  #1 Calculate census-tract level population-weighted incidence rate (for age>29) 
   ct_inc_pop_45_weighted <- ct_inc_45%>%
     select(GEO_ID:end_age, year, pop, incidence_2015)%>%
     filter(start_age > 29) %>%
@@ -426,28 +514,18 @@ calculate_census_tract_mortality = function(health_weighted,
     ungroup()%>%
     mutate(GEO_ID = str_remove(GEO_ID, "US"))
   
-  #2 Coefficients from Krewski et al (2009) for mortality impact
-  beta <- 0.00582
-  se <- 0.0009628
-  
-  #3 for monetary mortality impact - growth in income for use in WTP function
-  growth_rates <- growth_rates%>%
+  #for monetary mortality impact - growth in income for use in WTP function
+  growth_rates <- growth_rates %>%
     filter(year > 2019) %>%
     mutate(cum_growth = cumprod(1 + growth_2030)) %>%
     select(-growth_2030)
   
-  #4 Parameters for monetized health impact
-  VSL_2015 <- 8705114.25462459
-  VSL_2019 <- VSL_2015 * 107.8645906/100 #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
-  income_elasticity_mort <- 0.4
-  discount_rate <- 0.03
-  
-  #5 Function to grow WTP
+  #Function to grow WTP
   future_WTP <- function(elasticity, growth_rate, WTP){
     return(elasticity * growth_rate * WTP + WTP) 
   }
   
-  #6 Delta of pollution change
+  #  Delta of pollution change
   
   #refining pm25 BAU
   refining_BAU<-subset(health_weighted ,(scen_id=="BAU historic production"))%>%
@@ -478,12 +556,12 @@ calculate_census_tract_mortality = function(health_weighted,
   #Calculate the cost per premature mortality
   
   ct_mort_cost <- ct_health %>%
-    mutate(VSL_2019 = VSL_2019)%>%
+    mutate(VSL_2019 = vsl_2019)%>%
     left_join(growth_rates, by = c("year"="year"))%>%
     mutate(VSL = future_WTP(income_elasticity_mort, 
                             (cum_growth-1),
                             VSL_2019),
-           cost_2019 = mortality_delta*VSL_2019,
+           cost_2019 = mortality_delta * VSL_2019,
            cost = mortality_delta*VSL)%>%
     group_by(year)%>%
     mutate(cost_2019_PV = cost_2019/((1+discount_rate)^(year-2019)),
@@ -492,4 +570,6 @@ calculate_census_tract_mortality = function(health_weighted,
   return(ct_mort_cost) 
   
 }
+
+
 

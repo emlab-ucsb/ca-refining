@@ -131,6 +131,73 @@ read_ct_2020_data <- function(file, ca_crs) {
   dt
 }
 
+read_nhgis_data <- function(file) {
+  
+  dt = fread(file)
+  
+  dt[, `:=` (
+    gisjoin = GISJOIN,
+    geoid = GEOID,
+    year = YEAR,
+    state = STATE,
+    total_pop = AMP3E001,
+    hispanic = AMP3E012,
+    white = AMP3E003,
+    black = AMP3E004,
+    aialnative = AMP3E005,
+    asian = AMP3E006,
+    median_income = AMR8E001
+    
+  )]
+  
+  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, median_income, geoid, year, state)]
+  
+}
+
+read_nhgis_2021_data <- function(file) {
+  
+  dt = fread(file)
+  
+  dt[, `:=` (
+    gisjoin = GISJOIN,
+    geoid = GEO_ID,
+    year = YEAR,
+    total_pop = AOOCE001,
+    hispanic = AOOCE012,
+    white = AOOCE003,
+    black = AOOCE004,
+    aialnative = AOOCE005,
+    asian = AOOCE006,
+    median_income = AOQIE001
+    
+  )]
+  
+  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, median_income, geoid, year)]
+  
+}
+
+
+
+
+read_poverty_data <- function(file) {
+  
+  dt = fread(file)
+  
+  dt[, `:=` (
+    gisjoin = GISJOIN,
+    geoid = GEO_ID,
+    year = YEAR,
+    total_pop = AOQGE001,
+    total_below_poverty = AOQGE002,
+    total_above_poverty = AOQGE003
+    
+  )]
+  
+  dt <- dt[, .(gisjoin, geoid, year, total_above_poverty, total_below_poverty, total_pop)]
+  
+}
+
+
 
 # track_files_basic <- function(file) {
 #   data = fread(file, header = T)

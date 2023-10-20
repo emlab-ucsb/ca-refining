@@ -71,13 +71,13 @@ list(
   tar_target(name = ei_diesel, command = 5.770), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   tar_target(name = ei_jet, command = (5.670 + 5.355)/2), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   
-  # DAC analysis parameters
-  # tar_target(name = beta, command = 0.00582),
-  # tar_target(name = se, command = 0.0009628),
-  # tar_target(name = vsl_2015, command = 8705114.25462459),
-  # tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906/100),
-  # tar_target(name = income_elasticity_mort, command = 0.03),
-  # tar_target(name = discount_rate, command = 0.03),
+  # health analysis parameters
+  tar_target(name = beta, command = 0.00582), #Coefficient from Krewski et al (2009) for mortality impact
+  tar_target(name = se, command = 0.0009628), #Coefficient from Krewski et al (2009) for mortality impact
+  tar_target(name = vsl_2015, command = 8705114.25462459),
+  tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906/100), #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  tar_target(name = income_elasticity_mort, command = 0.4),
+  tar_target(name = discount_rate, command = 0.03),
   tar_target(name = buff_sites, command = c(97, 119, 164, 202, 209, 226, 271, 279, 332, 342, 343, 800, 3422, 34222, 99999)),
   
   # emission factors
@@ -117,7 +117,10 @@ list(
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
   tar_target(name = file_raw_ct_2019, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"), format = "file"),
   tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
-
+  tar_target(name = file_raw_census_2020, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"), format = "file"),
+  tar_target(name = file_raw_census_2021, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
+  tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
+  
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
   tar_target(name = raw_its_lc1, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 23:34), input_cols = c(2:37))),
@@ -145,6 +148,9 @@ list(
   
   tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
   tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
+  tar_target(name = raw_pop_income_2020, command = read_nhgis_data(file_raw_census_2020)),
+  tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
+  tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
@@ -166,7 +172,6 @@ list(
   tar_target(name = file_ghgfac, command = file.path(main_path, "outputs/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
   
   tar_target(name = file_processed_ces3, command = file.path(main_path, "data/health/processed/ces3_data.csv"), format = "file"),
-  tar_target(name = file_population, command = file.path(main_path, "data/benmap/processed/ct_inc_45.csv"), format = "file"),
   # tar_target(name = file_growth_rates, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_site_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/site_refining_outputs_2019.csv"), format = "file"),
   tar_target(name = file_county_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/county_refining_outputs_2019.csv"), format = "file"),
@@ -180,7 +185,6 @@ list(
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
   tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),
   tar_target(name = dt_ces, command = read_census_data(file_processed_ces3)),
-  tar_target(name = dt_population, command = read_census_data(file_population)),
   tar_target(name = dt_site_2019, command = simple_fread(file_site_2019)),
   tar_target(name = dt_county_2019, command = simple_fread(file_county_2019)),
   tar_target(name = dt_ghg_2019, command = read_ghg_2019_data(file_ghg_2019)),
@@ -292,8 +296,7 @@ list(
   tar_target(name = fig_refined_production_ghg, command = plot_refined_products_and_ghg(tot_fuel_demand_exports, state_ghg_output)),
   
   # DAC / health: PM2.5 by county
-  tar_target(name = county_dac, command = get_county_dac(dt_ces, ces_county)),
-  tar_target(name = ct_inc_pop_weighted, command = get_census_population_weighted_incidence_rate(dt_population)),
+  tar_target(name = county_dac, command = get_county_dac(dt_ces, ces_county)), ## matches county to DAC, but maybe circular
   # tar_target(name = site_ids, command = get_refinery_site_ids(dt_refcap)),
   tar_target(name = refining_site_consumption, command = get_site_level_refining_cons(indiv_cons_output)),
   tar_target(name = refining_site_ghg, command = get_site_level_refining_ghg(indiv_ghg_output)),
@@ -325,7 +328,19 @@ list(
                                                                                          refining_health_income,
                                                                                          raw_dac)),
   
-  tar_target(name = refining_mortality, command = calculate_census_tract_mortality(health_weighted,
+  tar_target(name = health_grp, command = calculate_race_disp(health_weighted,
+                                                              raw_pop_income_2020,
+                                                              raw_pop_income_2021,
+                                                              raw_pop_poverty)),
+  
+  
+  tar_target(name = refining_mortality, command = calculate_census_tract_mortality(beta,
+                                                                                   se,
+                                                                                   vsl_2015,
+                                                                                   vsl_2019,
+                                                                                   income_elasticity_mort,
+                                                                                   discount_rate,
+                                                                                   health_weighted,
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
 
