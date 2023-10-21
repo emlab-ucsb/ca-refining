@@ -197,7 +197,24 @@ read_poverty_data <- function(file) {
   
 }
 
-
+read_labor_inputs <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
+  
+  dt = setDT(read.xlsx(file, sheet = input_sheet, rows = input_rows, cols = input_cols))
+  
+  dt <- dt %>%
+    filter((county != "Statewide" & segment == "refining") | is.na(segment)==T) %>% 
+    rename(dire_emp_mult = direct_emp, 
+           indi_emp_mult = indirect_emp, 
+           indu_emp_mult = induced_emp,
+           dire_comp_mult = direct_comp, 
+           indi_comp_mult = indirect_comp, 
+           indu_comp_mult = induced_comp,
+           ip.dire_comp_mult = ip.direct_comp, 
+           ip.indi_comp_mult = ip.indirect_comp, 
+           ip.indu_comp_mult = ip.induced_comp)
+  
+  dt
+}
 
 # track_files_basic <- function(file) {
 #   data = fread(file, header = T)

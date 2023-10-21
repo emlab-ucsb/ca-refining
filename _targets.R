@@ -120,6 +120,7 @@ list(
   tar_target(name = file_raw_census_2020, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"), format = "file"),
   tar_target(name = file_raw_census_2021, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
   tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
+  tar_target(name = file_df_labor, command = file.path(main_path, "data/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -151,6 +152,7 @@ list(
   tar_target(name = raw_pop_income_2020, command = read_nhgis_data(file_raw_census_2020)),
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
   tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
+  tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
@@ -330,9 +332,10 @@ list(
   
   tar_target(name = health_grp, command = calculate_race_disp(health_weighted,
                                                               raw_pop_income_2020,
-                                                              raw_pop_income_2021,
-                                                              raw_pop_poverty)),
+                                                              raw_pop_income_2021)),
   
+  tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
+                                                                 health_weighted)),
   
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(beta,
                                                                                    se,
