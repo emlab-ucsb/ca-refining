@@ -414,15 +414,19 @@ calculate_weighted_census_tract_emissions = function(ct_xwalk,
 ## calculate race disparities and DAC/non DAC
 calculate_race_disp = function(health_weighted,
                                raw_pop_income_2020,
-                               raw_pop_income_2021,
-                               raw_pop_poverty) {
+                               raw_pop_income_2021) {
+  
+  pop_income_2020 <- copy(raw_pop_income_2020)
+  
+  ## doesn't look like this gets used?
+  pop_income_2021 <- copy(raw_pop_income_2021)
   
   ## extract census tract, process
-  raw_pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]
-  raw_pop_income_2020[, year := NULL]
+  pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]
+  pop_income_2020[, year := NULL]
   
   ## merge with health output
-  merged_data <- merge(health_weighted, raw_pop_income_2020, 
+  merged_data <- merge(health_weighted, pop_income_2020, 
                        all.x = TRUE)
  
   ## add non-minority column, make longer, add percentages
@@ -482,9 +486,63 @@ calculate_race_disp = function(health_weighted,
     as.data.table()
   
   ## return
-  merge_collapsed_df
+  return(merge_collapsed_df)
   
   
+}
+
+
+calculate_poverty_disp <- function(raw_pop_poverty,
+                                   health_weighted) {
+
+  ## copy raw_pop_poverty
+  pop_poverty <- copy(raw_pop_poverty)
+
+  ## extract census tract, process
+  pop_poverty[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  pop_poverty[, year := NULL]
+
+  ## merge with health output
+  merged_pov_data <- merge(health_weighted, pop_poverty,
+                       all.x = TRUE)
+  
+  ## pivot longer
+  merged_pov_data <- merged_pov_data %>%
+    pivot_longer(cols = c(total_above_poverty, total_below_poverty),
+                 names_to = "group",
+                 values_to = "group_pop") %>%
+    as.data.table()
+  
+  ## filter out census tracts with pop = 0
+  merged_pov_data <- merged_pov_data[total_pop != 0]
+  
+  ## add columns
+  merged_pov_data[, group_pct := group_pop / total_pop]
+  ## why not just use the group pop?
+  merged_pov_data[, group_num := total_pm25 * group_pct * total_pop]
+  ## why recalculating this?
+  merged_pov_data[, group_den := group_pct * total_pop]
+  
+  ## summarise
+  summary_pov_df <- merged_pov_data[, .(
+                                        # total_group_pop = sum(group_pop),
+                                        total_group_num = sum(group_num),
+                                        total_group_den = sum(group_den)),
+                              by = .(scen_id, demand_scenario, refining_scenario, year, group)]
+  
+  summary_pov_df[, num_over_den := total_group_num / total_group_den]
+
+  ## select columns, pivot wider
+  summary_pov_df <- summary_pov_df %>%
+    select(scen_id:group, num_over_den) %>%
+    pivot_wider(names_from = group,
+                values_from = num_over_den) %>%
+    mutate(stat_pnp = total_below_poverty -  total_above_poverty) %>%
+    as.data.table()
+  
+  return(summary_pov_df)
+  
+
 }
 
 
