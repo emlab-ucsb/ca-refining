@@ -216,6 +216,19 @@ read_labor_inputs <- function(file, input_sheet, input_rows=NULL, input_cols=NUL
   dt
 }
 
+read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
+  
+  ## oil prices
+  oilpx_scens_real = setDT(read.xlsx(file, sheet = 'real', cols = input_cols))
+  colnames(oilpx_scens_real) = c('year', 'reference_case', 'high_oil_price', 'low_oil_price')
+  oilpx_scens_real = melt(oilpx_scens_real, measure.vars = c('reference_case', 'high_oil_price', 'low_oil_price'), 
+                          variable.name = 'oil_price_scenario', value.name = 'oil_price_usd_per_bbl')
+  oilpx_scens_real[, oil_price_scenario := gsub('_', ' ', oil_price_scenario)]
+  oilpx_scens_real[, oil_price_scenario := factor(oil_price_scenario, levels = c('reference case', 'high oil price', 'low oil price'))]
+  
+}
+
+
 # track_files_basic <- function(file) {
 #   data = fread(file, header = T)
 #   output = head(data)
