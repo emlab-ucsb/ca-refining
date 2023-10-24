@@ -70,6 +70,7 @@ list(
   tar_target(name = ei_gasoline, command = 5.052), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_4.pdf
   tar_target(name = ei_diesel, command = 5.770), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   tar_target(name = ei_jet, command = (5.670 + 5.355)/2), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
+  tar_target(name = gge_to_bbls, command = 42),
   
   # health analysis parameters
   tar_target(name = beta, command = 0.00582), #Coefficient from Krewski et al (2009) for mortality impact
@@ -121,6 +122,7 @@ list(
   tar_target(name = file_raw_census_2021, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
   tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
   tar_target(name = file_df_labor, command = file.path(main_path, "data/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
+  tar_target(name = file_oil_px, command = file.path(main_path, "data/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -153,6 +155,7 @@ list(
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
   tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
   tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
+  tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
@@ -167,9 +170,8 @@ list(
   
   # set remaining file paths
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
-  # tar_target(name = file_intra, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_intrastate_jet_2020_2045.csv"), format = "file"),
   # tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
-  # tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
+  tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
   tar_target(name = file_fw, command = file.path(main_path, "data/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
   tar_target(name = file_ghgfac, command = file.path(main_path, "outputs/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
   
@@ -181,15 +183,14 @@ list(
   
   # read in processed data files
   # tar_target(name = dt_its, command = simple_fread(file_its)),
-  # tar_target(name = dt_intra, command = simple_fread(file_intra)),
   # tar_target(name = dt_jet, command = simple_fread(file_jet)),
-  # tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
   tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),
   tar_target(name = dt_ces, command = read_census_data(file_processed_ces3)),
   tar_target(name = dt_site_2019, command = simple_fread(file_site_2019)),
   tar_target(name = dt_county_2019, command = simple_fread(file_county_2019)),
   tar_target(name = dt_ghg_2019, command = read_ghg_2019_data(file_ghg_2019)),
+  # tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
   
   # tar_target(name = dt_growth_rates, command = read_census_data(file_growth_rates)),
   
@@ -208,6 +209,7 @@ list(
   tar_target(name = ave_kern_rediesel, command = calculate_ave_kern_rediesel(dt_rediesel, ei_gasoline, ei_diesel, kern_perc)), 
   tar_target(name = demand_state, command = state_fuel_demand_df(dt_its, dt_jet, ei_gasoline, ei_diesel, ei_jet)), 
   tar_target(name = ts_exports, command = create_time_series_exports(refined_movements_annual, region_fuel_ratio, ei_crude, ei_gasoline, ei_diesel, ei_jet)), 
+  tar_target(name = product_px, command = create_prod_px_spread(proc_oil_px_df)),
   
   # refining module
   tar_target(name = refining_module_outputs, command = main_refining_module(dem_scens, 
@@ -346,7 +348,16 @@ list(
                                                                                    health_weighted,
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
-
+  
+  tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
+                                                                     indiv_prod_output,
+                                                                     dt_refcap,
+                                                                     product_px)),
+  
+  tar_target(name = npv_plot, command = plot_npv_health_labor(refining_mortality,
+                                                              state_ghg_output,
+                                                              dt_ghg_2019,
+                                                              annual_labor)),
 
   # save outputs
   tar_target(name = save_ct_xwalk, 
@@ -380,6 +391,16 @@ list(
                                      "state_GJD_and_reGJD_production_and_ghg_emissions", 
                                      width = 20,
                                      height = 12,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_npv_fig,
+             command = simple_ggsave(npv_plot, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_npv_fig", 
+                                     width = 10,
+                                     height = 10,
                                      dpi = 600),
              format = "file")
   

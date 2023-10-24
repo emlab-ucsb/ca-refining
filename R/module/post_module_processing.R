@@ -883,8 +883,127 @@ combine_state_gjd_demand_and_exports <- function(crude_refined_week, refined_mov
   tot_fuel_demand_exports
 }
 
-
-
+# estimate_2019_ghg <- function(ei_crude,
+#                               ei_gasoline,
+#                               ei_diesel,
+#                               ei_jet,
+#                               dt_intra,
+#                               dt_fw,
+#                               dt_ghgfac,
+#                               dt_fpm,
+#                               gge_to_bbls) {
+# 
+#   # convert gge intrastate jet fuel demand to bbls, filter for 2018-2020
+#   intra_df <- copy(dt_intra)
+#   intra_df[, consumption_bbl := (consumption_gge / gge_to_bbls) * (ei_gasoline / ei_jet)]
+#   intra_df = intra_df[year >= 2018 & year < 2020]
+#   
+#   # refinery and region emission factors
+#   ghg_df <- copy(dt_ghgfac)
+#   ghg_region = unique(ghg_df[, .(year, region, region_barrels, region_co2e_kg, region_kgco2e_bbl)])
+#   ghg_region_2018 = ghg_region[year == 2018]
+#   
+#   # filter for production and recategorize fuels ------
+#   fw_df <- copy(dt_fw)
+#   prod_fw_df = fw_df[stock_flow == 'Refinery Production']
+#   prod_fw_df[category == 'Motor Gasoline', fuel := 'gasoline']
+#   prod_fw_df[category == 'Distillates', fuel := 'diesel']
+#   prod_fw_df[category == 'Jet Fuel: Kerosene-Naphtha', fuel := 'jet']
+#   prod_fw_df[category == 'Residual', fuel := 'residual']
+#   
+#   # adjust production values to remove ethanol from gasoline
+#   prod_fw_df[, adj_thous_barrels := ifelse(category == 'Motor Gasoline' & sub_cat == 'Reformulated', 0.9 * thous_barrels, thous_barrels)]
+#   
+#   # aggregate new adjusted production by region, week, and fuel ------
+#   week_prod_fw_df = prod_fw_df[, .(fuel_prod_bbl = sum(adj_thous_barrels, na.rm = T) * 1e3),
+#                                    by = .(region, date, year, fuel)]
+#   week_prod_fw_df[, fuel := factor(fuel, levels = c('gasoline', 'diesel', 'jet', 'residual'))]
+#   week_prod_fw_df = dcast(week_prod_fw_df, region + date + year ~ fuel, value.var = 'fuel_prod_bbl')
+#   
+#   # aggregate crude production by region and week ------
+#   crude_input_week = fw_df[stock_flow == 'Refinery Input', .(crude_bbl = sum(thous_barrels, na.rm = T) * 1e3),
+#                              by = .(region, date, year)]
+#   
+#   # merge weekly crude input and refined product production -------
+#   crude_refined_week = crude_input_week[week_prod_fw_df, on = .(region, date, year)]
+#   
+#   # aggregate crude and refined products by year -----
+#   crude_refined_annual = crude_refined_week[year %in% 2014:2019, lapply(.SD, sum, na.rm = T), 
+#                                             by = c('region', 'year'), 
+#                                             .SDcols = c('crude_bbl', 'gasoline', 'diesel', 'jet', 'residual')]
+#   
+#   setnames(crude_refined_annual, 'crude_bbl', 'complete_crude_bbl')
+#   setnames(crude_refined_annual, 'gasoline', 'complete_gasoline_bbl')
+#   setnames(crude_refined_annual, 'diesel', 'complete_diesel_bbl')
+#   setnames(crude_refined_annual, 'jet', 'complete_jet_bbl')
+#   
+#   # calculate ghg emissions -------
+#   crude_refined_ghg = crude_refined_annual[ghg_region_2018[, .(region, region_kgco2e_bbl)], on = .(region)]
+#   crude_refined_ghg[, complete_ghg_kg := complete_crude_bbl * region_kgco2e_bbl]
+#   
+#   crude_refined_ghg = crude_refined_ghg[, lapply(.SD, sum, na.rm = T), 
+#                                         by = c('year'), 
+#                                         .SDcols = c('complete_crude_bbl', 'complete_gasoline_bbl', 'complete_diesel_bbl', 'complete_jet_bbl', 'complete_ghg_kg')]
+#   
+#   
+#   # get refined product exports ------
+#   fpm_dt <- copy(dt_fpm)
+#   refined_exports_month = fpm_dt[code %like% 'E$']
+#   refined_exports_month[, year := year(ymd(date))]
+#   refined_exports_month[location == 'north', region := 'North']
+#   refined_exports_month[location == 'south', region := 'South']
+#   
+#   # get annual exports ------
+#   refined_exports_annual = refined_exports_month[, .(export_bbl = sum(thous_bbl*1e3, na.rm = T)), by = .(fuel, year)]
+#   refined_exports_annual[, fuel := factor(fuel, levels = c('gasoline', 'diesel', 'jet'))]
+#   refined_exports_annual[, export_bbl := abs(export_bbl)]
+#   refined_exports_annual_wide = dcast(refined_exports_annual, year ~ fuel, value.var = 'export_bbl')
+#   setnames(refined_exports_annual_wide, 'gasoline', 'export_gasoline_bbl')
+#   setnames(refined_exports_annual_wide, 'diesel', 'export_diesel_bbl')
+#   setnames(refined_exports_annual_wide, 'jet', 'export_jet_bbl')
+#   
+#   # combine production with exports and intrastate jet ------
+#   ghg_sep = crude_refined_ghg[refined_exports_annual_wide, on = .(year), nomatch = 0]
+#   ghg_sep = ghg_sep[intra_df[, .(year, consumption_bbl)], on = .(year), nomatch = 0]
+#   setnames(ghg_sep, 'consumption_bbl', 'intrastate_jet_bbl')
+#   
+#   ghg_sep[, interstate_jet_bbl := complete_jet_bbl - intrastate_jet_bbl - export_jet_bbl]
+#   
+#   
+#   ghg_sep[, out_of_state_prop := ((interstate_jet_bbl*ei_jet) + 
+#                                     (export_gasoline_bbl*ei_gasoline) + 
+#                                     (export_diesel_bbl*ei_diesel) + 
+#                                     (export_jet_bbl*ei_jet))/((complete_gasoline_bbl*ei_gasoline) + (complete_diesel_bbl*ei_diesel) + (complete_jet_bbl*ei_jet))]
+#   
+#   ghg_sep[, in_state_prop := ((complete_gasoline_bbl - export_gasoline_bbl)*(ei_gasoline) + (complete_diesel_bbl - export_diesel_bbl)*(ei_diesel) +
+#                                 (intrastate_jet_bbl*ei_jet))/((complete_gasoline_bbl*ei_gasoline) + 
+#                                                                 (complete_diesel_bbl*ei_diesel) + (complete_jet_bbl*ei_jet))]
+#   
+#   ghg_sep[, out_of_state_ghg_kg := out_of_state_prop * complete_ghg_kg]
+#   ghg_sep[, in_state_ghg_kg := in_state_prop * complete_ghg_kg]
+#   
+#   # convert from wide to long -------
+#   state_ghg = melt(ghg_sep, id.vars = 'year',
+#                    measure.vars = c('complete_ghg_kg', 'in_state_ghg_kg', 'out_of_state_ghg_kg'),
+#                    variable.name = 'boundary',
+#                    value.name = 'value')
+#   state_ghg[, boundary := gsub('_ghg_kg', '', boundary)]  
+#   state_ghg[boundary == 'in_state', boundary := 'in-state']
+#   state_ghg[boundary == 'out_of_state', boundary := 'out-of-state']
+#   
+#   # add columns ------
+#   
+#   state_ghg[, fuel := 'crude']
+#   state_ghg[, source := 'total']
+#   state_ghg[, type := 'ghg']
+#   state_ghg[, units := 'kg']
+#   
+#   setcolorder(state_ghg, c('year',  'fuel', 'source', 'boundary', 'type', 'units', 'value'))
+#   
+#   state_ghg
+# 
+# }
+# 
 
 
 
