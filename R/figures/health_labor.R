@@ -51,22 +51,22 @@ plot_npv_health_labor <- function(refining_mortality,
   
   ## summarize labor for state
   state_labor <- annual_labor[, .(sum_total_emp = sum(total_emp),
-                                  sum_total_comp = sum(total_comp)),
+                                  sum_total_comp_pv = sum(total_comp_PV)),
                               by = .(demand_scenario, refining_scenario)]
   
   
   ## ref labor
   ref_labor <- state_labor[demand_scenario == "BAU" & refining_scenario == "historic production"]
-  setnames(ref_labor, c("sum_total_emp", "sum_total_comp"), c("ref_total_emp", "ref_total_comp"))
+  setnames(ref_labor, c("sum_total_emp", "sum_total_comp_pv"), c("ref_total_emp", "ref_total_comp_pv"))
   
   ## add values to labor
   state_labor[, `:=` (ref_total_emp = ref_labor$ref_total_emp[1],
-                       ref_total_comp = ref_labor$ref_total_comp[1])]
+                       ref_total_comp_pv = ref_labor$ref_total_comp_pv[1])]
   
-  state_labor[, forgone_wages_bil := (sum_total_comp - ref_total_comp) / 1e9]
+  state_labor[, forgone_wages_bil := (sum_total_comp_pv - ref_total_comp_pv) / 1e9]
 
   ## merge with health and ghg
-  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, sum_total_comp, ref_total_comp, forgone_wages_bil)],
+  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, sum_total_comp_pv, ref_total_comp_pv, forgone_wages_bil)],
                          by = c("demand_scenario", "refining_scenario"),
                          all.x = T)
   
@@ -110,9 +110,10 @@ plot_npv_health_labor <- function(refining_mortality,
   ## ---------------------------------------------------
   
   # fig
-  fig_benefit_x_metric <- ggplot(plot_df_long, aes(x = ghg_perc_diff, y = value, color = refining_scenario, shape = demand_scenario)) +
+  fig_benefit_x_metric <- ggplot(plot_df_long, aes(x = ghg_perc_diff * - 100, y = value, color = refining_scenario, shape = demand_scenario)) +
     geom_point(size = 4, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    geom_vline(xintercept = 0, color = "darkgray", linewidth = 0.5) +
     labs(color = "Refining scenario",
          shape = "Demand scenario",
          y = "NPV USD 2019",

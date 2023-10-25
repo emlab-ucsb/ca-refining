@@ -88,6 +88,12 @@ list(
   tar_target(name = ef_sox, command = 0.00851),
   tar_target(name = ef_voc, command = 0.01247),
   
+  ## CPI values
+  #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  tar_target(name = cpi2020, command = 109.1951913),
+  tar_target(name = cpi2019, command = 107.8645906),
+  tar_target(name = cpi2015, command = 100),
+  
   # scenarios and regions
   tar_target(name = dem_scens, command = c('BAU', 'LC1')),
   tar_target(name = ref_scens, command = c('historic exports', 'historic production', 'low exports')),
@@ -350,9 +356,12 @@ list(
                                                                                    growth_rates)),
   
   tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
-                                                                     indiv_prod_output,
-                                                                     dt_refcap,
-                                                                     product_px)),
+                                                               indiv_prod_output,
+                                                               dt_refcap,
+                                                               product_px,
+                                                               cpi2019,
+                                                               cpi2020,
+                                                               discount_rate)),
   
   tar_target(name = npv_plot, command = plot_npv_health_labor(refining_mortality,
                                                               state_ghg_output,

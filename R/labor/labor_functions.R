@@ -25,7 +25,10 @@ create_prod_px_spread <- function(proc_oil_px_df) {
 calc_labor_outputs <- function(proc_labor_df,
                                indiv_prod_output,
                                dt_refcap,
-                               product_px) {
+                               product_px,
+                               cpi2019,
+                               cpi2020,
+                               discount_rate) {
 
 
   ## add product for calculating price
@@ -60,7 +63,7 @@ calc_labor_outputs <- function(proc_labor_df,
 
   ## calculate revenue
   county_out_refining[, revenue := value * product_price]
-
+  
   ## summarize at the county level
   county_out_refining_summary <- county_out_refining[, .(revenue = sum(revenue)), by = .(demand_scenario, refining_scenario,
                                                                                          year, county)]
@@ -83,8 +86,15 @@ calc_labor_outputs <- function(proc_labor_df,
   county_out_labor[, ':=' (total_emp = c.dire_emp + c.indi_emp + c.indu_emp,
                            total_comp = c.dire_comp + c.indi_comp + c.indu_comp)]
   
+  ## convert to 2019 dollars
+  county_out_labor[, total_comp_usd19 := total_comp * cpi2019 / cpi2020]
   
-  county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, county, year, revenue, total_emp, total_comp)]
+  ## calc PV
+  county_out_labor[, total_comp_PV := total_comp_usd19 / ((1 + discount_rate) ^ (year - 2019))]
+  
+  
+  county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, county, year, revenue, total_emp, total_comp,
+                                           total_comp_usd19, total_comp_PV)]
 
   county_out_labor
 
