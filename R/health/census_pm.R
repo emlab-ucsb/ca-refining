@@ -264,12 +264,7 @@ calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
                                             med_house_income,
                                             dt_ef,
                                             dt_refcap,
-                                            renewables_info_altair,
-                                            ef_nh3,
-                                            ef_nox,
-                                            ef_pm25,
-                                            ef_sox,
-                                            ef_voc){
+                                            renewables_info_altair){
   
   refining = copy(refining_sites_cons_ghg_2019_2045)
   

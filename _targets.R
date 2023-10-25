@@ -81,12 +81,12 @@ list(
   tar_target(name = discount_rate, command = 0.03),
   tar_target(name = buff_sites, command = c(97, 119, 164, 202, 209, 226, 271, 279, 332, 342, 343, 800, 3422, 34222, 99999)),
   
-  # emission factors
-  tar_target(name = ef_nh3, command = 0.00056),
-  tar_target(name = ef_nox, command = 0.01495),
-  tar_target(name = ef_pm25, command = 0.00402),
-  tar_target(name = ef_sox, command = 0.00851),
-  tar_target(name = ef_voc, command = 0.01247),
+  # # emission factors
+  # tar_target(name = ef_nh3, command = 0.00056),
+  # tar_target(name = ef_nox, command = 0.01495),
+  # tar_target(name = ef_pm25, command = 0.00402),
+  # tar_target(name = ef_sox, command = 0.00851),
+  # tar_target(name = ef_voc, command = 0.01247),
   
   ## CPI values
   #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
@@ -327,12 +327,7 @@ list(
                                                                                        med_house_income,
                                                                                        dt_ef,
                                                                                        dt_refcap,
-                                                                                       renewables_info_altair,
-                                                                                       ef_nh3,
-                                                                                       ef_nox,
-                                                                                       ef_pm25,
-                                                                                       ef_sox,
-                                                                                       ef_voc)),
+                                                                                       renewables_info_altair)),
   
   tar_target(name = health_weighted, command = calculate_weighted_census_tract_emissions(ct_xwalk,
                                                                                          refining_health_income,
