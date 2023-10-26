@@ -276,30 +276,39 @@ calculate_census_tract_emissions = function(refining_sites_cons_ghg_2019_2045,
 
   refining = merge(refining, cluster_cw, by = "site_id", all.x = T, allow.cartesian = T, no.dups = T)
   
-  dt_ef <- dt_ef %>%
-    mutate(ton_bbl = kg_bbl/1000)%>%
-    dplyr::select(-kg_bbl)%>%
-    spread(pollutant_code,ton_bbl)
-
-  refining = merge(refining, dt_ef, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
-  
-  refining <- refining%>%
-    mutate(nh3 = bbls_consumed * NH3,
-           nox = bbls_consumed * NOX,
-           pm25 = bbls_consumed * `PM25-PRI`,
-           sox = bbls_consumed * SO2,
-           voc = bbls_consumed * VOC)%>%
-    dplyr::select(-NH3:-VOC)
-  
   refining[ , site_id := ifelse(site_id == "t-800", "800", site_id)]
   refining[ , site_id := ifelse(site_id == "342-2", "34222", site_id)]
   refining[ , site_id := as.numeric(site_id)]
   
-  # refining[, `:=` (nh3 = bbls_consumed * ef_nh3 / 1000,
-  #                  nox = bbls_consumed * ef_nox / 1000,
-  #                  pm25 = bbls_consumed * ef_pm25 / 1000,
-  #                  sox = bbls_consumed * ef_sox / 1000,
-  #                  voc = bbls_consumed * ef_voc / 1000)]
+  ## previous emission factors  ------------------------------------
+  ef_nh3 = 0.00056
+  ef_nox = 0.01495
+  ef_pm25 = 0.00402
+  ef_sox = 0.00851
+  ef_voc = 0.01247
+  
+  refining[, `:=` (nh3 = bbls_consumed * ef_nh3 / 1000,
+                   nox = bbls_consumed * ef_nox / 1000,
+                   pm25 = bbls_consumed * ef_pm25 / 1000,
+                   sox = bbls_consumed * ef_sox / 1000,
+                   voc = bbls_consumed * ef_voc / 1000)]
+  
+  ## updated emission factors -----------------------------------------
+  # dt_ef <- dt_ef %>%
+  #   mutate(ton_bbl = kg_bbl/1000)%>%
+  #   dplyr::select(-kg_bbl)%>%
+  #   spread(pollutant_code,ton_bbl)
+  # 
+  # refining = merge(refining, dt_ef, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
+  # 
+  # refining <- refining%>%
+  #   mutate(nh3 = bbls_consumed * NH3,
+  #          nox = bbls_consumed * NOX,
+  #          pm25 = bbls_consumed * `PM25-PRI`,
+  #          sox = bbls_consumed * SO2,
+  #          voc = bbls_consumed * VOC)%>%
+  #   dplyr::select(-NH3:-VOC)
+  ## -------------------------------------------------------------------
   
   srm_weighted_pm25 <- srm_weighted_pm25 %>% mutate(GEOID = as.character(GEOID))
   
