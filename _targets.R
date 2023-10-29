@@ -44,7 +44,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -119,9 +119,9 @@ list(
   tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), # remove from workflow
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
   tar_target(name = file_dt_ef, command = file.path(main_path, "data/health/processed/ref_emission_factor.csv"), format = "file"),
-  # tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
-  ### for testing previous version
-  tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "/data/benmap/processed/ct_inc_45.csv"), format = "file"),
+  tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
+  # ### for testing previous version
+  # tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "/data/benmap/processed/ct_inc_45.csv"), format = "file"),
   
   tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
