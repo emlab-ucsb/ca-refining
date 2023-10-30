@@ -409,6 +409,4 @@ list(
                                      height = 10,
                                      dpi = 600),
              format = "file")
-  
-  
 )
