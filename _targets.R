@@ -120,8 +120,6 @@ list(
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
   tar_target(name = file_dt_ef, command = file.path(main_path, "data/health/processed/ref_emission_factor.csv"), format = "file"),
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
-  # ### for testing previous version
-  # tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "/data/benmap/processed/ct_inc_45.csv"), format = "file"),
   
   tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
@@ -352,6 +350,7 @@ list(
                                                                                    health_weighted,
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
+
   
   tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
                                                                indiv_prod_output,
