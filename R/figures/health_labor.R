@@ -207,8 +207,23 @@ plot_npv_health_labor <- function(refining_mortality,
   
   
   
-  
-  
 
 
 }
+
+
+# plot_health_levels <- function(refining_mortality) {
+#  
+#   total_mort_level <- refining_mortality %>%
+#     group_by(scen_id, demand_scenario, refining_scenario, year) %>%
+#     summarise(mortality_level = sum(mortality_level)) %>%
+#     ungroup()
+#   
+#   health_level_fig <- ggplot(total_mort_level, aes(x = year, y = mortality_level, color = scen_id)) +
+#     geom_line(linewidth = 1)
+#   
+#   health_level_fig 
+#   
+# }
+
+
