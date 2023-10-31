@@ -353,6 +353,16 @@ list(
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
   
+  # tar_target(name = refining_mortality, command = calculate_census_tract_mortality_prev(beta,
+  #                                                                                  se,
+  #                                                                                  vsl_2015,
+  #                                                                                  vsl_2019,
+  #                                                                                  income_elasticity_mort,
+  #                                                                                  discount_rate,
+  #                                                                                  refining_health_income,
+  #                                                                                  ct_inc_45,
+  #                                                                                  growth_rates)),
+  
   tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
                                                                indiv_prod_output,
                                                                dt_refcap,
