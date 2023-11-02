@@ -645,29 +645,30 @@ calculate_census_tract_mortality_prev = function(beta,
                                             ct_inc_45,
                                             growth_rates){
   
-  # # Population and incidence
-  # ct_inc_45 <- ct_inc_45 %>%
-  #   mutate(GEO_ID = paste0(stringr::str_sub(gisjoin, 2, 3),
-  #                         stringr::str_sub(gisjoin, 5, 7),
-  #                         stringr::str_sub(gisjoin, 9, 14))) %>%
-  #   select(GEO_ID, lower_age, upper_age, year, pop, incidence_2015) %>%
-  #   data.table::as.data.table()
+  # Population and incidence
+  ct_inc_45 <- ct_inc_45 %>%
+    mutate(GEO_ID = paste0(stringr::str_sub(gisjoin, 2, 3),
+                          stringr::str_sub(gisjoin, 5, 7),
+                          stringr::str_sub(gisjoin, 9, 14))) %>%
+    select(GEO_ID, lower_age, upper_age, year, pop, incidence_2015) %>%
+    data.table::as.data.table()
 
   ## is this in a separate function?
   #1 Calculate census-tract level population-weighted incidence rate (for age>29)
   ct_inc_pop_45_weighted <- ct_inc_45%>%
-    select(GEO_ID:end_age, year, pop, incidence_2015)%>%
-    filter(start_age > 29) %>%
-    # filter(lower_age > 29) %>%
+    # select(GEO_ID:end_age, year, pop, incidence_2015)%>%
+    # filter(start_age > 29) %>%
+    filter(lower_age > 29) %>%
     group_by(GEO_ID, year) %>%
     mutate(ct_pop = sum(pop, na.rm = T),
            share = pop/ct_pop,
            weighted_incidence = sum(share * incidence_2015, na.rm = T)) %>%
     summarize(weighted_incidence = unique(weighted_incidence),
               pop = unique(ct_pop)) %>%
-    ungroup() %>%
-    mutate(GEO_ID = as.character(str_remove(GEO_ID, "US")))
-  
+    ungroup() 
+  # %>%
+  #   mutate(GEO_ID = as.character(str_remove(GEO_ID, "US")))
+
   #for monetary mortality impact - growth in income for use in WTP function
   growth_rates <- growth_rates %>%
     filter(year > 2019) %>%

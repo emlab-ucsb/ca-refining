@@ -9,12 +9,18 @@ plot_npv_health_labor <- function(refining_mortality,
   npv_df <- refining_mortality %>% as.data.table()
 
   ## state level
-  state_npv_df <- npv_df[, .(sum_cost_2019_pv = sum(cost_2019_PV)),
-                             by = .(scen_id, demand_scenario, refining_scenario)]
-
+  # state_npv_df <- npv_df[, .(sum_cost_2019_pv = sum(cost_2019_PV)),
+  #                            by = .(scen_id, demand_scenario, refining_scenario)]
+  # ## add column
+  # state_npv_df[, sum_cost_2019_pv_b := sum_cost_2019_pv / 1e9]
+  # 
+  # 
+  ## use pv, not 2019 pv
+  state_npv_df <- npv_df[, .(sum_cost_PV = sum(cost_PV)),
+                         by = .(scen_id, demand_scenario, refining_scenario)]
+  
   ## add column
-  state_npv_df[, sum_cost_2019_pv_b := sum_cost_2019_pv / 1e9]
-
+  state_npv_df[, sum_cost_PV_b := sum_cost_PV / 1e9]
 
   ## add ghg emission reduction
   ## 2019 ghg 
@@ -76,13 +82,19 @@ plot_npv_health_labor <- function(refining_mortality,
                                all.x = T)
   
   ## prepare to plot
+  # plot_df <- health_labor_ghg_df[scen_id != "BAU historic production", .(scen_id, demand_scenario, refining_scenario,
+  #                                                                        sum_cost_2019_pv_b, forgone_wages_bil, avoided_ghg, perc_diff)]
+  
   plot_df <- health_labor_ghg_df[scen_id != "BAU historic production", .(scen_id, demand_scenario, refining_scenario,
-                                                                         sum_cost_2019_pv_b, forgone_wages_bil, avoided_ghg, perc_diff)]
+                                                                         sum_cost_PV_b, forgone_wages_bil, avoided_ghg, perc_diff)]
   
   setnames(plot_df, "perc_diff", "ghg_perc_diff")
   
   ## add values / avoided ghgs
-  plot_df[, avoided_health_cost := sum_cost_2019_pv_b * -1]
+  # plot_df[, avoided_health_cost := sum_cost_2019_pv_b * -1]
+  
+  plot_df[, avoided_health_cost := sum_cost_PV_b * -1]
+  
   plot_df[, sum_cost_2019_pv_b := NULL]
   
   plot_df[, `:=` (avoided_health_cost_ghg = avoided_health_cost / avoided_ghg,

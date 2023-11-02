@@ -340,8 +340,8 @@ list(
                                                               raw_pop_income_2020,
                                                               raw_pop_income_2021)),
   
-  tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
-                                                                 health_weighted)),
+  # tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
+  #                                                                health_weighted)),
   
   # tar_target(name = refining_mortality, command = calculate_census_tract_mortality(beta,
   #                                                                                  se,
