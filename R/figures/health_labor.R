@@ -185,7 +185,7 @@ plot_npv_health_labor <- function(refining_mortality,
          title = "A. Health: avoided mortality",
          y = "NPV (2019 USD billion)",
          x = NULL) +
-    ylim(-1, 25) +
+    ylim(-1, 31) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
     theme_line_n +
@@ -197,16 +197,16 @@ plot_npv_health_labor <- function(refining_mortality,
   
   fig_bxm_b <- ggplot() + 
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
-    geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
+    geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                         title == "Labor: forgone wages",
-                                        measure == "NPV (2019 USD billion)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_2045_perc_reduction, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+                                        unit == "NPV (2019 USD billion)",
+                                        !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
     labs(color = "Policy",
          title = "B. Labor: forgone wages",
          y = NULL,
          x = NULL) +
-    ylim(-30, 0) +
+    ylim(-31, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
     theme_line_n +
@@ -216,37 +216,37 @@ plot_npv_health_labor <- function(refining_mortality,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm')) 
   
-  fig_bxm_c <- ggplot() +
-    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Climate: avoided damage", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
-    geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
-                                        title == "Climate: avoided damage",
-                                        measure == "NPV (2019 USD billion)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_2045_perc_reduction, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    labs(color = "Policy",
-         title = "C. Climate: avoided damage",
-         y = NULL,
-         x = NULL) +
-    ylim(-1, 20) +
-    xlim(0, 80) +
-    scale_color_manual(values = refin_colors) +
-    theme_line_n +
-    theme(legend.position = "none",
-          plot.title = element_text(hjust = 0),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-          axis.ticks.length.y = unit(0.1, 'cm'),
-          axis.ticks.length.x = unit(0.1, 'cm')) 
+  # fig_bxm_c <- ggplot() +
+  #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+  #   geom_vline(xintercept = hist_prod[title == "Climate: avoided damage", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+  #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+  #                                       title == "Climate: avoided damage",
+  #                                       unit == "NPV (2019 USD billion)",
+  #                                       !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+  #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+  #   labs(color = "Policy",
+  #        title = "C. Climate: avoided damage",
+  #        y = NULL,
+  #        x = NULL) +
+  #   ylim(-1, 20) +
+  #   xlim(0, 80) +
+  #   scale_color_manual(values = refin_colors) +
+  #   theme_line_n +
+  #   theme(legend.position = "none",
+  #         plot.title = element_text(hjust = 0),
+  #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+  #         axis.ticks.length.y = unit(0.1, 'cm'),
+  #         axis.ticks.length.x = unit(0.1, 'cm')) 
   
-  fig_bxm_d <- ggplot() + 
+  fig_bxm_c <- ggplot() + 
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
-    geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
-                                        title == "Health: avoided mortality",
-                                        measure == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_2045_perc_reduction, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                        title == "Health: avoided mortality per avoided GHG",
+                                        unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+                                        !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
     labs(color = "Policy",
-         title = "D.",
+         title = "C.",
          y = bquote('NPV (2019 USD million)\nper avoided GHG MtCO'[2]~e),
          x = "GHG emissions reduction target (%, 2045 vs 2019)") +
     scale_color_manual(values = refin_colors) +
@@ -258,15 +258,15 @@ plot_npv_health_labor <- function(refining_mortality,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
-  fig_bxm_e <- ggplot() +
+  fig_bxm_d <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
-    geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
-                                        title == "Labor: forgone wages",
-                                        measure == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_2045_perc_reduction, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+    geom_vline(xintercept = hist_prod[title == "Labor: forgone wages per avoided GHG", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                        title == "Labor: forgone wages per avoided GHG",
+                                        unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+                                        !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
     labs(color = "Policy",
-         title = "E.",
+         title = "D.",
          y = NULL,
          # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
          x = "GHG emissions reduction target (%, 2045 vs 2019)") +
@@ -278,27 +278,27 @@ plot_npv_health_labor <- function(refining_mortality,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
-  fig_bxm_f <- ggplot() +
-    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
-    geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
-                                        title == "Climate: avoided damage",
-                                        measure == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_2045_perc_reduction, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-    labs(color = "Policy",
-         title = "F.",
-         y = NULL,
-         # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-         x = "GHG emissions reduction target (%, 2045 vs 2019)") +
-    scale_color_manual(values = refin_colors) +
-    theme_line_n +
-    ylim(0, 80) +
-    xlim(0, 80) +
-    theme(legend.position = "none",
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-          axis.ticks.length.y = unit(0.1, 'cm'),
-          axis.ticks.length.x = unit(0.1, 'cm'))
-  
+  # fig_bxm_f <- ggplot() +
+  #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+  #   geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
+  #   geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
+  #                                       title == "Climate: avoided damage",
+  #                                       measure == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+  #                                       !refining_scenario == "historic production"), aes(x = ghg_2045_perc_reduction, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+  #   labs(color = "Policy",
+  #        title = "F.",
+  #        y = NULL,
+  #        # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
+  #        x = "GHG emissions reduction target (%, 2045 vs 2019)") +
+  #   scale_color_manual(values = refin_colors) +
+  #   theme_line_n +
+  #   ylim(0, 80) +
+  #   xlim(0, 80) +
+  #   theme(legend.position = "none",
+  #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+  #         axis.ticks.length.y = unit(0.1, 'cm'),
+  #         axis.ticks.length.x = unit(0.1, 'cm'))
+  # 
   ## extract legend
   # legend_fig <- ggplot() +
   #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
@@ -339,11 +339,11 @@ plot_npv_health_labor <- function(refining_mortality,
   
   legend_fig <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
-                                        title == "Labor: forgone wages",
-                                        measure == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                        title == "Labor: forgone wages per avoided GHG",
+                                        unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
                                         !refining_scenario == "historic production"), 
-               aes(x = ghg_2045_perc_reduction, y = value, color = scenario, shape = scenario), size = 3, alpha = 0.8) +
+               aes(x = ghg_perc_diff * -100, y = value, color = scenario, shape = scenario), size = 3, alpha = 0.8) +
     labs(title = "",
          y = NULL,
          # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
@@ -391,10 +391,10 @@ plot_npv_health_labor <- function(refining_mortality,
   fig3_plot_grid <- plot_grid(
     fig_bxm_a,
     fig_bxm_b,
-    fig_bxm_c,
+    # fig_bxm_c,
     fig_bxm_d + labs(x = NULL),
     fig_bxm_e + labs(x = NULL),
-    fig_bxm_f+ labs(x = NULL),
+    # fig_bxm_f+ labs(x = NULL),
     align = 'vh',
     # labels = c("A", "B", "C", "D", "E", "F"),
     # # labels = 'AUTO',
