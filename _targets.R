@@ -19,6 +19,7 @@ library(janitor)
 library(readr)
 library(fuzzyjoin)
 library(sf)
+library(cowplot)
 
 #font_import()
 #loadfonts(device = "win")
