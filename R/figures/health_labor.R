@@ -188,7 +188,7 @@ plot_npv_health_labor <- function(refining_mortality,
     ylim(-1, 31) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
-    theme_line_n +
+    theme_line +
     theme(legend.position = "none",
           plot.title = element_text(hjust = 0),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -209,7 +209,7 @@ plot_npv_health_labor <- function(refining_mortality,
     ylim(-31, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
-    theme_line_n +
+    theme_line +
     theme(legend.position = "none",
           plot.title = element_text(hjust = 0),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -231,7 +231,7 @@ plot_npv_health_labor <- function(refining_mortality,
   #   ylim(-1, 20) +
   #   xlim(0, 80) +
   #   scale_color_manual(values = refin_colors) +
-  #   theme_line_n +
+  #   theme_line +
   #   theme(legend.position = "none",
   #         plot.title = element_text(hjust = 0),
   #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -252,7 +252,7 @@ plot_npv_health_labor <- function(refining_mortality,
     scale_color_manual(values = refin_colors) +
     ylim(0, 200) +
     xlim(0, 80) +
-    theme_line_n +
+    theme_line +
     theme(legend.position = "none",
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -271,7 +271,7 @@ plot_npv_health_labor <- function(refining_mortality,
          # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
          x = "GHG emissions reduction target (%, 2045 vs 2019)") +
     scale_color_manual(values = refin_colors) +
-    theme_line_n +
+    theme_line +
     xlim(0, 80) +
     theme(legend.position = "none",
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -291,7 +291,7 @@ plot_npv_health_labor <- function(refining_mortality,
   #        # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
   #        x = "GHG emissions reduction target (%, 2045 vs 2019)") +
   #   scale_color_manual(values = refin_colors) +
-  #   theme_line_n +
+  #   theme_line +
   #   ylim(0, 80) +
   #   xlim(0, 80) +
   #   theme(legend.position = "none",
@@ -330,7 +330,7 @@ plot_npv_health_labor <- function(refining_mortality,
   #                                    "Low C. demand - historic exports",
   #                                    "Low C. demand - low exports"),
   #                         values = c(16, 16, 16, 17, 17)) +
-  #   theme_line_n +
+  #   theme_line +
   #   theme(legend.position = "bottom",
   #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
   #         axis.ticks.length.y = unit(0.1, 'cm'),
@@ -365,7 +365,7 @@ plot_npv_health_labor <- function(refining_mortality,
                                   "Low carbon demand - historic exports",
                                   "Low carbon demand - low exports"),
                        values = c(16, 16, 17, 17)) +
-    theme_line_n +
+    theme_line +
     theme(legend.position = "bottom",
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -392,8 +392,8 @@ plot_npv_health_labor <- function(refining_mortality,
     fig_bxm_a,
     fig_bxm_b,
     # fig_bxm_c,
+    fig_bxm_c + labs(x = NULL),
     fig_bxm_d + labs(x = NULL),
-    fig_bxm_e + labs(x = NULL),
     # fig_bxm_f+ labs(x = NULL),
     align = 'vh',
     # labels = c("A", "B", "C", "D", "E", "F"),
@@ -419,44 +419,34 @@ plot_npv_health_labor <- function(refining_mortality,
   )
   
   
-  ## save figure 3
-  ggsave(fig3_plot_grid2,
-         filename = file.path(main_path, fig_path, 'health_labor_climate_impacts_fig.png'),
-         width = 180,
-         height = 160,
-         units = "mm")
-  
-  ggsave(fig3_plot_grid2,
-         filename = file.path(main_path, fig_path, 'health_labor_climate_impacts_fig.pdf'),
-         width = 180,
-         height = 160,
-         units = "mm",
-         device = 'pdf')
-  
-  embed_fonts(paste0(main_path, fig_path, 'health_labor_climate_impacts_fig.pdf'),
-              outfile = paste0(main_path, fig_path, 'health_labor_climate_impacts_fig.pdf'))
-  
-  
-  
-  
-  
-
+ 
 
 }
 
 
-# plot_health_levels <- function(refining_mortality) {
-#  
-#   total_mort_level <- refining_mortality %>%
-#     group_by(scen_id, demand_scenario, refining_scenario, year) %>%
-#     summarise(mortality_level = sum(mortality_level)) %>%
-#     ungroup()
-#   
-#   health_level_fig <- ggplot(total_mort_level, aes(x = year, y = mortality_level, color = scen_id)) +
-#     geom_line(linewidth = 1)
-#   
-#   health_level_fig 
-#   
-# }
+plot_health_levels <- function(health_grp,
+                               health_pov,
+                               refining_mortality) {
+  
+  ## stack race, dac, and income groups (long)
+  ## ----------------------------------------------------
+  
+  ## race
+  race_df <- 
+  
+  
+  
+
+  total_mort_level <- refining_mortality %>%
+    group_by(scen_id, demand_scenario, refining_scenario, year) %>%
+    summarise(mortality_level = sum(mortality_level)) %>%
+    ungroup()
+
+  health_level_fig <- ggplot(total_mort_level, aes(x = year, y = mortality_level, color = scen_id)) +
+    geom_line(linewidth = 1)
+
+  health_level_fig
+
+}
 
 
