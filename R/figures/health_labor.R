@@ -432,20 +432,158 @@ plot_health_levels <- function(health_grp,
   ## ----------------------------------------------------
   
   ## race
-  race_df <- 
+  race_df <- health_grp[, .(scen_id, demand_scenario, refining_scenario, year, group, num_over_den)]
+  race_df[, type := "Race"]
   
+  ## dac
+  dac_df <- health_grp[, .(scen_id, demand_scenario, refining_scenario, year, dac, no_dac)]
   
+  dac_df <- dac_df %>%
+    pivot_longer(dac:no_dac, names_to = "group", values_to = "num_over_den") %>%
+    mutate(group = ifelse(group == "dac", "DAC", "Non-DAC")) %>%
+    mutate(type = "DAC") %>%
+    as.data.frame()
+  
+  ## income
+  income_df <- health_pov %>%
+    select(scen_id:total_below_poverty) %>%
+    pivot_longer(total_above_poverty:total_below_poverty, names_to = "group", values_to = "num_over_den") %>%
+    mutate(group = ifelse(group == "total_above_poverty", "Above poverty", "Below poverty")) %>%
+    mutate(type = "Poverty") %>%
+    as.data.frame()
+  
+  ## rbind
+  fig2_df <- rbind(race_df, dac_df, income_df)
+  
+  ## change scenario names, factor
+  fig2_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  fig2_df[, scenario := gsub('BAU', 'Reference', scenario)]
+  fig2_df[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
+  
+  ## scenarios for filtering
+  remove_scen <- c('LC1 historic production')
+  
+  ## refactor
+  fig2_df$scenario <- factor(fig2_df$scenario, levels = c('Reference demand - historic production',
+                                                          'Reference demand - historic exports', 
+                                                          'Reference demand - low exports', 
+                                                          'Low carbon demand - historic exports',
+                                                          'Low carbon demand - low exports',
+                                                          'Low carbon demand - historic production'))
   
 
-  total_mort_level <- refining_mortality %>%
-    group_by(scen_id, demand_scenario, refining_scenario, year) %>%
-    summarise(mortality_level = sum(mortality_level)) %>%
-    ungroup()
+  # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
+  #   geom_line(linewidth = 1, alpha = 0.8) +
+  #   facet_grid(type ~ scenario) +
+  #   labs(x = NULL,
+  #        y = "num_over_den") +
+  #   theme_line +
+  #   theme(legend.position = "bottom",
+  #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+  #         axis.ticks.length.y = unit(0.1, 'cm'),
+  #         axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ##
+  health_level_fig_a <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
+                                                 type == "Race"), aes(x = year, y = num_over_den, color = group)) +
+    geom_line(linewidth = 1, alpha = 0.8) +
+    facet_grid(type ~ scenario) +
+    labs(x = NULL,
+         y = "num_over_den") +
+    theme_line +
+    theme(legend.position = "right",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figa <- health_level_fig_a + theme(legend.position = "right")
+  
+  legend_a <- get_legend(
+    legend_figa + 
+      theme(legend.text = element_text(size = 8)))
+  
+  ##
+  health_level_fig_b <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
+                                                  type == "DAC"), aes(x = year, y = num_over_den, lty = group)) +
+    geom_line(linewidth = 1, alpha = 0.8) +
+    facet_grid(type ~ scenario) +
+    labs(x = NULL,
+         y = "num_over_den") +
+    theme_line +
+    theme(legend.position = "right",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figb <- health_level_fig_b + theme(legend.position = "right")
+  
+  legend_b <- get_legend(
+    legend_figb + 
+      theme(legend.text = element_text(size = 8)))
+  
+  ##
+  health_level_fig_c <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
+                                                  type == "Poverty"), aes(x = year, y = num_over_den, lty = group)) +
+    geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
+    scale_linetype_manual(values = c("Above poverty" = "dashed",
+                                     "Below poverty" = "solid")) +
+    facet_grid(type ~ scenario) +
+    labs(x = NULL,
+         y = "num_over_den") +
+    theme_line +
+    theme(legend.position = "right",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figc <- health_level_fig_c + theme(legend.position = "right")
+  
+  legend_c <- get_legend(
+    legend_figc + 
+      theme(legend.text = element_text(size = 8)))
 
-  health_level_fig <- ggplot(total_mort_level, aes(x = year, y = mortality_level, color = scen_id)) +
-    geom_line(linewidth = 1)
 
-  health_level_fig
+  # ## plot together
+  # fig2l_a <- plot_grid(
+  #   health_level_fig_a,
+  #   legend_a,
+  #   align = 'h',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   ncol = 2,
+  #   rel_widths = c(0.95, 0.5),
+  #   rel_heighs = c(1, 1)
+  # )
+  # 
+  # 
+  
+  fig2_plot_grid <- plot_grid(
+    health_level_fig_a,
+    health_level_fig_b,
+    health_level_fig_c,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 3,
+    ncol = 1,
+    rel_widths = c(1, 1, 1, 1),
+    rel_heighs = c(1, 1, 1, 1.05)
+  )
+  
+  fig2_plot_grid
 
 }
 
