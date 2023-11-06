@@ -361,12 +361,14 @@ list(
                                                                cpi2020,
                                                                discount_rate)),
   
-  tar_target(name = npv_plot, command = plot_npv_health_labor(refining_mortality,
+  tar_target(name = npv_plot, command = plot_npv_health_labor(main_path,
+                                                              refining_mortality,
                                                               state_ghg_output,
                                                               dt_ghg_2019,
                                                               annual_labor)),
   
-  tar_target(name = health_levels_plot, command = plot_health_levels(health_grp,
+  tar_target(name = health_levels_plot, command = plot_health_levels(main_path,
+                                                                     health_grp,
                                                                      health_pov,
                                                                      refining_mortality)),
 

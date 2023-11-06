@@ -1,7 +1,8 @@
 ## health and labor figures
 
 ## NPV figure
-plot_npv_health_labor <- function(refining_mortality,
+plot_npv_health_labor <- function(main_path,
+                                  refining_mortality,
                                   state_ghg_output,
                                   dt_ghg_2019,
                                   annual_labor) {
@@ -428,7 +429,8 @@ plot_npv_health_labor <- function(refining_mortality,
 }
 
 
-plot_health_levels <- function(health_grp,
+plot_health_levels <- function(main_path,
+                               health_grp,
                                health_pov,
                                refining_mortality) {
   
@@ -498,7 +500,7 @@ plot_health_levels <- function(health_grp,
     geom_line(linewidth = 1, alpha = 0.8) +
     facet_grid(type ~ scenario) +
     labs(x = NULL,
-         y = "num_over_den") +
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
@@ -520,11 +522,12 @@ plot_health_levels <- function(health_grp,
     geom_line(linewidth = 1, alpha = 0.8) +
     facet_grid(type ~ scenario) +
     labs(x = NULL,
-         y = "num_over_den") +
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          strip.text.x = element_blank(),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -544,12 +547,13 @@ plot_health_levels <- function(health_grp,
                                      "Below poverty" = "solid")) +
     facet_grid(type ~ scenario) +
     labs(x = NULL,
-         y = "num_over_den") +
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          strip.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
