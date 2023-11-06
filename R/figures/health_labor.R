@@ -129,6 +129,10 @@ plot_npv_health_labor <- function(refining_mortality,
                                  "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)", 
                                  "NPV (2019 USD billion)")]
   
+  ## save figure inputs
+  fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs.csv"))
+  
+  
   ## scenarios for filtering
   remove_scen <- c('LC1 historic production', 'BAU historic production')
   bau_scen <- 'BAU historic production'
@@ -470,6 +474,10 @@ plot_health_levels <- function(health_grp,
                                                           'Low carbon demand - historic exports',
                                                           'Low carbon demand - low exports',
                                                           'Low carbon demand - historic production'))
+  
+  
+  ## save figure inputs
+  fwrite(fig2_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
   
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
