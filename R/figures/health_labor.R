@@ -461,7 +461,7 @@ plot_health_levels <- function(health_grp,
   fig2_df[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
   
   ## scenarios for filtering
-  remove_scen <- c('LC1 historic production')
+  remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
   
   ## refactor
   fig2_df$scenario <- factor(fig2_df$scenario, levels = c('Reference demand - historic production',
@@ -485,7 +485,8 @@ plot_health_levels <- function(health_grp,
   
   ##
   health_level_fig_a <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
-                                                 type == "Race"), aes(x = year, y = num_over_den, color = group)) +
+                                                 type == "Race",
+                                                 group != "minority"), aes(x = year, y = num_over_den, color = group)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     facet_grid(type ~ scenario) +
     labs(x = NULL,
