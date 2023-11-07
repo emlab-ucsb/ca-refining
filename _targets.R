@@ -336,8 +336,7 @@ list(
                                                                                          raw_dac)),
   
   tar_target(name = health_grp, command = calculate_race_disp(health_weighted,
-                                                              raw_pop_income_2020,
-                                                              raw_pop_income_2021)),
+                                                              raw_pop_income_2020)),
   
   tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
                                                                  health_weighted)),

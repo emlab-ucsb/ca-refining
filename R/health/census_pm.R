@@ -417,13 +417,9 @@ calculate_weighted_census_tract_emissions = function(ct_xwalk,
 
 ## calculate race disparities and DAC/non DAC
 calculate_race_disp = function(health_weighted,
-                               raw_pop_income_2020,
-                               raw_pop_income_2021) {
+                               raw_pop_income_2020) {
   
   pop_income_2020 <- copy(raw_pop_income_2020)
-  
-  ## doesn't look like this gets used?
-  pop_income_2021 <- copy(raw_pop_income_2021)
   
   ## extract census tract, process
   pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]

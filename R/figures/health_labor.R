@@ -10,11 +10,13 @@ plot_npv_health_labor <- function(main_path,
   npv_df <- refining_mortality %>% as.data.table()
 
   ## state level
-  state_npv_df <- npv_df[, .(sum_cost_2019_pv = sum(cost_2019_PV)),
+  state_npv_df <- npv_df[, .(sum_cost_2019_pv = sum(cost_2019_PV), ## constant VSL
+                             sum_cost_pv = sum(cost_PV)), ## changing VSL
                              by = .(scen_id, demand_scenario, refining_scenario)]
 
   ## add column
   state_npv_df[, sum_cost_2019_pv_b := sum_cost_2019_pv / 1e9]
+  state_npv_df[, sum_cost_pv_b := sum_cost_pv / 1e9]
 
 
   ## add ghg emission reduction
@@ -77,25 +79,40 @@ plot_npv_health_labor <- function(main_path,
                                all.x = T)
   
   ## prepare to plot
-  plot_df <- health_labor_ghg_df[, .(scen_id, demand_scenario, refining_scenario,
+  plot_df <- health_labor_ghg_df[, .(scen_id, demand_scenario, refining_scenario, sum_cost_pv_b,
                                                                          sum_cost_2019_pv_b, forgone_wages_bil, avoided_ghg, perc_diff)]
 
   setnames(plot_df, "perc_diff", "ghg_perc_diff")
   
   ## add values / avoided ghgs
   plot_df[, avoided_health_cost := sum_cost_2019_pv_b * -1]
+  plot_df[, avoided_health_cost_annual_vsl := sum_cost_pv_b * -1]
   plot_df[, sum_cost_2019_pv_b := NULL]
+  plot_df[, sum_cost_pv_b := NULL]
   
   plot_df[, `:=` (avoided_health_cost_ghg = avoided_health_cost / avoided_ghg,
+                  avoided_health_cost_ghg_vsl2 = avoided_health_cost_annual_vsl / avoided_ghg,
                   forgone_wages_bil_ghg = forgone_wages_bil / avoided_ghg)]
   
   plot_df_health <- plot_df %>%
-    select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, avoided_health_cost, avoided_health_cost_ghg) %>%
-    pivot_longer(avoided_health_cost:avoided_health_cost_ghg, names_to = "metric", values_to = "value")
+    select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, avoided_health_cost, avoided_health_cost_annual_vsl,
+           avoided_health_cost_ghg, avoided_health_cost_ghg_vsl2) %>%
+    pivot_longer(avoided_health_cost:avoided_health_cost_ghg_vsl2, names_to = "metric", values_to = "value")
+  
+  ## add column for vsl
+  plot_df_health <- plot_df_health %>%
+    mutate(segment = "health",
+           unit_desc = ifelse(metric == "avoided_health_cost", "USD billion (2019 VSL)",
+                            ifelse(metric == "avoided_health_cost_annual_vsl", "USD billion (annual VSL)",
+                                   ifelse(metric == "avoided_health_cost_ghg", "USD billion per GHG (2019 VSL)", "USD billion per GHG (annual VSL)"))),
+           metric = ifelse(metric %in% c("avoided_health_cost", "avoided_health_cost_annual_vsl"), "avoided_health_cost", "avoided_health_cost_ghg"))
+  
   
   plot_df_labor <- plot_df %>%
     select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, forgone_wages_bil, forgone_wages_bil_ghg) %>%
-    pivot_longer(forgone_wages_bil:forgone_wages_bil_ghg, names_to = "metric", values_to = "value")
+    pivot_longer(forgone_wages_bil:forgone_wages_bil_ghg, names_to = "metric", values_to = "value") %>%
+    mutate(segment = "labor",
+           unit_desc = ifelse(metric == "forgone_wages_bil", "USD billion", "USD billion per GHG"))
   
   plot_df_long <- rbind(plot_df_health, plot_df_labor)
   
@@ -175,7 +192,8 @@ plot_npv_health_labor <- function(main_path,
   ## -------------------------------------------------------------------
   
   hist_prod = as.data.table(plot_df_long %>% filter(scen_id == bau_scen,
-                                                    unit == "NPV (2019 USD billion)"))
+                                                    unit == "NPV (2019 USD billion)",
+                                                    unit_desc == "USD billion (2019 VSL)"))
   
   fig_bxm_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -183,6 +201,7 @@ plot_npv_health_labor <- function(main_path,
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                               title == "Health: avoided mortality",
                                               unit == "NPV (2019 USD billion)",
+                                              unit_desc == "USD billion (2019 VSL)",
                                               !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value,  color = refining_scenario, shape = demand_scenario),
                size = 3, alpha = 0.8) +
     labs(color = "Refing scenario",
@@ -249,6 +268,7 @@ plot_npv_health_labor <- function(main_path,
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                         title == "Health: avoided mortality per avoided GHG",
                                         unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+                                        unit_desc == "USD billion per GHG (2019 VSL)",
                                         !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
     labs(color = "Policy",
          title = "C.",
