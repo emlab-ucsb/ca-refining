@@ -629,4 +629,91 @@ calculate_census_tract_mortality = function(beta,
   
 }
 
+## health mortality by demographic group
+calculate_mort_x_demg = function(refining_mortality,
+                                 raw_pop_income_2020,
+                                 raw_pop_poverty){
+  
+  refining_mort_df <- copy(refining_mortality)
+  setDT(refining_mort_df)
+  
+  ## get proportions for race and poverty
+  pop_income_2020 <- copy(raw_pop_income_2020)
+  
+  ## extract census tract, process
+  pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]
+  pop_income_2020[, year := NULL]
+  
+  # ## merge with health output
+  # merged_data <- merge(health_weighted, refining_mortality, 
+  #                      all.x = TRUE)
+  # 
+  ## add non-minority column, make longer, add percentages
+  pop_income_2020[, minority := hispanic + black + aialnative + asian]
+  pop_income_2020[, non_minority := total_pop - minority]
+  
+  pop_income_2020 <- pop_income_2020 %>%
+    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, minority, non_minority),
+                 names_to = "demog_group",
+                 values_to = "pop") %>%
+    as.data.table()
+  
+  merged_data[, pct := pop / total_pop]
+  merged_data[, num := total_pm25 * pct * total_pop]
+  merged_data[, den := pct * total_pop]
+  
+  ## create DAC and non-DAC variables
+  merged_data[, dac_population := ifelse(disadvantaged == "Yes", total_pop, 0)]
+  merged_data[, dac_num := total_pm25 * dac_population]
+  merged_data[, dac_den := dac_population]
+  merged_data[, nodac_population := ifelse(disadvantaged == "No", total_pop, 0)]
+  merged_data[, nodac_num := total_pm25 * nodac_population]
+  merged_data[, nodac_den := nodac_population]
+  
+  
+  ## filter out any census tracts with zero pop
+  merged_data <- merged_data[total_pop != 0]
+  
+  ## perform the collapse operation
+  collapsed_data <- merged_data[, .(sum_num = sum(num),
+                                    sum_den = sum(den),
+                                    dac_num = sum(dac_num),
+                                    dac_den = sum(dac_den),
+                                    nodac_num = sum(nodac_num),
+                                    nodac_den = sum(nodac_den)),
+                                by = .(scen_id, demand_scenario, refining_scenario, year, group)]
+  
+  ## calculate other variables
+  collapsed_data[, num_over_den := sum_num / sum_den]
+  collapsed_data[, dac := dac_num / dac_den]
+  collapsed_data[, no_dac := nodac_num / nodac_den]
+  
+  ## non-minority value for comparisons
+  non_minority_df <- collapsed_data[group == "non_minority"]
+  non_minority_df <- non_minority_df[, .(scen_id, demand_scenario, refining_scenario, year,
+                                         num_over_den)]
+  non_minority_df[, nm_num_over_den := num_over_den]
+  non_minority_df[, num_over_den := NULL]
+  
+  ## merge
+  merge_collapsed_df <- collapsed_data %>%
+    left_join(non_minority_df) %>%
+    ## remove white group
+    filter(group != "white") %>%
+    mutate(stat = num_over_den - nm_num_over_den,
+           stat_dac = dac - no_dac) %>%
+    as.data.table()
+  
+  ## return
+  return(merge_collapsed_df)
+  
+
+  
+  
+}
+
+
+
+
+
 
