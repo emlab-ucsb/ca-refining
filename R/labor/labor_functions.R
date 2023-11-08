@@ -99,3 +99,15 @@ calc_labor_outputs <- function(proc_labor_df,
   county_out_labor
 
 }
+
+# labor_disag <- function(annual_labor,
+#                         raw_dac,
+#                         ) {
+#   
+#   
+# 
+#   
+# }
+
+
+
