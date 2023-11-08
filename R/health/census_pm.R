@@ -659,7 +659,6 @@ calculate_mort_x_demg = function(refining_mortality,
     as.data.table()
   
   merged_data[, pct := pop / total_pop]
-  merged_data[, num := total_pm25 * pct * total_pop]
   merged_data[, den := pct * total_pop]
   
   ## create DAC and non-DAC variables

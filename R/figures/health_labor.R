@@ -521,6 +521,7 @@ plot_health_levels <- function(main_path,
     facet_grid(type ~ scenario) +
     labs(x = NULL,
          y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+    ylim(c(0, 0.35)) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
@@ -543,6 +544,7 @@ plot_health_levels <- function(main_path,
     facet_grid(type ~ scenario) +
     labs(x = NULL,
          y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+    ylim(c(0, 0.45)) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
@@ -568,6 +570,7 @@ plot_health_levels <- function(main_path,
     facet_grid(type ~ scenario) +
     labs(x = NULL,
          y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+    ylim(c(0, 0.25)) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
