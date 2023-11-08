@@ -60,7 +60,7 @@ incidence_ca <- fread("data/benmap/raw/Mortality Incidence (2020).csv", stringsA
   filter(state_name %in% "California")%>%
   select(-endpoint,-column,-row,-state_name,-state_fips,-cnty_fips)  
 
-#Create 25-29 and 30-34 age groups
+# #Create 25-29 and 30-34 age groups
 
 temp_split <- incidence_ca %>%
   filter(start_age == 25)%>%
@@ -224,6 +224,7 @@ gc()
 ## Output final population and mortality incidence data
 
 write.csv(ct_inc_45, "data/health/processed/ct_inc_45_2020.csv", row.names = F)
+#write.csv(ct_inc_45, "data/health/processed/ct_inc_45_2020_old.csv", row.names = F)
 
 # # MORTALITY IMPACTS
 # 
