@@ -20,6 +20,7 @@ library(readr)
 library(fuzzyjoin)
 library(sf)
 library(cowplot)
+library(tigris)
 
 #font_import()
 #loadfonts(device = "win")
@@ -121,7 +122,6 @@ list(
   tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
   tar_target(name = file_dt_ef, command = file.path(main_path, "data/health/processed/ref_emission_factor.csv"), format = "file"),
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
-  tar_target(name = file_dt_county_codes, command = file.path(main_path, "data/stocks-flows/raw/prod/county_codes.csv"), format = "file"),
   
   tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
@@ -157,7 +157,6 @@ list(
   tar_target(name = ct_inc_45, command = fread_data(file_dt_ct_inc_pop)),
   tar_target(name = growth_rates, command = fread_data(file_dt_growth_rate)),
   tar_target(name = health_income, command = fread_data(file_dt_health_income)),
-  tar_target(name = raw_county_codes, command = fread(file_dt_county_codes)),
   
   tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
   tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
