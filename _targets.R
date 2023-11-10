@@ -352,6 +352,10 @@ list(
                                                                                    growth_rates)),
 
   
+  tar_target(name = ref_mortality_demog, command = calculate_mort_x_demg(refining_mortality,
+                                                                         raw_pop_income_2020,
+                                                                         raw_pop_poverty)),
+  
   tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
                                                                indiv_prod_output,
                                                                dt_refcap,
@@ -359,6 +363,8 @@ list(
                                                                cpi2019,
                                                                cpi2020,
                                                                discount_rate)),
+  
+  
   
   tar_target(name = npv_plot, command = plot_npv_health_labor(main_path,
                                                               refining_mortality,
