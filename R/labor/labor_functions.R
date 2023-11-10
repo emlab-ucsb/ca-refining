@@ -100,14 +100,25 @@ calc_labor_outputs <- function(proc_labor_df,
 
 }
 
-# labor_disag <- function(annual_labor,
-#                         raw_dac,
-#                         ) {
+
+# ## labor results grouped by demographic
+# calculate_labor_x_demg <- function(raw_ct_2020_all,
+#                                    ca_crs,
+#                                    raw_county_codes,
+#                                    ref_mortality_demog,
+#                                    annual_labor) {
+#   
+#   county_df <- raw_county_codes
 #   
 #   
+#   ca_ct = raw_ct_2020_all %>%
+#     filter(STATEFP == "06") %>%
+#     st_transform(crs = ca_crs) %>%
+#     select(census_tract = GEOID, COUNTYFP) %>%
+#     st_drop_geometry() 
 # 
 #   
+#   
 # }
-
 
 
