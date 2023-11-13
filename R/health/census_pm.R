@@ -430,23 +430,20 @@ calculate_race_disp = function(health_weighted,
                        all.x = TRUE)
  
   ## add non-minority column, make longer, add percentages
-  merged_data[, minority := hispanic + black + aialnative + asian]
-  merged_data[, non_minority := total_pop - minority]
+  # merged_data[, minority := hispanic + black + aialnative + asian]
 
   merged_data <- merged_data %>%
-    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, minority, non_minority),
+    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, hawaiian_pacisl, nonh_other, nonh_two_or_more),
                  names_to = "group",
                  values_to = "pop") %>%
     as.data.table()
 
   merged_data[, pct := pop / total_pop]
   merged_data[, num := total_pm25 * pct * total_pop]
-  merged_data[, den := pct * total_pop]
   
   ## create DAC and non-DAC variables
   merged_data[, dac_population := ifelse(disadvantaged == "Yes", total_pop, 0)]
   merged_data[, dac_num := total_pm25 * dac_population]
-  merged_data[, dac_den := dac_population]
   merged_data[, nodac_population := ifelse(disadvantaged == "No", total_pop, 0)]
   merged_data[, nodac_num := total_pm25 * nodac_population]
   merged_data[, nodac_den := nodac_population]
@@ -457,9 +454,9 @@ calculate_race_disp = function(health_weighted,
   
   ## perform the collapse operation
   collapsed_data <- merged_data[, .(sum_num = sum(num),
-                                    sum_den = sum(den),
+                                    sum_den = sum(pop),
                                     dac_num = sum(dac_num),
-                                    dac_den = sum(dac_den),
+                                    dac_den = sum(dac_population),
                                     nodac_num = sum(nodac_num),
                                     nodac_den = sum(nodac_den)),
                                 by = .(scen_id, demand_scenario, refining_scenario, year, group)]
@@ -645,12 +642,11 @@ calculate_mort_x_demg = function(refining_mortality,
   pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]
   pop_income_2020[, year := NULL]
   
-  ## add non-minority column, make longer, add percentages
-  pop_income_2020[, minority := hispanic + black + aialnative + asian]
-  pop_income_2020[, non_minority := total_pop - minority]
+  # ## add non-minority column, make longer, add percentages
+  # pop_income_2020[, minority := hispanic + black + aialnative + asian]
   
   pop_income_2020 <- pop_income_2020 %>%
-    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, minority, non_minority),
+    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, hawaiian_pacisl, nonh_other, nonh_two_or_more),
                  names_to = "demo_group",
                  values_to = "pop") %>%
     as.data.table()
@@ -712,10 +708,10 @@ calculate_mort_x_demg = function(refining_mortality,
   merged_health_demo[, demo_cost_PV := cost_PV * pct]
   
   ## legend names
-  lnames_df <- tibble(demo_group = c("non_dac", "dac", "hispanic", "non_minority", "white", "asian",
-                                     "minority", "aialnative", "black", "total_above_poverty", "total_below_poverty"),
-                      title = c("Non-DAC", "DAC", "Hispanic", "Non-minority", "White", "Asian", "Minority",
-                                "American Indian", "Black", "Above poverty line", "Below poverty line"))
+  lnames_df <- tibble(demo_group = c("non_dac", "dac", "hispanic", "white", "asian", "aialnative", "black", 
+                                     "hawaiian_pacisl", "nonh_other", "nonh_two_or_more", "total_above_poverty", "total_below_poverty"),
+                      title = c("Non-DAC", "DAC", "Hispanic", "White", "Asian",  "American Indian or Alaska Native", "Black", 
+                                "Hawaiian or Other Pacific Islander", "Other (Non-Hispanic)", "Two or more races (Non-Hispanic)", "Above poverty line", "Below poverty line"))
   
   merged_health_demo <- merge(merged_health_demo, lnames_df,
                               all.x = T)

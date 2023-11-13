@@ -375,9 +375,7 @@ list(
                                                               annual_labor)),
   
   tar_target(name = health_levels_plot, command = plot_health_levels(main_path,
-                                                                     health_grp,
-                                                                     health_pov,
-                                                                     refining_mortality)),
+                                                                     ref_mortality_demog)),
 
   # save outputs
   tar_target(name = save_ct_xwalk, 
