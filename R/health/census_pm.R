@@ -467,18 +467,17 @@ calculate_race_disp = function(health_weighted,
   collapsed_data[, no_dac := nodac_num / nodac_den]
   
   ## non-minority value for comparisons
-  non_minority_df <- collapsed_data[group == "non_minority"]
-  non_minority_df <- non_minority_df[, .(scen_id, demand_scenario, refining_scenario, year,
-                                         num_over_den)]
-  non_minority_df[, nm_num_over_den := num_over_den]
-  non_minority_df[, num_over_den := NULL]
+  white_df <- collapsed_data[group == "white"]
+  white_df <- white_df[, .(scen_id, demand_scenario, refining_scenario, year, num_over_den)]
+  white_df[, w_num_over_den := num_over_den]
+  white_df[, num_over_den := NULL]
  
   ## merge
   merge_collapsed_df <- collapsed_data %>%
-    left_join(non_minority_df) %>%
-    ## remove white group
-    filter(group != "white") %>%
-    mutate(stat = num_over_den - nm_num_over_den,
+    left_join(white_df) %>%
+    # ## remove white group
+    # filter(group != "white") %>%
+    mutate(stat = num_over_den - w_num_over_den,
            stat_dac = dac - no_dac) %>%
     as.data.table()
   

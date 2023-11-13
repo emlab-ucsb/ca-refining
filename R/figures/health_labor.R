@@ -515,8 +515,7 @@ plot_health_levels <- function(main_path,
   
   ##
   health_level_fig_a <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
-                                                 type == "Race",
-                                                 group != "minority"), aes(x = year, y = num_over_den, color = group)) +
+                                                 type == "Race"), aes(x = year, y = num_over_den, color = group)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     facet_grid(type ~ scenario) +
     labs(x = NULL,
