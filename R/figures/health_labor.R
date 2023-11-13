@@ -623,5 +623,64 @@ plot_health_levels <- function(main_path,
 }
 
 
+plot_hl_levels <- function(main_path,
+                           ref_mortality_demog,
+                           state_ghg_output,
+                           dt_ghg_2019) {
+  
+   health_df <- copy(ref_mortality_demog)
+   
+   ## group by scenario, demo_cat, demo_group, title, and sum
+   health_df <- health_df[, .(sum_cost_2019_pv = sum(demo_cost_2019_PV, na.rm = T), ## constant VSL
+                              sum_cost_pv = sum(demo_cost_PV,  na.rm = T)), ## changing VSL
+                          by = .(scen_id, demand_scenario, refining_scenario, demo_cat, demo_group, title)]
+   
+   ## multiply by -1
+   health_df[, sum_cost_2019_pv := sum_cost_2019_pv * -1]
+   health_df[, sum_cost_pv := sum_cost_2019_pv * -1]
+   
+   ## add ghg emission reduction ----------------------------
+   ## 2019 ghg 
+   ghg_2019_val <- dt_ghg_2019$mtco2e[1]
+   
+   ## 2045 vs 2019 ghg
+   ghg_2045 <- state_ghg_output[year == 2045 & source == "total"]
+   setnames(ghg_2045, "value", "ghg_kg")
+   ghg_2045[, ghg_2045 := (ghg_kg / 1000) / 1e6]
+   ghg_2045[, ghg_2019 := ghg_2019_val]
+   ghg_2045[, perc_diff := (ghg_2045 - ghg_2019) / ghg_2019]
+   
+   perc_diff_df <- ghg_2045[, .(demand_scenario, refining_scenario, ghg_2045, ghg_2019, perc_diff)]
+   
+   ## summarize by scenario, filter for total
+   state_ghg_df <- state_ghg_output[source == "total", .(total_ghg = sum(value)),
+                                    by = .(demand_scenario, refining_scenario)]
+   
+   state_ghg_df[, total_ghg_mmt := (total_ghg / 1000) / 1e6]
+   
+   ## reference
+   ref_df <- state_ghg_df[demand_scenario == "BAU" & refining_scenario == "historic production", .(total_ghg_mmt)]
+   setnames(ref_df, "total_ghg_mmt", "ref_ghg_mmt")
+   ref_value <- ref_df$ref_ghg_mmt[1]
+   
+   ## merge with summarized df
+   state_ghg_df[, ref_ghg := ref_value]
+   state_ghg_df[, avoided_ghg := (total_ghg_mmt - ref_value) * -1]
+   
+   ## merge with health
+   health_ghg_df <- merge(health_df, state_ghg_df[, .(demand_scenario, refining_scenario, total_ghg_mmt, ref_ghg, avoided_ghg)],
+                          by = c("demand_scenario", "refining_scenario"),
+                          all.x = T)
+
+
+   
+   
+   
+} 
+
+  
+}
+
+
 
 

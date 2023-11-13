@@ -475,8 +475,6 @@ calculate_race_disp = function(health_weighted,
   ## merge
   merge_collapsed_df <- collapsed_data %>%
     left_join(white_df) %>%
-    # ## remove white group
-    # filter(group != "white") %>%
     mutate(stat = num_over_den - w_num_over_den,
            stat_dac = dac - no_dac) %>%
     as.data.table()
