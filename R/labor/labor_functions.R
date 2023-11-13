@@ -101,54 +101,54 @@ calc_labor_outputs <- function(proc_labor_df,
 }
 
 
-## labor results grouped by demographic
-
-calculate_labor_x_demg <- function(raw_ct_2020_all,
-                                   ca_crs,
-                                   ref_mortality_demog,
-                                   annual_labor) {
-
-  county_df <- counties(state = "CA") %>%
-    select(COUNTYFP, NAME) %>%
-    st_drop_geometry()
-
-
-  ca_ct = raw_ct_2020_all %>%
-    filter(STATEFP == "06") %>%
-    st_transform(crs = ca_crs) %>%
-    select(census_tract = GEOID, COUNTYFP) %>%
-    st_drop_geometry() %>%
-    left_join(county_df) %>%
-    rename(county = NAME) %>%
-    select(-COUNTYFP)
-  
-  demo_pct_df <- ref_mortality_demog %>%
-    filter(year == 2020) %>%
-    select(census_tract, pop, demo_cat, demo_group, pct) %>%
-    unique() %>%
-    left_join(ca_ct) %>%
-    mutate(demo_pop = pct * pop)
-  
-  county_pop <- demo_pct_df %>%
-    select(census_tract, county, pop) %>%
-    unique() %>%
-    group_by(county) %>%
-    summarise(county_pop = sum(pop)) %>%
-    ungroup()
-  
-  county_demo_df <- demo_pct_df %>%
-    group_by(county, demo_cat, demo_group) %>%
-    summarise(demo_pop = sum(demo_pop)) %>%
-    ungroup()
-  
-  
-    
-  
-  
-  
-
-
-
-}
+# ## labor results grouped by demographic
+# 
+# calculate_labor_x_demg <- function(raw_ct_2020_all,
+#                                    ca_crs,
+#                                    ref_mortality_demog,
+#                                    annual_labor) {
+# 
+#   county_df <- counties(state = "CA") %>%
+#     select(COUNTYFP, NAME) %>%
+#     st_drop_geometry()
+# 
+# 
+#   ca_ct = raw_ct_2020_all %>%
+#     filter(STATEFP == "06") %>%
+#     st_transform(crs = ca_crs) %>%
+#     select(census_tract = GEOID, COUNTYFP) %>%
+#     st_drop_geometry() %>%
+#     left_join(county_df) %>%
+#     rename(county = NAME) %>%
+#     select(-COUNTYFP)
+#   
+#   demo_pct_df <- ref_mortality_demog %>%
+#     filter(year == 2020) %>%
+#     select(census_tract, pop, demo_cat, demo_group, pct) %>%
+#     unique() %>%
+#     left_join(ca_ct) %>%
+#     mutate(demo_pop = pct * pop)
+#   
+#   county_pop <- demo_pct_df %>%
+#     select(census_tract, county, pop) %>%
+#     unique() %>%
+#     group_by(county) %>%
+#     summarise(county_pop = sum(pop)) %>%
+#     ungroup()
+#   
+#   county_demo_df <- demo_pct_df %>%
+#     group_by(county, demo_cat, demo_group) %>%
+#     summarise(demo_pop = sum(demo_pop)) %>%
+#     ungroup()
+#   
+#   
+#     
+#   
+#   
+#   
+# 
+# 
+# 
+# }
 
 
