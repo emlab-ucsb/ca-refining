@@ -146,11 +146,15 @@ read_nhgis_data <- function(file) {
     black = AMP3E004,
     aialnative = AMP3E005,
     asian = AMP3E006,
+    hawaiian_pacisl = AMP3E007,
+    nonh_other =  AMP3E008,
+    nonh_two_or_more =  AMP3E009,
     median_income = AMR8E001
     
   )]
   
-  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, median_income, geoid, year, state)]
+  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+               nonh_other, nonh_two_or_more, median_income, geoid, year, state)]
   
 }
 
@@ -168,11 +172,15 @@ read_nhgis_2021_data <- function(file) {
     black = AOOCE004,
     aialnative = AOOCE005,
     asian = AOOCE006,
+    hawaiian_pacisl = AOOCE007,
+    nonh_other = AOOCE008,
+    nonh_two_or_more = AOOCE009,
     median_income = AOQIE001
     
   )]
   
-  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, median_income, geoid, year)]
+  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+               nonh_other, nonh_two_or_more, median_income, geoid, year)]
   
 }
 
