@@ -137,6 +137,7 @@ read_nhgis_data <- function(file) {
   
   dt[, `:=` (
     gisjoin = GISJOIN,
+    county = COUNTY,
     geoid = GEOID,
     year = YEAR,
     state = STATE,
@@ -153,7 +154,7 @@ read_nhgis_data <- function(file) {
     
   )]
   
-  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+  dt <- dt[, .(gisjoin, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
                nonh_other, nonh_two_or_more, median_income, geoid, year, state)]
   
 }
@@ -164,6 +165,7 @@ read_nhgis_2021_data <- function(file) {
   
   dt[, `:=` (
     gisjoin = GISJOIN,
+    county = COUNTY,
     geoid = GEO_ID,
     year = YEAR,
     total_pop = AOOCE001,
@@ -179,7 +181,7 @@ read_nhgis_2021_data <- function(file) {
     
   )]
   
-  dt <- dt[, .(gisjoin, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+  dt <- dt[, .(gisjoin, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
                nonh_other, nonh_two_or_more, median_income, geoid, year)]
   
 }
@@ -194,6 +196,7 @@ read_poverty_data <- function(file) {
   dt[, `:=` (
     gisjoin = GISJOIN,
     geoid = GEO_ID,
+    county = COUNTY,
     year = YEAR,
     total_pop = AOQGE001,
     total_below_poverty = AOQGE002,
@@ -201,7 +204,7 @@ read_poverty_data <- function(file) {
     
   )]
   
-  dt <- dt[, .(gisjoin, geoid, year, total_above_poverty, total_below_poverty, total_pop)]
+  dt <- dt[, .(gisjoin, geoid, county, year, total_above_poverty, total_below_poverty, total_pop)]
   
 }
 
