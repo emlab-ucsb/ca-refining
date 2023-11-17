@@ -417,70 +417,49 @@ calculate_weighted_census_tract_emissions = function(ct_xwalk,
 
 ## calculate race disparities and DAC/non DAC
 calculate_race_disp = function(health_weighted,
-                               raw_pop_income_2020) {
+                               pop_ratios,
+                               refining_mortality) {
   
-  pop_income_2020 <- copy(raw_pop_income_2020)
-  
-  ## extract census tract, process
-  pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]
-  pop_income_2020[, year := NULL]
+  ## census pop
+  census_pop <- refining_mortality %>%
+    ungroup() %>%
+    filter(year == 2020) %>%
+    select(census_tract, pop) %>%
+    unique() %>%
+    rename(total_pop = pop) %>%
+    as.data.table()
   
   ## merge with health output
-  merged_data <- merge(health_weighted, pop_income_2020, 
-                       all.x = TRUE)
- 
-  ## add non-minority column, make longer, add percentages
-  # merged_data[, minority := hispanic + black + aialnative + asian]
-
-  merged_data <- merged_data %>%
-    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, hawaiian_pacisl, nonh_other, nonh_two_or_more),
-                 names_to = "group",
-                 values_to = "pop") %>%
-    as.data.table()
-
-  merged_data[, pct := pop / total_pop]
+  merged_data <- merge(health_weighted, pop_ratios, 
+                       all.x = TRUE,
+                       allow.cartesian = TRUE)
+  
+  merged_data <- merge(merged_data, census_pop,
+                       all.x = T,
+                       by = c("census_tract"))
+  
+  merged_data <- merged_data[year != 2019]
+  
+  ## caclualte pop pct * pop
+  merged_data[, pop := pct * total_pop]
+  
+ ## calculate metrics
   merged_data[, num := total_pm25 * pct * total_pop]
-  
-  ## create DAC and non-DAC variables
-  merged_data[, dac_population := ifelse(disadvantaged == "Yes", total_pop, 0)]
-  merged_data[, dac_num := total_pm25 * dac_population]
-  merged_data[, nodac_population := ifelse(disadvantaged == "No", total_pop, 0)]
-  merged_data[, nodac_num := total_pm25 * nodac_population]
-  merged_data[, nodac_den := nodac_population]
-  
   
   ## filter out any census tracts with zero pop
   merged_data <- merged_data[total_pop != 0]
   
   ## perform the collapse operation
   collapsed_data <- merged_data[, .(sum_num = sum(num),
-                                    sum_den = sum(pop),
-                                    dac_num = sum(dac_num),
-                                    dac_den = sum(dac_population),
-                                    nodac_num = sum(nodac_num),
-                                    nodac_den = sum(nodac_den)),
-                                by = .(scen_id, demand_scenario, refining_scenario, year, group)]
+                                    sum_den = sum(pop)),
+                                by = .(scen_id, demand_scenario, refining_scenario, year, demo_cat, demo_group, title)]
 
   ## calculate other variables
   collapsed_data[, num_over_den := sum_num / sum_den]
-  collapsed_data[, dac := dac_num / dac_den]
-  collapsed_data[, no_dac := nodac_num / nodac_den]
   
-  ## non-minority value for comparisons
-  white_df <- collapsed_data[group == "white"]
-  white_df <- white_df[, .(scen_id, demand_scenario, refining_scenario, year, num_over_den)]
-  white_df[, w_num_over_den := num_over_den]
-  white_df[, num_over_den := NULL]
- 
-  ## merge
-  merge_collapsed_df <- collapsed_data %>%
-    left_join(white_df) %>%
-    mutate(stat = num_over_den - w_num_over_den,
-           stat_dac = dac - no_dac) %>%
-    as.data.table()
-  
+
   ## return
-  return(merge_collapsed_df)
+  return(collapsed_data)
   
   
 }
@@ -625,97 +604,27 @@ calculate_census_tract_mortality = function(beta,
 
 ## health mortality by demographic group
 calculate_mort_x_demg = function(refining_mortality,
-                                 raw_pop_income_2020,
-                                 raw_pop_poverty){
+                                 pop_ratios){
   
   refining_mort_df <- copy(refining_mortality)
   setDT(refining_mort_df)
   
-  ## get proportions for race and merge
-  ## -------------------------------------------------------------------------------
-  pop_income_2020 <- copy(raw_pop_income_2020)
-  
-  ## extract census tract, process
-  pop_income_2020[, census_tract := as.character(substr(geoid, 8, nchar(geoid)))]
-  pop_income_2020[, year := NULL]
-  
-  # ## add non-minority column, make longer, add percentages
-  # pop_income_2020[, minority := hispanic + black + aialnative + asian]
-  
-  pop_income_2020 <- pop_income_2020 %>%
-    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, hawaiian_pacisl, nonh_other, nonh_two_or_more),
-                 names_to = "demo_group",
-                 values_to = "pop") %>%
-    as.data.table()
-  
-  pop_income_2020[, pct := pop / total_pop]
-  
   ## merge with health output
-  merged_race <- merge(refining_mortality, pop_income_2020[, .(census_tract, demo_group, pct)],
-                       all.x = TRUE)
+  refining_mort_df <- merge(refining_mort_df, pop_ratios,
+                       all.x = TRUE,
+                       allow.cartesian = T)
   
-  setDT(merged_race)
-  
-  merged_race[, demo_cat := "Race"]
-  
-  ## get proportions for poverty and merge
-  ## -------------------------------------------------------------------------------
-
-  ## copy raw_pop_poverty
-  pop_poverty <- copy(raw_pop_poverty)
-  
-  ## extract census tract, process
-  pop_poverty[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
-  pop_poverty[, year := NULL]
-  
-  ## pivot longer
-  pop_poverty <- pop_poverty %>%
-    select(census_tract, total_pop, total_above_poverty, total_below_poverty) %>%
-    pivot_longer(cols = c(total_above_poverty, total_below_poverty),
-                 names_to = "demo_group",
-                 values_to = "pop") %>%
-    as.data.table()
-  
-  ## add columns
-  pop_poverty[, pct := pop / total_pop]
-  
-  ## merge with health output
-  merged_pov_data <- merge(refining_mortality, pop_poverty[, .(census_tract, demo_group, pct)],
-                           all.x = TRUE)
-  
-  setDT(merged_pov_data)
-  
-  merged_pov_data[, demo_cat := "Poverty"]
-  
-  ## get DAC proportions
-  ## -------------------------------------------------------------------------------
-  
-  merged_dac <- refining_mortality %>%
-    as.data.table()
-  
-  merged_dac[, pct := ifelse(disadvantaged == "No", 0, 1)]
-  merged_dac[, demo_group := ifelse(disadvantaged == "No", "non_dac", "dac")]
-  merged_dac[, demo_cat := "DAC"]
-  
-  ## rbind
-  merged_health_demo <- rbind(merged_dac, merged_race, merged_pov_data)
+  setDT(refining_mort_df)
+ 
   
   ## multiply health impacts by pct
-  merged_health_demo[, demo_cost_2019_PV := cost_2019_PV * pct]
-  merged_health_demo[, demo_cost_PV := cost_PV * pct]
+  refining_mort_df[, demo_cost_2019_PV := cost_2019_PV * pct]
+  refining_mort_df[, demo_cost_PV := cost_PV * pct]
   
-  ## legend names
-  lnames_df <- tibble(demo_group = c("non_dac", "dac", "hispanic", "white", "asian", "aialnative", "black", 
-                                     "hawaiian_pacisl", "nonh_other", "nonh_two_or_more", "total_above_poverty", "total_below_poverty"),
-                      title = c("Non-DAC", "DAC", "Hispanic", "White", "Asian",  "American Indian or Alaska Native", "Black", 
-                                "Hawaiian or Other Pacific Islander", "Other (Non-Hispanic)", "Two or more races (Non-Hispanic)", "Above poverty line", "Below poverty line"))
-  
-  merged_health_demo <- merge(merged_health_demo, lnames_df,
-                              all.x = T)
-  
-  
+ 
+
   ## return
-  return(merged_health_demo)
+  return(refining_mort_df)
   
 
   

@@ -46,7 +46,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -337,12 +337,6 @@ list(
                                                                                          refining_health_income,
                                                                                          raw_dac)),
   
-  tar_target(name = health_grp, command = calculate_race_disp(health_weighted,
-                                                              raw_pop_income_2020)),
-  
-  tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
-                                                                 health_weighted)),
-  
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(beta,
                                                                                    se,
                                                                                    vsl_2015,
@@ -352,11 +346,25 @@ list(
                                                                                    health_weighted,
                                                                                    ct_inc_45,
                                                                                    growth_rates)),
-
+  
+  tar_target(name = pop_ratios, command = calc_pop_ratios(raw_pop_income_2021,
+                                                          raw_pop_poverty,
+                                                          refining_mortality)),
+  
+  tar_target(name = health_grp, command = calculate_race_disp(health_weighted,
+                                                              pop_ratios,
+                                                              refining_mortality)),
+  
+  # tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
+  #                                                                health_weighted)),
+  # 
+  
+  tar_target(name = county_pop_ratios, command = calc_pop_ratios_county(raw_pop_income_2021,
+                                                                        raw_pop_poverty,
+                                                                        refining_mortality)),
   
   tar_target(name = ref_mortality_demog, command = calculate_mort_x_demg(refining_mortality,
-                                                                         raw_pop_income_2020,
-                                                                         raw_pop_poverty)),
+                                                                         pop_ratios)),
   
   tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
                                                                indiv_prod_output,
@@ -375,9 +383,7 @@ list(
                                                               annual_labor)),
   
   tar_target(name = health_levels_plot, command = plot_health_levels(main_path,
-                                                                     health_grp,
-                                                                     health_pov,
-                                                                     refining_mortality)),
+                                                                     health_grp)),
 
   # save outputs
   tar_target(name = save_ct_xwalk, 

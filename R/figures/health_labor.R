@@ -450,36 +450,9 @@ plot_npv_health_labor <- function(main_path,
 
 
 plot_health_levels <- function(main_path,
-                               health_grp,
-                               health_pov,
-                               refining_mortality) {
+                               health_grp) {
   
-  ## stack race, dac, and income groups (long)
-  ## ----------------------------------------------------
-  
-  ## race
-  race_df <- health_grp[, .(scen_id, demand_scenario, refining_scenario, year, group, num_over_den)]
-  race_df[, type := "Race"]
-  
-  ## dac
-  dac_df <- health_grp[, .(scen_id, demand_scenario, refining_scenario, year, dac, no_dac)]
-  
-  dac_df <- dac_df %>%
-    pivot_longer(dac:no_dac, names_to = "group", values_to = "num_over_den") %>%
-    mutate(group = ifelse(group == "dac", "DAC", "Non-DAC")) %>%
-    mutate(type = "DAC") %>%
-    as.data.frame()
-  
-  ## income
-  income_df <- health_pov %>%
-    select(scen_id:total_below_poverty) %>%
-    pivot_longer(total_above_poverty:total_below_poverty, names_to = "group", values_to = "num_over_den") %>%
-    mutate(group = ifelse(group == "total_above_poverty", "Above poverty", "Below poverty")) %>%
-    mutate(type = "Poverty") %>%
-    as.data.frame()
-  
-  ## rbind
-  fig2_df <- rbind(race_df, dac_df, income_df)
+  fig2_df <- copy(health_grp)
   
   ## change scenario names, factor
   fig2_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
@@ -514,10 +487,15 @@ plot_health_levels <- function(main_path,
   #         axis.ticks.length.x = unit(0.1, 'cm'))
   
   ##
+  
+  fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
+  
+  
   health_level_fig_a <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
-                                                 type == "Race"), aes(x = year, y = num_over_den, color = group)) +
+                                                  title %in% fig_title_vec,
+                                                  demo_cat == "Race"), aes(x = year, y = num_over_den, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
-    facet_grid(type ~ scenario) +
+    facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
     ylim(c(0, 0.35)) +
@@ -538,9 +516,9 @@ plot_health_levels <- function(main_path,
   
   ##
   health_level_fig_b <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
-                                                  type == "DAC"), aes(x = year, y = num_over_den, lty = group)) +
+                                                  demo_cat == "DAC"), aes(x = year, y = num_over_den, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
-    facet_grid(type ~ scenario) +
+    facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
     ylim(c(0, 0.45)) +
@@ -562,14 +540,14 @@ plot_health_levels <- function(main_path,
   
   ##
   health_level_fig_c <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
-                                                  type == "Poverty"), aes(x = year, y = num_over_den, lty = group)) +
+                                                  demo_cat == "Poverty"), aes(x = year, y = num_over_den, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
-    scale_linetype_manual(values = c("Above poverty" = "dashed",
-                                     "Below poverty" = "solid")) +
-    facet_grid(type ~ scenario) +
+    scale_linetype_manual(values = c("Above poverty line" = "dashed",
+                                     "Below poverty line" = "solid")) +
+    facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
-    ylim(c(0, 0.25)) +
+    # ylim(c(0, 0.25)) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
