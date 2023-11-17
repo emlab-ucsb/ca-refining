@@ -115,21 +115,6 @@ calc_pop_ratios_county <- function(raw_pop_income_2021,
                                    raw_pop_poverty,
                                    refining_mortality) {
     
-    # ## county-level info
-    # county_df <- counties(state = "CA", year = 2020) %>%
-    #   select(COUNTYFP, NAME) %>%
-    #   st_drop_geometry()
-    # 
-    # ca_ct = raw_ct_2020_all %>%
-    #   filter(STATEFP == "06") %>%
-    #   st_transform(crs = ca_crs) %>%
-    #   select(census_tract = GEOID, COUNTYFP) %>%
-    #   st_drop_geometry() %>%
-    #   left_join(county_df) %>%
-    #   rename(county = NAME) %>%
-    #   select(-COUNTYFP)
-  
-    
     ## get proportions for race and merge
     ## -------------------------------------------------------------------------------
     pop_race_c_df <- copy(raw_pop_income_2021)

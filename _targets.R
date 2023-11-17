@@ -374,7 +374,10 @@ list(
                                                                cpi2020,
                                                                discount_rate)),
   
-  
+  tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(county_pop_ratios,
+                                                                      annual_labor,
+                                                                      raw_pop_income_2021,
+                                                                      refining_mortality)),
   
   tar_target(name = npv_plot, command = plot_npv_health_labor(main_path,
                                                               refining_mortality,
