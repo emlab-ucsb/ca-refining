@@ -104,48 +104,62 @@ calc_labor_outputs <- function(proc_labor_df,
 ## labor results grouped by demographic
 
 calculate_labor_x_demg <- function(county_pop_ratios,
-                                   annual_labor) {
+                                   annual_labor,
+                                   raw_pop_income_2021,
+                                   refining_mortality) {
 
-  # county_df <- counties(state = "CA") %>%
-  #   select(COUNTYFP, NAME) %>%
-  #   st_drop_geometry()
-  #
-  #
-  # ca_ct = raw_ct_2020_all %>%
-  #   filter(STATEFP == "06") %>%
-  #   st_transform(crs = ca_crs) %>%
-  #   select(census_tract = GEOID, COUNTYFP) %>%
-  #   st_drop_geometry() %>%
-  #   left_join(county_df) %>%
-  #   rename(county = NAME) %>%
-  #   select(-COUNTYFP)
-#
-#
-#   pop_df <- refining_mortality %>%
-#     select(census_tract, year, pop) %>%
-#     unique() %>%
-#     left_join(ca_ct)
-
-  county_pop <- demo_pct_df %>%
-    select(census_tract, county, pop) %>%
+  ## get county and census tracts
+  c_ct_df <- raw_pop_income_2021[state == "California"]
+  c_ct_df[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  c_ct_df <- c_ct_df[, .(county, census_tract)]
+  c_ct_df[, county := str_remove(county, " County")]
+  
+  ## get pop from refining_mortality
+  pop_df <- refining_mortality %>%
+    select(census_tract, year, pop) %>%
     unique() %>%
-    group_by(county) %>%
-    summarise(county_pop = sum(pop)) %>%
+    left_join(c_ct_df) %>%
+    group_by(county, year) %>%
+    summarise(pop = sum(pop)) %>%
     ungroup()
-
-  county_demo_df <- demo_pct_df %>%
-    group_by(county, demo_cat, demo_group) %>%
-    summarise(demo_pop = sum(demo_pop)) %>%
-    ungroup()
-
-
-
-
-
-
-
-
+  
+  ## get 
+  ratio_df <- copy(county_pop_ratios)
+  
+  ## remove "county" from county name
+  ratio_df[, county := str_remove(county, " County")]
+  
+  ## filter counties
+  ratio_df <- ratio_df[county %in% unique(annual_labor$county)]
+  
+  ## merge
+  labor_pct_df <- merge(annual_labor, ratio_df,
+                        by = c("county"),
+                        allow.cartesian = T)
+  
+  ## multiply by pct
+  labor_pct_df[, demo_emp := total_emp * pct]
+  labor_pct_df[, demo_comp_pv := total_comp_PV * pct]
+  
+  # ## merge with population
+  # labor_pct_df <-  merge(labor_pct_df, pop_df,
+  #                        by = c("county", "year"),
+  #                        all.x = T)
+  # 
+  
+  
+  ## summarise over years
+  labor_pct_df <- labor_pct_df[, .(sum_demo_emp = sum(demo_emp),
+                                   sum_demo_comp_pv = sum(demo_comp_pv)),
+                               by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title)]
+  
+  return(labor_pct_df)
+  
+  
+  
 
 }
+
+
 
 
