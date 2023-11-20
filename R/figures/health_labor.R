@@ -741,9 +741,8 @@ plot_hl_levels <- function(main_path,
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Race",
                                                unit_desc == "USD (2019 VSL)",
-                                               title %in% fig_title_vec), aes(x = ghg_perc_diff * -100, y = value / 1e9,  color = title),
+                                               title %in% fig_title_vec), aes(x = scenario, y = value, color = title),
                 size = 3, alpha = 0.8) +
-     facet_grid(scenario ~ demo_cat) +
      labs(y = "NPV (USD billion)") +
      theme_line +
      theme(legend.position = "right",
