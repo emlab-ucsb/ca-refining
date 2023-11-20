@@ -615,7 +615,17 @@ calculate_mort_x_demg = function(refining_mortality,
                        allow.cartesian = T)
   
   setDT(refining_mort_df)
- 
+  
+  # missing_pop <- refining_mort_df %>%
+  #   filter(year == 2020, demo_cat == "Race") %>%
+  #   select(census_tract, pop, demo_group, pct) %>%
+  #   unique() %>%
+  #   mutate(grp_pop = pct * pop) %>%
+  #   group_by(census_tract, pop) %>%
+  #   summarise(grp_pop = sum(grp_pop)) %>%
+  #   ungroup() %>%
+  #   filter(grp_pop == 0) 
+  # 
   
   ## multiply health impacts by pct
   refining_mort_df[, demo_cost_2019_PV := cost_2019_PV * pct]
