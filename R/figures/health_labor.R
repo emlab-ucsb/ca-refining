@@ -703,10 +703,8 @@ plot_hl_levels <- function(main_path,
    plot_df_long <- rbind(plot_df_health, plot_df_labor)
    
    plot_df_long <- plot_df_long %>%
-     mutate(seg_title = ifelse(metric == "avoided_health_cost", "Health: avoided mortality", "Labor: forgone wages"))
+     mutate(seg_title = ifelse(segment == "health", "Health: avoided mortality", "Labor: forgone wages"))
    
-   plot_df_long$seg_title <- factor(plot_df_long$seg_title, levels = c("Health: avoided mortality", "Labor: forgone wages"))
-  
     ## rename
    setDT(plot_df_long)
    plot_df_long[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
@@ -723,6 +721,17 @@ plot_hl_levels <- function(main_path,
                                                                      'Low carbon demand - low exports',
                                                                      'Low carbon demand - historic production'))
    
+   ## titles for plotting
+   plot_df_long[, demand_title := ifelse(demand_scenario == "BAU", "Reference demand", "Low carbon demand")]
+   plot_df_long[, scen_title := paste0(demand_title, "\n", str_to_sentence(refining_scenario))]
+   
+   plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('Reference demand\nHistoric production',
+                                                                        'Reference demand\nHistoric exports', 
+                                                                        'Reference demand\nLow exports', 
+                                                                        'Low carbon demand\nHistoric exports',
+                                                                        'Low carbon demand\nLow exports',
+                                                                        'Low carbon demand\nHistoric production'))
+   
    ## save figure inputs
    fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
    
@@ -735,263 +744,148 @@ plot_hl_levels <- function(main_path,
    
    fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
    
-   
+   ## health fig - race
    health_level_fig_a <- ggplot() +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Race",
                                                unit_desc == "USD (2019 VSL)",
-                                               title %in% fig_title_vec), aes(x = scenario, y = value, color = title),
+                                               title %in% fig_title_vec), aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
-     labs(y = "NPV (USD billion)") +
+     facet_wrap(~seg_title) +
+     labs(y = "NPV (USD billion)",
+          x = NULL,
+          color = NULL) +
      theme_line +
-     theme(legend.position = "right",
+     theme(legend.position = "none",
            legend.title = element_blank(),
            # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
            plot.margin = unit(c(0, 0, 0, 0), "cm"),
-           axis.text.x = element_blank(),
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
    
-   # legend_figa <- health_level_fig_a + theme(legend.position = "right")
-   # 
-   # legend_a <- get_legend(
-   #   legend_figa + 
-   #     theme(legend.text = element_text(size = 8)))
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # 
-   # fig_bxm_a <- ggplot() +
-   #   geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-   #   geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-   #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-   #                                             title == "Health: avoided mortality",
-   #                                             unit == "NPV (2019 USD billion)",
-   #                                             unit_desc == "USD billion (2019 VSL)",
-   #                                             !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value,  color = refining_scenario, shape = demand_scenario),
-   #              size = 3, alpha = 0.8) +
-   #   labs(color = "Refing scenario",
-   #        shape = "Demand scenario",
-   #        title = "A. Health: avoided mortality",
-   #        y = "NPV (2019 USD billion)",
-   #        x = NULL) +
-   #   ylim(-1, 31) +
-   #   xlim(0, 80) +
-   #   scale_color_manual(values = refin_colors) +
-   #   theme_line +
-   #   theme(legend.position = "none",
-   #         plot.title = element_text(hjust = 0),
-   #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   #         axis.ticks.length.y = unit(0.1, 'cm'),
-   #         axis.ticks.length.x = unit(0.1, 'cm')) 
-   # 
-   # fig_bxm_b <- ggplot() + 
-   #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   #   geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-   #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-   #                                             title == "Labor: forgone wages",
-   #                                             unit == "NPV (2019 USD billion)",
-   #                                             !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-   #   labs(color = "Policy",
-   #        title = "B. Labor: forgone wages",
-   #        y = NULL,
-   #        x = NULL) +
-   #   ylim(-31, 0) +
-   #   xlim(0, 80) +
-   #   scale_color_manual(values = refin_colors) +
-   #   theme_line +
-   #   theme(legend.position = "none",
-   #         plot.title = element_text(hjust = 0),
-   #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   #         axis.ticks.length.y = unit(0.1, 'cm'),
-   #         axis.ticks.length.x = unit(0.1, 'cm')) 
-   # 
-   # # fig_bxm_c <- ggplot() +
-   # #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   # #   geom_vline(xintercept = hist_prod[title == "Climate: avoided damage", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-   # #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-   # #                                       title == "Climate: avoided damage",
-   # #                                       unit == "NPV (2019 USD billion)",
-   # #                                       !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-   # #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   # #   labs(color = "Policy",
-   # #        title = "C. Climate: avoided damage",
-   # #        y = NULL,
-   # #        x = NULL) +
-   # #   ylim(-1, 20) +
-   # #   xlim(0, 80) +
-   # #   scale_color_manual(values = refin_colors) +
-   # #   theme_line +
-   # #   theme(legend.position = "none",
-   # #         plot.title = element_text(hjust = 0),
-   # #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   # #         axis.ticks.length.y = unit(0.1, 'cm'),
-   # #         axis.ticks.length.x = unit(0.1, 'cm')) 
-   # 
-   # fig_bxm_c <- ggplot() + 
-   #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   #   geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-   #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-   #                                             title == "Health: avoided mortality per avoided GHG",
-   #                                             unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-   #                                             unit_desc == "USD billion per GHG (2019 VSL)",
-   #                                             !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-   #   labs(color = "Policy",
-   #        title = "C.",
-   #        y = bquote('NPV (2019 USD million)\nper avoided GHG MtCO'[2]~e),
-   #        x = "GHG emissions reduction target (%, 2045 vs 2019)") +
-   #   scale_color_manual(values = refin_colors) +
-   #   ylim(0, 200) +
-   #   xlim(0, 80) +
-   #   theme_line +
-   #   theme(legend.position = "none",
-   #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   #         axis.ticks.length.y = unit(0.1, 'cm'),
-   #         axis.ticks.length.x = unit(0.1, 'cm'))
-   # 
-   # fig_bxm_d <- ggplot() +
-   #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   #   geom_vline(xintercept = hist_prod[title == "Labor: forgone wages per avoided GHG", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-   #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-   #                                             title == "Labor: forgone wages per avoided GHG",
-   #                                             unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-   #                                             !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-   #   labs(color = "Policy",
-   #        title = "D.",
-   #        y = NULL,
-   #        # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-   #        x = "GHG emissions reduction target (%, 2045 vs 2019)") +
-   #   scale_color_manual(values = refin_colors) +
-   #   theme_line +
-   #   xlim(0, 80) +
-   #   theme(legend.position = "none",
-   #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   #         axis.ticks.length.y = unit(0.1, 'cm'),
-   #         axis.ticks.length.x = unit(0.1, 'cm'))
-   # 
-   # # fig_bxm_f <- ggplot() +
-   # #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   # #   geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
-   # #   geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
-   # #                                       title == "Climate: avoided damage",
-   # #                                       measure == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-   # #                                       !refining_scenario == "historic production"), aes(x = ghg_2045_perc_reduction, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-   # #   labs(color = "Policy",
-   # #        title = "F.",
-   # #        y = NULL,
-   # #        # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-   # #        x = "GHG emissions reduction target (%, 2045 vs 2019)") +
-   # #   scale_color_manual(values = refin_colors) +
-   # #   theme_line +
-   # #   ylim(0, 80) +
-   # #   xlim(0, 80) +
-   # #   theme(legend.position = "none",
-   # #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   # #         axis.ticks.length.y = unit(0.1, 'cm'),
-   # #         axis.ticks.length.x = unit(0.1, 'cm'))
-   # # 
-   # ## extract legend
-   # # legend_fig <- ggplot() +
-   # #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   # #   geom_point(data = npv_dt %>% filter(!scen_id %in% bau_scens,
-   # #                                        title == "Labor: forgone wages",
-   # #                                        measure == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)"), aes(x = ghg_2045_perc_reduction, y = value, color = scenario, shape = scenario), size = 3, alpha = 0.8) +
-   # #   labs(title = "",
-   # #        y = NULL,
-   # #        # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-   # #        x = "GHG emissions reduction target (%, 2045 vs 2019)",
-   # #        color = NULL,
-   # #        shape = NULL) +
-   # #   # scale_shape_manual(values = c(16, 16, 16, 17, 17)) +
-   # #   scale_color_manual(name = "",
-   # #                      labels = c("BAU demand - historic exports",
-   # #                                 "BAU demand - historic production",
-   # #                                 "BAU demand - low exports",
-   # #                                 "Low C. demand - historic exports",
-   # #                                 "Low C. demand - low exports"),
-   # #                      values = c("BAU demand - historic exports" = "#2F4858",
-   # #                                 "BAU demand - historic production" = "#F6AE2D",
-   # #                                 "BAU demand - low exports" = "#F26419",
-   # #                                 "Low C. demand - historic exports" = "#2F4858",
-   # #                                 "Low C. demand - low exports" = "#F26419")) +
-   # #   scale_shape_manual(name = "",
-   # #                         labels = c("BAU demand - historic exports",
-   # #                                    "BAU demand - historic production",
-   # #                                    "BAU demand - low exports",
-   # #                                    "Low C. demand - historic exports",
-   # #                                    "Low C. demand - low exports"),
-   # #                         values = c(16, 16, 16, 17, 17)) +
-   # #   theme_line +
-   # #   theme(legend.position = "bottom",
-   # #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   # #         axis.ticks.length.y = unit(0.1, 'cm'),
-   # #         axis.ticks.length.x = unit(0.1, 'cm')) +
-   # #   guides(color = guide_legend(nrow = 2, byrow = TRUE))
-   # 
-   # legend_fig <- ggplot() +
-   #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-   #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-   #                                             title == "Labor: forgone wages per avoided GHG",
-   #                                             unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-   #                                             !refining_scenario == "historic production"), 
-   #              aes(x = ghg_perc_diff * -100, y = value, color = scenario, shape = scenario), size = 3, alpha = 0.8) +
-   #   labs(title = "",
-   #        y = NULL,
-   #        # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-   #        x = "GHG emissions reduction target (%, 2045 vs 2019)",
-   #        color = NULL,
-   #        shape = NULL) +
-   #   scale_color_manual(name = "",
-   #                      labels = c("Reference demand - historic exports",
-   #                                 "Reference demand - low exports",
-   #                                 "Low carbon demand - historic exports",
-   #                                 "Low carbon demand - low exports"),
-   #                      values = c("Reference demand - historic exports" = "#2F4858",
-   #                                 "Reference demand - low exports" = "#F26419",
-   #                                 "Low carbon demand - historic exports" = "#2F4858",
-   #                                 "Low carbon demand - low exports" = "#F26419")) +
-   #   scale_shape_manual(name = "",
-   #                      labels = c("Reference demand - historic exports",
-   #                                 "Reference demand - low exports",
-   #                                 "Low carbon demand - historic exports",
-   #                                 "Low carbon demand - low exports"),
-   #                      values = c(16, 16, 17, 17)) +
-   #   theme_line +
-   #   theme(legend.position = "bottom",
-   #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-   #         axis.ticks.length.y = unit(0.1, 'cm'),
-   #         axis.ticks.length.x = unit(0.1, 'cm')) +
-   #   guides(color = guide_legend(nrow = 2, byrow = TRUE))
-   # 
-   # 
-   # 
-   # legend_fig_3 <- get_legend(
-   #   legend_fig + 
-   #     theme(legend.title = element_text(size = 8),
-   #           legend.text = element_text(size = 8))
-   #   
-   # )
-   # 
-   # 
+   legend_figa <- health_level_fig_a + theme(legend.position = "right")
+
+   legend_a <- get_legend(
+     legend_figa +
+       theme(legend.text = element_text(size = 8)))
+   
+   ## labor fig - race
+   labor_level_fig_b <- ggplot() +
+     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                               demo_cat == "Race",
+                                               segment == "labor",
+                                               title %in% fig_title_vec), aes(x = scen_title, y = value / 1e9, color = title),
+                size = 3, alpha = 0.8) +
+     facet_wrap(~seg_title) +
+     labs(y = "NPV (USD billion)",
+          x = NULL,
+          color = NULL) +
+     theme_line +
+     theme(legend.position = "none",
+           legend.title = element_blank(),
+           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+           axis.ticks.length.y = unit(0.1, 'cm'),
+           axis.ticks.length.x = unit(0.1, 'cm'))
+
+   ## health fig - poverty
+   health_level_fig_b <- ggplot() +
+     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                               demo_cat == "Poverty",
+                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value / 1e9, shape = title),
+                color = "#D57D93", size = 3, alpha = 0.8) +
+     scale_shape_manual(values = c("Above poverty line" = 19,
+                                   "Below poverty line" = 17)) +
+     facet_wrap(~seg_title) +
+     labs(y = "NPV (USD billion)",
+          x = NULL,
+          color = NULL) +
+     theme_line +
+     theme(legend.position = "none",
+           legend.title = element_blank(),
+           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+           axis.ticks.length.y = unit(0.1, 'cm'),
+           axis.ticks.length.x = unit(0.1, 'cm'))
+   
+   legend_figb <- health_level_fig_b + theme(legend.position = "right")
+   
+   legend_b <- get_legend(
+     legend_figb +
+       theme(legend.text = element_text(size = 8)))
+   
+   ## labor fig - poverty
+   labor_level_fig_b <- ggplot() +
+     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                               demo_cat == "Poverty",
+                                               segment == "labor"), aes(x = scen_title, y = value / 1e9, shape = title),
+                color = "#D57D93", size = 3, alpha = 0.8) +
+     scale_shape_manual(values = c("Above poverty line" = 19,
+                                   "Below poverty line" = 17)) +
+     facet_wrap(~seg_title) +
+     labs(y = "NPV (USD billion)",
+          x = NULL,
+          color = NULL) +
+     theme_line +
+     theme(legend.position = "none",
+           legend.title = element_blank(),
+           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+           axis.ticks.length.y = unit(0.1, 'cm'),
+           axis.ticks.length.x = unit(0.1, 'cm'))
+   
+   
+   ## health fig - DAC
+   health_level_fig_c <- ggplot() +
+     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                               demo_cat == "DAC",
+                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value / 1e9, shape = title),
+                color = "black", size = 3, alpha = 0.8) +
+     scale_shape_manual(values = c("DAC" = 15,
+                                   "Non-DAC" = 4)) +
+     facet_wrap(~seg_title) +
+     labs(y = "NPV (USD billion)",
+          x = NULL,
+          color = NULL) +
+     theme_line +
+     theme(legend.position = "none",
+           legend.title = element_blank(),
+           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+           axis.ticks.length.y = unit(0.1, 'cm'),
+           axis.ticks.length.x = unit(0.1, 'cm'))
+   
+   legend_figc <- health_level_fig_c + theme(legend.position = "right")
+   
+   legend_c <- get_legend(
+     legend_figc +
+       theme(legend.text = element_text(size = 8)))
+   
+   ## labor fig - DAC
+   labor_level_fig_c <- ggplot() +
+     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                               demo_cat == "DAC",
+                                               segment == "labor"), aes(x = scen_title, y = value / 1e9, shape = title),
+                color = "black", size = 3, alpha = 0.8) +
+     scale_shape_manual(values = c("DAC" = 15,
+                                   "Non-DAC" = 4)) +
+     facet_wrap(~seg_title) +
+     labs(y = "NPV (USD billion)",
+          x = NULL,
+          color = NULL) +
+     theme_line +
+     theme(legend.position = "none",
+           legend.title = element_blank(),
+           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+           axis.ticks.length.y = unit(0.1, 'cm'),
+           axis.ticks.length.x = unit(0.1, 'cm'))
+   
+   
+   
+    
    # ## combine figure
    # ## ---------------------------------
    # 
