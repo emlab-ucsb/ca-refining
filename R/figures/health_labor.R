@@ -601,11 +601,11 @@ plot_health_levels <- function(main_path,
 }
 
 
-plot_hl_levels <- function(main_path,
-                           ref_mortality_demog,
-                           labor_pct_df,
-                           state_ghg_output,
-                           dt_ghg_2019) {
+plot_hl_levels_df <- function(main_path,
+                              ref_mortality_demog,
+                              ref_labor_demog,
+                              state_ghg_output,
+                              dt_ghg_2019) {
 
    health_df <- copy(ref_mortality_demog)
 
@@ -652,7 +652,7 @@ plot_hl_levels <- function(main_path,
                           all.x = T)
    
    ## labor
-   labor_df <- copy(labor_pct_df)
+   labor_df <- copy(ref_labor_demog)
    
    ## ref labor
    ref_labor <- labor_df[demand_scenario == "BAU" & refining_scenario == "historic production"]
@@ -735,6 +735,15 @@ plot_hl_levels <- function(main_path,
    ## save figure inputs
    fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
    
+   return(plot_df_long)
+   
+}
+   
+ 
+plot_hl_levels <- function(demographic_npv_df) {
+  
+  plot_df_long <- copy(demographic_npv_df)
+  
    ## create the figure ---------------------------------------------
    ##---------------------------------------------------------------
    
@@ -764,14 +773,14 @@ plot_hl_levels <- function(main_path,
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
    
-   legend_figa <- health_level_fig_a + theme(legend.position = "right")
+   legend_figa <- health_level_fig_a + theme(legend.position = "bottom")
 
    legend_a <- get_legend(
      legend_figa +
        theme(legend.text = element_text(size = 8)))
    
    ## labor fig - race
-   labor_level_fig_b <- ggplot() +
+   labor_level_fig_a <- ggplot() +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Race",
@@ -810,7 +819,7 @@ plot_hl_levels <- function(main_path,
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
    
-   legend_figb <- health_level_fig_b + theme(legend.position = "right")
+   legend_figb <- health_level_fig_b + theme(legend.position = "bottom")
    
    legend_b <- get_legend(
      legend_figb +
@@ -857,7 +866,7 @@ plot_hl_levels <- function(main_path,
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
    
-   legend_figc <- health_level_fig_c + theme(legend.position = "right")
+   legend_figc <- health_level_fig_c + theme(legend.position = "bottom")
    
    legend_c <- get_legend(
      legend_figc +
@@ -884,52 +893,381 @@ plot_hl_levels <- function(main_path,
            axis.ticks.length.x = unit(0.1, 'cm'))
    
    
-   
-    
-   # ## combine figure
-   # ## ---------------------------------
-   # 
-   # ## shared x axis
-   # xaxis_lab <- ggdraw() + draw_label("GHG emissions reduction target (%, 2045 vs 2019)", size = 7)
-   # 
-   # fig3_plot_grid <- plot_grid(
-   #   fig_bxm_a,
-   #   fig_bxm_b,
-   #   # fig_bxm_c,
-   #   fig_bxm_c + labs(x = NULL),
-   #   fig_bxm_d + labs(x = NULL),
-   #   # fig_bxm_f+ labs(x = NULL),
-   #   align = 'vh',
-   #   # labels = c("A", "B", "C", "D", "E", "F"),
-   #   # # labels = 'AUTO',
-   #   # label_size = 10,
-   #   hjust = -1,
-   #   nrow = 2,
-   #   rel_widths = c(1, 1, 1, 1, 1, 1)
-   # )
-   # 
-   # fig3_plot_grid2 <- plot_grid(
-   #   fig3_plot_grid,
-   #   xaxis_lab,
-   #   legend_fig_3,
-   #   align = "v",
-   #   # labels = c("(A)", "(B)", "(C)", ""),
-   #   # # labels = 'AUTO',
-   #   # label_size = 10,
-   #   # hjust = -1,
-   #   ncol = 1,
-   #   rel_heights = c(0.85, 0.05, 0.1)
-   #   # rel_widths = c(1, 1),
-   # )
-   # 
-   # 
+   ## combine figure
+   ## ---------------------------------
 
+   ## race
+   hl_plot_grid_a <- plot_grid(
+     health_level_fig_a + theme(axis.text.x = element_blank()),
+     labor_level_fig_a + labs(y = NULL) + theme(axis.text.x = element_blank()),
+     align = 'vh',
+     # labels = c("A", "B", "C", "D", "E", "F"),
+     # # labels = 'AUTO',
+     # label_size = 10,
+     hjust = -1,
+     nrow = 1,
+     rel_widths = c(1, 1)
+   )
+
+   ## add race legend
+   hl_plot_grid_a <- plot_grid(
+     hl_plot_grid_a,
+     legend_a,
+     ncol = 1, 
+     rel_heights = c(0.95, 0.05)
+   )
+   
+   ## poverty
+   hl_plot_grid_b <- plot_grid(
+     health_level_fig_b + theme(axis.text.x = element_blank(),
+                                strip.text.x = element_blank()),
+     labor_level_fig_b + labs(y = NULL) + theme(axis.text.x = element_blank(),
+                               strip.text.x = element_blank()),
+     align = 'vh',
+     # labels = c("A", "B", "C", "D", "E", "F"),
+     # # labels = 'AUTO',
+     # label_size = 10,
+     hjust = -1,
+     nrow = 1,
+     rel_widths = c(1, 1)
+   )
+   
+   ## add poverty legend
+   hl_plot_grid_b <- plot_grid(
+     hl_plot_grid_b,
+     legend_b,
+     ncol = 1, 
+     rel_heights = c(0.95, 0.05)
+   )
+   
+   ## DAC
+   hl_plot_grid_c <- plot_grid(
+     health_level_fig_c + theme(strip.text.x = element_blank()),
+     labor_level_fig_c + labs(y = NULL) + theme(strip.text.x = element_blank()),
+     align = 'vh',
+     # labels = c("A", "B", "C", "D", "E", "F"),
+     # # labels = 'AUTO',
+     # label_size = 10,
+     hjust = -1,
+     nrow = 1,
+     rel_widths = c(1, 1)
+   )
+   
+   ## add DAC legend
+   hl_plot_grid_c <- plot_grid(
+     hl_plot_grid_c,
+     legend_c,
+     ncol = 1, 
+     rel_heights = c(0.95, 0.05)
+   )
+   
+   
+   ## all together now
+   hl_plot_grid <- plot_grid(
+     hl_plot_grid_a,
+     NULL,
+     hl_plot_grid_b,
+     NULL,
+     hl_plot_grid_c,
+     align = "v",
+     # labels = c("(A)", "(B)", "(C)", ""),
+     # # labels = 'AUTO',
+     # label_size = 10,
+     # hjust = -1,
+     ncol = 1,
+     rel_heights = c(1, 0.1, 1, 0.1, 1)
+     # rel_widths = c(1, 1, 1)
+   )
+
+
+return(hl_plot_grid)
 
 
 
 }
 
+plot_hl_levels_pc <- function(demographic_npv_df,
+                              refining_mortality,
+                              pop_ratios,
+                              main_path) {
   
+  ## copy npv results
+  plot_df_long <- copy(demographic_npv_df)
+  
+  ## calc 2020 pop by demographic
+  pop_2020 <- refining_mortality %>%
+    filter(year == 2020) %>%
+    select(census_tract, year, pop) %>%
+    unique() %>%
+    left_join(pop_ratios) %>%
+    as.data.table()
+  
+  pop_2020[, demo_pop := pop * pct]
+  
+  ## summarize by demographic group
+  pop_2020 <- pop_2020[, .(pop_2020 = sum(demo_pop)),
+                                   by = .(demo_group, demo_cat)]
+  
+  ## merge population back with results
+  plot_df_long <- merge(plot_df_long, pop_2020,
+                        by = c("demo_group", "demo_cat"),
+                        all.x = T)
+  
+  ## calculate per capita
+  plot_df_long[, value := value / pop_2020]
+  
+  ## save figure inputs
+  fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  
+  
+  
+  ## create the figure ---------------------------------------------
+  ##---------------------------------------------------------------
+  
+  ## scenarios for filtering
+  remove_scen <- c('LC1 historic production', 'BAU historic production')
+  bau_scen <- 'BAU historic production'
+  
+  fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
+  
+  ## health fig - race
+  health_level_fig_a <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                              demo_cat == "Race",
+                                              unit_desc == "USD (2019 VSL)",
+                                              title %in% fig_title_vec), aes(x = scen_title, y = value, color = title),
+               size = 3, alpha = 0.8) +
+    facet_wrap(~seg_title) +
+    labs(y = "NPV per capita (USD)",
+         x = NULL,
+         color = NULL) +
+    scale_y_continuous(label = comma) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figa <- health_level_fig_a + theme(legend.position = "bottom")
+  
+  legend_a <- get_legend(
+    legend_figa +
+      theme(legend.text = element_text(size = 8)))
+  
+  ## labor fig - race
+  labor_level_fig_a <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                              demo_cat == "Race",
+                                              segment == "labor",
+                                              title %in% fig_title_vec), aes(x = scen_title, y = value, color = title),
+               size = 3, alpha = 0.8) +
+    facet_wrap(~seg_title) +
+    labs(y = "NPV per capita (USD)",
+         x = NULL,
+         color = NULL) +
+    scale_y_continuous(label = comma) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## health fig - poverty
+  health_level_fig_b <- ggplot() +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                              demo_cat == "Poverty",
+                                              unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value, shape = title),
+               color = "#D57D93", size = 3, alpha = 0.8) +
+    scale_shape_manual(values = c("Above poverty line" = 19,
+                                  "Below poverty line" = 17)) +
+    facet_wrap(~seg_title) +
+    labs(y = "NPV per capita (USD)",
+         x = NULL,
+         color = NULL) +
+    theme_line +
+    scale_y_continuous(label = comma) +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figb <- health_level_fig_b + theme(legend.position = "bottom")
+  
+  legend_b <- get_legend(
+    legend_figb +
+      theme(legend.text = element_text(size = 8)))
+  
+  ## labor fig - poverty
+  labor_level_fig_b <- ggplot() +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                              demo_cat == "Poverty",
+                                              segment == "labor"), aes(x = scen_title, y = value, shape = title),
+               color = "#D57D93", size = 3, alpha = 0.8) +
+    scale_shape_manual(values = c("Above poverty line" = 19,
+                                  "Below poverty line" = 17)) +
+    facet_wrap(~seg_title) +
+    labs(y = "NPV per capita (USD)",
+         x = NULL,
+         color = NULL) +
+    scale_y_continuous(label = comma) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  
+  ## health fig - DAC
+  health_level_fig_c <- ggplot() +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                              demo_cat == "DAC",
+                                              unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value, shape = title),
+               color = "black", size = 3, alpha = 0.8) +
+    scale_shape_manual(values = c("DAC" = 15,
+                                  "Non-DAC" = 4)) +
+    facet_wrap(~seg_title) +
+    labs(y = "NPV per capita (USD)",
+         x = NULL,
+         color = NULL) +
+    theme_line +
+    scale_y_continuous(label = comma) +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figc <- health_level_fig_c + theme(legend.position = "bottom")
+  
+  legend_c <- get_legend(
+    legend_figc +
+      theme(legend.text = element_text(size = 8)))
+  
+  ## labor fig - DAC
+  labor_level_fig_c <- ggplot() +
+    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+                                              demo_cat == "DAC",
+                                              segment == "labor"), aes(x = scen_title, y = value, shape = title),
+               color = "black", size = 3, alpha = 0.8) +
+    scale_shape_manual(values = c("DAC" = 15,
+                                  "Non-DAC" = 4)) +
+    facet_wrap(~seg_title) +
+    labs(y = "NPV per capita (USD)",
+         x = NULL,
+         color = NULL) +
+    scale_y_continuous(label = comma) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  
+  ## combine figure
+  ## ---------------------------------
+  
+  ## race
+  hl_plot_grid_a <- plot_grid(
+    health_level_fig_a + theme(axis.text.x = element_blank()),
+    labor_level_fig_a + labs(y = NULL) + theme(axis.text.x = element_blank()),
+    align = 'vh',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  ## add race legend
+  hl_plot_grid_a <- plot_grid(
+    hl_plot_grid_a,
+    legend_a,
+    ncol = 1, 
+    rel_heights = c(0.95, 0.05)
+  )
+  
+  ## poverty
+  hl_plot_grid_b <- plot_grid(
+    health_level_fig_b + theme(axis.text.x = element_blank(),
+                               strip.text.x = element_blank()),
+    labor_level_fig_b + labs(y = NULL) + theme(axis.text.x = element_blank(),
+                                               strip.text.x = element_blank()),
+    align = 'vh',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  ## add poverty legend
+  hl_plot_grid_b <- plot_grid(
+    hl_plot_grid_b,
+    legend_b,
+    ncol = 1, 
+    rel_heights = c(0.95, 0.05)
+  )
+  
+  ## DAC
+  hl_plot_grid_c <- plot_grid(
+    health_level_fig_c + theme(strip.text.x = element_blank()),
+    labor_level_fig_c + labs(y = NULL) + theme(strip.text.x = element_blank()),
+    align = 'vh',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  ## add DAC legend
+  hl_plot_grid_c <- plot_grid(
+    hl_plot_grid_c,
+    legend_c,
+    ncol = 1, 
+    rel_heights = c(0.95, 0.05)
+  )
+  
+  
+  ## all together now
+  hl_plot_grid_pc <- plot_grid(
+    hl_plot_grid_a,
+    NULL,
+    hl_plot_grid_b,
+    NULL,
+    hl_plot_grid_c,
+    align = "v",
+    # labels = c("(A)", "(B)", "(C)", ""),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    # hjust = -1,
+    ncol = 1,
+    rel_heights = c(1, 0.1, 1, 0.1, 1)
+    # rel_widths = c(1, 1, 1)
+  )
+  
+  
+  return(hl_plot_grid_pc)
+  
+  
+  
+}
 
 
 

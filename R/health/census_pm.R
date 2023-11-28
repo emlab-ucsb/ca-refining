@@ -604,7 +604,8 @@ calculate_census_tract_mortality = function(beta,
 
 ## health mortality by demographic group
 calculate_mort_x_demg = function(refining_mortality,
-                                 pop_ratios){
+                                 pop_ratios,
+                                 main_path){
   
   refining_mort_df <- copy(refining_mortality)
   setDT(refining_mort_df)
@@ -616,16 +617,20 @@ calculate_mort_x_demg = function(refining_mortality,
   
   setDT(refining_mort_df)
   
-  # missing_pop <- refining_mort_df %>%
-  #   filter(year == 2020, demo_cat == "Race") %>%
-  #   select(census_tract, pop, demo_group, pct) %>%
-  #   unique() %>%
-  #   mutate(grp_pop = pct * pop) %>%
-  #   group_by(census_tract, pop) %>%
-  #   summarise(grp_pop = sum(grp_pop)) %>%
-  #   ungroup() %>%
-  #   filter(grp_pop == 0) 
-  # 
+  missing_pop <- refining_mort_df %>%
+    filter(year == 2020, demo_cat == "Race") %>%
+    select(census_tract, pop, demo_group, pct) %>%
+    unique() %>%
+    mutate(grp_pop = pct * pop) %>%
+    group_by(census_tract, pop) %>%
+    summarise(grp_pop = sum(grp_pop)) %>%
+    ungroup() %>%
+    filter(grp_pop == 0 & pop > 0)
+  
+  ## save missing pop
+  fwrite(missing_pop, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "ct_missing_pop.csv"))
+  
+
   
   ## multiply health impacts by pct
   refining_mort_df[, demo_cost_2019_PV := cost_2019_PV * pct]
