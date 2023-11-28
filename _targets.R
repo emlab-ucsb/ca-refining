@@ -21,6 +21,7 @@ library(fuzzyjoin)
 library(sf)
 library(cowplot)
 library(tigris)
+library(scales)
 
 #font_import()
 #loadfonts(device = "win")
@@ -46,7 +47,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -364,7 +365,8 @@ list(
                                                                         refining_mortality)),
   
   tar_target(name = ref_mortality_demog, command = calculate_mort_x_demg(refining_mortality,
-                                                                         pop_ratios)),
+                                                                         pop_ratios,
+                                                                         main_path)),
   
   tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
                                                                indiv_prod_output,
@@ -387,6 +389,19 @@ list(
   
   tar_target(name = health_levels_plot, command = plot_health_levels(main_path,
                                                                      health_grp)),
+  
+  tar_target(name = demographic_npv_df, command = plot_hl_levels_df(main_path,
+                                                                    ref_mortality_demog,
+                                                                    ref_labor_demog,
+                                                                    state_ghg_output,
+                                                                    dt_ghg_2019)),
+  
+  tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
+  
+  tar_target(name = demographic_npv_plot_pc, command = plot_hl_levels_pc(demographic_npv_df,
+                                                                         refining_mortality,
+                                                                         pop_ratios,
+                                                                         main_path)),
 
   # save outputs
   tar_target(name = save_ct_xwalk, 
@@ -440,6 +455,26 @@ list(
                                      "state_levels_fig", 
                                      width = 12,
                                      height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_demo_npv_fig,
+             command = simple_ggsave(demographic_npv_plot, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "demographic_npv_fig", 
+                                     width = 11,
+                                     height = 12,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_demo_npv_pc_fig,
+             command = simple_ggsave(demographic_npv_plot_pc, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "demographic_npv_pc_fig", 
+                                     width = 11,
+                                     height = 12,
                                      dpi = 600),
              format = "file")
   
