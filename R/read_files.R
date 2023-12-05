@@ -187,6 +187,30 @@ read_nhgis_2021_data <- function(file) {
   
 }
 
+# read_census_data <- function(file) {
+#   
+#   dt = fread(file)
+#   
+#   dt[, `:=` (
+#     geoid = V1,
+#     geo_area_name = V2,
+#     total_pop = AOOCE001,
+#     hispanic = AOOCE012,
+#     white = AOOCE003,
+#     black = AOOCE004,
+#     aialnative = AOOCE005,
+#     asian = AOOCE006,
+#     hawaiian_pacisl = AOOCE007,
+#     nonh_other = AOOCE008,
+#     nonh_two_or_more = AOOCE009,
+#     median_income = AOQIE001
+#     
+#   )]
+#   
+#   dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+#                nonh_other, nonh_two_or_more, median_income, geoid, year)]
+#   
+# }
 
 
 
