@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -130,6 +130,7 @@ list(
   tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
   tar_target(name = file_raw_census_2020, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"), format = "file"),
   tar_target(name = file_raw_census_2021, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
+  #tar_target(name = file_raw_ct_race, command = file.path(main_path, "data/Census/DECENNIALDHC2020.P10_2023-11-27T202615/DECENNIALDHC2020.P10-Data.csv"), format = "file"),
   tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
   tar_target(name = file_df_labor, command = file.path(main_path, "data/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
@@ -164,6 +165,7 @@ list(
   tar_target(name = raw_ct_2020_all, command = st_read(file_raw_ct_2020)),
   tar_target(name = raw_pop_income_2020, command = read_nhgis_data(file_raw_census_2020)),
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
+  # tar_target(name = raw_ct_race, command = read_census_data(file_raw_ct_race)),
   tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
   tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
