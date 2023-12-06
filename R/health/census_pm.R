@@ -602,6 +602,20 @@ calculate_census_tract_mortality = function(beta,
   
 }
 
+## calculate state-level cumulative mortality
+calculate_mort_level = function(refining_mortality) {
+  
+  mort_df <- as.data.table(refining_mortality)
+  
+  mort_df <- mort_df[, .(cumul_mort_level = sum(mortality_level)),
+                     by = .(scen_id, demand_scenario, refining_scenario)]
+  
+  return(mort_df)
+    
+  
+}
+
+
 ## health mortality by demographic group
 calculate_mort_x_demg = function(refining_mortality,
                                  pop_ratios,

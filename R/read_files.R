@@ -160,9 +160,9 @@ read_nhgis_data <- function(file) {
 }
 
 read_nhgis_2021_data <- function(file) {
-  
+
   dt = fread(file)
-  
+
   dt[, `:=` (
     gisjoin = GISJOIN,
     county = COUNTY,
@@ -179,22 +179,22 @@ read_nhgis_2021_data <- function(file) {
     nonh_other = AOOCE008,
     nonh_two_or_more = AOOCE009,
     median_income = AOQIE001
-    
+
   )]
-  
-  dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+
+  dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl,
                nonh_other, nonh_two_or_more, median_income, geoid, year)]
-  
+
 }
 
-# read_census_data <- function(file) {
-#   
+# read_census_race_data <- function(file) {
+# 
 #   dt = fread(file)
-#   
+# 
 #   dt[, `:=` (
 #     geoid = V1,
 #     geo_area_name = V2,
-#     total_pop = AOOCE001,
+#     total_pop = V3,
 #     hispanic = AOOCE012,
 #     white = AOOCE003,
 #     black = AOOCE004,
@@ -204,12 +204,12 @@ read_nhgis_2021_data <- function(file) {
 #     nonh_other = AOOCE008,
 #     nonh_two_or_more = AOOCE009,
 #     median_income = AOQIE001
-#     
+# 
 #   )]
-#   
-#   dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+# 
+#   dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl,
 #                nonh_other, nonh_two_or_more, median_income, geoid, year)]
-#   
+# 
 # }
 
 
