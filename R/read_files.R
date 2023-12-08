@@ -132,9 +132,9 @@ read_ct_2020_data <- function(file, ca_crs) {
 }
 
 read_nhgis_data <- function(file) {
-  
+
   dt = fread(file)
-  
+
   dt[, `:=` (
     gisjoin = GISJOIN,
     county = COUNTY,
@@ -151,12 +151,12 @@ read_nhgis_data <- function(file) {
     nonh_other =  AMP3E008,
     nonh_two_or_more =  AMP3E009,
     median_income = AMR8E001
-    
+
   )]
-  
-  dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl, 
+
+  dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl,
                nonh_other, nonh_two_or_more, median_income, geoid, year, state)]
-  
+
 }
 
 read_nhgis_2021_data <- function(file) {
@@ -187,30 +187,32 @@ read_nhgis_2021_data <- function(file) {
 
 }
 
-# read_census_race_data <- function(file) {
-# 
-#   dt = fread(file)
-# 
-#   dt[, `:=` (
-#     geoid = V1,
-#     geo_area_name = V2,
-#     total_pop = V3,
-#     hispanic = AOOCE012,
-#     white = AOOCE003,
-#     black = AOOCE004,
-#     aialnative = AOOCE005,
-#     asian = AOOCE006,
-#     hawaiian_pacisl = AOOCE007,
-#     nonh_other = AOOCE008,
-#     nonh_two_or_more = AOOCE009,
-#     median_income = AOQIE001
-# 
-#   )]
-# 
-#   dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl,
-#                nonh_other, nonh_two_or_more, median_income, geoid, year)]
-# 
-# }
+read_census_race_data <- function(file) {
+
+  dt = fread(file)
+
+  dt[, `:=` (
+    gisjoin = GISJOIN,
+    county = COUNTY,
+    state = STATE,
+    geoid = GEOID,
+    year = YEAR,
+    total_pop = U7R001,
+    hispanic = U7R002,
+    white = U7R005,
+    black = U7R006,
+    aialnative = U7R007,
+    asian = U7R008,
+    hawaiian_pacisl = U7R009,
+    nonh_other = U7R010,
+    nonh_two_or_more = U7R011
+
+  )]
+
+  dt <- dt[, .(gisjoin, state, county, total_pop, hispanic, white, black, aialnative, asian, hawaiian_pacisl,
+               nonh_other, nonh_two_or_more, geoid, year)]
+  
+}
 
 
 

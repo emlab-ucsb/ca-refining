@@ -130,7 +130,7 @@ list(
   tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
   tar_target(name = file_raw_census_2020, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"), format = "file"),
   tar_target(name = file_raw_census_2021, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
-  # tar_target(name = file_raw_ct_race, command = file.path(main_path, "data/Census/DECENNIALDHC2020.P10_2023-11-27T202615/DECENNIALDHC2020.P10-Data.csv"), format = "file"),
+  tar_target(name = file_raw_ct_race, command = file.path(main_path, "data/Census/nhgis0039_csv/nhgis0039_ds258_2020_tract.csv"), format = "file"),
   tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
   tar_target(name = file_df_labor, command = file.path(main_path, "data/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
@@ -165,7 +165,7 @@ list(
   tar_target(name = raw_ct_2020_all, command = st_read(file_raw_ct_2020)),
   tar_target(name = raw_pop_income_2020, command = read_nhgis_data(file_raw_census_2020)),
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
-  # tar_target(name = raw_ct_race, command = read_census_race_data(file_raw_ct_race)),
+  tar_target(name = raw_ct_race, command = read_census_race_data(file_raw_ct_race)),
   tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
   tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
@@ -352,7 +352,7 @@ list(
   
   tar_target(name = ref_mort_level, command = calculate_mort_level(refining_mortality)),
   
-  tar_target(name = pop_ratios, command = calc_pop_ratios(raw_pop_income_2021,
+  tar_target(name = pop_ratios, command = calc_pop_ratios(raw_ct_race,
                                                           raw_pop_poverty,
                                                           refining_mortality)),
   
@@ -364,7 +364,7 @@ list(
   #                                                                health_weighted)),
   # 
   
-  tar_target(name = county_pop_ratios, command = calc_pop_ratios_county(raw_pop_income_2021,
+  tar_target(name = county_pop_ratios, command = calc_pop_ratios_county(raw_ct_race,
                                                                         raw_pop_poverty,
                                                                         refining_mortality)),
   
@@ -382,7 +382,7 @@ list(
   
   tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(county_pop_ratios,
                                                                       annual_labor,
-                                                                      raw_pop_income_2021,
+                                                                      raw_ct_race,
                                                                       refining_mortality)),
   
   tar_target(name = npv_plot, command = plot_npv_health_labor(main_path,

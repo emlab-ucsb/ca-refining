@@ -964,11 +964,11 @@ plot_hl_levels <- function(demographic_npv_df) {
    
    ## all together now
    hl_plot_grid <- plot_grid(
-     hl_plot_grid_a,
+     hl_plot_grid_c,
      NULL,
      hl_plot_grid_b,
      NULL,
-     hl_plot_grid_c,
+     hl_plot_grid_a,
      align = "v",
      # labels = c("(A)", "(B)", "(C)", ""),
      # # labels = 'AUTO',
@@ -1247,11 +1247,11 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   ## all together now
   hl_plot_grid_pc <- plot_grid(
-    hl_plot_grid_a,
+    hl_plot_grid_c,
     NULL,
     hl_plot_grid_b,
     NULL,
-    hl_plot_grid_c,
+    hl_plot_grid_a,
     align = "v",
     # labels = c("(A)", "(B)", "(C)", ""),
     # # labels = 'AUTO',
