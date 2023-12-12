@@ -601,6 +601,166 @@ plot_health_levels <- function(main_path,
 }
 
 
+plot_health_levels_gaps <- function(main_path,
+                                    health_grp) {
+  
+  gaps_df <- copy(health_grp)
+  
+  ## change scenario names, factor
+  gaps_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  gaps_df[, scenario := gsub('BAU', 'Reference', scenario)]
+  gaps_df[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
+  
+  ## scenarios for filtering
+  remove_scen <- c('LC1 historic production', 'BAU historic production')
+  
+  ## refactor
+  gaps_df[, scenario_title := scenario]
+  gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
+  
+  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('Reference demand - historic production',
+                                                          'Reference demand - historic exports', 
+                                                          'Reference demand - low exports', 
+                                                          'Low carbon demand - historic exports',
+                                                          'Low carbon demand - low exports',
+                                                          'Low carbon demand - historic production'))
+  
+  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('Reference demand\nhistoric production',
+                                                                      'Reference demand\nhistoric exports', 
+                                                                      'Reference demand\nlow exports', 
+                                                                      'Low carbon demand\nhistoric exports',
+                                                                      'Low carbon demand\nlow exports',
+                                                                      'Low carbon demand\nhistoric production'))
+  
+  
+  ## calculate gaps (BAU - scenario)
+  bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
+  bau_gaps_df <- bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", "num_over_den")]
+  setnames(bau_gaps_df, "num_over_den", "bau_num_over_den")
+  
+  gaps_df <- merge(gaps_df, bau_gaps_df,
+                   by = c("year", "demo_cat", "demo_group", "title"),
+                   all.x = T)
+  
+  gaps_df[, gap := bau_num_over_den - num_over_den]
+  
+  ## save figure inputs
+  fwrite(gaps_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  
+  fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
+  
+  
+  health_gap_fig_a <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
+                                                  title %in% fig_title_vec,
+                                                  demo_cat == "Race"), aes(x = year, y = gap, color = title)) +
+    geom_line(linewidth = 1, alpha = 0.8) +
+    facet_grid(demo_cat ~ scenario_title) +
+    labs(x = NULL,
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+    # ylim(c(0, 0.35)) +
+    theme_line +
+    theme(legend.position = "right",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          strip.text.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figa <- health_gap_fig_a + theme(legend.position = "right")
+  
+  legend_a <- get_legend(
+    legend_figa + 
+      theme(legend.text = element_text(size = 8)))
+  
+  ##
+  health_gap_fig_b <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
+                                                  demo_cat == "DAC"), aes(x = year, y = gap, lty = title)) +
+    geom_line(linewidth = 1, alpha = 0.8) +
+    facet_grid(demo_cat ~ scenario_title) +
+    labs(x = NULL,
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+    # ylim(c(0, 0.45)) +
+    theme_line +
+    theme(legend.position = "right",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          # strip.text.x = element_blank(),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figb <- health_gap_fig_b + theme(legend.position = "right")
+  
+  legend_b <- get_legend(
+    legend_figb + 
+      theme(legend.text = element_text(size = 8)))
+  
+  ##
+  health_gap_fig_c <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
+                                                  demo_cat == "Poverty"), aes(x = year, y = gap, lty = title)) +
+    geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
+    scale_linetype_manual(values = c("Above poverty line" = "dashed",
+                                     "Below poverty line" = "solid")) +
+    facet_grid(demo_cat ~ scenario_title) +
+    labs(x = NULL,
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+    # ylim(c(0, 0.25)) +
+    theme_line +
+    theme(legend.position = "right",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          strip.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figc <- health_gap_fig_c + theme(legend.position = "right")
+  
+  legend_c <- get_legend(
+    legend_figc + 
+      theme(legend.text = element_text(size = 8)))
+  
+  
+  # ## plot together
+  # fig2l_a <- plot_grid(
+  #   health_level_fig_a,
+  #   legend_a,
+  #   align = 'h',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   ncol = 2,
+  #   rel_widths = c(0.95, 0.5),
+  #   rel_heighs = c(1, 1)
+  # )
+  # 
+  # 
+  
+  gaps_plot_grid <- plot_grid(
+    health_gap_fig_b,
+    health_gap_fig_c,
+    health_gap_fig_a,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 3,
+    ncol = 1,
+    rel_widths = c(1, 1, 1, 1),
+    rel_heighs = c(1, 1, 1, 1.05)
+  )
+  
+  gaps_plot_grid
+  
+}
+
+
 plot_hl_levels_df <- function(main_path,
                               ref_mortality_demog,
                               ref_labor_demog,
