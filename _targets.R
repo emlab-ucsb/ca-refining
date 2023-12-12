@@ -394,6 +394,9 @@ list(
   tar_target(name = health_levels_plot, command = plot_health_levels(main_path,
                                                                      health_grp)),
   
+  tar_target(name = health_gaps_plot, command = plot_health_levels_gaps(main_path,
+                                                                        health_grp)),
+  
   tar_target(name = demographic_npv_df, command = plot_hl_levels_df(main_path,
                                                                     ref_mortality_demog,
                                                                     ref_labor_demog,
@@ -460,6 +463,16 @@ list(
                                      main_path, 
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "state_levels_fig", 
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_gaps_fig,
+             command = simple_ggsave(health_gaps_plot, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_gaps_fig", 
                                      width = 12,
                                      height = 8,
                                      dpi = 600),
