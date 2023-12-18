@@ -497,14 +497,15 @@ plot_health_levels <- function(main_path,
     geom_line(linewidth = 1, alpha = 0.8) +
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")"))) +
     ylim(c(0, 0.35)) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
-          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
-          axis.text.x = element_blank(),
+          strip.text.x = element_blankk(),
+          # axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
@@ -520,7 +521,7 @@ plot_health_levels <- function(main_path,
     geom_line(linewidth = 1, alpha = 0.8) +
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")"))) +
     ylim(c(0, 0.45)) +
     theme_line +
     theme(legend.position = "right",
@@ -546,12 +547,12 @@ plot_health_levels <- function(main_path,
                                      "Below poverty line" = "solid")) +
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
+         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")"))) +
     # ylim(c(0, 0.25)) +
     theme_line +
     theme(legend.position = "right",
           legend.title = element_blank(),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           strip.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -582,9 +583,9 @@ plot_health_levels <- function(main_path,
   # 
   
   fig2_plot_grid <- plot_grid(
-    health_level_fig_a,
     health_level_fig_b,
     health_level_fig_c,
+    health_level_fig_a,
     align = 'v',
     # labels = c("A", "B", "C", "D", "E", "F"),
     # # labels = 'AUTO',
@@ -928,7 +929,7 @@ plot_hl_levels <- function(demographic_npv_df) {
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
-           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
            plot.margin = unit(c(0, 0, 0, 0), "cm"),
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
@@ -954,7 +955,7 @@ plot_hl_levels <- function(demographic_npv_df) {
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
-           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
            plot.margin = unit(c(0, 0, 0, 0), "cm"),
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
@@ -1058,8 +1059,8 @@ plot_hl_levels <- function(demographic_npv_df) {
 
    ## race
    hl_plot_grid_a <- plot_grid(
-     health_level_fig_a + theme(axis.text.x = element_blank()),
-     labor_level_fig_a + labs(y = NULL) + theme(axis.text.x = element_blank()),
+     health_level_fig_a + theme(strip.text.x = element_blank()),
+     labor_level_fig_a + labs(y = NULL) + theme(strip.text.x = element_blank()),
      align = 'vh',
      # labels = c("A", "B", "C", "D", "E", "F"),
      # # labels = 'AUTO',
@@ -1102,8 +1103,9 @@ plot_hl_levels <- function(demographic_npv_df) {
    
    ## DAC
    hl_plot_grid_c <- plot_grid(
-     health_level_fig_c + theme(strip.text.x = element_blank()),
-     labor_level_fig_c + labs(y = NULL) + theme(strip.text.x = element_blank()),
+     health_level_fig_c + theme(axis.text.x = element_blank()),
+     # + theme(strip.text.x = element_blank()),
+     labor_level_fig_c + labs(y = NULL) + theme(axis.text.x = element_blank()), 
      align = 'vh',
      # labels = c("A", "B", "C", "D", "E", "F"),
      # # labels = 'AUTO',
@@ -1206,7 +1208,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
-          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
@@ -1233,7 +1235,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
-          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
@@ -1341,8 +1343,8 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   ## race
   hl_plot_grid_a <- plot_grid(
-    health_level_fig_a + theme(axis.text.x = element_blank()),
-    labor_level_fig_a + labs(y = NULL) + theme(axis.text.x = element_blank()),
+    health_level_fig_a + theme(strip.text.x = element_blank()),
+    labor_level_fig_a + labs(y = NULL) + theme(strip.text.x = element_blank()),
     align = 'vh',
     # labels = c("A", "B", "C", "D", "E", "F"),
     # # labels = 'AUTO',
@@ -1385,8 +1387,8 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   ## DAC
   hl_plot_grid_c <- plot_grid(
-    health_level_fig_c + theme(strip.text.x = element_blank()),
-    labor_level_fig_c + labs(y = NULL) + theme(strip.text.x = element_blank()),
+    health_level_fig_c + theme(axis.text.x = element_blank()),
+    labor_level_fig_c + labs(y = NULL) + theme(axis.text.x = element_blank()),
     align = 'vh',
     # labels = c("A", "B", "C", "D", "E", "F"),
     # # labels = 'AUTO',
