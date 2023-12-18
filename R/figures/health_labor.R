@@ -504,7 +504,7 @@ plot_health_levels <- function(main_path,
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
-          strip.text.x = element_blankk(),
+          strip.text.x = element_blank(),
           # axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
@@ -614,7 +614,7 @@ plot_health_levels_gaps <- function(main_path,
   
   ## scenarios for filtering
   remove_scen <- c('LC1 historic production', 'BAU historic production')
-  
+
   ## refactor
   gaps_df[, scenario_title := scenario]
   gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
