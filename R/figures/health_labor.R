@@ -642,7 +642,7 @@ plot_health_levels_gaps <- function(main_path,
                    by = c("year", "demo_cat", "demo_group", "title"),
                    all.x = T)
   
-  gaps_df[, gap := bau_num_over_den - num_over_den]
+  gaps_df[, gap :=  num_over_den - bau_num_over_den]
   
   ## save figure inputs
   fwrite(gaps_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
