@@ -127,15 +127,15 @@ plot_npv_health_labor <- function(main_path,
   ## rename
   setDT(plot_df_long)
   plot_df_long[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
-  plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
+  # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
   plot_df_long[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
   # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
   # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
   
   ## refactor
-  plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('Reference demand - historic production',
-                                                                    'Reference demand - historic exports', 
-                                                                    'Reference demand - low exports', 
+  plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('BAU demand - historic production',
+                                                                    'BAU demand - historic exports', 
+                                                                    'BAU demand - low exports', 
                                                                     'Low carbon demand - historic exports',
                                                                     'Low carbon demand - low exports',
                                                                     'Low carbon demand - historic production'))
@@ -209,7 +209,7 @@ plot_npv_health_labor <- function(main_path,
          title = "A. Health: avoided mortality",
          y = "NPV (2019 USD billion)",
          x = NULL) +
-    ylim(-1, 31) +
+    ylim(0, 25) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
     theme_line +
@@ -230,7 +230,7 @@ plot_npv_health_labor <- function(main_path,
          title = "B. Labor: forgone wages",
          y = NULL,
          x = NULL) +
-    ylim(-31, 0) +
+    ylim(-25, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
     theme_line +
@@ -275,7 +275,7 @@ plot_npv_health_labor <- function(main_path,
          y = bquote('NPV (2019 USD million)\nper avoided GHG MtCO'[2]~e),
          x = "GHG emissions reduction target (%, 2045 vs 2019)") +
     scale_color_manual(values = refin_colors) +
-    ylim(0, 200) +
+    ylim(0, 125) +
     xlim(0, 80) +
     theme_line +
     theme(legend.position = "none",
@@ -298,6 +298,7 @@ plot_npv_health_labor <- function(main_path,
     scale_color_manual(values = refin_colors) +
     theme_line +
     xlim(0, 80) +
+    ylim(-125, 0) +
     theme(legend.position = "none",
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -376,17 +377,17 @@ plot_npv_health_labor <- function(main_path,
          color = NULL,
          shape = NULL) +
     scale_color_manual(name = "",
-                       labels = c("Reference demand - historic exports",
-                                  "Reference demand - low exports",
+                       labels = c("BAU demand - historic exports",
+                                  "BAU demand - low exports",
                                   "Low carbon demand - historic exports",
                                   "Low carbon demand - low exports"),
-                       values = c("Reference demand - historic exports" = "#2F4858",
-                                  "Reference demand - low exports" = "#F26419",
+                       values = c("BAU demand - historic exports" = "#2F4858",
+                                  "BAU demand - low exports" = "#F26419",
                                   "Low carbon demand - historic exports" = "#2F4858",
                                   "Low carbon demand - low exports" = "#F26419")) +
     scale_shape_manual(name = "",
-                       labels = c("Reference demand - historic exports",
-                                  "Reference demand - low exports",
+                       labels = c("BAU demand - historic exports",
+                                  "BAU demand - low exports",
                                   "Low carbon demand - historic exports",
                                   "Low carbon demand - low exports"),
                        values = c(16, 16, 17, 17)) +
@@ -456,16 +457,29 @@ plot_health_levels <- function(main_path,
   
   ## change scenario names, factor
   fig2_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
-  fig2_df[, scenario := gsub('BAU', 'Reference', scenario)]
+  # fig2_df[, scenario := gsub('BAU', 'Reference', scenario)]
   fig2_df[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
   
   ## scenarios for filtering
-  remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
+  # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
+  remove_scen <- c('LC1 historic production')
+  
+  ## add scenario title
+  fig2_df[, scenario_title := str_replace(scenario, " - ", "\n")]
   
   ## refactor
-  fig2_df$scenario <- factor(fig2_df$scenario, levels = c('Reference demand - historic production',
-                                                          'Reference demand - historic exports', 
-                                                          'Reference demand - low exports', 
+  fig2_df$scenario_title <- factor(fig2_df$scenario_title, levels = c('BAU demand\nhistoric production',
+                                                          'BAU demand\nhistoric exports', 
+                                                          'BAU demand\nlow exports', 
+                                                          'Low carbon demand\nhistoric exports',
+                                                          'Low carbon demand\nlow exports',
+                                                          'Low carbon demand\nhistoric production'))
+  
+  
+  ## refactor
+  fig2_df$scenario <- factor(fig2_df$scenario, levels = c('BAU demand - historic production',
+                                                          'BAU demand - historic exports', 
+                                                          'BAU demand - low exports', 
                                                           'Low carbon demand - historic exports',
                                                           'Low carbon demand - low exports',
                                                           'Low carbon demand - historic production'))
@@ -488,19 +502,20 @@ plot_health_levels <- function(main_path,
   
   ##
   
-  fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
+  fig_title_vec <- c("Asian", "Black", "Hispanic", "White")
   
   
   health_level_fig_a <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
                                                   title %in% fig_title_vec,
                                                   demo_cat == "Race"), aes(x = year, y = num_over_den, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
-    facet_grid(demo_cat ~ scenario) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")"))) +
-    ylim(c(0, 0.35)) +
+         y = NULL) +
+    ylim(c(0, 0.4)) +
     theme_line +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
@@ -519,17 +534,18 @@ plot_health_levels <- function(main_path,
   health_level_fig_b <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
                                                   demo_cat == "DAC"), aes(x = year, y = num_over_den, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
-    facet_grid(demo_cat ~ scenario) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")"))) +
-    ylim(c(0, 0.45)) +
+         y = NULL) +
+    ylim(c(0, 0.4)) +
     theme_line +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.title = element_blank(),
-          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-          strip.text.x = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          # strip.text.x = element_blank(),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
-          axis.text.x = element_blank(),
+          # axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
@@ -545,15 +561,17 @@ plot_health_levels <- function(main_path,
     geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
     scale_linetype_manual(values = c("Above poverty line" = "dashed",
                                      "Below poverty line" = "solid")) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")"))) +
-    # ylim(c(0, 0.25)) +
+         y = NULL) +
+    ylim(c(0, 0.4)) +
     theme_line +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.title = element_blank(),
           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          legend.key.width = unit(10, "mm"),
           strip.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
@@ -564,6 +582,10 @@ plot_health_levels <- function(main_path,
     legend_figc + 
       theme(legend.text = element_text(size = 8)))
 
+  ## shared y lab
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")")), 
+                                     size = 8, angle = 90)
+  
 
   # ## plot together
   # fig2l_a <- plot_grid(
@@ -597,7 +619,22 @@ plot_health_levels <- function(main_path,
     rel_heighs = c(1, 1, 1, 1.05)
   )
   
-  fig2_plot_grid
+  fig2_plot_grid2 <- plot_grid(
+    yaxis_lab,
+    fig2_plot_grid,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    ncol = 2,
+    rel_widths = c(0.05, 1),
+    rel_heighs = c(1, 1)
+  )
+  
+  
+  fig2_plot_grid2
 
 }
 
@@ -609,7 +646,7 @@ plot_health_levels_gaps <- function(main_path,
   
   ## change scenario names, factor
   gaps_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
-  gaps_df[, scenario := gsub('BAU', 'Reference', scenario)]
+  # gaps_df[, scenario := gsub('BAU', 'Reference', scenario)]
   gaps_df[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
   
   ## scenarios for filtering
@@ -619,16 +656,16 @@ plot_health_levels_gaps <- function(main_path,
   gaps_df[, scenario_title := scenario]
   gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
   
-  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('Reference demand - historic production',
-                                                          'Reference demand - historic exports', 
-                                                          'Reference demand - low exports', 
+  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('BAU demand - historic production',
+                                                          'BAU demand - historic exports', 
+                                                          'BAU demand - low exports', 
                                                           'Low carbon demand - historic exports',
                                                           'Low carbon demand - low exports',
                                                           'Low carbon demand - historic production'))
   
-  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('Reference demand\nhistoric production',
-                                                                      'Reference demand\nhistoric exports', 
-                                                                      'Reference demand\nlow exports', 
+  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('BAU demand\nhistoric production',
+                                                                      'BAU demand\nhistoric exports', 
+                                                                      'BAU demand\nlow exports', 
                                                                       'Low carbon demand\nhistoric exports',
                                                                       'Low carbon demand\nlow exports',
                                                                       'Low carbon demand\nhistoric production'))
@@ -648,24 +685,25 @@ plot_health_levels_gaps <- function(main_path,
   ## save figure inputs
   fwrite(gaps_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
   
-  fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
+  fig_title_vec <- c("Asian", "Black", "Hispanic", "White")
   
   
   health_gap_fig_a <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
                                                   title %in% fig_title_vec,
                                                   demo_cat == "Race"), aes(x = year, y = gap, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
-    # ylim(c(0, 0.35)) +
+         y = NULL) +
+    ylim(c(-0.31, 0)) +
     theme_line +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.title = element_blank(),
-          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           strip.text.x = element_blank(),
-          axis.text.x = element_blank(),
+          # axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
@@ -679,17 +717,18 @@ plot_health_levels_gaps <- function(main_path,
   health_gap_fig_b <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
                                                   demo_cat == "DAC"), aes(x = year, y = gap, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
-    # ylim(c(0, 0.45)) +
+         y = NULL) +
+    ylim(c(-0.31, 0)) +
     theme_line +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.title = element_blank(),
-          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           # strip.text.x = element_blank(),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
-          axis.text.x = element_blank(),
+          # axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
@@ -705,14 +744,16 @@ plot_health_levels_gaps <- function(main_path,
     geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
     scale_linetype_manual(values = c("Above poverty line" = "dashed",
                                      "Below poverty line" = "solid")) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
-         y = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")"))) +
-    # ylim(c(0, 0.25)) +
+         y = NULL) +
+    ylim(c(-0.31, 0)) +
     theme_line +
-    theme(legend.position = "right",
+    theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          legend.key.width = unit(10, "mm"),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           strip.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -723,6 +764,10 @@ plot_health_levels_gaps <- function(main_path,
   legend_c <- get_legend(
     legend_figc + 
       theme(legend.text = element_text(size = 8)))
+  
+  ## shared y lab
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("Difference from reference: Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")")), 
+                                     size = 8, angle = 90)
   
   
   # ## plot together
@@ -757,7 +802,22 @@ plot_health_levels_gaps <- function(main_path,
     rel_heighs = c(1, 1, 1, 1.05)
   )
   
-  gaps_plot_grid
+  gaps_plot_grid2 <- plot_grid(
+    yaxis_lab,
+    gaps_plot_grid,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    ncol = 2,
+    rel_widths = c(0.05, 1),
+    rel_heighs = c(1, 1)
+  )
+  
+  
+  gaps_plot_grid2
   
 }
 
@@ -869,26 +929,26 @@ plot_hl_levels_df <- function(main_path,
     ## rename
    setDT(plot_df_long)
    plot_df_long[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
-   plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
+   # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
    plot_df_long[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
    # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
    # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
    
    ## refactor
-   plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('Reference demand - historic production',
-                                                                     'Reference demand - historic exports', 
-                                                                     'Reference demand - low exports', 
+   plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('BAU demand - historic production',
+                                                                     'BAU demand - historic exports', 
+                                                                     'BAU demand - low exports', 
                                                                      'Low carbon demand - historic exports',
                                                                      'Low carbon demand - low exports',
                                                                      'Low carbon demand - historic production'))
    
    ## titles for plotting
-   plot_df_long[, demand_title := ifelse(demand_scenario == "BAU", "Reference demand", "Low carbon demand")]
+   plot_df_long[, demand_title := ifelse(demand_scenario == "BAU", "BAU demand", "Low carbon demand")]
    plot_df_long[, scen_title := paste0(demand_title, "\n", str_to_sentence(refining_scenario))]
    
-   plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('Reference demand\nHistoric production',
-                                                                        'Reference demand\nHistoric exports', 
-                                                                        'Reference demand\nLow exports', 
+   plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('BAU demand\nHistoric production',
+                                                                        'BAU demand\nHistoric exports', 
+                                                                        'BAU demand\nLow exports', 
                                                                         'Low carbon demand\nHistoric exports',
                                                                         'Low carbon demand\nLow exports',
                                                                         'Low carbon demand\nHistoric production'))
@@ -912,7 +972,7 @@ plot_hl_levels <- function(demographic_npv_df) {
    remove_scen <- c('LC1 historic production', 'BAU historic production')
    bau_scen <- 'BAU historic production'
    
-   fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
+   fig_title_vec <- c("Asian", "Black", "Hispanic", "White")
    
    ## health fig - race
    health_level_fig_a <- ggplot() +
@@ -923,6 +983,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                title %in% fig_title_vec), aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
+     ylim(0, 12) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
@@ -949,6 +1010,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                title %in% fig_title_vec), aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
+     ylim(-12, 0) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
@@ -966,6 +1028,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                demo_cat == "Poverty",
                                                unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "#D57D93", size = 3, alpha = 0.8) +
+     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      scale_shape_manual(values = c("Above poverty line" = 19,
                                    "Below poverty line" = 17)) +
      facet_wrap(~seg_title) +
@@ -973,6 +1036,7 @@ plot_hl_levels <- function(demographic_npv_df) {
           x = NULL,
           color = NULL) +
      theme_line +
+     ylim(0, 20) +
      theme(legend.position = "none",
            legend.title = element_blank(),
            # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -994,10 +1058,12 @@ plot_hl_levels <- function(demographic_npv_df) {
                 color = "#D57D93", size = 3, alpha = 0.8) +
      scale_shape_manual(values = c("Above poverty line" = 19,
                                    "Below poverty line" = 17)) +
+     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
+     ylim(-20, 0) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -1013,12 +1079,14 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                demo_cat == "DAC",
                                                unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "black", size = 3, alpha = 0.8) +
+     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      scale_shape_manual(values = c("DAC" = 15,
                                    "Non-DAC" = 4)) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
+     ylim(0, 15) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -1039,12 +1107,14 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                demo_cat == "DAC",
                                                segment == "labor"), aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "black", size = 3, alpha = 0.8) +
+     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      scale_shape_manual(values = c("DAC" = 15,
                                    "Non-DAC" = 4)) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
+     ylim(-15, 0) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -1190,7 +1260,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   remove_scen <- c('LC1 historic production', 'BAU historic production')
   bau_scen <- 'BAU historic production'
   
-  fig_title_vec <- c("American Indian or Alaska Native", "Asian", "Black", "Hispanic", "White")
+  fig_title_vec <- c("Asian", "Black", "Hispanic", "White")
   
   ## health fig - race
   health_level_fig_a <- ggplot() +
@@ -1200,11 +1270,12 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               unit_desc == "USD (2019 VSL)",
                                               title %in% fig_title_vec), aes(x = scen_title, y = value, color = title),
                size = 3, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -1227,11 +1298,12 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               segment == "labor",
                                               title %in% fig_title_vec), aes(x = scen_title, y = value, color = title),
                size = 3, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -1246,6 +1318,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               demo_cat == "Poverty",
                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value, shape = title),
                color = "#D57D93", size = 3, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("Above poverty line" = 19,
                                   "Below poverty line" = 17)) +
     facet_wrap(~seg_title) +
@@ -1253,7 +1326,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
          x = NULL,
          color = NULL) +
     theme_line +
-    scale_y_continuous(label = comma) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme(legend.position = "none",
           legend.title = element_blank(),
           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1273,13 +1346,14 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               demo_cat == "Poverty",
                                               segment == "labor"), aes(x = scen_title, y = value, shape = title),
                color = "#D57D93", size = 3, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("Above poverty line" = 19,
                                   "Below poverty line" = 17)) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -1295,6 +1369,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               demo_cat == "DAC",
                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value, shape = title),
                color = "black", size = 3, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("DAC" = 15,
                                   "Non-DAC" = 4)) +
     facet_wrap(~seg_title) +
@@ -1302,7 +1377,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
          x = NULL,
          color = NULL) +
     theme_line +
-    scale_y_continuous(label = comma) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme(legend.position = "none",
           legend.title = element_blank(),
           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1322,13 +1397,14 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               demo_cat == "DAC",
                                               segment == "labor"), aes(x = scen_title, y = value, shape = title),
                color = "black", size = 3, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("DAC" = 15,
                                   "Non-DAC" = 4)) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma) +
+    scale_y_continuous(label = comma, limits = c(-2000,0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
