@@ -128,7 +128,7 @@ plot_npv_health_labor <- function(main_path,
   setDT(plot_df_long)
   plot_df_long[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
   # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
-  plot_df_long[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
+  plot_df_long[, scenario := gsub('LC1.', 'Low ', scenario)]
   # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
   # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
   
@@ -136,9 +136,9 @@ plot_npv_health_labor <- function(main_path,
   plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('BAU demand - historic production',
                                                                     'BAU demand - historic exports', 
                                                                     'BAU demand - low exports', 
-                                                                    'Low carbon demand - historic exports',
-                                                                    'Low carbon demand - low exports',
-                                                                    'Low carbon demand - historic production'))
+                                                                    'Low demand - historic exports',
+                                                                    'Low demand - low exports',
+                                                                    'Low demand - historic production'))
   
   ## convert value of scaled outputs (by ghg) to millions, add unit column
   plot_df_long[, value := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), value * 1000, value)]
@@ -379,17 +379,17 @@ plot_npv_health_labor <- function(main_path,
     scale_color_manual(name = "",
                        labels = c("BAU demand - historic exports",
                                   "BAU demand - low exports",
-                                  "Low carbon demand - historic exports",
-                                  "Low carbon demand - low exports"),
+                                  "Low demand - historic exports",
+                                  "Low demand - low exports"),
                        values = c("BAU demand - historic exports" = "#2F4858",
                                   "BAU demand - low exports" = "#F26419",
-                                  "Low carbon demand - historic exports" = "#2F4858",
-                                  "Low carbon demand - low exports" = "#F26419")) +
+                                  "Low demand - historic exports" = "#2F4858",
+                                  "Low demand - low exports" = "#F26419")) +
     scale_shape_manual(name = "",
                        labels = c("BAU demand - historic exports",
                                   "BAU demand - low exports",
-                                  "Low carbon demand - historic exports",
-                                  "Low carbon demand - low exports"),
+                                  "Low demand - historic exports",
+                                  "Low demand - low exports"),
                        values = c(16, 16, 17, 17)) +
     theme_line +
     theme(legend.position = "bottom",
@@ -458,7 +458,7 @@ plot_health_levels <- function(main_path,
   ## change scenario names, factor
   fig2_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
   # fig2_df[, scenario := gsub('BAU', 'Reference', scenario)]
-  fig2_df[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
+  fig2_df[, scenario := gsub('LC1.', 'Low ', scenario)]
   
   ## scenarios for filtering
   # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
@@ -471,18 +471,18 @@ plot_health_levels <- function(main_path,
   fig2_df$scenario_title <- factor(fig2_df$scenario_title, levels = c('BAU demand\nhistoric production',
                                                           'BAU demand\nhistoric exports', 
                                                           'BAU demand\nlow exports', 
-                                                          'Low carbon demand\nhistoric exports',
-                                                          'Low carbon demand\nlow exports',
-                                                          'Low carbon demand\nhistoric production'))
+                                                          'Low demand\nhistoric exports',
+                                                          'Low demand\nlow exports',
+                                                          'Low demand\nhistoric production'))
   
   
   ## refactor
   fig2_df$scenario <- factor(fig2_df$scenario, levels = c('BAU demand - historic production',
                                                           'BAU demand - historic exports', 
                                                           'BAU demand - low exports', 
-                                                          'Low carbon demand - historic exports',
-                                                          'Low carbon demand - low exports',
-                                                          'Low carbon demand - historic production'))
+                                                          'Low demand - historic exports',
+                                                          'Low demand - low exports',
+                                                          'Low demand - historic production'))
   
   
   ## save figure inputs
@@ -647,7 +647,7 @@ plot_health_levels_gaps <- function(main_path,
   ## change scenario names, factor
   gaps_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
   # gaps_df[, scenario := gsub('BAU', 'Reference', scenario)]
-  gaps_df[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
+  gaps_df[, scenario := gsub('LC1.', 'Low ', scenario)]
   
   ## scenarios for filtering
   remove_scen <- c('LC1 historic production', 'BAU historic production')
@@ -659,16 +659,16 @@ plot_health_levels_gaps <- function(main_path,
   gaps_df$scenario <- factor(gaps_df$scenario, levels = c('BAU demand - historic production',
                                                           'BAU demand - historic exports', 
                                                           'BAU demand - low exports', 
-                                                          'Low carbon demand - historic exports',
-                                                          'Low carbon demand - low exports',
-                                                          'Low carbon demand - historic production'))
+                                                          'Low demand - historic exports',
+                                                          'Low demand - low exports',
+                                                          'Low demand - historic production'))
   
   gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('BAU demand\nhistoric production',
                                                                       'BAU demand\nhistoric exports', 
                                                                       'BAU demand\nlow exports', 
-                                                                      'Low carbon demand\nhistoric exports',
-                                                                      'Low carbon demand\nlow exports',
-                                                                      'Low carbon demand\nhistoric production'))
+                                                                      'Low demand\nhistoric exports',
+                                                                      'Low demand\nlow exports',
+                                                                      'Low demand\nhistoric production'))
   
   
   ## calculate gaps (BAU - scenario)
@@ -930,7 +930,7 @@ plot_hl_levels_df <- function(main_path,
    setDT(plot_df_long)
    plot_df_long[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
    # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
-   plot_df_long[, scenario := gsub('LC1.', 'Low carbon ', scenario)]
+   plot_df_long[, scenario := gsub('LC1.', 'Low ', scenario)]
    # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
    # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
    
@@ -938,20 +938,20 @@ plot_hl_levels_df <- function(main_path,
    plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('BAU demand - historic production',
                                                                      'BAU demand - historic exports', 
                                                                      'BAU demand - low exports', 
-                                                                     'Low carbon demand - historic exports',
-                                                                     'Low carbon demand - low exports',
-                                                                     'Low carbon demand - historic production'))
+                                                                     'Low demand - historic exports',
+                                                                     'Low demand - low exports',
+                                                                     'Low demand - historic production'))
    
    ## titles for plotting
-   plot_df_long[, demand_title := ifelse(demand_scenario == "BAU", "BAU demand", "Low carbon demand")]
+   plot_df_long[, demand_title := ifelse(demand_scenario == "BAU", "BAU demand", "Low demand")]
    plot_df_long[, scen_title := paste0(demand_title, "\n", str_to_sentence(refining_scenario))]
    
    plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('BAU demand\nHistoric production',
                                                                         'BAU demand\nHistoric exports', 
                                                                         'BAU demand\nLow exports', 
-                                                                        'Low carbon demand\nHistoric exports',
-                                                                        'Low carbon demand\nLow exports',
-                                                                        'Low carbon demand\nHistoric production'))
+                                                                        'Low demand\nHistoric exports',
+                                                                        'Low demand\nLow exports',
+                                                                        'Low demand\nHistoric production'))
    
    ## save figure inputs
    fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
@@ -1506,6 +1506,10 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   
 }
+
+
+## labor pathways
+## ----------------------------------------------------------------------------
 
 
 
