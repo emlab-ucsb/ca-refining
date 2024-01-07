@@ -273,7 +273,7 @@ plot_npv_health_labor <- function(main_path,
     labs(color = "Policy",
          title = "C.",
          y = bquote('NPV (2019 USD million)\nper avoided GHG MtCO'[2]~e),
-         x = "GHG emissions reduction target (%, 2045 vs 2019)") +
+         x = "GHG emissions reduction (%, 2045 vs 2019)") +
     scale_color_manual(values = refin_colors) +
     ylim(0, 125) +
     xlim(0, 80) +
@@ -294,7 +294,7 @@ plot_npv_health_labor <- function(main_path,
          title = "D.",
          y = NULL,
          # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-         x = "GHG emissions reduction target (%, 2045 vs 2019)") +
+         x = "GHG emissions reduction (%, 2045 vs 2019)") +
     scale_color_manual(values = refin_colors) +
     theme_line +
     xlim(0, 80) +
@@ -373,7 +373,7 @@ plot_npv_health_labor <- function(main_path,
     labs(title = "",
          y = NULL,
          # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-         x = "GHG emissions reduction target (%, 2045 vs 2019)",
+         x = "GHG emissions reduction (%, 2045 vs 2019)",
          color = NULL,
          shape = NULL) +
     scale_color_manual(name = "",
@@ -412,7 +412,7 @@ plot_npv_health_labor <- function(main_path,
   ## ---------------------------------
   
   ## shared x axis
-  xaxis_lab <- ggdraw() + draw_label("GHG emissions reduction target (%, 2045 vs 2019)", size = 7)
+  xaxis_lab <- ggdraw() + draw_label("GHG emissions reduction (%, 2045 vs 2019)", size = 7)
   
   fig3_plot_grid <- plot_grid(
     fig_bxm_a,
@@ -766,7 +766,7 @@ plot_health_levels_gaps <- function(main_path,
       theme(legend.text = element_text(size = 8)))
   
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("Difference from reference: Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")")), 
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")", "difference from reference")), 
                                      size = 8, angle = 90)
   
   
