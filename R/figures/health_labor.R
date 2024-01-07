@@ -507,7 +507,9 @@ plot_health_levels <- function(main_path,
   
   health_level_fig_a <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
                                                   title %in% fig_title_vec,
-                                                  demo_cat == "Race"), aes(x = year, y = num_over_den, color = title)) +
+                                                  demo_cat == "Race")  %>%
+                                 mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "White"))), 
+                               aes(x = year, y = num_over_den, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -557,7 +559,9 @@ plot_health_levels <- function(main_path,
   
   ##
   health_level_fig_c <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
-                                                  demo_cat == "Poverty"), aes(x = year, y = num_over_den, lty = title)) +
+                                                  demo_cat == "Poverty") %>%
+                                 mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
+                               aes(x = year, y = num_over_den, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
     scale_linetype_manual(values = c("Above poverty line" = "dashed",
                                      "Below poverty line" = "solid")) +
@@ -690,7 +694,9 @@ plot_health_levels_gaps <- function(main_path,
   
   health_gap_fig_a <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
                                                   title %in% fig_title_vec,
-                                                  demo_cat == "Race"), aes(x = year, y = gap, color = title)) +
+                                                  demo_cat == "Race")  %>%
+                               mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "White"))), 
+                             aes(x = year, y = gap, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -739,8 +745,11 @@ plot_health_levels_gaps <- function(main_path,
       theme(legend.text = element_text(size = 8)))
   
   ##
-  health_gap_fig_c <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
-                                                  demo_cat == "Poverty"), aes(x = year, y = gap, lty = title)) +
+  health_gap_fig_c <- ggplot(gaps_df %>% 
+                               filter(!scen_id %in% remove_scen,
+                                                  demo_cat == "Poverty") %>%
+                               mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
+                               aes(x = year, y = gap, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
     scale_linetype_manual(values = c("Above poverty line" = "dashed",
                                      "Below poverty line" = "solid")) +
@@ -980,7 +989,9 @@ plot_hl_levels <- function(demographic_npv_df) {
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Race",
                                                unit_desc == "USD (2019 VSL)",
-                                               title %in% fig_title_vec), aes(x = scen_title, y = value / 1e9, color = title),
+                                               title %in% fig_title_vec)  %>%
+                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "White"))), 
+                aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
      ylim(0, 12) +
@@ -1007,7 +1018,9 @@ plot_hl_levels <- function(demographic_npv_df) {
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Race",
                                                segment == "labor",
-                                               title %in% fig_title_vec), aes(x = scen_title, y = value / 1e9, color = title),
+                                               title %in% fig_title_vec)%>%
+                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "White"))), 
+                aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
      ylim(-12, 0) +
@@ -1026,7 +1039,9 @@ plot_hl_levels <- function(demographic_npv_df) {
    health_level_fig_b <- ggplot() +
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Poverty",
-                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value / 1e9, shape = title),
+                                               unit_desc == "USD (2019 VSL)") %>%
+                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
+                aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "#D57D93", size = 3, alpha = 0.8) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      scale_shape_manual(values = c("Above poverty line" = 19,
@@ -1054,7 +1069,9 @@ plot_hl_levels <- function(demographic_npv_df) {
    labor_level_fig_b <- ggplot() +
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Poverty",
-                                               segment == "labor"), aes(x = scen_title, y = value / 1e9, shape = title),
+                                               segment == "labor") %>%
+                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
+                aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "#D57D93", size = 3, alpha = 0.8) +
      scale_shape_manual(values = c("Above poverty line" = 19,
                                    "Below poverty line" = 17)) +
@@ -1268,7 +1285,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Race",
                                               unit_desc == "USD (2019 VSL)",
-                                              title %in% fig_title_vec), aes(x = scen_title, y = value, color = title),
+                                              title %in% fig_title_vec) %>%
+                 mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "White"))), 
+               aes(x = scen_title, y = value, color = title),
                size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
@@ -1296,7 +1315,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Race",
                                               segment == "labor",
-                                              title %in% fig_title_vec), aes(x = scen_title, y = value, color = title),
+                                              title %in% fig_title_vec)  %>%
+                 mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "White"))), 
+               aes(x = scen_title, y = value, color = title),
                size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
@@ -1316,7 +1337,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   health_level_fig_b <- ggplot() +
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Poverty",
-                                              unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value, shape = title),
+                                              unit_desc == "USD (2019 VSL)") %>%
+                 mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
+               aes(x = scen_title, y = value, shape = title),
                color = "#D57D93", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("Above poverty line" = 19,
@@ -1344,7 +1367,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   labor_level_fig_b <- ggplot() +
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Poverty",
-                                              segment == "labor"), aes(x = scen_title, y = value, shape = title),
+                                              segment == "labor") %>%
+                 mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
+               aes(x = scen_title, y = value, shape = title),
                color = "#D57D93", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("Above poverty line" = 19,
