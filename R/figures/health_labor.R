@@ -148,7 +148,7 @@ plot_npv_health_labor <- function(main_path,
                                  "NPV (2019 USD billion)")]
   
   ## save figure inputs
-  fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs.csv"))
+  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs.csv"))
   
   
   ## scenarios for filtering
@@ -486,7 +486,7 @@ plot_health_levels <- function(main_path,
   
   
   ## save figure inputs
-  fwrite(fig2_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
   
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
@@ -687,7 +687,7 @@ plot_health_levels_gaps <- function(main_path,
   gaps_df[, gap :=  num_over_den - bau_num_over_den]
   
   ## save figure inputs
-  fwrite(gaps_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
   
   fig_title_vec <- c("Asian", "Black", "Hispanic", "White")
   
@@ -963,7 +963,7 @@ plot_hl_levels_df <- function(main_path,
                                                                         'Low demand\nHistoric production'))
    
    ## save figure inputs
-   fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
+   fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
    
    return(plot_df_long)
    
@@ -1266,7 +1266,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   plot_df_long[, value := value / pop_2020]
   
   ## save figure inputs
-  fwrite(plot_df_long, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
   
   
   
