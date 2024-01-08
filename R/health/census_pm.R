@@ -642,7 +642,7 @@ calculate_mort_x_demg = function(refining_mortality,
     filter(grp_pop == 0 & pop > 0)
   
   ## save missing pop
-  fwrite(missing_pop, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "ct_missing_pop.csv"))
+  fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "ct_missing_pop.csv"))
   
 
   
