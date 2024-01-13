@@ -513,9 +513,20 @@ plot_health_levels <- function(main_path,
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
+    scale_color_manual(name = "",
+                       labels = c("Black",
+                                  "Hispanic",
+                                  "Asian",
+                                  "White"),
+                       values = c("#002147",
+                                  "#721817",
+                                  "#FFBA00",
+                                  "#40826D")) +
     labs(x = NULL,
          y = NULL) +
     ylim(c(0, 0.4)) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -541,6 +552,9 @@ plot_health_levels <- function(main_path,
     labs(x = NULL,
          y = NULL) +
     ylim(c(0, 0.4)) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -562,7 +576,7 @@ plot_health_levels <- function(main_path,
                                                   demo_cat == "Poverty") %>%
                                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
                                aes(x = year, y = num_over_den, lty = title)) +
-    geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
+    geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = c("Above poverty line" = "dashed",
                                      "Below poverty line" = "solid")) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -570,6 +584,9 @@ plot_health_levels <- function(main_path,
     labs(x = NULL,
          y = NULL) +
     ylim(c(0, 0.4)) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -700,8 +717,20 @@ plot_health_levels_gaps <- function(main_path,
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
+    scale_color_manual(name = "",
+                       labels = c("Black",
+                                  "Hispanic",
+                                  "Asian",
+                                  "White"),
+                       values = c("#002147",
+                                  "#721817",
+                                  "#FFBA00",
+                                  "#40826D")) +
     labs(x = NULL,
          y = NULL) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
     ylim(c(-0.31, 0)) +
     theme_line +
     theme(legend.position = "bottom",
@@ -728,6 +757,9 @@ plot_health_levels_gaps <- function(main_path,
     labs(x = NULL,
          y = NULL) +
     ylim(c(-0.31, 0)) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -750,13 +782,16 @@ plot_health_levels_gaps <- function(main_path,
                                                   demo_cat == "Poverty") %>%
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                                aes(x = year, y = gap, lty = title)) +
-    geom_line(linewidth = 1, alpha = 0.8, color = "#D57D93") +
+    geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = c("Above poverty line" = "dashed",
                                      "Below poverty line" = "solid")) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
     ylim(c(-0.31, 0)) +
     theme_line +
     theme(legend.position = "bottom",
@@ -775,7 +810,7 @@ plot_health_levels_gaps <- function(main_path,
       theme(legend.text = element_text(size = 8)))
   
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")", "difference from reference")), 
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")", " difference from reference")), 
                                      size = 8, angle = 90)
   
   
@@ -994,6 +1029,15 @@ plot_hl_levels <- function(demographic_npv_df) {
                 aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
+     scale_color_manual(name = "",
+                        labels = c("Black",
+                                   "Hispanic",
+                                   "Asian",
+                                   "White"),
+                        values = c("#002147",
+                                   "#721817",
+                                   "#FFBA00",
+                                   "#40826D")) +
      ylim(0, 12) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -1023,6 +1067,15 @@ plot_hl_levels <- function(demographic_npv_df) {
                 aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
+     scale_color_manual(name = "",
+                        labels = c("Black",
+                                   "Hispanic",
+                                   "Asian",
+                                   "White"),
+                        values = c("#002147",
+                                   "#721817",
+                                   "#FFBA00",
+                                   "#40826D")) +
      ylim(-12, 0) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -1042,7 +1095,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                unit_desc == "USD (2019 VSL)") %>%
                   mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
                 aes(x = scen_title, y = value / 1e9, shape = title),
-                color = "#D57D93", size = 3, alpha = 0.8) +
+                color = "black", size = 3, alpha = 0.8) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      scale_shape_manual(values = c("Above poverty line" = 19,
                                    "Below poverty line" = 17)) +
@@ -1072,7 +1125,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                segment == "labor") %>%
                   mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
                 aes(x = scen_title, y = value / 1e9, shape = title),
-                color = "#D57D93", size = 3, alpha = 0.8) +
+                color = "black", size = 3, alpha = 0.8) +
      scale_shape_manual(values = c("Above poverty line" = 19,
                                    "Below poverty line" = 17)) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -1291,6 +1344,15 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
+    scale_color_manual(name = "",
+                       labels = c("Black",
+                                  "Hispanic",
+                                  "Asian",
+                                  "White"),
+                       values = c("#002147",
+                                  "#721817",
+                                  "#FFBA00",
+                                  "#40826D")) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
@@ -1321,6 +1383,15 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
+    scale_color_manual(name = "",
+                       labels = c("Black",
+                                  "Hispanic",
+                                  "Asian",
+                                  "White"),
+                       values = c("#002147",
+                                  "#721817",
+                                  "#FFBA00",
+                                  "#40826D")) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
@@ -1340,7 +1411,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               unit_desc == "USD (2019 VSL)") %>%
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
                aes(x = scen_title, y = value, shape = title),
-               color = "#D57D93", size = 3, alpha = 0.8) +
+               color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("Above poverty line" = 19,
                                   "Below poverty line" = 17)) +
@@ -1370,7 +1441,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               segment == "labor") %>%
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
                aes(x = scen_title, y = value, shape = title),
-               color = "#D57D93", size = 3, alpha = 0.8) +
+               color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = c("Above poverty line" = 19,
                                   "Below poverty line" = 17)) +
