@@ -99,7 +99,7 @@ calc_pop_ratios = function(raw_pop_income_2021,
   ## legend names
   lnames_df <- tibble(demo_group = c("non_dac", "dac", "hispanic", "white", "asian", "aialnative", "black", 
                                      "hawaiian_pacisl", "nonh_other", "nonh_two_or_more", "total_above_poverty", "total_below_poverty"),
-                      title = c("Non-DAC", "DAC", "Hispanic", "White", "Asian",  "American Indian or Alaska Native", "Black", 
+                      title = c("Non-DAC", "DAC", "Hispanic", "white", "Asian",  "American Indian or Alaska Native", "Black", 
                                 "Hawaiian or Other Pacific Islander", "Other (Non-Hispanic)", "Two or more races (Non-Hispanic)", "Above poverty line", "Below poverty line"))
   
   merged_ratio_df <- merge(merged_ratio_df, lnames_df,
@@ -223,7 +223,7 @@ calc_pop_ratios_county <- function(raw_pop_income_2021,
     ## legend names
     lnames_df <- tibble(demo_group = c("non_dac", "dac", "hispanic", "white", "asian", "aialnative", "black", 
                                        "hawaiian_pacisl", "nonh_other", "nonh_two_or_more", "total_above_poverty", "total_below_poverty"),
-                        title = c("Non-DAC", "DAC", "Hispanic", "White", "Asian",  "American Indian or Alaska Native", "Black", 
+                        title = c("Non-DAC", "DAC", "Hispanic", "white", "Asian",  "American Indian or Alaska Native", "Black", 
                                   "Hawaiian or Other Pacific Islander", "Other (Non-Hispanic)", "Two or more races (Non-Hispanic)", "Above poverty line", "Below poverty line"))
     
     merged_c_ratio_df <- merge(merged_c_ratio_df, lnames_df,
