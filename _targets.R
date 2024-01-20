@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -380,10 +380,12 @@ list(
                                                                cpi2020,
                                                                discount_rate)),
   
-  tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(county_pop_ratios,
-                                                                      annual_labor,
-                                                                      raw_ct_race,
-                                                                      refining_mortality)),
+  tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(county_pop_ratios,
+                                                                                annual_labor,
+                                                                                raw_ct_race,
+                                                                                refining_mortality)),
+  
+  tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(ref_labor_demog_yr)),
   
   tar_target(name = npv_plot, command = plot_npv_health_labor(main_path,
                                                               refining_mortality,
@@ -394,8 +396,14 @@ list(
   tar_target(name = health_levels_plot, command = plot_health_levels(main_path,
                                                                      health_grp)),
   
+  tar_target(name = labor_levels_plot, command = plot_labor_levels(main_path,
+                                                                   ref_labor_demog_yr)),
+  
   tar_target(name = health_gaps_plot, command = plot_health_levels_gaps(main_path,
                                                                         health_grp)),
+  
+  tar_target(name = labor_gaps_plot, command = plot_labor_levels_gaps(main_path,
+                                                                      ref_labor_demog_yr)),
   
   tar_target(name = demographic_npv_df, command = plot_hl_levels_df(main_path,
                                                                     ref_mortality_demog,
@@ -468,11 +476,31 @@ list(
                                      dpi = 600),
              format = "file"),
   
+  tar_target(name = save_l_levels_fig,
+             command = simple_ggsave(labor_levels_plot, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_labor_levels_fig", 
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
   tar_target(name = save_gaps_fig,
              command = simple_ggsave(health_gaps_plot, 
                                      main_path, 
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "state_gaps_fig", 
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_labor_gaps_fig,
+             command = simple_ggsave(labor_gaps_plot, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_labor_gaps_fig", 
                                      width = 12,
                                      height = 8,
                                      dpi = 600),

@@ -103,10 +103,10 @@ calc_labor_outputs <- function(proc_labor_df,
 
 ## labor results grouped by demographic
 
-calculate_labor_x_demg <- function(county_pop_ratios,
-                                   annual_labor,
-                                   raw_pop_income_2021,
-                                   refining_mortality) {
+calculate_labor_x_demg_annual <- function(county_pop_ratios,
+                                          annual_labor,
+                                          raw_pop_income_2021,
+                                          refining_mortality) {
 
   ## get county and census tracts
   c_ct_df <- raw_pop_income_2021[state == "California"]
@@ -141,25 +141,31 @@ calculate_labor_x_demg <- function(county_pop_ratios,
   labor_pct_df[, demo_emp := total_emp * pct]
   labor_pct_df[, demo_comp_pv := total_comp_PV * pct]
   
-  # ## merge with population
-  # labor_pct_df <-  merge(labor_pct_df, pop_df,
-  #                        by = c("county", "year"),
-  #                        all.x = T)
-  # 
-  
-  
-  ## summarise over years
-  labor_pct_df <- labor_pct_df[, .(sum_demo_emp = sum(demo_emp),
-                                   sum_demo_comp_pv = sum(demo_comp_pv)),
-                               by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title)]
+  ## merge with population
+  labor_pct_df <-  merge(labor_pct_df, pop_df,
+                         by = c("county", "year"),
+                         all.x = T)
+
+  ## rename pop column
+  setnames(labor_pct_df, "pop", "county_pop")
   
   return(labor_pct_df)
-  
-  
-  
 
 }
 
 
+## function for summarizing labor data
+calculate_labor_x_demg <- function(ref_labor_demog_yr) {
+  
+  labor_pct <- copy(ref_labor_demog_yr)
+  
+  ## summarise over years
+  labor_pct <- labor_pct[, .(sum_demo_emp = sum(demo_emp),
+                             sum_demo_comp_pv = sum(demo_comp_pv)),
+                               by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title)]
+  
+  return(labor_pct)
+  
+}
 
 
