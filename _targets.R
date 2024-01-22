@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -356,6 +356,10 @@ list(
                                                           raw_pop_poverty,
                                                           refining_mortality)),
   
+  tar_target(name = state_pop_ratios, command = calc_state_pop_ratios(raw_ct_race,
+                                                                raw_pop_poverty,
+                                                                refining_mortality)),
+  
   tar_target(name = health_grp, command = calculate_race_disp(health_weighted,
                                                               pop_ratios,
                                                               refining_mortality)),
@@ -412,6 +416,9 @@ list(
                                                                     dt_ghg_2019)),
   
   tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
+  
+  tar_target(name = demographic_npv_shares_plot, command = plot_hl_shares(demographic_npv_df,
+                                                                          state_pop_ratios)),
   
   tar_target(name = demographic_npv_plot_pc, command = plot_hl_levels_pc(demographic_npv_df,
                                                                          refining_mortality,
@@ -511,6 +518,16 @@ list(
                                      main_path, 
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "demographic_npv_fig", 
+                                     width = 11,
+                                     height = 12,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_demo_share_fig,
+             command = simple_ggsave(demographic_npv_shares_plot, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "demographic_npv_shares_fig", 
                                      width = 11,
                                      height = 12,
                                      dpi = 600),
