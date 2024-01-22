@@ -2157,6 +2157,8 @@ plot_hl_shares <- function(demographic_npv_df,
     geom_point(data = pct_df %>% filter(demo_cat == "Poverty"),
                aes(x = scen_title, y = pct, shape = title),
                size = 3, alpha = 0.8) +
+    scale_shape_manual(values = c("Above poverty line" = 19,
+                                  "Below poverty line" = 17)) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
