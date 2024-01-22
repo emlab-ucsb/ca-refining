@@ -236,7 +236,128 @@ calc_pop_ratios_county <- function(raw_pop_income_2021,
   }
 
 
+## calculate race, DAC, and poverty ratios with census data
+calc_state_pop_ratios = function(raw_pop_income_2021,
+                                 raw_pop_poverty,
+                                 refining_mortality) {
+  
+  
+  ## get proportions for race and merge
+  ## -------------------------------------------------------------------------------
+  pop_race_df <- copy(raw_pop_income_2021)
+  
+  ## extract census tract, process
+  pop_race_df[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  pop_race_df[, year := NULL]
+  pop_race_df <- pop_race_df[state == "California"]
+  
+  # ## add non-minority column, make longer, add percentages
+  # pop_income_2020[, minority := hispanic + black + aialnative + asian]
+  
+  pop_race_df <- pop_race_df %>%
+    pivot_longer(cols = c(hispanic, white, black, aialnative, asian, hawaiian_pacisl, nonh_other, nonh_two_or_more),
+                 names_to = "demo_group",
+                 values_to = "pop") %>%
+    as.data.table()
+  
+  ## sumamrize state pop
+  state_pop_df <- pop_race_df[, .(state, county, census_tract, total_pop)]
+  state_pop_df <- unique(state_pop_df)
+  state_pop_df <- pop_race_df[, .(state_pop = sum(pop)), by = .(state)]
 
+  ## summarize race pop
+  state_race_df <- pop_race_df[, .(pop = sum(pop)), by = .(state, demo_group)]
+  
+  ## merge
+  state_race_df<- merge(state_race_df, state_pop_df,
+                        by = c("state"),
+                        all.x = T)
+  
+  ## calculate share
+  state_race_df[, pct := pop / state_pop]
+  
+  state_race_df[, demo_cat := "Race"]
+  
+  state_race_df <- state_race_df[, .(state, demo_group, demo_cat, pct)]
+  
+  
+  ## get proportions for poverty 
+  ## -------------------------------------------------------------------------------
+  
+  ## copy raw_pop_poverty
+  pop_poverty <- copy(raw_pop_poverty)
+  
+  ## extract census tract, process
+  pop_poverty[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  pop_poverty[, year := NULL]
+  pop_poverty[, total_pop := NULL]
+  pop_poverty <- pop_poverty[state == "California"]
+  
+  ## sumamrize state pop
+  state_pop_pov_df <- pop_poverty[, .(pop_above = sum(total_above_poverty),
+                                      pop_below = sum(total_below_poverty)), by = .(state)]
+  
+  state_pop_pov_df <- state_pop_pov_df[, total_pop := pop_above + pop_below]
+  
+  state_pop_pov_df[, total_above_poverty := pop_above / total_pop]
+  state_pop_pov_df[, total_below_poverty := pop_below / total_pop]
+  state_pop_pov_df <- state_pop_pov_df[, .(state, total_above_poverty, total_below_poverty)]
+  
+  ## pivot longer, merge, calculate shares
+  state_pop_pov_df <- state_pop_pov_df %>%
+    pivot_longer(cols = c(total_above_poverty, total_below_poverty),
+                 names_to = "demo_group",
+                 values_to = "pct") %>%
+    as.data.table() 
+  
+  state_pop_pov_df[, demo_cat := "Poverty"]
+
+  
+  ## get DAC proportions
+  ## -------------------------------------------------------------------------------
+  
+  ## ct populations
+  ct_pop_df <- pop_race_df[, .(state, census_tract, total_pop)]
+  ct_pop_df <- unique(ct_pop_df)
+  
+  dac_df <- refining_mortality %>%
+    ungroup() %>%
+    select(census_tract, disadvantaged) %>%
+    unique() %>%
+    left_join(ct_pop_df) %>%
+    as.data.table() 
+  
+  dac_df[, demo_group := ifelse(disadvantaged == "No", "non_dac", "dac")]
+  dac_df[, demo_cat := "DAC"]
+  dac_df[, "disadvantaged" := NULL]
+  
+  ## summarize dac pop
+  state_dac_df <- dac_df[, .(pop = sum(total_pop)), by = .(state, demo_group, demo_cat)]
+  
+  state_dac_df[, total_pop := sum(pop)]
+  state_dac_df[, pct := pop / total_pop]
+  
+  state_dac_df <- state_dac_df[, .(state, demo_cat, demo_group, pct)]
+  
+  
+  
+  ## rbind
+  merged_share_ratio_df <- rbind(state_race_df, state_pop_pov_df, state_dac_df)
+  
+  ## legend names
+  lnames_df <- tibble(demo_group = c("non_dac", "dac", "hispanic", "white", "asian", "aialnative", "black", 
+                                     "hawaiian_pacisl", "nonh_other", "nonh_two_or_more", "total_above_poverty", "total_below_poverty"),
+                      title = c("Non-DAC", "DAC", "Hispanic", "white", "Asian",  "American Indian or Alaska Native", "Black", 
+                                "Hawaiian or Other Pacific Islander", "Other (Non-Hispanic)", "Two or more races (Non-Hispanic)", "Above poverty line", "Below poverty line"))
+  
+  merged_share_ratio_df <- merge(merged_share_ratio_df, lnames_df,
+                           all.x = T)
+  
+  ## return
+  return(merged_share_ratio_df)
+  
+  
+}
 
 
 
