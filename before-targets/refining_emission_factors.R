@@ -1,7 +1,7 @@
 # CalEPA: Homemade refining emission factors from NEI and XXX data
 # vthivierge@ucsb.edu
 # created: 04/05/2023
-# updated: 06/21/2023
+# updated: 01/23/2024
 
 # set up environment
 
@@ -30,8 +30,8 @@ for (i in packages) {
 
 #temporary working direction
 # 
-# wd <- c("G:/My Drive/UCSB/research/current/efficiency/data") #Vincent's WD
-# setwd(wd)
+wd <- c("G:/My Drive/UCSB/research/current/efficiency/data") #Vincent's WD
+setwd(wd)
 
 ## 2017 NEI
 
@@ -148,6 +148,18 @@ cluster_factors <- nei_ca_ref %>%
   mutate(bbl_year = thous_barrels*1000,
          emission_kg = total_emissions*1000, #Ton to kg
          kg_bbl = emission_kg/bbl_year)
+
+#output final cluster level emission factors
+
+cluster_factors %>%
+  filter(reporting_year == 2017)%>%
+  select(cluster,pollutant_code,kg_bbl)
+
+write.csv(cluster_factors %>%
+            filter(reporting_year == 2017)%>%
+            select(cluster,pollutant_code,kg_bbl),
+          "G:/Shared drives/emlab/projects/current-projects/calepa-cn/data/health/processed/ref_emission_factor.csv",
+          row.names = F)
 
 ## Plot emission factors compared to Jaramillo and Muller (2016)
 
