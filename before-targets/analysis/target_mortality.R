@@ -1,3 +1,4 @@
+# CalEPA: Prep 2020 incidence and population data at census tract level
 
 setwd("G://Shared drives/emlab/projects/current-projects/calepa-cn")
 
