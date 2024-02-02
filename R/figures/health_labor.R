@@ -2052,10 +2052,40 @@ plot_hl_shares <- function(demographic_npv_df,
   pct_df <- copy(state_pop_ratios)
   
   pct_df[, scen_title := "population"]
+  
+  
+  ## create one df for plotting
+  share_df <- plot_df_long[, .(scen_id, demand_scenario, refining_scenario, demo_cat, title, metric, unit_desc, segment,
+                                  metric_desc, seg_title, scenario, demand_title, scen_title, share)]
+  
+  pop_share_df <- copy(share_df)
+  pop_share_df[,`:=`(scen_id = "Population",
+                     demand_scenario = NA,
+                     refining_scenario = NA,
+                     metric = "general_pop_share",
+                     unit_desc = NA,
+                     segment = "general",
+                     metric_desc = "general",
+                     seg_title = "State",
+                     scenario = "State",
+                     demand_title = NA,
+                     scen_title = "State\npopulation",
+                     share = NULL)]
 
+  
+  pop_share_df <- unique(pop_share_df)
+  
+  ## merge
+  pop_share_df <- merge(pop_share_df, pct_df[, .(demo_cat, title, pct)],
+                                             by = c("demo_cat", "title"))
+  
+  setnames(pop_share_df, "pct", "share")
+  
+  ## bind
+  share_df <- rbind(share_df, pop_share_df)
 
   ## save figure inputs
-  fwrite(pct_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+  fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
 
   
 
@@ -2071,7 +2101,7 @@ plot_hl_shares <- function(demographic_npv_df,
   ## health fig - race
   health_share_fig_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Race",
                                               unit_desc == "USD (2019 VSL)",
                                               title %in% fig_title_vec)  %>%
@@ -2079,11 +2109,6 @@ plot_hl_shares <- function(demographic_npv_df,
                aes(x = scen_title, y = share, color = title),
                size = 3, alpha = 0.8) +
     facet_wrap(~seg_title) +
-    geom_point(data = pct_df %>% filter(demo_cat == "Race",
-                                                 title %in% fig_title_vec) %>%
-                mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-              aes(x = scen_title, y = pct, color = title),
-              size = 3, alpha = 0.8) +
     scale_color_manual(name = "",
                        labels = c("Black",
                                   "Hispanic",
@@ -2114,7 +2139,7 @@ plot_hl_shares <- function(demographic_npv_df,
   ## labor fig - race
   labor_share_fig_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Race",
                                               segment == "labor",
                                               title %in% fig_title_vec)%>%
@@ -2122,11 +2147,38 @@ plot_hl_shares <- function(demographic_npv_df,
                aes(x = scen_title, y = share, color = title),
                size = 3, alpha = 0.8) +
     facet_wrap(~seg_title) +
-    geom_point(data = pct_df %>% filter(demo_cat == "Race",
-                                        title %in% fig_title_vec) %>%
+    scale_color_manual(name = "",
+                       labels = c("Black",
+                                  "Hispanic",
+                                  "Asian",
+                                  "white"),
+                       values = c("#002147",
+                                  "#721817",
+                                  "#40826D",
+                                  "#FFBA00")) +
+    ylim(0, 0.5) +
+    labs(y = "NPV share",
+         x = NULL,
+         color = NULL) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## state fig - race
+  state_share_fig_a <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
+                                              demo_cat == "Race",
+                                              segment == "general",
+                                              title %in% fig_title_vec)%>%
                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-               aes(x = scen_title, y = pct, color = title),
+               aes(x = scen_title, y = share, color = title),
                size = 3, alpha = 0.8) +
+    facet_wrap(~seg_title) +
     scale_color_manual(name = "",
                        labels = c("Black",
                                   "Hispanic",
@@ -2150,7 +2202,7 @@ plot_hl_shares <- function(demographic_npv_df,
 
   ## health fig - poverty
   health_share_fig_b <- ggplot() +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Poverty",
                                               unit_desc == "USD (2019 VSL)") %>%
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
@@ -2158,11 +2210,8 @@ plot_hl_shares <- function(demographic_npv_df,
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
-    geom_point(data = pct_df %>% filter(demo_cat == "Poverty"),
-               aes(x = scen_title, y = pct, shape = title),
-               size = 3, alpha = 0.8) +
-    scale_shape_manual(values = c("Above poverty line" = 19,
-                                  "Below poverty line" = 17)) +
+    scale_shape_manual(values = c("Above poverty line" = 17,
+                                  "Below poverty line" = 19)) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -2183,19 +2232,41 @@ plot_hl_shares <- function(demographic_npv_df,
 
   ## labor fig - poverty
   labor_share_fig_b <- ggplot() +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Poverty",
                                               segment == "labor") %>%
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
-    scale_shape_manual(values = c("Above poverty line" = 19,
-                                  "Below poverty line" = 17)) +
-    geom_point(data = pct_df %>% filter(demo_cat == "Poverty"),
-               aes(x = scen_title, y = pct, shape = title),
-               size = 3, alpha = 0.8) +
+    scale_shape_manual(values = c("Above poverty line" = 17,
+                                  "Below poverty line" = 19)) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
+    ylim(0, 0.9) +
+    labs(y = "NPV share",
+         x = NULL,
+         color = NULL) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## state - poverty
+  state_share_fig_b <- ggplot() +
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
+                                          demo_cat == "Poverty",
+                                          segment == "general") %>%
+                 mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
+               aes(x = scen_title, y = share, shape = title),
+               color = "black", size = 3, alpha = 0.8) +
+    scale_shape_manual(values = c("Above poverty line" = 17,
+                                  "Below poverty line" = 19)) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_wrap(~seg_title) +
+    ylim(0, 0.9) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -2210,17 +2281,15 @@ plot_hl_shares <- function(demographic_npv_df,
 
   ## health fig - DAC
   health_share_fig_c <- ggplot() +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "DAC",
                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    geom_point(data = pct_df %>% filter(demo_cat == "DAC"),
-               aes(x = scen_title, y = pct, shape = title),
-               size = 3, alpha = 0.8) +
     scale_shape_manual(values = c("DAC" = 15,
                                   "Non-DAC" = 4)) +
     facet_wrap(~seg_title) +
+    ylim(0, 0.85) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -2240,17 +2309,38 @@ plot_hl_shares <- function(demographic_npv_df,
 
   ## labor fig - DAC
   labor_share_fig_c <- ggplot() +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "DAC",
                                               segment == "labor"), aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    geom_point(data = pct_df %>% filter(demo_cat == "DAC"),
-               aes(x = scen_title, y = pct, shape = title),
-               size = 3, alpha = 0.8) +
     scale_shape_manual(values = c("DAC" = 15,
                                   "Non-DAC" = 4)) +
     facet_wrap(~seg_title) +
+    ylim(0, 0.85) +
+    labs(y = "NPV share",
+         x = NULL,
+         color = NULL) +
+    # ylim(-15, 0) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## general fig - DAC
+  state_share_fig_c <- ggplot() +
+    geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
+                                          demo_cat == "DAC",
+                                          segment == "general"), aes(x = scen_title, y = share, shape = title),
+               color = "black", size = 3, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    scale_shape_manual(values = c("DAC" = 15,
+                                  "Non-DAC" = 4)) +
+    facet_wrap(~seg_title) +
+    ylim(0, 0.85) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -2270,6 +2360,7 @@ plot_hl_shares <- function(demographic_npv_df,
   ## race
   hl_share_plot_grid_a <- plot_grid(
     health_share_fig_a + theme(strip.text.x = element_blank()),
+    state_share_fig_a + labs(y = NULL) + theme(strip.text.x = element_blank()),
     labor_share_fig_a + labs(y = NULL) + theme(strip.text.x = element_blank()),
     align = 'vh',
     # labels = c("A", "B", "C", "D", "E", "F"),
@@ -2277,7 +2368,7 @@ plot_hl_shares <- function(demographic_npv_df,
     # label_size = 10,
     hjust = -1,
     nrow = 1,
-    rel_widths = c(1, 1)
+    rel_widths = c(1, 0.25, 1)
   )
 
   ## add race legend
@@ -2292,6 +2383,8 @@ plot_hl_shares <- function(demographic_npv_df,
   hl_share_plot_grid_b <- plot_grid(
     health_share_fig_b + theme(axis.text.x = element_blank(),
                                strip.text.x = element_blank()),
+    state_share_fig_b + labs(y = NULL) + theme(axis.text.x = element_blank(),
+                                              strip.text.x = element_blank()),
     labor_share_fig_b + labs(y = NULL) + theme(axis.text.x = element_blank(),
                                                strip.text.x = element_blank()),
     align = 'vh',
@@ -2300,7 +2393,7 @@ plot_hl_shares <- function(demographic_npv_df,
     # label_size = 10,
     hjust = -1,
     nrow = 1,
-    rel_widths = c(1, 1)
+    rel_widths = c(1, 0.25, 1)
   )
 
   ## add poverty legend
@@ -2315,6 +2408,7 @@ plot_hl_shares <- function(demographic_npv_df,
   hl_share_plot_grid_c <- plot_grid(
     health_share_fig_c + theme(axis.text.x = element_blank()),
     # + theme(strip.text.x = element_blank()),
+    state_share_fig_c + labs(y = NULL) + theme(axis.text.x = element_blank()),
     labor_share_fig_c + labs(y = NULL) + theme(axis.text.x = element_blank()),
     align = 'vh',
     # labels = c("A", "B", "C", "D", "E", "F"),
@@ -2322,7 +2416,7 @@ plot_hl_shares <- function(demographic_npv_df,
     # label_size = 10,
     hjust = -1,
     nrow = 1,
-    rel_widths = c(1, 1)
+    rel_widths = c(1, 0.25, 1)
   )
 
   ## add DAC legend
