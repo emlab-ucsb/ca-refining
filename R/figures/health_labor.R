@@ -2036,7 +2036,8 @@ plot_hl_levels_pc <- function(demographic_npv_df,
 ## npv shares
 ## ----------------------------------------------------------------------------
 
-plot_hl_shares <- function(demographic_npv_df,
+plot_hl_shares <- function(main_path,
+                           demographic_npv_df,
                            state_pop_ratios) {
 
   plot_df_long <- copy(demographic_npv_df)

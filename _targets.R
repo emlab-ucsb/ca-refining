@@ -417,7 +417,8 @@ list(
   
   tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
   
-  tar_target(name = demographic_npv_shares_plot, command = plot_hl_shares(demographic_npv_df,
+  tar_target(name = demographic_npv_shares_plot, command = plot_hl_shares(main_path,
+                                                                          demographic_npv_df,
                                                                           state_pop_ratios)),
   
   tar_target(name = demographic_npv_plot_pc, command = plot_hl_levels_pc(demographic_npv_df,
