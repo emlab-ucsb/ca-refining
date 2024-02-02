@@ -2054,6 +2054,10 @@ plot_hl_shares <- function(demographic_npv_df,
   pct_df[, scen_title := "population"]
 
 
+  ## save figure inputs
+  fwrite(pct_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+
+  
 
   ## create the figure ---------------------------------------------
   ##---------------------------------------------------------------
