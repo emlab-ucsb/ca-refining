@@ -502,6 +502,11 @@ plot_health_levels <- function(main_path,
   
   ##
   
+  race_col_pal <- c("Black" = "#002147",
+                    "Hispanic" = "#721817",
+                    "Asian" = "#40826D",
+                    "white" = "#FFBA00")
+  
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
   
   
@@ -514,14 +519,7 @@ plot_health_levels <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "Asian",
-                                  "white"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#40826D",
-                                  "#FFBA00")) +
+                       values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
     ylim(c(0, 0.4)) +
@@ -708,6 +706,10 @@ plot_health_levels_gaps <- function(main_path,
   
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
   
+  race_col_pal <- c("Black" = "#002147",
+                    "Hispanic" = "#721817",
+                    "Asian" = "#40826D",
+                    "white" = "#FFBA00")
   
   health_gap_fig_a <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
                                                   title %in% fig_title_vec,
@@ -718,14 +720,7 @@ plot_health_levels_gaps <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "Asian",
-                                  "white"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#40826D",
-                                  "#FFBA00")) +
+                       values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
@@ -918,6 +913,11 @@ plot_labor_levels <- function(main_path,
   fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
 
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
+  
+  race_col_pal <- c("Black" = "#002147",
+                    "Hispanic" = "#721817",
+                    "Asian" = "#40826D",
+                    "white" = "#FFBA00")
 
 
   labor_level_fig_a <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
@@ -929,14 +929,7 @@ plot_labor_levels <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Asian",
-                                  "white",
-                                  "Hispanic"),
-                       values = c("#002147",
-                                  "#40826D",
-                                  "#FFBA00",
-                                  "#721817")) +
+                       values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
     ylim(c(0, 20)) +
@@ -1131,6 +1124,11 @@ plot_labor_levels_gaps <- function(main_path,
   fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
 
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
+  
+  race_col_pal <- c("Black" = "#002147",
+                    "Hispanic" = "#721817",
+                    "Asian" = "#40826D",
+                    "white" = "#FFBA00")
 
 
   labor_gap_fig_a <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
@@ -1142,14 +1140,7 @@ plot_labor_levels_gaps <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "white",
-                                  "Asian"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#FFBA00",
-                                  "#40826D")) +
+                       values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
@@ -1447,6 +1438,12 @@ plot_hl_levels <- function(demographic_npv_df) {
    
    fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
    
+   race_col_pal <- c("Black" = "#002147",
+                     "Hispanic" = "#721817",
+                     "Asian" = "#40826D",
+                     "white" = "#FFBA00")
+   
+   
    ## health fig - race
    health_level_fig_a <- ggplot() +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -1459,14 +1456,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
      scale_color_manual(name = "",
-                        labels = c("Black",
-                                   "Hispanic",
-                                   "Asian",
-                                   "white"),
-                        values = c("#002147",
-                                   "#721817",
-                                   "#40826D",
-                                   "#FFBA00")) +
+                        values = race_col_pal) +
      ylim(0, 12) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -1497,14 +1487,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
      scale_color_manual(name = "",
-                        labels = c("Black",
-                                   "Hispanic",
-                                   "Asian",
-                                   "white"),
-                        values = c("#002147",
-                                   "#721817",
-                                   "#40826D",
-                                   "#FFBA00")) +
+                        values = race_col_pal) +
      ylim(-12, 0) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -1761,6 +1744,11 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
   
+  race_col_pal <- c("Black" = "#002147",
+                    "Hispanic" = "#721817",
+                    "Asian" = "#40826D",
+                    "white" = "#FFBA00")
+  
   ## health fig - race
   health_level_fig_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -1774,14 +1762,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "Asian",
-                                  "white"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#40826D",
-                                  "#FFBA00")) +
+                       values = race_col_pal) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
@@ -1813,14 +1794,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "Asian",
-                                  "white"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#40826D",
-                                  "#FFBA00")) +
+                       values = race_col_pal) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
@@ -2098,6 +2072,11 @@ plot_hl_shares <- function(main_path,
   bau_scen <- 'BAU historic production'
 
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
+  
+  race_col_pal <- c("Black" = "#002147",
+                    "Hispanic" = "#721817",
+                    "Asian" = "#40826D",
+                    "white" = "#FFBA00")
 
   ## health fig - race
   health_share_fig_a <- ggplot() +
@@ -2111,14 +2090,7 @@ plot_hl_shares <- function(main_path,
                size = 3, alpha = 0.8) +
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "Asian",
-                                  "white"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#40826D",
-                                  "#FFBA00")) +
+                       values = race_col_pal) +
     ylim(0, 0.5) +
     labs(y = "NPV share",
          x = NULL,
@@ -2149,14 +2121,7 @@ plot_hl_shares <- function(main_path,
                size = 3, alpha = 0.8) +
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "Asian",
-                                  "white"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#40826D",
-                                  "#FFBA00")) +
+                       values = race_col_pal) +
     ylim(0, 0.5) +
     labs(y = "NPV share",
          x = NULL,
@@ -2181,14 +2146,7 @@ plot_hl_shares <- function(main_path,
                size = 3, alpha = 0.8) +
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
-                       labels = c("Black",
-                                  "Hispanic",
-                                  "Asian",
-                                  "white"),
-                       values = c("#002147",
-                                  "#721817",
-                                  "#40826D",
-                                  "#FFBA00")) +
+                       values = race_col_pal) +
     ylim(0, 0.5) +
     labs(y = "NPV share",
          x = NULL,
