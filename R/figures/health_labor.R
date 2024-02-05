@@ -5,7 +5,9 @@ plot_npv_health_labor <- function(main_path,
                                   refining_mortality,
                                   state_ghg_output,
                                   dt_ghg_2019,
-                                  annual_labor) {
+                                  annual_labor,
+                                  raw_ct_2020,
+                                  raw_ca_counties_sp) {
 
   npv_df <- refining_mortality %>% as.data.table()
 
@@ -147,48 +149,28 @@ plot_npv_health_labor <- function(main_path,
                                  "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)", 
                                  "NPV (2019 USD billion)")]
   
+  ## change historic to historical
+  plot_df_long[, scen_id := str_replace(scen_id, "historic", "historical")]
+  plot_df_long[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  plot_df_long[, scenario := str_replace(scenario, "historic", "historical")]
+  
   ## save figure inputs
   fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs.csv"))
   
   
   ## scenarios for filtering
-  remove_scen <- c('LC1 historic production', 'BAU historic production')
-  bau_scen <- 'BAU historic production'
+  remove_scen <- c('LC1 historical production', 'BAU historical production')
+  bau_scen <- 'BAU historical production'
   
   ## make the plot
   ## ---------------------------------------------------
   
   ## color for refining scenario
-  refin_colors <- c('historic exports' = '#2F4858', 'historic production' = '#F6AE2D', 'low exports' = '#F26419')
+  refin_colors <- c('historical exports' = '#2F4858', 'historical production' = '#F6AE2D', 'low exports' = '#F26419')
   
-  # # fig
-  # fig_benefit_x_metric <- ggplot(plot_df_long, aes(x = ghg_perc_diff * - 100, y = value, color = refining_scenario, shape = demand_scenario)) +
-  #   geom_point(size = 4, alpha = 0.8) +
-  #   geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-  #   geom_vline(xintercept = 0, color = "darkgray", linewidth = 0.5) +
-  #   labs(color = "Refining scenario",
-  #        shape = "Demand scenario",
-  #        y = "NPV USD 2019",
-  #        x = "GHG emissions reduction target (%, 2045 vs 2019)",) +
-  #   facet_wrap(~title, scales = "free", ncol = 2) +
-  #   # scale_y_continuous(expand = c(0, 0), limits = c(-15, 10)) +
-  #   # scale_x_continuous(limits = c(0, NA)) +
-  #   # scale_color_manual(values = policy_colors_subset) +
-  #   theme_line +
-  #   # theme_bw() +
-  #   theme(legend.position = "bottom",
-  #         # legend.box = "vertical",
-  #         # legend.key.width= unit(1, 'cm'),
-  #         axis.text = element_text(size = 14),
-  #         strip.text = element_text(size = 14),
-  #         axis.text.x = element_text(vjust = 0.5, hjust = 1),
-  #         axis.ticks.length.y = unit(0.1, 'cm'),
-  #         axis.ticks.length.x = unit(0.1, 'cm')) 
-  # 
-  # fig_benefit_x_metric
-
+ 
   
-  ## revised version, make them separately
+  ## figs - make each separately
   ## -------------------------------------------------------------------
   
   hist_prod = as.data.table(plot_df_long %>% filter(scen_id == bau_scen,
@@ -202,7 +184,7 @@ plot_npv_health_labor <- function(main_path,
                                               title == "Health: avoided mortality",
                                               unit == "NPV (2019 USD billion)",
                                               unit_desc == "USD billion (2019 VSL)",
-                                              !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value,  color = refining_scenario, shape = demand_scenario),
+                                              !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, y = value,  color = refining_scenario, shape = demand_scenario),
                size = 3, alpha = 0.8) +
     labs(color = "Refing scenario",
          shape = "Demand scenario",
@@ -221,11 +203,12 @@ plot_npv_health_labor <- function(main_path,
   
   fig_bxm_b <- ggplot() + 
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                         title == "Labor: forgone wages",
                                         unit == "NPV (2019 USD billion)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+                                        !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
     labs(color = "Policy",
          title = "B. Labor: forgone wages",
          y = NULL,
@@ -262,48 +245,48 @@ plot_npv_health_labor <- function(main_path,
   #         axis.ticks.length.y = unit(0.1, 'cm'),
   #         axis.ticks.length.x = unit(0.1, 'cm')) 
   
-  fig_bxm_c <- ggplot() + 
-    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-                                        title == "Health: avoided mortality per avoided GHG",
-                                        unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-                                        unit_desc == "USD billion per GHG (2019 VSL)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-    labs(color = "Policy",
-         title = "C.",
-         y = bquote('NPV (2019 USD million)\nper avoided GHG MtCO'[2]~e),
-         x = "GHG emissions reduction (%, 2045 vs 2019)") +
-    scale_color_manual(values = refin_colors) +
-    ylim(0, 125) +
-    xlim(0, 80) +
-    theme_line +
-    theme(legend.position = "none",
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-          axis.ticks.length.y = unit(0.1, 'cm'),
-          axis.ticks.length.x = unit(0.1, 'cm'))
-  
-  fig_bxm_d <- ggplot() +
-    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_vline(xintercept = hist_prod[title == "Labor: forgone wages per avoided GHG", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-                                        title == "Labor: forgone wages per avoided GHG",
-                                        unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-                                        !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-    labs(color = "Policy",
-         title = "D.",
-         y = NULL,
-         # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-         x = "GHG emissions reduction (%, 2045 vs 2019)") +
-    scale_color_manual(values = refin_colors) +
-    theme_line +
-    xlim(0, 80) +
-    ylim(-125, 0) +
-    theme(legend.position = "none",
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-          axis.ticks.length.y = unit(0.1, 'cm'),
-          axis.ticks.length.x = unit(0.1, 'cm'))
-  
+  # fig_bxm_c <- ggplot() + 
+  #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+  #   geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+  #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+  #                                       title == "Health: avoided mortality per avoided GHG",
+  #                                       unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+  #                                       unit_desc == "USD billion per GHG (2019 VSL)",
+  #                                       !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+  #   labs(color = "Policy",
+  #        title = "C.",
+  #        y = bquote('NPV (2019 USD million)\nper avoided GHG MtCO'[2]~e),
+  #        x = "GHG emissions reduction (%, 2045 vs 2019)") +
+  #   scale_color_manual(values = refin_colors) +
+  #   ylim(0, 125) +
+  #   xlim(0, 80) +
+  #   theme_line +
+  #   theme(legend.position = "none",
+  #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+  #         axis.ticks.length.y = unit(0.1, 'cm'),
+  #         axis.ticks.length.x = unit(0.1, 'cm'))
+  # 
+  # fig_bxm_d <- ggplot() +
+  #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+  #   geom_vline(xintercept = hist_prod[title == "Labor: forgone wages per avoided GHG", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+  #   geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+  #                                       title == "Labor: forgone wages per avoided GHG",
+  #                                       unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+  #                                       !refining_scenario == "historic production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+  #   labs(color = "Policy",
+  #        title = "D.",
+  #        y = NULL,
+  #        # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
+  #        x = "GHG emissions reduction (%, 2045 vs 2019)") +
+  #   scale_color_manual(values = refin_colors) +
+  #   theme_line +
+  #   xlim(0, 80) +
+  #   ylim(-125, 0) +
+  #   theme(legend.position = "none",
+  #         axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+  #         axis.ticks.length.y = unit(0.1, 'cm'),
+  #         axis.ticks.length.x = unit(0.1, 'cm'))
+
   # fig_bxm_f <- ggplot() +
   #   geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
   #   geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_2045_perc_reduction], color = "darkgray", lty = 2) +
@@ -363,6 +346,359 @@ plot_npv_health_labor <- function(main_path,
   #         axis.ticks.length.x = unit(0.1, 'cm')) +
   #   guides(color = guide_legend(nrow = 2, byrow = TRUE))
   
+  ## make maps for c and d
+  ## ---------------------------------------------------------------------------
+  
+  ## filter npv df for scenario with greatest ghg reduction compared to bau
+  
+  ## define scenario
+  map_scen <- state_ghg_df[avoided_ghg == max(state_ghg_df[, avoided_ghg])]
+  map_scen[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  map_scen[, scenario := gsub('LC1.', 'Low ', scenario)]
+  map_scen <- map_scen %>% select(scenario) %>% as.character()
+ 
+  ## filter npv df
+  health_map_df <- copy(npv_df)
+  
+  health_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  health_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
+  health_map_df[, scenario := str_replace(scenario, "historic", "historical")]
+  health_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+  
+  health_map_df <- health_map_df[scenario == map_scen]
+  
+  ## group by scenario and census tract, sum cost_2019_pv
+  health_map_df <- health_map_df[, .(sum_cost_2019_pv = sum(cost_2019_PV)),
+                                 by = .(census_tract, scenario, scen_id)]
+
+  ## save figure inputs
+  fwrite(health_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_c.csv"))
+  
+  
+  ## consrtuct labor df
+  labor_map_df <- copy(annual_labor)
+  
+  labor_map_df[, scen_id := paste(demand_scenario, refining_scenario)]
+  labor_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+  labor_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  labor_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
+  labor_map_df[, scenario := str_replace(scenario, "historic", "historical")]
+  
+  labor_map_df <- labor_map_df[scenario == map_scen | scen_id == bau_scen]
+  
+  ## group by scenario and census tract, sum cost_2019_pv
+  labor_map_df <- labor_map_df[, .(sum_total_comp_usd19 = sum(total_comp_usd19)),
+                                 by = .(county, scenario, scen_id)]
+
+  
+  
+  labor_map_df[, ref := ifelse(scen_id == bau_scen, "bau", "alt")]
+  
+  labor_map_df <- labor_map_df %>%
+    select(county, ref, sum_total_comp_usd19) %>%
+    pivot_wider(names_from = ref, values_from = sum_total_comp_usd19) %>%
+    mutate(diff = alt - bau) %>%
+    rename(delta_total_comp_usd19 = diff) %>%
+    mutate(scenario = map_scen) %>%
+    select(scenario, county, delta_total_comp_usd19)
+  
+  ## save figure inputs
+  fwrite(labor_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_d.csv"))
+  
+  ## make the maps
+  ##----------------------------------------------------------------------------
+  
+  california <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE)) %>% 
+    filter(ID == "california") %>%
+    st_transform(crs = "EPSG:4269")
+  
+  ## health
+  health_map_df <- merge(health_map_df %>% rename(GEOID = census_tract), raw_ct_2020 %>% select(GEOID, ALAND),
+                         by = "GEOID")
+  
+  health_map_df <- st_as_sf(health_map_df)
+  
+  health_map_df <- st_transform(health_map_df, crs = "EPSG:4269")
+  
+  health_map_df <- st_make_valid(health_map_df)
+  
+  health_map_df <- health_map_df %>%
+    mutate(sum_cost_2019_pv = sum_cost_2019_pv * -1)
+  
+  ## fig c
+ 
+  ## bounding box 1
+  bay_bb <- st_bbox(c(xmin = -123, ymin = 37.5, xmax = -121, ymax = 38.5), crs = st_crs(health_map_df))
+  bay_bb <- st_as_sfc(bay_bb)
+
+  la_bb <- st_bbox(c(xmin = -119, ymin = 33, xmax = -117, ymax = 34.5), crs = st_crs(health_map_df))
+  la_bb <- st_as_sfc(la_bb)
+
+
+  ## filter for bay area
+  health_map_df2 <- health_map_df %>%
+    mutate(bay = st_intersects(geometry, bay_bb),
+           la = st_intersects(geometry, la_bb))
+
+  
+ 
+  
+  fig3c <- ggplot() +
+    geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+    # geom_sf(data = california, fill = "transparent", color = "black") +
+    scale_fill_gradient2(high = "navy",  mid = "#FAFAFA", low = "#A84268",
+                         # high = "navy",  mid = "#FAFAFA", low = "#A84268",
+                         midpoint = 0, space = "Lab",
+                         # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
+                         limits = c(-2500, 99000),
+                         breaks = c(-2500, 0, 49500, 99000),
+                         labels = c(-2500, 0, 49500, 99000),
+                         na.value = "grey50"
+                         # ,
+                         # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
+                         ) +
+    coord_sf(xlim = c(-123, -121), ylim = c(37.5, 38.5)) +
+    labs(fill = "NPV (thousand USD 2019)",
+         color = NULL,
+         x = NULL,
+         y = NULL) +
+    theme_bw() +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      # legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = "none",
+      legend.key.width = unit(2, "line"),
+      legend.key.height = unit(1, "line"),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(0, 2, 0, 8),
+      plot.title = element_text(face = 'bold', size = 10),
+      plot.subtitle = element_text(face = 'bold', size = 8),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.text = element_text(size = 8)) +
+    guides(fill = guide_colourbar(title.position="top",
+                                  title.hjust = 0,
+                                  direction = "horizontal",
+                                  ticks.colour = "black", frame.colour = "black"),
+           color = "none")
+  
+  
+  fig3c_la <- ggplot() +
+    geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+    # geom_sf(data = california, fill = "transparent", color = "black") +
+    scale_fill_gradient2(high = "navy",  mid = "#FAFAFA", low = "#A84268",
+                         # high = "navy",  mid = "#FAFAFA", low = "#A84268",
+                         midpoint = 0, space = "Lab",
+                         # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
+                         limits = c(-2500, 99000),
+                         breaks = c(-2500, 0, 49500, 99000),
+                         labels = c(-2500, 0, 49500, 99000),
+                         na.value = "grey50"
+                         # ,
+                         # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
+    ) +
+    coord_sf(xlim = c(-119, -117), ylim = c(33.2, 34.4)) +
+    labs(fill = "NPV (thousand USD 2019)",
+         color = NULL,
+         x = NULL,
+         y = NULL) +
+    theme_bw() +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      # legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = "none",
+      legend.key.width = unit(2, "line"),
+      legend.key.height = unit(1, "line"),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(0, 2, 0, 8),
+      plot.title = element_text(face = 'bold', size = 10),
+      plot.subtitle = element_text(face = 'bold', size = 8),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.text = element_text(size = 8)) +
+    guides(fill = guide_colourbar(title.position="top",
+                                  title.hjust = 0,
+                                  direction = "horizontal",
+                                  ticks.colour = "black", frame.colour = "black"),
+           color = "none")
+  
+  fig3c_leg <- ggplot() +
+    geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+    # geom_sf(data = california, fill = "transparent", color = "black") +
+    scale_fill_gradient2(low = "black",  mid = "#FAFAFA", high = "#A84268",
+                         # high = "navy",  mid = "#FAFAFA", low = "#A84268",
+                         midpoint = 0, space = "Lab",
+                         # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
+                         limits = c(-2500, 99000),
+                         breaks = c(-2500, 0, 49500, 99000),
+                         labels = c(-2500, 0, 49500, 99000),
+                         na.value = "grey50"
+                         # ,
+                         # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
+    ) +
+    coord_sf(xlim = c(-123, -121), ylim = c(37.5, 38.5)) +
+    labs(fill = "NPV (thousand USD 2019)",
+         color = NULL,
+         x = NULL,
+         y = NULL) +
+    theme_bw() +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      # legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = "bottom",
+      legend.key.width = unit(2, "line"),
+      legend.key.height = unit(1, "line"),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(0, 2, 0, 8),
+      plot.title = element_text(face = 'bold', size = 10),
+      plot.subtitle = element_text(face = 'bold', size = 8),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.text = element_text(size = 8)) +
+    guides(fill = guide_colourbar(title.position="top",
+                                  title.hjust = 0,
+                                  direction = "horizontal",
+                                  ticks.colour = "black", frame.colour = "black"),
+           color = "none")
+  
+  
+
+  # # ## quantile for plotting
+  # # numclas <- 12
+  # # qbrks_h <- seq(0, 1, length.out = numclas + 1)
+  # # qbrks_h
+  # # 
+  # # health_map_df <- health_map_df %>%
+  # #   mutate(valq = cut(sum_cost_2019_pv, breaks = quantile(sum_cost_2019_pv, breaks = qbrks_h),
+  # #                     include.lowest = T))
+  # # 
+  # # 
+  # fig3c_v2 <- ggplot() +
+  #   geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = valq), lwd = 0, alpha = 1, color = "darkgrey", show.legend = TRUE) +
+  #   # geom_sf(data = california, fill = "transparent", color = "black") +
+  #   scale_fill_discrete(labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
+  #   labs(fill = "NPV (USD 2019)",
+  #        color = NULL,
+  #        x = NULL,
+  #        y = NULL) +
+  #   theme_bw() +
+  #   theme(
+  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+  #     # legend.justification = c(0, 1),
+  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+  #     legend.position = "bottom",
+  #     legend.key.width = unit(2, "line"),
+  #     legend.key.height = unit(1, "line"),
+  #     legend.title = element_text(size = 8),
+  #     legend.text = element_text(size = 8),
+  #     plot.margin = margin(0, 2, 0, 8),
+  #     plot.title = element_text(face = 'bold', size = 10),
+  #     plot.subtitle = element_text(face = 'bold', size = 8),
+  #     panel.grid.major = element_blank(),
+  #     panel.grid.minor = element_blank(),
+  #     panel.background = element_blank(),
+  #     axis.text = element_text(size = 8)) +
+  #   guides(fill = guide_colourbar(title.position="top",
+  #                                 title.hjust = 0,
+  #                                 direction = "horizontal",
+  #                                 ticks.colour = "black", frame.colour = "black"),
+  #          color = "none")
+
+  
+  ## labor
+  labor_map_df <- merge(raw_ca_counties_sp %>% select(NAME), labor_map_df %>% rename(NAME = county), 
+                        by = "NAME",
+                        all.x = T)
+  
+  labor_map_df <- st_as_sf(labor_map_df)
+  
+  labor_map_df <- st_transform(labor_map_df, crs = "EPSG:4269")
+  
+  labor_map_df <- st_make_valid(labor_map_df)
+  
+  ## labor 
+  blues_pal <- c("#FAFAFA", "#778DA9", "#415A77", "#1B263B", "#0D1B2A")
+  
+  fig3d <- ggplot() +
+    geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+    # geom_sf(data = california, fill = "transparent", color = "black") +
+    scale_fill_gradientn(colors = rev(blues_pal),
+                         na.value = "#FAFAFA") +
+    # coord_sf(xlim = c(-123, -116), ylim = c(33, 39)) +
+    labs(fill = "NPV (billion USD 2019)",
+         color = NULL,
+         x = NULL,
+         y = NULL) +
+    theme_bw() +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      # legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = "none",
+      legend.key.width = unit(2, "line"),
+      legend.key.height = unit(1, "line"),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(0, 2, 0, 8),
+      plot.title = element_text(face = 'bold', size = 10),
+      plot.subtitle = element_text(face = 'bold', size = 8),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.text = element_text(size = 8)) +
+    guides(fill = guide_colourbar(title.position="top",
+                                  title.hjust = 0,
+                                  direction = "horizontal",
+                                  ticks.colour = "black", frame.colour = "black"),
+           color = "none")
+  
+  fig3d_leg <- ggplot() +
+    geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+    # geom_sf(data = california, fill = "transparent", color = "black") +
+    scale_fill_gradientn(colors = rev(blues_pal),
+                         na.value = "#FAFAFA") +
+    # coord_sf(xlim = c(-123, -116), ylim = c(33, 39)) +
+    labs(fill = "NPV (billion USD 2019)",
+         color = NULL,
+         x = NULL,
+         y = NULL) +
+    theme_bw() +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      # legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = "bottom",
+      legend.key.width = unit(2, "line"),
+      legend.key.height = unit(1, "line"),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(0, 2, 0, 8),
+      plot.title = element_text(face = 'bold', size = 10),
+      plot.subtitle = element_text(face = 'bold', size = 8),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.text = element_text(size = 8)) +
+    guides(fill = guide_colourbar(title.position="top",
+                                  title.hjust = 0,
+                                  direction = "horizontal",
+                                  ticks.colour = "black", frame.colour = "black"),
+           color = "none")
+
+  
+  
+  
+    
+  ## legends  
   legend_fig <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
@@ -407,6 +743,20 @@ plot_npv_health_labor <- function(main_path,
     
   )
   
+  legend_fig_3c <- get_legend(
+    fig3c_leg + 
+      theme(legend.title = element_text(size = 8),
+            legend.text = element_text(size = 8))
+    
+  )
+  
+  legend_fig_3d <- get_legend(
+    fig3d_leg + 
+      theme(legend.title = element_text(size = 8),
+            legend.text = element_text(size = 8))
+    
+  )
+  
   
   ## combine figure
   ## ---------------------------------
@@ -414,20 +764,16 @@ plot_npv_health_labor <- function(main_path,
   ## shared x axis
   xaxis_lab <- ggdraw() + draw_label("GHG emissions reduction (%, 2045 vs 2019)", size = 7)
   
-  fig3_plot_grid <- plot_grid(
+  fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
     fig_bxm_b,
-    # fig_bxm_c,
-    fig_bxm_c + labs(x = NULL),
-    fig_bxm_d + labs(x = NULL),
-    # fig_bxm_f+ labs(x = NULL),
     align = 'vh',
     # labels = c("A", "B", "C", "D", "E", "F"),
     # # labels = 'AUTO',
     # label_size = 10,
     hjust = -1,
     nrow = 2,
-    rel_widths = c(1, 1, 1, 1, 1, 1)
+    rel_widths = c(1, 1)
   )
   
   fig3_plot_grid2 <- plot_grid(

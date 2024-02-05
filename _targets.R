@@ -134,6 +134,7 @@ list(
   tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
   tar_target(name = file_df_labor, command = file.path(main_path, "data/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
+  tar_target(name = file_ca_counties_sp, command = file.path(main_path, "data/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"), format = "file"),
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -163,6 +164,8 @@ list(
   tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
   tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
   tar_target(name = raw_ct_2020_all, command = st_read(file_raw_ct_2020)),
+  tar_target(name = raw_ca_counties_sp, command = read_read(file_raw_ca_counties_sp, ca_crs)),
+  tar_target(name = raw_counties, command = st_read(file_ca_counties_sp)),
   tar_target(name = raw_pop_income_2020, command = read_nhgis_data(file_raw_census_2020)),
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
   tar_target(name = raw_ct_race, command = read_census_race_data(file_raw_ct_race)),
