@@ -45,3 +45,16 @@ pal_fuel_title = c('Sustainable Aviation Fuel'	=	'#D3756B',
                    'Gasoline'	=	'#A6BB8D',
                    'Exports' = '#dadbdf')
 pal_label = c('GHG emissions' = '#000000')
+
+race_col_pal <- c("Black" = "#002147",
+                  "Hispanic" = "#721817",
+                  "Asian" = "#40826D",
+                  "white" = "#FFBA00")
+
+poverty_lty <- c("Above poverty line" = "dashed",
+                 "Below poverty line" = "solid")
+
+dac_lty <- c("DAC" = "solid",
+             "Non-DAC" = "dotted")
+
+
