@@ -5,9 +5,7 @@ plot_npv_health_labor <- function(main_path,
                                   refining_mortality,
                                   state_ghg_output,
                                   dt_ghg_2019,
-                                  annual_labor,
-                                  raw_ct_2020,
-                                  raw_counties) {
+                                  annual_labor) {
 
   npv_df <- refining_mortality %>% as.data.table()
 
@@ -849,6 +847,12 @@ plot_health_levels <- function(main_path,
                                                           'Low demand - low exports',
                                                           'Low demand - historic production'))
   
+  ## change historic to historical
+  fig2_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+  fig2_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  fig2_df[, scenario := str_replace(scenario, "historic", "historical")]
+  fig2_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
+  
   
   ## save figure inputs
   fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
@@ -865,12 +869,6 @@ plot_health_levels <- function(main_path,
   #         axis.ticks.length.y = unit(0.1, 'cm'),
   #         axis.ticks.length.x = unit(0.1, 'cm'))
   
-  ##
-  
-  race_col_pal <- c("Black" = "#002147",
-                    "Hispanic" = "#721817",
-                    "Asian" = "#40826D",
-                    "white" = "#FFBA00")
   
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
   
@@ -915,6 +913,7 @@ plot_health_levels <- function(main_path,
     labs(x = NULL,
          y = NULL) +
     ylim(c(0, 0.4)) +
+    scale_linetype_manual(values = dac_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -940,8 +939,7 @@ plot_health_levels <- function(main_path,
                                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
                                aes(x = year, y = num_over_den, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
-    scale_linetype_manual(values = c("Above poverty line" = "dashed",
-                                     "Below poverty line" = "solid")) +
+    scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
@@ -967,7 +965,7 @@ plot_health_levels <- function(main_path,
       theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")")), 
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
                                      size = 8, angle = 90)
   
 
