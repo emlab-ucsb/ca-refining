@@ -164,7 +164,6 @@ list(
   tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
   tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
   tar_target(name = raw_ct_2020_all, command = st_read(file_raw_ct_2020)),
-  tar_target(name = raw_ca_counties_sp, command = read_read(file_raw_ca_counties_sp, ca_crs)),
   tar_target(name = raw_counties, command = st_read(file_ca_counties_sp)),
   tar_target(name = raw_pop_income_2020, command = read_nhgis_data(file_raw_census_2020)),
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
