@@ -1578,6 +1578,7 @@ plot_labor_levels_gaps <- function(main_path,
     geom_line(linewidth = 1, alpha = 0.6) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
+    scale_linetype_manual(values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
     # ylim(c(-0.31, 0)) +
@@ -1607,8 +1608,7 @@ plot_labor_levels_gaps <- function(main_path,
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                              aes(x = year, y = gap_emp_pc_thous, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.6, color = "black") +
-    scale_linetype_manual(values = c("Above poverty line" = "dashed",
-                                     "Below poverty line" = "solid")) +
+    scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
@@ -2880,5 +2880,436 @@ create_health_labor_table <- function(main_path,
 
   
 }
+
+
+fig4_hl <- function(main_path,
+                    health_grp,
+                    ref_labor_demog_yr) {
+  
+  gaps_df <- copy(health_grp)
+  
+  ## change scenario names, factor
+  gaps_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  # gaps_df[, scenario := gsub('BAU', 'Reference', scenario)]
+  gaps_df[, scenario := gsub('LC1.', 'Low ', scenario)]
+  
+  ## refactor
+  gaps_df[, scenario_title := scenario]
+  gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
+  
+  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('BAU demand - historic production',
+                                                          'BAU demand - historic exports', 
+                                                          'BAU demand - low exports', 
+                                                          'Low demand - historic exports',
+                                                          'Low demand - low exports',
+                                                          'Low demand - historic production'))
+  
+  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('BAU demand\nhistoric production',
+                                                                      'BAU demand\nhistoric exports', 
+                                                                      'BAU demand\nlow exports', 
+                                                                      'Low demand\nhistoric exports',
+                                                                      'Low demand\nlow exports',
+                                                                      'Low demand\nhistoric production'))
+  
+  
+  ## calculate gaps (BAU - scenario)
+  bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
+  bau_gaps_df <- bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", "num_over_den")]
+  setnames(bau_gaps_df, "num_over_den", "bau_num_over_den")
+  
+  gaps_df <- merge(gaps_df, bau_gaps_df,
+                   by = c("year", "demo_cat", "demo_group", "title"),
+                   all.x = T)
+  
+  gaps_df[, gap :=  num_over_den - bau_num_over_den]
+  
+  ## change historic to historical
+  gaps_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+  gaps_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  gaps_df[, scenario := str_replace(scenario, "historic", "historical")]
+  gaps_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
+  
+  
+  ## make figures
+  ##---------------------------------------------------------
+  
+  ## scenarios for filtering
+  remove_scen <- c('LC1 historical production', 'BAU historical production')
+  
+  ## figure a
+  fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
+  
+  health_gap_fig_a <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
+                                                title %in% fig_title_vec,
+                                                demo_cat == "Race")  %>%
+                               mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))), 
+                             aes(x = year, y = gap, color = title)) +
+    geom_line(linewidth = 1, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
+    scale_color_manual(name = "",
+                       values = race_col_pal) +
+    labs(x = NULL,
+         y = NULL) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
+    ylim(c(-0.31, 0)) +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          strip.text.x = element_blank(),
+          # axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  
+  ## figure b
+  health_gap_fig_b <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
+                                                demo_cat == "DAC"), aes(x = year, y = gap, lty = title)) +
+    geom_line(linewidth = 1, alpha = 0.8) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
+    labs(x = NULL,
+         y = NULL) +
+    ylim(c(-0.31, 0)) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    scale_linetype_manual(values = dac_lty) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          # strip.text.x = element_blank(),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          # axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## figure c
+  health_gap_fig_c <- ggplot(gaps_df %>% 
+                               filter(!scen_id %in% remove_scen,
+                                      demo_cat == "Poverty") %>%
+                               mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
+                             aes(x = year, y = gap, lty = title)) +
+    geom_line(linewidth = 1, alpha = 0.8, color = "black") +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
+    labs(x = NULL,
+         y = NULL) +
+    scale_linetype_manual(values = poverty_lty) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    ylim(c(-0.31, 0)) +
+    theme_line +
+    theme(legend.position = "none",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          legend.key.width = unit(10, "mm"),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          strip.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  
+  ## shared y lab
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
+                                     size = 8, angle = 90)
+  
+  
+  gaps_plot_grid_h <- plot_grid(
+    health_gap_fig_b,
+    health_gap_fig_c,
+    health_gap_fig_a,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 3,
+    ncol = 1,
+    rel_widths = c(1, 1, 1),
+    rel_heights = c(1.1, 0.9, 0.9)
+  )
+  
+  gaps_plot_grid2 <- plot_grid(
+    yaxis_lab,
+    gaps_plot_grid_h,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    ncol = 2,
+    rel_widths = c(0.05, 1),
+    rel_heights = c(1, 1)
+  )
+  
+  ## labor 
+  ## -------------------------------------------------------
+  
+  l_gaps_df <- copy(ref_labor_demog_yr)
+  
+  ## change scenario names, factor
+  l_gaps_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  # gaps_df[, scenario := gsub('BAU', 'Reference', scenario)]
+  l_gaps_df[, scenario := gsub('LC1.', 'Low ', scenario)]
+  
+  ## add scenario title
+  l_gaps_df[, scenario_title := scenario]
+  l_gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
+  
+  ## change historic to historical
+  l_gaps_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  l_gaps_df[, scenario := str_replace(scenario, "historic", "historical")]
+  l_gaps_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
+  
+  
+  ## scenarios for filtering
+  remove_scen <- c('Low demand - historical production', 'BAU demand - historical production')
+  
+  
+  l_gaps_df$scenario <- factor(l_gaps_df$scenario, levels = c('BAU demand - historical production',
+                                                              'BAU demand - historical exports',
+                                                              'BAU demand - low exports',
+                                                              'Low demand - historical exports',
+                                                              'Low demand - low exports',
+                                                              'Low demand - historical production'))
+  
+  l_gaps_df$scenario_title <- factor(l_gaps_df$scenario_title, levels = c('BAU demand\nhistorical production',
+                                                                          'BAU demand\nhistorical exports',
+                                                                          'BAU demand\nlow exports',
+                                                                          'Low demand\nhistorical exports',
+                                                                          'Low demand\nlow exports',
+                                                                          'Low demand\nhistorical production'))
+  
+  ## get 2020 population
+  pop_2020_df <- unique(l_gaps_df[year == 2020, .(county, year, demo_group, demo_cat, pct, county_pop)])
+  
+  ## calculate 2020 demographic population
+  pop_2020_df[, demo_pop := county_pop * pct]
+  
+  ## summarise by state
+  pop_2020_df <- pop_2020_df[, .(demo_pop = sum(demo_pop)),
+                             by = .(demo_group, demo_cat)]
+  
+  ## sum for state
+  l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
+                         by = .(year, demand_scenario, refining_scenario,
+                                scenario, scenario_title, demo_cat, demo_group, title)]
+  
+  ## merge with 2020 pop
+  l_gaps_df <- merge(l_gaps_df, pop_2020_df,
+                     by = c("demo_cat", "demo_group"),
+                     all.x = T)
+  
+  ## calculate per capita
+  l_gaps_df[, demo_emp_pc := sum_demo_emp / demo_pop]
+  l_gaps_df[, emp_pc_thous := sum_demo_emp / (demo_pop / 1000)]
+  
+  ## select columns
+  l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario,
+                             scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp,
+                             demo_pop, demo_emp_pc, emp_pc_thous)]
+  
+  
+  ## calculate gaps (BAU - scenario)
+  l_bau_gaps_df <- l_gaps_df[scenario == "BAU demand - historical production"]
+  l_bau_gaps_df <- l_bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", 
+                                     "sum_demo_emp", "demo_emp_pc", "emp_pc_thous")]
+  setnames(l_bau_gaps_df, "sum_demo_emp", "bau_sum_demo_emp")
+  setnames(l_bau_gaps_df, "demo_emp_pc", "bau_demo_emp_pc")
+  setnames(l_bau_gaps_df, "emp_pc_thous", "bau_emp_pc_thous")
+  
+  l_gaps_df <- merge(l_gaps_df, l_bau_gaps_df,
+                     by = c("year", "demo_cat", "demo_group", "title"),
+                     all.x = T)
+  
+  l_gaps_df[, gap_emp :=  sum_demo_emp - bau_sum_demo_emp]
+  l_gaps_df[, gap_emp_pc :=  demo_emp_pc - bau_demo_emp_pc]
+  l_gaps_df[, gap_emp_pc_thous :=  emp_pc_thous - bau_emp_pc_thous]
+  
+  
+  ## figure labor a
+  labor_gap_fig_a <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
+                                                 title %in% fig_title_vec,
+                                                 demo_cat == "Race")  %>%
+                              mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
+                            aes(x = year, y = gap_emp_pc_thous, color = title)) +
+    geom_line(linewidth = 1, alpha = 0.6) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
+    scale_color_manual(name = "",
+                       values = race_col_pal) +
+    labs(x = NULL,
+         y = NULL) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
+    ylim(c(-5, 0)) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          strip.text.x = element_blank(),
+          # axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## legend a
+    legend_a <- labor_gap_fig_a + 
+      geom_line(linewidth = 1, alpha = 0.9) +
+      theme(legend.position = "right")
+
+    legend_a <- get_legend(
+      legend_a +
+        theme(legend.text = element_text(size = 8)))
+
+  ## labor b
+  labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
+                                                 demo_cat == "DAC"), aes(x = year, y = gap_emp_pc_thous, lty = title)) +
+    geom_line(linewidth = 1, alpha = 0.6) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
+    scale_linetype_manual(values = dac_lty) +
+    labs(x = NULL,
+         y = NULL) +
+    # ylim(c(-0.31, 0)) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
+    ylim(c(-5, 0)) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          # strip.text.x = element_blank(),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          # axis.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## legend b
+  legend_b <- labor_gap_fig_b + 
+    geom_line(linewidth = 1, alpha = 0.9) +
+    theme(legend.position = "right")
+  
+  legend_b <- get_legend(
+    legend_b +
+      theme(legend.text = element_text(size = 8)))
+  
+  ## labor c
+  labor_gap_fig_c <- ggplot(l_gaps_df %>%
+                              filter(!scenario %in% remove_scen,
+                                     demo_cat == "Poverty") %>%
+                              mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
+                            aes(x = year, y = gap_emp_pc_thous, lty = title)) +
+    geom_line(linewidth = 1, alpha = 0.6, color = "black") +
+    scale_linetype_manual(values = poverty_lty) +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    facet_grid(demo_cat ~ scenario_title) +
+    labs(x = NULL,
+         y = NULL) +
+    scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
+                       labels = c(2020, 2045)) +  # Specify tick mark labels
+    theme_line +
+    ylim(-5, 0) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          legend.key.width = unit(10, "mm"),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          strip.text.x = element_blank(),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## legend c
+  legend_c <- labor_gap_fig_c + 
+    geom_line(linewidth = 1, alpha = 0.9) +
+    theme(legend.position = "right")
+  
+  legend_c <- get_legend(
+    legend_c +
+      theme(legend.text = element_text(size = 8)))
+  
+  ## shared y lab
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference (thousand)", size = 8, angle = 90)
+  
+  
+  l_gaps_plot_grid <- plot_grid(
+    labor_gap_fig_b + theme(legend.position = "none"),
+    labor_gap_fig_c + theme(legend.position = "none"),
+    labor_gap_fig_a + theme(legend.position = "none"),
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 3,
+    ncol = 1,
+    rel_widths = c(1, 1, 1),
+    rel_heights = c(1.05, 0.9, 0.9)
+  )
+  
+  l_gaps_plot_grid2 <- plot_grid(
+    yaxis_lab,
+    l_gaps_plot_grid,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    ncol = 2,
+    rel_widths = c(0.05, 1),
+    rel_heights = c(1, 1)
+  )
+  
+  
+  l_gaps_plot_grid2
+  
+  ## plot legends
+  legends <- plot_grid(
+    legend_b,
+    legend_c,
+    legend_a,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 3,
+    ncol = 1,
+    rel_widths = c(1, 1, 1),
+    rel_heights = c(1, 1, 1)
+  )
+  
+  
+  
+  ## plot side by side
+  ## ----------------------------------------------
+  
+  health_labor_plot <- plot_grid(
+    gaps_plot_grid2,
+    l_gaps_plot_grid2,
+    NULL,
+    legends,
+    align = 'v',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    ncol = 4,
+    rel_widths = c(1, 1, 0.15, 0.1),
+    rel_heights = c(1, 1, 1, 1)
+  )
+  
+  return(health_labor_plot)
+  
+  
+}
+
 
 
