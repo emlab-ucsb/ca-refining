@@ -2795,6 +2795,90 @@ plot_hl_shares <- function(main_path,
 
 }
 
+create_health_labor_table <- function(main_path,
+                                      demographic_npv_df,
+                                      ref_labor_demog,
+                                      pop_ratios,
+                                      refining_mortality) {
+  
+  ## create table of total health benefit (NPV), labor loss (NPV), change in job years,
+  ## and avoided premature mortality (scenario x demographic group, state)
+  
+  ## NPV values
+  npv_out <- demographic_npv_df[, .(demand_scenario, refining_scenario,
+                                    demo_cat, demo_group, title,
+                                    segment, metric, metric_desc, unit_desc, 
+                                    value)]
+  
+  ## fte-job-years
+  emp_out <- ref_labor_demog %>%
+    select(-sum_demo_comp_pv) %>%
+    rename(value = sum_demo_emp) %>%
+    mutate(segment = "labor",
+           metric = "fte_job_years",
+           metric_desc = "job_loss",
+           unit_desc = "fte-jobs")
+  
+  ## bau scen
+  bau_emp_out <- emp_out %>%
+    filter(demand_scenario == "BAU",
+           refining_scenario == "historic production") %>%
+    select(demo_cat, demo_group, title, value) %>%
+    rename(bau_value = value)
+  
+  ## difference
+  emp_out <- merge(emp_out, bau_emp_out,
+                   by = c("demo_cat", "demo_group", "title"),
+                   all.x = T)
+  
+  emp_out <- emp_out %>%
+    mutate(delta_value = value - bau_value) %>%
+    select(demo_cat:refining_scenario, segment, metric, metric_desc, unit_desc, delta_value) %>%
+    rename(value = delta_value) %>%
+    mutate(refining_scenario = str_replace(refining_scenario, "historic", "historical"))
+  
+  
+  ## avoided mortality 
+  avoid_m_out <- copy(refining_mortality) %>% as.data.table()
+  
+  ## select columns
+  avoid_m_out <- avoid_m_out %>%
+    select(census_tract, demand_scenario, refining_scenario, year, mortality_delta)
+  
+  ## merge with pop ratios
+  avoid_m_out <- merge(avoid_m_out, pop_ratios,
+                       by = "census_tract",
+                       all.x = TRUE,
+                       allow.cartesian = TRUE)
 
+  setDT(avoid_m_out)
+  
+  ## calc value by demographic group
+  avoid_m_out[, value := mortality_delta * pct]
+  
+  avoid_m_out_total <- avoid_m_out[, .(value = sum(value)),
+                                       by = .(demand_scenario, refining_scenario,
+                                               demo_cat, demo_group, title)]
+  
+  avoid_m_out_total <- avoid_m_out_total %>%
+    mutate(refining_scenario = str_replace(refining_scenario, "historic", "historical"),
+           segment = "health",
+           metric = "avoided_mortality",
+           metric_desc = "avoided_mortality",
+           unit_desc = "persons") %>%
+    select(demand_scenario, refining_scenario, demo_cat, demo_group, title,
+           segment, metric, metric_desc, unit_desc, value)
+  
+  ## bind
+  result_output <- rbind(npv_out, emp_out, avoid_m_out_total)
+  
+  ## save figure inputs
+  fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_health_labor_ouputs.csv"))
+  
+  
+  return(result_output)
+
+  
+}
 
 
