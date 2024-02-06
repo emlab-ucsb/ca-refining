@@ -823,7 +823,6 @@ plot_health_levels <- function(main_path,
   # fig2_df[, scenario := gsub('BAU', 'Reference', scenario)]
   fig2_df[, scenario := gsub('LC1.', 'Low ', scenario)]
 
-  
   ## add scenario title
   fig2_df[, scenario_title := str_replace(scenario, " - ", "\n")]
   
@@ -843,11 +842,11 @@ plot_health_levels <- function(main_path,
   
   ## refactor
   fig2_df$scenario <- factor(fig2_df$scenario, levels = c('BAU demand - historic production',
-                                                          'BAU demand - historic exports', 
+                                                          'BAU demand - historical exports', 
                                                           'BAU demand - low exports', 
-                                                          'Low demand - historic exports',
+                                                          'Low demand - historical exports',
                                                           'Low demand - low exports',
-                                                          'Low demand - historic production'))
+                                                          'Low demand - historical production'))
   
   ## scenarios for filtering
   # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
