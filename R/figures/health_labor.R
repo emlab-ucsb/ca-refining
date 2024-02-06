@@ -1806,24 +1806,29 @@ plot_hl_levels_df <- function(main_path,
    # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
    # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
    
+   ## change historic to historical
+   plot_df_long[, scen_id := str_replace(scen_id, "historic", "historical")]
+   plot_df_long[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+   plot_df_long[, scenario := str_replace(scenario, "historic", "historical")]
+   
    ## refactor
-   plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('BAU demand - historic production',
-                                                                     'BAU demand - historic exports', 
+   plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('BAU demand - historical production',
+                                                                     'BAU demand - historical exports', 
                                                                      'BAU demand - low exports', 
-                                                                     'Low demand - historic exports',
+                                                                     'Low demand - historical exports',
                                                                      'Low demand - low exports',
-                                                                     'Low demand - historic production'))
+                                                                     'Low demand - historical production'))
    
    ## titles for plotting
    plot_df_long[, demand_title := ifelse(demand_scenario == "BAU", "BAU demand", "Low demand")]
    plot_df_long[, scen_title := paste0(demand_title, "\n", str_to_sentence(refining_scenario))]
    
-   plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('BAU demand\nHistoric production',
-                                                                        'BAU demand\nHistoric exports', 
+   plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('BAU demand\nHistorical production',
+                                                                        'BAU demand\nHistorical exports', 
                                                                         'BAU demand\nLow exports', 
-                                                                        'Low demand\nHistoric exports',
+                                                                        'Low demand\nHistorical exports',
                                                                         'Low demand\nLow exports',
-                                                                        'Low demand\nHistoric production'))
+                                                                        'Low demand\nHistorical production'))
    
    ## save figure inputs
    fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
@@ -1842,15 +1847,9 @@ plot_hl_levels <- function(demographic_npv_df) {
    
    ## scenarios for filtering
    remove_scen <- c('LC1 historical production', 'BAU historical production')
-   bau_scen <- 'BAU historic production'
+   bau_scen <- 'BAU historical production'
    
    fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
-   
-   race_col_pal <- c("Black" = "#002147",
-                     "Hispanic" = "#721817",
-                     "Asian" = "#40826D",
-                     "white" = "#FFBA00")
-   
    
    ## health fig - race
    health_level_fig_a <- ggplot() +
@@ -1917,8 +1916,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                 aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "black", size = 3, alpha = 0.8) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-     scale_shape_manual(values = c("Above poverty line" = 19,
-                                   "Below poverty line" = 17)) +
+     scale_shape_manual(values = poverty_ptc) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -1946,8 +1944,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                   mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
                 aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "black", size = 3, alpha = 0.8) +
-     scale_shape_manual(values = c("Above poverty line" = 19,
-                                   "Below poverty line" = 17)) +
+     scale_shape_manual(values = poverty_ptc) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
@@ -1970,8 +1967,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "black", size = 3, alpha = 0.8) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-     scale_shape_manual(values = c("DAC" = 15,
-                                   "Non-DAC" = 4)) +
+     scale_shape_manual(values = dac_ptc) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -1998,8 +1994,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                segment == "labor"), aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "black", size = 3, alpha = 0.8) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-     scale_shape_manual(values = c("DAC" = 15,
-                                   "Non-DAC" = 4)) +
+     scale_shape_manual(values = dac_ptc) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -2148,7 +2143,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   ## scenarios for filtering
   remove_scen <- c('LC1 historical production', 'BAU historical production')
-  bau_scen <- 'BAU historic production'
+  bau_scen <- 'BAU historical production'
   
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
 
@@ -2220,8 +2215,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                aes(x = scen_title, y = value, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = c("Above poverty line" = 19,
-                                  "Below poverty line" = 17)) +
+    scale_shape_manual(values = poverty_ptc) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
@@ -2250,8 +2244,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                aes(x = scen_title, y = value, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = c("Above poverty line" = 19,
-                                  "Below poverty line" = 17)) +
+    scale_shape_manual(values = poverty_ptc) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
@@ -2273,8 +2266,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = value, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = c("DAC" = 15,
-                                  "Non-DAC" = 4)) +
+    scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
@@ -2301,8 +2293,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               segment == "labor"), aes(x = scen_title, y = value, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = c("DAC" = 15,
-                                  "Non-DAC" = 4)) +
+    scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
@@ -2472,15 +2463,10 @@ plot_hl_shares <- function(main_path,
   ##---------------------------------------------------------------
 
   ## scenarios for filtering
-  remove_scen <- c('LC1 historic production', 'BAU historic production')
-  bau_scen <- 'BAU historic production'
+  remove_scen <- c('LC1 historical production', 'BAU historical production')
+  bau_scen <- 'BAU historical production'
 
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
-  
-  race_col_pal <- c("Black" = "#002147",
-                    "Hispanic" = "#721817",
-                    "Asian" = "#40826D",
-                    "white" = "#FFBA00")
 
   ## health fig - race
   health_share_fig_a <- ggplot() +
@@ -2573,8 +2559,7 @@ plot_hl_shares <- function(main_path,
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
-    scale_shape_manual(values = c("Above poverty line" = 17,
-                                  "Below poverty line" = 19)) +
+    scale_shape_manual(values = poverty_ptc) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -2601,8 +2586,7 @@ plot_hl_shares <- function(main_path,
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
-    scale_shape_manual(values = c("Above poverty line" = 17,
-                                  "Below poverty line" = 19)) +
+    scale_shape_manual(values = poverty_ptc) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     ylim(0, 0.9) +
@@ -2625,8 +2609,7 @@ plot_hl_shares <- function(main_path,
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
-    scale_shape_manual(values = c("Above poverty line" = 17,
-                                  "Below poverty line" = 19)) +
+    scale_shape_manual(values = poverty_ptc) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     ylim(0, 0.9) +
@@ -2649,8 +2632,7 @@ plot_hl_shares <- function(main_path,
                                               unit_desc == "USD (2019 VSL)"), aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = c("DAC" = 15,
-                                  "Non-DAC" = 4)) +
+    scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     ylim(0, 0.85) +
     labs(y = "NPV share",
@@ -2677,8 +2659,7 @@ plot_hl_shares <- function(main_path,
                                               segment == "labor"), aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = c("DAC" = 15,
-                                  "Non-DAC" = 4)) +
+    scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     ylim(0, 0.85) +
     labs(y = "NPV share",
@@ -2700,8 +2681,7 @@ plot_hl_shares <- function(main_path,
                                           segment == "general"), aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = c("DAC" = 15,
-                                  "Non-DAC" = 4)) +
+    scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     ylim(0, 0.85) +
     labs(y = "NPV share",
