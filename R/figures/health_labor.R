@@ -1546,7 +1546,7 @@ plot_labor_levels_gaps <- function(main_path,
                                                 demo_cat == "Race")  %>%
                                mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
                              aes(x = year, y = gap_emp_pc_thous, color = title)) +
-    geom_line(linewidth = 1, alpha = 0.8) +
+    geom_line(linewidth = 1, alpha = 0.6) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     scale_color_manual(name = "",
@@ -1575,7 +1575,7 @@ plot_labor_levels_gaps <- function(main_path,
   ##
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
                                                 demo_cat == "DAC"), aes(x = year, y = gap_emp_pc_thous, lty = title)) +
-    geom_line(linewidth = 1, alpha = 0.8) +
+    geom_line(linewidth = 1, alpha = 0.6) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
@@ -1606,7 +1606,7 @@ plot_labor_levels_gaps <- function(main_path,
                                       demo_cat == "Poverty") %>%
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                              aes(x = year, y = gap_emp_pc_thous, lty = title)) +
-    geom_line(linewidth = 1, alpha = 0.8, color = "black") +
+    geom_line(linewidth = 1, alpha = 0.6, color = "black") +
     scale_linetype_manual(values = c("Above poverty line" = "dashed",
                                      "Below poverty line" = "solid")) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
