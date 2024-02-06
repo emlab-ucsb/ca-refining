@@ -1031,20 +1031,6 @@ plot_health_levels_gaps <- function(main_path,
   gaps_df[, scenario_title := scenario]
   gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
   
-  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('BAU demand - historic production',
-                                                          'BAU demand - historic exports', 
-                                                          'BAU demand - low exports', 
-                                                          'Low demand - historic exports',
-                                                          'Low demand - low exports',
-                                                          'Low demand - historic production'))
-  
-  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('BAU demand\nhistoric production',
-                                                                      'BAU demand\nhistoric exports', 
-                                                                      'BAU demand\nlow exports', 
-                                                                      'Low demand\nhistoric exports',
-                                                                      'Low demand\nlow exports',
-                                                                      'Low demand\nhistoric production'))
-  
   
   ## calculate gaps (BAU - scenario)
   bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
@@ -1063,6 +1049,19 @@ plot_health_levels_gaps <- function(main_path,
   gaps_df[, scenario := str_replace(scenario, "historic", "historical")]
   gaps_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
   
+  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('BAU demand - historical production',
+                                                          'BAU demand - historical exports', 
+                                                          'BAU demand - low exports', 
+                                                          'Low demand - historical exports',
+                                                          'Low demand - low exports',
+                                                          'Low demand - historical production'))
+  
+  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('BAU demand\nhistorical production',
+                                                                      'BAU demand\nhistorical exports', 
+                                                                      'BAU demand\nlow exports', 
+                                                                      'Low demand\nhistorical exports',
+                                                                      'Low demand\nlow exports',
+                                                                      'Low demand\nhistorical production'))
   
   
   ## save figure inputs
@@ -2882,8 +2881,7 @@ create_health_labor_table <- function(main_path,
 }
 
 
-fig4_hl <- function(main_path,
-                    health_grp,
+fig4_hl <- function(health_grp,
                     ref_labor_demog_yr) {
   
   gaps_df <- copy(health_grp)
@@ -2896,21 +2894,6 @@ fig4_hl <- function(main_path,
   ## refactor
   gaps_df[, scenario_title := scenario]
   gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
-  
-  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('BAU demand - historic production',
-                                                          'BAU demand - historic exports', 
-                                                          'BAU demand - low exports', 
-                                                          'Low demand - historic exports',
-                                                          'Low demand - low exports',
-                                                          'Low demand - historic production'))
-  
-  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('BAU demand\nhistoric production',
-                                                                      'BAU demand\nhistoric exports', 
-                                                                      'BAU demand\nlow exports', 
-                                                                      'Low demand\nhistoric exports',
-                                                                      'Low demand\nlow exports',
-                                                                      'Low demand\nhistoric production'))
-  
   
   ## calculate gaps (BAU - scenario)
   bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
@@ -2928,6 +2911,21 @@ fig4_hl <- function(main_path,
   gaps_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
   gaps_df[, scenario := str_replace(scenario, "historic", "historical")]
   gaps_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
+  
+  ## refactor
+  gaps_df$scenario <- factor(gaps_df$scenario, levels = c('BAU demand - historical production',
+                                                          'BAU demand - historical exports', 
+                                                          'BAU demand - low exports', 
+                                                          'Low demand - historical exports',
+                                                          'Low demand - low exports',
+                                                          'Low demand - historical production'))
+  
+  gaps_df$scenario_title <- factor(gaps_df$scenario_title, levels = c('BAU demand\nhistorical production',
+                                                                      'BAU demand\nhistorical exports', 
+                                                                      'BAU demand\nlow exports', 
+                                                                      'Low demand\nhistorical exports',
+                                                                      'Low demand\nlow exports',
+                                                                      'Low demand\nhistorical production'))
   
   
   ## make figures
