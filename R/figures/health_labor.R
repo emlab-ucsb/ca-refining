@@ -3163,7 +3163,7 @@ fig4_hl <- function(health_grp,
 
     legend_a <- get_legend(
       legend_a +
-        theme(legend.text = element_text(size = 8)))
+        theme(legend.text = element_text(size = 6)))
 
   ## labor b
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
@@ -3195,7 +3195,7 @@ fig4_hl <- function(health_grp,
   
   legend_b <- get_legend(
     legend_b +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 6)))
   
   ## labor c
   labor_gap_fig_c <- ggplot(l_gaps_df %>%
@@ -3229,7 +3229,7 @@ fig4_hl <- function(health_grp,
   
   legend_c <- get_legend(
     legend_c +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 6)))
   
   ## shared y lab
   yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference (thousand)", size = 8, angle = 90)
@@ -3300,7 +3300,7 @@ fig4_hl <- function(health_grp,
     hjust = -1,
     nrow = 1,
     ncol = 4,
-    rel_widths = c(1, 1, 0.15, 0.1),
+    rel_widths = c(1, 1, 0.05, 0.2),
     rel_heights = c(1, 1, 1, 1)
   )
   
