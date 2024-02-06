@@ -54,7 +54,13 @@ race_col_pal <- c("Black" = "#002147",
 poverty_lty <- c("Above poverty line" = "dashed",
                  "Below poverty line" = "solid")
 
+poverty_ptc <- c("Above poverty line" = 19,
+                 "Below poverty line" = 17)
+
 dac_lty <- c("DAC" = "solid",
              "Non-DAC" = "dotted")
+
+dac_ptc <- c("DAC" = 15,
+             "Non-DAC" = 4)
 
 
