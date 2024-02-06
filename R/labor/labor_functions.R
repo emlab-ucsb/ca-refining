@@ -159,10 +159,13 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
   
   labor_pct <- copy(ref_labor_demog_yr)
   
+  ## county pop by demographic group 
+  labor_pct[, demo_pop := county_pop * pct]
+  
   ## summarise over years
   labor_pct <- labor_pct[, .(sum_demo_emp = sum(demo_emp),
                              sum_demo_comp_pv = sum(demo_comp_pv)),
-                               by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title)]
+                         by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title)]
   
   return(labor_pct)
   

@@ -560,8 +560,8 @@ list(
                                      main_path, 
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "health_labor_gaps_plot", 
-                                     width = 11,
-                                     height = 11,
+                                     width = 12,
+                                     height = 6,
                                      dpi = 600),
              format = "file")
   
