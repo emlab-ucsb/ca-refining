@@ -841,7 +841,7 @@ plot_health_levels <- function(main_path,
                                                                       'Low demand\nhistorical production'))
   
   ## refactor
-  fig2_df$scenario <- factor(fig2_df$scenario, levels = c('BAU demand - historic production',
+  fig2_df$scenario <- factor(fig2_df$scenario, levels = c('BAU demand - historical production',
                                                           'BAU demand - historical exports', 
                                                           'BAU demand - low exports', 
                                                           'Low demand - historical exports',
@@ -915,7 +915,6 @@ plot_health_levels <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -945,7 +944,6 @@ plot_health_levels <- function(main_path,
     ylim(c(0, 0.4)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    theme_line +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
