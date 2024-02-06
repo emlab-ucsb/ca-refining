@@ -963,7 +963,7 @@ plot_health_levels <- function(main_path,
       theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person")), 
                                      size = 8, angle = 90)
   
 
