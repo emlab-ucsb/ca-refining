@@ -822,22 +822,24 @@ plot_health_levels <- function(main_path,
   fig2_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
   # fig2_df[, scenario := gsub('BAU', 'Reference', scenario)]
   fig2_df[, scenario := gsub('LC1.', 'Low ', scenario)]
-  
-  ## scenarios for filtering
-  # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
-  remove_scen <- c('LC1 historic production')
+
   
   ## add scenario title
   fig2_df[, scenario_title := str_replace(scenario, " - ", "\n")]
   
-  ## refactor
-  fig2_df$scenario_title <- factor(fig2_df$scenario_title, levels = c('BAU demand\nhistoric production',
-                                                          'BAU demand\nhistoric exports', 
-                                                          'BAU demand\nlow exports', 
-                                                          'Low demand\nhistoric exports',
-                                                          'Low demand\nlow exports',
-                                                          'Low demand\nhistoric production'))
+  ## change historic to historical
+  fig2_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+  fig2_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  fig2_df[, scenario := str_replace(scenario, "historic", "historical")]
+  fig2_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
   
+  ## refactor
+  fig2_df$scenario_title <- factor(fig2_df$scenario_title, levels = c('BAU demand\nhistorical production',
+                                                                      'BAU demand\nhistorical exports', 
+                                                                      'BAU demand\nlow exports', 
+                                                                      'Low demand\nhistorical exports',
+                                                                      'Low demand\nlow exports',
+                                                                      'Low demand\nhistorical production'))
   
   ## refactor
   fig2_df$scenario <- factor(fig2_df$scenario, levels = c('BAU demand - historic production',
@@ -847,12 +849,9 @@ plot_health_levels <- function(main_path,
                                                           'Low demand - low exports',
                                                           'Low demand - historic production'))
   
-  ## change historic to historical
-  fig2_df[, scen_id := str_replace(scen_id, "historic", "historical")]
-  fig2_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
-  fig2_df[, scenario := str_replace(scenario, "historic", "historical")]
-  fig2_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
-  
+  ## scenarios for filtering
+  # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
+  remove_scen <- c('LC1 historical production')
   
   ## save figure inputs
   fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
@@ -1268,6 +1267,7 @@ plot_labor_levels <- function(main_path,
                      all.x = T)
   
   ## calculate per capita
+  fig2_l_df[, demo_emp_pc := sum_demo_emp / demo_pop]
   fig2_l_df[, emp_pc_thous := sum_demo_emp / (demo_pop / 1000)]
   
   
@@ -1464,7 +1464,7 @@ plot_labor_levels_gaps <- function(main_path,
   l_gaps_df[, scenario := gsub('LC1.', 'Low ', scenario)]
 
   ## scenarios for filtering
-  remove_scen <- c('Low demand - historic production', 'BAU demand - historic production')
+  remove_scen <- c('Low demand - historical production', 'BAU demand - historical production')
 
   ## refactor
   l_gaps_df[, scenario_title := scenario]
@@ -1819,7 +1819,7 @@ plot_hl_levels <- function(demographic_npv_df) {
    ##---------------------------------------------------------------
    
    ## scenarios for filtering
-   remove_scen <- c('LC1 historic production', 'BAU historic production')
+   remove_scen <- c('LC1 historical production', 'BAU historical production')
    bau_scen <- 'BAU historic production'
    
    fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
@@ -2125,15 +2125,11 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   ##---------------------------------------------------------------
   
   ## scenarios for filtering
-  remove_scen <- c('LC1 historic production', 'BAU historic production')
+  remove_scen <- c('LC1 historical production', 'BAU historical production')
   bau_scen <- 'BAU historic production'
   
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
-  
-  race_col_pal <- c("Black" = "#002147",
-                    "Hispanic" = "#721817",
-                    "Asian" = "#40826D",
-                    "white" = "#FFBA00")
+
   
   ## health fig - race
   health_level_fig_a <- ggplot() +
