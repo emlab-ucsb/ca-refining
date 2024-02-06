@@ -1031,9 +1031,6 @@ plot_health_levels_gaps <- function(main_path,
   # gaps_df[, scenario := gsub('BAU', 'Reference', scenario)]
   gaps_df[, scenario := gsub('LC1.', 'Low ', scenario)]
   
-  ## scenarios for filtering
-  remove_scen <- c('LC1 historic production', 'BAU historic production')
-
   ## refactor
   gaps_df[, scenario_title := scenario]
   gaps_df[, scenario_title := str_replace(scenario_title, ' - ', '\n')]
@@ -1064,15 +1061,25 @@ plot_health_levels_gaps <- function(main_path,
   
   gaps_df[, gap :=  num_over_den - bau_num_over_den]
   
+  ## change historic to historical
+  gaps_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+  gaps_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  gaps_df[, scenario := str_replace(scenario, "historic", "historical")]
+  gaps_df[, scenario_title := str_replace(scenario_title, "historic", "historical")]
+  
+  
+  
   ## save figure inputs
   fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
   
-  fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
+  ## make figures
+  ##---------------------------------------------------------
   
-  race_col_pal <- c("Black" = "#002147",
-                    "Hispanic" = "#721817",
-                    "Asian" = "#40826D",
-                    "white" = "#FFBA00")
+  ## scenarios for filtering
+  remove_scen <- c('LC1 historical production', 'BAU historical production')
+  
+  ## figure a
+  fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
   
   health_gap_fig_a <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
                                                   title %in% fig_title_vec,
@@ -1090,7 +1097,6 @@ plot_health_levels_gaps <- function(main_path,
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
     ylim(c(-0.31, 0)) +
-    theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1117,7 +1123,7 @@ plot_health_levels_gaps <- function(main_path,
     ylim(c(-0.31, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    theme_line +
+    scale_linetype_manual(values = dac_lty) +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -1141,15 +1147,13 @@ plot_health_levels_gaps <- function(main_path,
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                                aes(x = year, y = gap, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
-    scale_linetype_manual(values = c("Above poverty line" = "dashed",
-                                     "Below poverty line" = "solid")) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
+    scale_linetype_manual(values = poverty_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    theme_line +
     ylim(c(-0.31, 0)) +
     theme_line +
     theme(legend.position = "bottom",
@@ -1168,7 +1172,7 @@ plot_health_levels_gaps <- function(main_path,
       theme(legend.text = element_text(size = 8)))
   
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("Population-weighted PM"[2.5], " (",mu,"g ", m^{-3},")", " difference from reference")), 
+  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
                                      size = 8, angle = 90)
   
   
