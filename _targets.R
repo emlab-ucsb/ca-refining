@@ -427,6 +427,15 @@ list(
                                                                          refining_mortality,
                                                                          pop_ratios,
                                                                          main_path)),
+  
+  tar_target(name = health_labor_gaps_plot, command = fig4_hl(health_grp,
+                                                              ref_labor_demog_yr)),
+  
+  tar_target(name = state_level_results, command = create_health_labor_table(main_path,
+                                                                             demographic_npv_df,
+                                                                             ref_labor_demog,
+                                                                             pop_ratios,
+                                                                             refining_mortality)),
 
   # save outputs
   tar_target(name = save_ct_xwalk, 
@@ -543,6 +552,16 @@ list(
                                      "demographic_npv_pc_fig", 
                                      width = 11,
                                      height = 12,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_health_labor_gaps_plot,
+             command = simple_ggsave(health_labor_gaps_plot, 
+                                     main_path, 
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "health_labor_gaps_plot", 
+                                     width = 11,
+                                     height = 11,
                                      dpi = 600),
              format = "file")
   
