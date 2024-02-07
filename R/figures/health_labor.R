@@ -1337,7 +1337,7 @@ plot_labor_levels <- function(main_path,
   labor_level_fig_a <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
                                                   title %in% fig_title_vec,
                                                   demo_cat == "Race")  %>%
-                                 mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
+                                mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
                                aes(x = year, y = demo_emp_pc, color = title, group = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
