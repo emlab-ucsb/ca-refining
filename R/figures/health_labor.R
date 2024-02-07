@@ -2912,7 +2912,9 @@ create_health_labor_table <- function(main_path,
 
 
 fig4_hl <- function(health_grp,
-                    ref_labor_demog_yr) {
+                    ref_labor_demog_yr,
+                    refining_mortality,
+                    pop_ratios) {
   
   gaps_df <- copy(health_grp)
   

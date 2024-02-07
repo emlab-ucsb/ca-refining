@@ -431,7 +431,9 @@ list(
                                                                          main_path)),
   
   tar_target(name = health_labor_gaps_plot, command = fig4_hl(health_grp,
-                                                              ref_labor_demog_yr)),
+                                                              ref_labor_demog_yr,
+                                                              refining_mortality,
+                                                              pop_ratios)),
   
   tar_target(name = state_level_results, command = create_health_labor_table(main_path,
                                                                              demographic_npv_df,
