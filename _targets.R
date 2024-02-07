@@ -406,7 +406,9 @@ list(
                                                                    ref_labor_demog_yr)),
   
   tar_target(name = health_gaps_plot, command = plot_health_levels_gaps(main_path,
-                                                                        health_grp)),
+                                                                        health_grp,
+                                                                        refining_mortality,
+                                                                        pop_ratios)),
   
   tar_target(name = labor_gaps_plot, command = plot_labor_levels_gaps(main_path,
                                                                       ref_labor_demog_yr,

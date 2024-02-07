@@ -429,63 +429,63 @@ plot_npv_health_labor <- function(main_path,
 }
 
 # ## make map figure
-# plot_health_cts <- function(main_path,
-#                             refining_mortality,
-#                             state_ghg_output,
-#                             dt_ghg_2019,
-#                             annual_labor,
-#                             raw_ct_2020,
-#                             raw_counties) {
-#   
-#   
+# plot_health_labor_maps <- function(main_path,
+#                                    refining_mortality,
+#                                    state_ghg_output,
+#                                    dt_ghg_2019,
+#                                    annual_labor,
+#                                    raw_ct_2020,
+#                                    raw_counties) {
+# 
+# 
 #   ## make maps for c and d
 #   ## ---------------------------------------------------------------------------
-#   
+# 
 #   ## filter npv df for scenario with greatest ghg reduction compared to bau
-#   
+# 
 #   ## define scenario
 #   map_scen <- state_ghg_df[avoided_ghg == max(state_ghg_df[, avoided_ghg])]
 #   map_scen[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
 #   map_scen[, scenario := gsub('LC1.', 'Low ', scenario)]
 #   map_scen <- map_scen %>% select(scenario) %>% as.character()
-#   
+# 
 #   ## filter npv df
 #   health_map_df <- copy(npv_df)
-#   
+# 
 #   health_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
 #   health_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
 #   health_map_df[, scenario := str_replace(scenario, "historic", "historical")]
 #   health_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
-#   
+# 
 #   health_map_df <- health_map_df[scenario == map_scen]
-#   
+# 
 #   ## group by scenario and census tract, sum cost_2019_pv
 #   health_map_df <- health_map_df[, .(sum_cost_2019_pv = sum(cost_2019_PV)),
 #                                  by = .(census_tract, scenario, scen_id)]
-#   
+# 
 #   ## save figure inputs
 #   fwrite(health_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_c.csv"))
-#   
-#   
+# 
+# 
 #   ## consrtuct labor df
 #   labor_map_df <- copy(annual_labor)
-#   
+# 
 #   labor_map_df[, scen_id := paste(demand_scenario, refining_scenario)]
 #   labor_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
 #   labor_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
 #   labor_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
 #   labor_map_df[, scenario := str_replace(scenario, "historic", "historical")]
-#   
+# 
 #   labor_map_df <- labor_map_df[scenario == map_scen | scen_id == bau_scen]
-#   
+# 
 #   ## group by scenario and census tract, sum cost_2019_pv
 #   labor_map_df <- labor_map_df[, .(sum_total_comp_usd19 = sum(total_comp_usd19)),
 #                                by = .(county, scenario, scen_id)]
-#   
-#   
-#   
+# 
+# 
+# 
 #   labor_map_df[, ref := ifelse(scen_id == bau_scen, "bau", "alt")]
-#   
+# 
 #   labor_map_df <- labor_map_df %>%
 #     select(county, ref, sum_total_comp_usd19) %>%
 #     pivot_wider(names_from = ref, values_from = sum_total_comp_usd19) %>%
@@ -493,48 +493,48 @@ plot_npv_health_labor <- function(main_path,
 #     rename(delta_total_comp_usd19 = diff) %>%
 #     mutate(scenario = map_scen) %>%
 #     select(scenario, county, delta_total_comp_usd19)
-#   
+# 
 #   ## save figure inputs
 #   fwrite(labor_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_d.csv"))
-#   
+# 
 #   ## make the maps
 #   ##----------------------------------------------------------------------------
-#   
-#   california <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE)) %>% 
+# 
+#   california <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE)) %>%
 #     filter(ID == "california") %>%
 #     st_transform(crs = "EPSG:4269")
-#   
+# 
 #   ## health
 #   health_map_df <- merge(health_map_df %>% rename(GEOID = census_tract), raw_ct_2020 %>% select(GEOID, ALAND),
 #                          by = "GEOID")
-#   
+# 
 #   health_map_df <- st_as_sf(health_map_df)
-#   
+# 
 #   health_map_df <- st_transform(health_map_df, crs = "EPSG:4269")
-#   
+# 
 #   health_map_df <- st_make_valid(health_map_df)
-#   
+# 
 #   health_map_df <- health_map_df %>%
 #     mutate(sum_cost_2019_pv = sum_cost_2019_pv * -1)
-#   
+# 
 #   ## fig c
-#   
+# 
 #   ## bounding box 1
 #   bay_bb <- st_bbox(c(xmin = -123, ymin = 37.5, xmax = -121, ymax = 38.5), crs = st_crs(health_map_df))
 #   bay_bb <- st_as_sfc(bay_bb)
-#   
+# 
 #   la_bb <- st_bbox(c(xmin = -119, ymin = 33, xmax = -117, ymax = 34.5), crs = st_crs(health_map_df))
 #   la_bb <- st_as_sfc(la_bb)
-#   
-#   
+# 
+# 
 #   ## filter for bay area
 #   health_map_df2 <- health_map_df %>%
 #     mutate(bay = st_intersects(geometry, bay_bb),
 #            la = st_intersects(geometry, la_bb))
-#   
-#   
-#   
-#   
+# 
+# 
+# 
+# 
 #   fig3c <- ggplot() +
 #     geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
 #     # geom_sf(data = california, fill = "transparent", color = "black") +
@@ -576,8 +576,8 @@ plot_npv_health_labor <- function(main_path,
 #                                   direction = "horizontal",
 #                                   ticks.colour = "black", frame.colour = "black"),
 #            color = "none")
-#   
-#   
+# 
+# 
 #   fig3c_la <- ggplot() +
 #     geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
 #     # geom_sf(data = california, fill = "transparent", color = "black") +
@@ -619,7 +619,7 @@ plot_npv_health_labor <- function(main_path,
 #                                   direction = "horizontal",
 #                                   ticks.colour = "black", frame.colour = "black"),
 #            color = "none")
-#   
+# 
 #   fig3c_leg <- ggplot() +
 #     geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
 #     # geom_sf(data = california, fill = "transparent", color = "black") +
@@ -661,19 +661,19 @@ plot_npv_health_labor <- function(main_path,
 #                                   direction = "horizontal",
 #                                   ticks.colour = "black", frame.colour = "black"),
 #            color = "none")
-#   
-#   
-#   
+# 
+# 
+# 
 #   # # ## quantile for plotting
 #   # # numclas <- 12
 #   # # qbrks_h <- seq(0, 1, length.out = numclas + 1)
 #   # # qbrks_h
-#   # # 
+#   # #
 #   # # health_map_df <- health_map_df %>%
 #   # #   mutate(valq = cut(sum_cost_2019_pv, breaks = quantile(sum_cost_2019_pv, breaks = qbrks_h),
 #   # #                     include.lowest = T))
-#   # # 
-#   # # 
+#   # #
+#   # #
 #   # fig3c_v2 <- ggplot() +
 #   #   geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = valq), lwd = 0, alpha = 1, color = "darkgrey", show.legend = TRUE) +
 #   #   # geom_sf(data = california, fill = "transparent", color = "black") +
@@ -704,22 +704,22 @@ plot_npv_health_labor <- function(main_path,
 #   #                                 direction = "horizontal",
 #   #                                 ticks.colour = "black", frame.colour = "black"),
 #   #          color = "none")
-#   
-#   
+# 
+# 
 #   ## labor
-#   labor_map_df <- merge(raw_ca_counties_sp %>% select(NAME), labor_map_df %>% rename(NAME = county), 
+#   labor_map_df <- merge(raw_ca_counties_sp %>% select(NAME), labor_map_df %>% rename(NAME = county),
 #                         by = "NAME",
 #                         all.x = T)
-#   
+# 
 #   labor_map_df <- st_as_sf(labor_map_df)
-#   
+# 
 #   labor_map_df <- st_transform(labor_map_df, crs = "EPSG:4269")
-#   
+# 
 #   labor_map_df <- st_make_valid(labor_map_df)
-#   
-#   ## labor 
+# 
+#   ## labor
 #   blues_pal <- c("#FAFAFA", "#778DA9", "#415A77", "#1B263B", "#0D1B2A")
-#   
+# 
 #   fig3d <- ggplot() +
 #     geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
 #     # geom_sf(data = california, fill = "transparent", color = "black") +
@@ -752,7 +752,7 @@ plot_npv_health_labor <- function(main_path,
 #                                   direction = "horizontal",
 #                                   ticks.colour = "black", frame.colour = "black"),
 #            color = "none")
-#   
+# 
 #   fig3d_leg <- ggplot() +
 #     geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
 #     # geom_sf(data = california, fill = "transparent", color = "black") +
@@ -785,29 +785,29 @@ plot_npv_health_labor <- function(main_path,
 #                                   direction = "horizontal",
 #                                   ticks.colour = "black", frame.colour = "black"),
 #            color = "none")
-#   
-#   
-#   
-#   
-#   
-#   
+# 
+# 
+# 
+# 
+# 
+# 
 #   legend_fig_3c <- get_legend(
-#     fig3c_leg + 
+#     fig3c_leg +
 #       theme(legend.title = element_text(size = 8),
 #             legend.text = element_text(size = 8))
-#     
+# 
 #   )
-#   
+# 
 #   legend_fig_3d <- get_legend(
-#     fig3d_leg + 
+#     fig3d_leg +
 #       theme(legend.title = element_text(size = 8),
 #             legend.text = element_text(size = 8))
-#     
+# 
 #   )
-#   
-#   
-#   
-#   
+# 
+# 
+# 
+# 
 # }
 
 
@@ -1227,7 +1227,24 @@ plot_health_levels_gaps <- function(main_path,
 ###########################################################################
 
 plot_labor_levels <- function(main_path,
-                              ref_labor_demog_yr) {
+                              ref_labor_demog_yr,
+                              refining_mortality,
+                              pop_ratios) {
+  
+  ## calc 2020 pop by demographic
+  pop_2020 <- refining_mortality %>%
+    filter(year == 2020) %>%
+    select(census_tract, year, pop) %>%
+    unique() %>%
+    left_join(pop_ratios) %>%
+    as.data.table()
+  
+  pop_2020[, demo_pop := pop * pct]
+  
+  ## summarize by demographic group
+  pop_2020 <- pop_2020[, .(pop_2020 = sum(demo_pop)),
+                       by = .(demo_group, demo_cat)]
+  
   
   fig2_l_df <- copy(ref_labor_demog_yr)
 
@@ -1243,15 +1260,7 @@ plot_labor_levels <- function(main_path,
   ## add scenario title
   fig2_l_df[, scenario_title := str_replace(scenario, " - ", "\n")]
 
-  ## get 2020 population
-  pop_2020_df <- unique(fig2_l_df[year == 2020, .(county, year, demo_group, demo_cat, pct, county_pop)])
-  
-  ## calculate 2020 demographic population
-  pop_2020_df[, demo_pop := county_pop * pct]
-  
-  ## summarise by state
-  pop_2020_df <- pop_2020_df[, .(demo_pop = sum(demo_pop)),
-                             by = .(demo_group, demo_cat)]
+
   ## sum for state
   fig2_l_df <- fig2_l_df[, .(sum_demo_emp = sum(demo_emp),
                              sum_demo_comp_pv = sum(demo_comp_pv)),
@@ -1259,21 +1268,18 @@ plot_labor_levels <- function(main_path,
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
   ## merge with 2020 pop
-  fig2_l_df <- merge(fig2_l_df, pop_2020_df,
+  fig2_l_df <- merge(fig2_l_df, pop_2020,
                      by = c("demo_cat", "demo_group"),
                      all.x = T)
   
   ## calculate per capita
-  fig2_l_df[, demo_emp_pc := sum_demo_emp / demo_pop]
-  fig2_l_df[, emp_pc_thous := sum_demo_emp / (demo_pop / 1000)]
-  fig2_l_df[, demo_comp_pc := sum_demo_comp_pv / demo_pop]
-  fig2_l_df[, comp_pc_thous := sum_demo_comp_pv / (demo_pop / 1000)]
-  
+  fig2_l_df[, demo_emp_pc := sum_demo_emp / pop_2020]
+  fig2_l_df[, demo_comp_pc := sum_demo_comp_pv / pop_2020]
   
   ## select columns
   fig2_l_df <- fig2_l_df[, .(year, demand_scenario, refining_scenario,
                              scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp,
-                             demo_pop, demo_emp_pc, emp_pc_thous, sum_demo_comp_pv, demo_comp_pc, comp_pc_thous)]
+                             demo_emp_pc, sum_demo_comp_pv, demo_comp_pc)]
   
   ## change historic to historical
   fig2_l_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
@@ -1332,7 +1338,7 @@ plot_labor_levels <- function(main_path,
                                                   title %in% fig_title_vec,
                                                   demo_cat == "Race")  %>%
                                  mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
-                               aes(x = year, y = emp_pc_thous, color = title, group = title)) +
+                               aes(x = year, y = demo_emp_pc, color = title, group = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1340,7 +1346,7 @@ plot_labor_levels <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 7)) +
+    ylim(c(0, 0.004)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1361,7 +1367,7 @@ plot_labor_levels <- function(main_path,
 
   ##
   labor_level_fig_b <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
-                                                  demo_cat == "DAC"), aes(x = year, y = emp_pc_thous, lty = title)) +
+                                                  demo_cat == "DAC"), aes(x = year, y = demo_emp_pc, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1369,7 +1375,7 @@ plot_labor_levels <- function(main_path,
                        values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 7)) +
+    ylim(c(0, 0.004)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1392,7 +1398,7 @@ plot_labor_levels <- function(main_path,
   labor_level_fig_c <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
                                                   demo_cat == "Poverty") %>%
                                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                               aes(x = year, y = emp_pc_thous, lty = title)) +
+                               aes(x = year, y = demo_emp_pc, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_color_manual(name = "",
                        values = poverty_lty) +
@@ -1400,7 +1406,7 @@ plot_labor_levels <- function(main_path,
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 7)) +
+    ylim(c(0, 0.004)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
