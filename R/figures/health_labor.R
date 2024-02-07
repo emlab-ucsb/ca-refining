@@ -1426,7 +1426,7 @@ plot_labor_levels <- function(main_path,
   #     theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE jobs per thousand persons", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years per person", size = 8, angle = 90)
 
 
   # ## plot together
