@@ -511,26 +511,26 @@ plot_health_labor_maps <- function(main_path,
     mutate(sum_cost_2019_pv = sum_cost_2019_pv * -1)
   
   ## filter for census tracts that do not experience health benefits
-  neg_npv_health <- health_map_npv_df %>%
-    filter(sum_cost_2019_pv < 0) %>%
-    filter(ALAND > 0)
+  # neg_npv_health <- health_map_npv_df %>%
+  #   filter(sum_cost_2019_pv < 0) %>%
+  #   filter(ALAND > 0)
   
   # ggplot() +
   #   geom_sf(data = neg_npv_health, mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
   #   geom_sf(data = california, fill = "transparent", color = "black") 
   # 
   ## filter refining output df for ct's with negative outputs
-  neg_health_out <- health_map_df %>%
-    filter(census_tract %in% unique(neg_npv_health$GEOID)) %>%
-    select(census_tract, year, delta_total_pm25, mortality_delta, cost_2019_PV) %>%
-    pivot_longer(delta_total_pm25:cost_2019_PV, names_to = "metric", values_to = "value") %>%
-    mutate(lab = ifelse(metric == "delta_total_pm25", "pm25 - difference from reference", 
-                        ifelse(metric == "mortality_delta", "avoided mortality - difference from reference", "avoided mortality - difference from reference (USD)")))
-  
-  ggplot(neg_health_out, aes(x = year, y = value, group = census_tract)) +
-    geom_line(alpha = 0.4) +
-    facet_wrap(~lab, scales = "free_y", nrow = 3) +
-    theme_bw()
+  # neg_health_out <- health_map_df %>%
+  #   filter(census_tract %in% unique(neg_npv_health$GEOID)) %>%
+  #   select(census_tract, year, delta_total_pm25, mortality_delta, cost_2019_PV) %>%
+  #   pivot_longer(delta_total_pm25:cost_2019_PV, names_to = "metric", values_to = "value") %>%
+  #   mutate(lab = ifelse(metric == "delta_total_pm25", "pm25 - difference from reference", 
+  #                       ifelse(metric == "mortality_delta", "avoided mortality - difference from reference", "avoided mortality - difference from reference (USD)")))
+  # 
+  # ggplot(neg_health_out, aes(x = year, y = value, group = census_tract)) +
+  #   geom_line(alpha = 0.4) +
+  #   facet_wrap(~lab, scales = "free_y", nrow = 3) +
+  #   theme_bw()
     
   
 
