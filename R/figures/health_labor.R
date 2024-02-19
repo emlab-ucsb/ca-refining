@@ -428,406 +428,437 @@ plot_npv_health_labor <- function(main_path,
   
 }
 
-## make map figure
-plot_health_labor_maps <- function(main_path,
-                                   refining_mortality,
-                                   state_ghg_output,
-                                   annual_labor,
-                                   raw_ct_2020_all,
-                                   raw_counties) {
-
-
-  ## make maps for c and d
-  ## ---------------------------------------------------------------------------
-  
-  ## health
-  health_map_df <- refining_mortality %>% 
-    filter(demand_scenario == "LC1" & refining_scenario == "low exports") %>%
-    as.data.table() 
-  
-  ## rename
-  health_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
-  health_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
-  health_map_df[, scenario := str_replace(scenario, "historic", "historical")]
-  health_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
-
-  ## group by scenario and census tract, sum cost_2019_pv
-  health_map_npv_df <- health_map_df[, .(sum_cost_2019_pv = sum(cost_2019_PV)),
-                                 by = .(census_tract, scenario, scen_id)]
-  
-  
-  ## save figure inputs
-  fwrite(health_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_c.csv"))
-
-
-  ## consrtuct labor df
-  labor_map_df <- copy(annual_labor)
-
-  labor_map_df[, scen_id := paste(demand_scenario, refining_scenario)]
-  labor_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
-  labor_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
-  labor_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
-  labor_map_df[, scenario := str_replace(scenario, "historic", "historical")]
-
-  labor_map_df <- labor_map_df[scenario == map_scen | scen_id == bau_scen]
-
-  ## group by scenario and census tract, sum cost_2019_pv
-  labor_map_df <- labor_map_df[, .(sum_total_comp_usd19 = sum(total_comp_usd19)),
-                               by = .(county, scenario, scen_id)]
-
-
-
-  labor_map_df[, ref := ifelse(scen_id == bau_scen, "bau", "alt")]
-
-  labor_map_df <- labor_map_df %>%
-    select(county, ref, sum_total_comp_usd19) %>%
-    pivot_wider(names_from = ref, values_from = sum_total_comp_usd19) %>%
-    mutate(diff = alt - bau) %>%
-    rename(delta_total_comp_usd19 = diff) %>%
-    mutate(scenario = map_scen) %>%
-    select(scenario, county, delta_total_comp_usd19)
-
-  ## save figure inputs
-  fwrite(labor_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_d.csv"))
-
-  ## make the maps
-  ##----------------------------------------------------------------------------
-
-  california <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE)) %>%
-    filter(ID == "california") %>%
-    st_transform(crs = "EPSG:4269")
-
-  ## health
-  health_map_npv_df <- merge(health_map_npv_df %>% rename(GEOID = census_tract), raw_ct_2020_all %>% select(GEOID, ALAND),
-                         by = "GEOID")
-
-  health_map_npv_df <- st_as_sf(health_map_npv_df)
-
-  health_map_npv_df <- st_transform(health_map_npv_df, crs = "EPSG:4269")
-
-  health_map_npv_df <- st_make_valid(health_map_npv_df)
-
-  health_map_npv_df <- health_map_npv_df %>%
-    mutate(sum_cost_2019_pv = sum_cost_2019_pv * -1)
-  
-  ## filter for census tracts that do not experience health benefits
-  # neg_npv_health <- health_map_npv_df %>%
-  #   filter(sum_cost_2019_pv < 0) %>%
-  #   filter(ALAND > 0)
-  
-  # ggplot() +
-  #   geom_sf(data = neg_npv_health, mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
-  #   geom_sf(data = california, fill = "transparent", color = "black") 
-  # 
-  ## filter refining output df for ct's with negative outputs
-  # neg_health_out <- health_map_df %>%
-  #   filter(census_tract %in% unique(neg_npv_health$GEOID)) %>%
-  #   select(census_tract, year, delta_total_pm25, mortality_delta, cost_2019_PV) %>%
-  #   pivot_longer(delta_total_pm25:cost_2019_PV, names_to = "metric", values_to = "value") %>%
-  #   mutate(lab = ifelse(metric == "delta_total_pm25", "pm25 - difference from reference", 
-  #                       ifelse(metric == "mortality_delta", "avoided mortality - difference from reference", "avoided mortality - difference from reference (USD)")))
-  # 
-  # ggplot(neg_health_out, aes(x = year, y = value, group = census_tract)) +
-  #   geom_line(alpha = 0.4) +
-  #   facet_wrap(~lab, scales = "free_y", nrow = 3) +
-  #   theme_bw()
-    
-  
-
-  
-
-  ## fig c
-
-  ## bounding box 1
-  bay_bb <- st_bbox(c(xmin = -123, ymin = 37.5, xmax = -121, ymax = 38.5), crs = st_crs(health_map_df))
-  bay_bb <- st_as_sfc(bay_bb)
-
-  la_bb <- st_bbox(c(xmin = -119, ymin = 33, xmax = -117, ymax = 34.5), crs = st_crs(health_map_df))
-  la_bb <- st_as_sfc(la_bb)
-
-
-  ## filter for bay area
-  health_map_df2 <- health_map_df %>%
-    mutate(bay = st_intersects(geometry, bay_bb),
-           la = st_intersects(geometry, la_bb))
-
-
-
-
-  fig3c <- ggplot() +
-    geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
-    # geom_sf(data = california, fill = "transparent", color = "black") +
-    scale_fill_gradient2(high = "navy",  mid = "#FAFAFA", low = "#A84268",
-                         # high = "navy",  mid = "#FAFAFA", low = "#A84268",
-                         midpoint = 0, space = "Lab",
-                         # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
-                         limits = c(-2500, 99000),
-                         breaks = c(-2500, 0, 49500, 99000),
-                         labels = c(-2500, 0, 49500, 99000),
-                         na.value = "grey50"
-                         # ,
-                         # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
-    ) +
-    coord_sf(xlim = c(-123, -121), ylim = c(37.5, 38.5)) +
-    labs(fill = "NPV (thousand USD 2019)",
-         color = NULL,
-         x = NULL,
-         y = NULL) +
-    theme_bw() +
-    theme(
-      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-      # legend.justification = c(0, 1),
-      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = "none",
-      legend.key.width = unit(2, "line"),
-      legend.key.height = unit(1, "line"),
-      legend.title = element_text(size = 8),
-      legend.text = element_text(size = 8),
-      plot.margin = margin(0, 2, 0, 8),
-      plot.title = element_text(face = 'bold', size = 10),
-      plot.subtitle = element_text(face = 'bold', size = 8),
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.text = element_text(size = 8)) +
-    guides(fill = guide_colourbar(title.position="top",
-                                  title.hjust = 0,
-                                  direction = "horizontal",
-                                  ticks.colour = "black", frame.colour = "black"),
-           color = "none")
-
-
-  fig3c_la <- ggplot() +
-    geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
-    # geom_sf(data = california, fill = "transparent", color = "black") +
-    scale_fill_gradient2(high = "navy",  mid = "#FAFAFA", low = "#A84268",
-                         # high = "navy",  mid = "#FAFAFA", low = "#A84268",
-                         midpoint = 0, space = "Lab",
-                         # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
-                         limits = c(-2500, 99000),
-                         breaks = c(-2500, 0, 49500, 99000),
-                         labels = c(-2500, 0, 49500, 99000),
-                         na.value = "grey50"
-                         # ,
-                         # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
-    ) +
-    coord_sf(xlim = c(-119, -117), ylim = c(33.2, 34.4)) +
-    labs(fill = "NPV (thousand USD 2019)",
-         color = NULL,
-         x = NULL,
-         y = NULL) +
-    theme_bw() +
-    theme(
-      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-      # legend.justification = c(0, 1),
-      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = "none",
-      legend.key.width = unit(2, "line"),
-      legend.key.height = unit(1, "line"),
-      legend.title = element_text(size = 8),
-      legend.text = element_text(size = 8),
-      plot.margin = margin(0, 2, 0, 8),
-      plot.title = element_text(face = 'bold', size = 10),
-      plot.subtitle = element_text(face = 'bold', size = 8),
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.text = element_text(size = 8)) +
-    guides(fill = guide_colourbar(title.position="top",
-                                  title.hjust = 0,
-                                  direction = "horizontal",
-                                  ticks.colour = "black", frame.colour = "black"),
-           color = "none")
-
-  fig3c_leg <- ggplot() +
-    geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
-    # geom_sf(data = california, fill = "transparent", color = "black") +
-    scale_fill_gradient2(low = "black",  mid = "#FAFAFA", high = "#A84268",
-                         # high = "navy",  mid = "#FAFAFA", low = "#A84268",
-                         midpoint = 0, space = "Lab",
-                         # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
-                         limits = c(-2500, 99000),
-                         breaks = c(-2500, 0, 49500, 99000),
-                         labels = c(-2500, 0, 49500, 99000),
-                         na.value = "grey50"
-                         # ,
-                         # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
-    ) +
-    coord_sf(xlim = c(-123, -121), ylim = c(37.5, 38.5)) +
-    labs(fill = "NPV (thousand USD 2019)",
-         color = NULL,
-         x = NULL,
-         y = NULL) +
-    theme_bw() +
-    theme(
-      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-      # legend.justification = c(0, 1),
-      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = "bottom",
-      legend.key.width = unit(2, "line"),
-      legend.key.height = unit(1, "line"),
-      legend.title = element_text(size = 8),
-      legend.text = element_text(size = 8),
-      plot.margin = margin(0, 2, 0, 8),
-      plot.title = element_text(face = 'bold', size = 10),
-      plot.subtitle = element_text(face = 'bold', size = 8),
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.text = element_text(size = 8)) +
-    guides(fill = guide_colourbar(title.position="top",
-                                  title.hjust = 0,
-                                  direction = "horizontal",
-                                  ticks.colour = "black", frame.colour = "black"),
-           color = "none")
-
-
-
-  # # ## quantile for plotting
-  # # numclas <- 12
-  # # qbrks_h <- seq(0, 1, length.out = numclas + 1)
-  # # qbrks_h
-  # #
-  # # health_map_df <- health_map_df %>%
-  # #   mutate(valq = cut(sum_cost_2019_pv, breaks = quantile(sum_cost_2019_pv, breaks = qbrks_h),
-  # #                     include.lowest = T))
-  # #
-  # #
-  # fig3c_v2 <- ggplot() +
-  #   geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = valq), lwd = 0, alpha = 1, color = "darkgrey", show.legend = TRUE) +
-  #   # geom_sf(data = california, fill = "transparent", color = "black") +
-  #   scale_fill_discrete(labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
-  #   labs(fill = "NPV (USD 2019)",
-  #        color = NULL,
-  #        x = NULL,
-  #        y = NULL) +
-  #   theme_bw() +
-  #   theme(
-  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-  #     # legend.justification = c(0, 1),
-  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-  #     legend.position = "bottom",
-  #     legend.key.width = unit(2, "line"),
-  #     legend.key.height = unit(1, "line"),
-  #     legend.title = element_text(size = 8),
-  #     legend.text = element_text(size = 8),
-  #     plot.margin = margin(0, 2, 0, 8),
-  #     plot.title = element_text(face = 'bold', size = 10),
-  #     plot.subtitle = element_text(face = 'bold', size = 8),
-  #     panel.grid.major = element_blank(),
-  #     panel.grid.minor = element_blank(),
-  #     panel.background = element_blank(),
-  #     axis.text = element_text(size = 8)) +
-  #   guides(fill = guide_colourbar(title.position="top",
-  #                                 title.hjust = 0,
-  #                                 direction = "horizontal",
-  #                                 ticks.colour = "black", frame.colour = "black"),
-  #          color = "none")
-
-
-  ## labor
-  labor_map_df <- merge(raw_ca_counties_sp %>% select(NAME), labor_map_df %>% rename(NAME = county),
-                        by = "NAME",
-                        all.x = T)
-
-  labor_map_df <- st_as_sf(labor_map_df)
-
-  labor_map_df <- st_transform(labor_map_df, crs = "EPSG:4269")
-
-  labor_map_df <- st_make_valid(labor_map_df)
-
-  ## labor
-  blues_pal <- c("#FAFAFA", "#778DA9", "#415A77", "#1B263B", "#0D1B2A")
-
-  fig3d <- ggplot() +
-    geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
-    # geom_sf(data = california, fill = "transparent", color = "black") +
-    scale_fill_gradientn(colors = rev(blues_pal),
-                         na.value = "#FAFAFA") +
-    # coord_sf(xlim = c(-123, -116), ylim = c(33, 39)) +
-    labs(fill = "NPV (billion USD 2019)",
-         color = NULL,
-         x = NULL,
-         y = NULL) +
-    theme_bw() +
-    theme(
-      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-      # legend.justification = c(0, 1),
-      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = "none",
-      legend.key.width = unit(2, "line"),
-      legend.key.height = unit(1, "line"),
-      legend.title = element_text(size = 8),
-      legend.text = element_text(size = 8),
-      plot.margin = margin(0, 2, 0, 8),
-      plot.title = element_text(face = 'bold', size = 10),
-      plot.subtitle = element_text(face = 'bold', size = 8),
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.text = element_text(size = 8)) +
-    guides(fill = guide_colourbar(title.position="top",
-                                  title.hjust = 0,
-                                  direction = "horizontal",
-                                  ticks.colour = "black", frame.colour = "black"),
-           color = "none")
-
-  fig3d_leg <- ggplot() +
-    geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
-    # geom_sf(data = california, fill = "transparent", color = "black") +
-    scale_fill_gradientn(colors = rev(blues_pal),
-                         na.value = "#FAFAFA") +
-    # coord_sf(xlim = c(-123, -116), ylim = c(33, 39)) +
-    labs(fill = "NPV (billion USD 2019)",
-         color = NULL,
-         x = NULL,
-         y = NULL) +
-    theme_bw() +
-    theme(
-      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-      # legend.justification = c(0, 1),
-      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = "bottom",
-      legend.key.width = unit(2, "line"),
-      legend.key.height = unit(1, "line"),
-      legend.title = element_text(size = 8),
-      legend.text = element_text(size = 8),
-      plot.margin = margin(0, 2, 0, 8),
-      plot.title = element_text(face = 'bold', size = 10),
-      plot.subtitle = element_text(face = 'bold', size = 8),
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.text = element_text(size = 8)) +
-    guides(fill = guide_colourbar(title.position="top",
-                                  title.hjust = 0,
-                                  direction = "horizontal",
-                                  ticks.colour = "black", frame.colour = "black"),
-           color = "none")
-
-
-
-
-
-
-  legend_fig_3c <- get_legend(
-    fig3c_leg +
-      theme(legend.title = element_text(size = 8),
-            legend.text = element_text(size = 8))
-
-  )
-
-  legend_fig_3d <- get_legend(
-    fig3d_leg +
-      theme(legend.title = element_text(size = 8),
-            legend.text = element_text(size = 8))
-
-  )
-
-
-
-
-}
+# ## make map figure
+# plot_health_labor_maps <- function(main_path,
+#                                    refining_mortality,
+#                                    state_ghg_output,
+#                                    annual_labor,
+#                                    raw_ct_2020_all,
+#                                    raw_counties) {
+# 
+# 
+#   ## make maps for c and d
+#   ## ---------------------------------------------------------------------------
+#   
+#   ## health
+#   health_map_df <- refining_mortality %>% 
+#     filter(demand_scenario == "LC1" & refining_scenario == "low exports") %>%
+#     as.data.table() 
+#   
+#   ## rename
+#   health_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+#   health_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
+#   health_map_df[, scenario := str_replace(scenario, "historic", "historical")]
+#   health_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+# 
+#   ## group by scenario and census tract, sum cost_2019_pv
+#   health_map_npv_df <- health_map_df[, .(sum_cost_2019_pv = sum(cost_2019_PV)),
+#                                  by = .(census_tract, scenario, scen_id)]
+#   
+#   ## save figure inputs
+#   fwrite(health_map_npv_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "ct_health_npv_fig_inputs.csv"))
+#   
+#   
+#   ## health
+#   health_map_npv_df <- merge(health_map_npv_df %>% rename(GEOID = census_tract), raw_ct_2020_all %>% select(GEOID, COUNTYFP, ALAND),
+#                              by = "GEOID")
+#   
+#   health_map_npv_df <- health_map_npv_df %>%
+#     mutate(sum_cost_2019_pv = sum_cost_2019_pv * -1)
+#   
+#   ## merge with county codes
+#   health_map_npv_df <- merge(health_map_npv_df, raw_counties %>% select(COUNTYFP, NAME) %>% st_drop_geometry(),
+#                             by = "COUNTYFP",
+#                             allow.cartesian = T,
+#                             all.x = T)
+#   
+#   ## summarise by county, rank by sum of sum_cost_2019_pv
+#   health_county_df <- health_map_npv_df[ALAND > 0, .(sum_cost_2019_pv = sum(sum_cost_2019_pv)),
+#                                         by = .(NAME, COUNTYFP, scenario, scen_id)]
+#   
+#   
+#   
+#   health_county_df <- health_county_df %>%
+#     select(scenario, scen_id, NAME, COUNTYFP, sum_cost_2019_pv) %>%
+#     arrange(-sum_cost_2019_pv)
+#   
+#   ## save figure inputs
+#   fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "county_health_npv_fig_inputs.csv"))
+#   
+#   
+#   ## for plotting health
+#   health_map_npv_df <- st_as_sf(health_map_npv_df)
+#   
+#   health_map_npv_df <- st_transform(health_map_npv_df, crs = "EPSG:4269")
+#   
+#   health_map_npv_df <- st_make_valid(health_map_npv_df)
+#   
+# 
+#   ## consrtuct labor df
+#   labor_map_df <- copy(annual_labor)
+# 
+#   labor_map_df[, scen_id := paste(demand_scenario, refining_scenario)]
+#   labor_map_df[, scen_id := str_replace(scen_id, "historic", "historical")]
+#   labor_map_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+#   labor_map_df[, scenario := gsub('LC1.', 'Low ', scenario)]
+#   labor_map_df[, scenario := str_replace(scenario, "historic", "historical")]
+# 
+#   labor_map_df <- labor_map_df[scenario == "Low demand - low exports" | scenario == "BAU demand - historical production"]
+# 
+#   ## group by scenario and census tract, sum cost_2019_pv
+#   labor_map_df <- labor_map_df[, .(sum_total_comp_usd19 = sum(total_comp_usd19)),
+#                                by = .(county, scenario, scen_id)]
+# 
+# 
+# 
+#   labor_map_df[, ref := ifelse(scenario == "BAU demand - historical production", "bau", "alt")]
+# 
+#   labor_map_df <- labor_map_df %>%
+#     select(county, ref, sum_total_comp_usd19) %>%
+#     pivot_wider(names_from = ref, values_from = sum_total_comp_usd19) %>%
+#     mutate(diff = alt - bau) %>%
+#     rename(delta_total_comp_usd19 = diff) %>%
+#     mutate(scenario = "Low demand - low exports") %>%
+#     select(scenario, county, delta_total_comp_usd19)
+# 
+#   ## join with county-level health 
+#   county_map_df <- merge(health_county_df, labor_map_df %>% select(NAME = county, delta_total_comp_usd19),
+#                              by = "NAME",
+#                              all.x = T)
+#   
+#   county_map_df <- county_map_df %>%
+#     arrange(-sum_cost_2019_pv)
+#   
+#   ## save county-level inputs
+#   fwrite(labor_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "county_health_labor_npv_ldle_fig_inputs.csv"))
+# 
+#   ## make the maps
+#   ##----------------------------------------------------------------------------
+# 
+#   california <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE)) %>%
+#     filter(ID == "california") %>%
+#     st_transform(crs = "EPSG:4269")
+# 
+#   
+#   # # filter for census tracts that do not experience health benefits
+#   # neg_npv_health <- health_map_npv_df %>%
+#   #   filter(sum_cost_2019_pv < 0) %>%
+#   #   filter(ALAND > 0)
+#   # 
+#   # ggplot() +
+#   #   geom_sf(data = neg_npv_health, mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+#   #   geom_sf(data = california, fill = "transparent", color = "black") 
+#   # 
+#   ## filter refining output df for ct's with negative outputs
+#   # neg_health_out <- health_map_df %>%
+#   #   filter(census_tract %in% unique(neg_npv_health$GEOID)) %>%
+#   #   select(census_tract, year, delta_total_pm25, mortality_delta, cost_2019_PV) %>%
+#   #   pivot_longer(delta_total_pm25:cost_2019_PV, names_to = "metric", values_to = "value") %>%
+#   #   mutate(lab = ifelse(metric == "delta_total_pm25", "pm25 - difference from reference", 
+#   #                       ifelse(metric == "mortality_delta", "avoided mortality - difference from reference", "avoided mortality - difference from reference (USD)")))
+#   # 
+#   # ggplot(neg_health_out, aes(x = year, y = value, group = census_tract)) +
+#   #   geom_line(alpha = 0.4) +
+#   #   facet_wrap(~lab, scales = "free_y", nrow = 3) +
+#   #   theme_bw()
+#     
+#   
+# 
+#   
+# 
+#   ## health maps
+#   ## ---------------------------------------------------------------------------
+# 
+#   ## bounding box 1
+#   bay_bb <- st_bbox(c(xmin = -123, ymin = 37.5, xmax = -121, ymax = 38.5), crs = st_crs(health_map_df))
+#   bay_bb <- st_as_sfc(bay_bb)
+# 
+#   la_bb <- st_bbox(c(xmin = -119, ymin = 33, xmax = -117, ymax = 34.5), crs = st_crs(health_map_df))
+#   la_bb <- st_as_sfc(la_bb)
+# 
+# 
+#   # ## filter for bay area
+#   # health_map_df2 <- health_map_df %>%
+#   #   mutate(bay = st_intersects(geometry, bay_bb),
+#   #          la = st_intersects(geometry, la_bb))
+# 
+# 
+# 
+# 
+#   health_fig_bay <- ggplot() +
+#     geom_sf(data = health_map_npv_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+#     # geom_sf(data = california, fill = "transparent", color = "black") +
+#     scale_fill_gradient2(high = "navy",  mid = "#FAFAFA", low = "#A84268",
+#                          # high = "navy",  mid = "#FAFAFA", low = "#A84268",
+#                          midpoint = 0, space = "Lab",
+#                          # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
+#                          limits = c(-2500, 99000),
+#                          breaks = c(-2500, 0, 49500, 99000),
+#                          labels = c(-2500, 0, 49500, 99000),
+#                          na.value = "grey50"
+#                          # ,
+#                          # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
+#     ) +
+#     coord_sf(xlim = c(-123, -121), ylim = c(37.5, 38.5)) +
+#     labs(fill = "NPV (thousand USD 2019)",
+#          color = NULL,
+#          x = NULL,
+#          y = NULL) +
+#     theme_bw() +
+#     theme(
+#       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+#       # legend.justification = c(0, 1),
+#       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+#       legend.position = "none",
+#       legend.key.width = unit(2, "line"),
+#       legend.key.height = unit(1, "line"),
+#       legend.title = element_text(size = 8),
+#       legend.text = element_text(size = 8),
+#       plot.margin = margin(0, 2, 0, 8),
+#       plot.title = element_text(face = 'bold', size = 10),
+#       plot.subtitle = element_text(face = 'bold', size = 8),
+#       panel.grid.major = element_blank(),
+#       panel.grid.minor = element_blank(),
+#       panel.background = element_blank(),
+#       axis.text = element_text(size = 8)) +
+#     guides(fill = guide_colourbar(title.position="top",
+#                                   title.hjust = 0,
+#                                   direction = "horizontal",
+#                                   ticks.colour = "black", frame.colour = "black"),
+#            color = "none")
+# 
+# 
+#   health_fig_la <- ggplot() +
+#     geom_sf(data = health_map_npv_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+#     # geom_sf(data = california, fill = "transparent", color = "black") +
+#     scale_fill_gradient2(high = "navy",  mid = "#FAFAFA", low = "#A84268",
+#                          # high = "navy",  mid = "#FAFAFA", low = "#A84268",
+#                          midpoint = 0, space = "Lab",
+#                          # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
+#                          limits = c(-2500, 99000),
+#                          breaks = c(-2500, 0, 49500, 99000),
+#                          labels = c(-2500, 0, 49500, 99000),
+#                          na.value = "grey50"
+#                          # ,
+#                          # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
+#     ) +
+#     coord_sf(xlim = c(-119, -117), ylim = c(33.2, 34.4)) +
+#     labs(fill = "NPV (thousand USD 2019)",
+#          color = NULL,
+#          x = NULL,
+#          y = NULL) +
+#     theme_bw() +
+#     theme(
+#       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+#       # legend.justification = c(0, 1),
+#       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+#       legend.position = "none",
+#       legend.key.width = unit(2, "line"),
+#       legend.key.height = unit(1, "line"),
+#       legend.title = element_text(size = 8),
+#       legend.text = element_text(size = 8),
+#       plot.margin = margin(0, 2, 0, 8),
+#       plot.title = element_text(face = 'bold', size = 10),
+#       plot.subtitle = element_text(face = 'bold', size = 8),
+#       panel.grid.major = element_blank(),
+#       panel.grid.minor = element_blank(),
+#       panel.background = element_blank(),
+#       axis.text = element_text(size = 8)) +
+#     guides(fill = guide_colourbar(title.position="top",
+#                                   title.hjust = 0,
+#                                   direction = "horizontal",
+#                                   ticks.colour = "black", frame.colour = "black"),
+#            color = "none")
+# 
+#   fig3c_leg <- ggplot() +
+#     geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = sum_cost_2019_pv / 1000), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+#     # geom_sf(data = california, fill = "transparent", color = "black") +
+#     scale_fill_gradient2(low = "black",  mid = "#FAFAFA", high = "#A84268",
+#                          # high = "navy",  mid = "#FAFAFA", low = "#A84268",
+#                          midpoint = 0, space = "Lab",
+#                          # limits = c(min(health_map_df$sum_cost_2019_pv / 1000), max(health_map_df$sum_cost_2019_pv / 1000)),
+#                          limits = c(-2500, 99000),
+#                          breaks = c(-2500, 0, 49500, 99000),
+#                          labels = c(-2500, 0, 49500, 99000),
+#                          na.value = "grey50"
+#                          # ,
+#                          # labels=function(x) format(x, big.mark = ",", scientific = FALSE)
+#     ) +
+#     coord_sf(xlim = c(-123, -121), ylim = c(37.5, 38.5)) +
+#     labs(fill = "NPV (thousand USD 2019)",
+#          color = NULL,
+#          x = NULL,
+#          y = NULL) +
+#     theme_bw() +
+#     theme(
+#       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+#       # legend.justification = c(0, 1),
+#       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+#       legend.position = "bottom",
+#       legend.key.width = unit(2, "line"),
+#       legend.key.height = unit(1, "line"),
+#       legend.title = element_text(size = 8),
+#       legend.text = element_text(size = 8),
+#       plot.margin = margin(0, 2, 0, 8),
+#       plot.title = element_text(face = 'bold', size = 10),
+#       plot.subtitle = element_text(face = 'bold', size = 8),
+#       panel.grid.major = element_blank(),
+#       panel.grid.minor = element_blank(),
+#       panel.background = element_blank(),
+#       axis.text = element_text(size = 8)) +
+#     guides(fill = guide_colourbar(title.position="top",
+#                                   title.hjust = 0,
+#                                   direction = "horizontal",
+#                                   ticks.colour = "black", frame.colour = "black"),
+#            color = "none")
+# 
+# 
+# 
+#   # # ## quantile for plotting
+#   # # numclas <- 12
+#   # # qbrks_h <- seq(0, 1, length.out = numclas + 1)
+#   # # qbrks_h
+#   # #
+#   # # health_map_df <- health_map_df %>%
+#   # #   mutate(valq = cut(sum_cost_2019_pv, breaks = quantile(sum_cost_2019_pv, breaks = qbrks_h),
+#   # #                     include.lowest = T))
+#   # #
+#   # #
+#   # fig3c_v2 <- ggplot() +
+#   #   geom_sf(data = health_map_df %>% filter(ALAND > 0), mapping = aes(geometry = geometry, fill = valq), lwd = 0, alpha = 1, color = "darkgrey", show.legend = TRUE) +
+#   #   # geom_sf(data = california, fill = "transparent", color = "black") +
+#   #   scale_fill_discrete(labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
+#   #   labs(fill = "NPV (USD 2019)",
+#   #        color = NULL,
+#   #        x = NULL,
+#   #        y = NULL) +
+#   #   theme_bw() +
+#   #   theme(
+#   #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+#   #     # legend.justification = c(0, 1),
+#   #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+#   #     legend.position = "bottom",
+#   #     legend.key.width = unit(2, "line"),
+#   #     legend.key.height = unit(1, "line"),
+#   #     legend.title = element_text(size = 8),
+#   #     legend.text = element_text(size = 8),
+#   #     plot.margin = margin(0, 2, 0, 8),
+#   #     plot.title = element_text(face = 'bold', size = 10),
+#   #     plot.subtitle = element_text(face = 'bold', size = 8),
+#   #     panel.grid.major = element_blank(),
+#   #     panel.grid.minor = element_blank(),
+#   #     panel.background = element_blank(),
+#   #     axis.text = element_text(size = 8)) +
+#   #   guides(fill = guide_colourbar(title.position="top",
+#   #                                 title.hjust = 0,
+#   #                                 direction = "horizontal",
+#   #                                 ticks.colour = "black", frame.colour = "black"),
+#   #          color = "none")
+# 
+# 
+#   ## labor
+#   labor_map_df <- merge(raw_ca_counties_sp %>% select(NAME), labor_map_df %>% rename(NAME = county),
+#                         by = "NAME",
+#                         all.x = T)
+# 
+#   labor_map_df <- st_as_sf(labor_map_df)
+# 
+#   labor_map_df <- st_transform(labor_map_df, crs = "EPSG:4269")
+# 
+#   labor_map_df <- st_make_valid(labor_map_df)
+# 
+#   ## labor
+#   blues_pal <- c("#FAFAFA", "#778DA9", "#415A77", "#1B263B", "#0D1B2A")
+# 
+#   fig3d <- ggplot() +
+#     geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+#     # geom_sf(data = california, fill = "transparent", color = "black") +
+#     scale_fill_gradientn(colors = rev(blues_pal),
+#                          na.value = "#FAFAFA") +
+#     # coord_sf(xlim = c(-123, -116), ylim = c(33, 39)) +
+#     labs(fill = "NPV (billion USD 2019)",
+#          color = NULL,
+#          x = NULL,
+#          y = NULL) +
+#     theme_bw() +
+#     theme(
+#       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+#       # legend.justification = c(0, 1),
+#       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+#       legend.position = "none",
+#       legend.key.width = unit(2, "line"),
+#       legend.key.height = unit(1, "line"),
+#       legend.title = element_text(size = 8),
+#       legend.text = element_text(size = 8),
+#       plot.margin = margin(0, 2, 0, 8),
+#       plot.title = element_text(face = 'bold', size = 10),
+#       plot.subtitle = element_text(face = 'bold', size = 8),
+#       panel.grid.major = element_blank(),
+#       panel.grid.minor = element_blank(),
+#       panel.background = element_blank(),
+#       axis.text = element_text(size = 8)) +
+#     guides(fill = guide_colourbar(title.position="top",
+#                                   title.hjust = 0,
+#                                   direction = "horizontal",
+#                                   ticks.colour = "black", frame.colour = "black"),
+#            color = "none")
+# 
+#   fig3d_leg <- ggplot() +
+#     geom_sf(data = labor_map_df, mapping = aes(geometry = geometry, fill = delta_total_comp_usd19 / 1e9), lwd = 0.05, alpha = 1, color = "grey", show.legend = TRUE) +
+#     # geom_sf(data = california, fill = "transparent", color = "black") +
+#     scale_fill_gradientn(colors = rev(blues_pal),
+#                          na.value = "#FAFAFA") +
+#     # coord_sf(xlim = c(-123, -116), ylim = c(33, 39)) +
+#     labs(fill = "NPV (billion USD 2019)",
+#          color = NULL,
+#          x = NULL,
+#          y = NULL) +
+#     theme_bw() +
+#     theme(
+#       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+#       # legend.justification = c(0, 1),
+#       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+#       legend.position = "bottom",
+#       legend.key.width = unit(2, "line"),
+#       legend.key.height = unit(1, "line"),
+#       legend.title = element_text(size = 8),
+#       legend.text = element_text(size = 8),
+#       plot.margin = margin(0, 2, 0, 8),
+#       plot.title = element_text(face = 'bold', size = 10),
+#       plot.subtitle = element_text(face = 'bold', size = 8),
+#       panel.grid.major = element_blank(),
+#       panel.grid.minor = element_blank(),
+#       panel.background = element_blank(),
+#       axis.text = element_text(size = 8)) +
+#     guides(fill = guide_colourbar(title.position="top",
+#                                   title.hjust = 0,
+#                                   direction = "horizontal",
+#                                   ticks.colour = "black", frame.colour = "black"),
+#            color = "none")
+# 
+# 
+# 
+# 
+# 
+# 
+#   legend_fig_3c <- get_legend(
+#     fig3c_leg +
+#       theme(legend.title = element_text(size = 8),
+#             legend.text = element_text(size = 8))
+# 
+#   )
+# 
+#   legend_fig_3d <- get_legend(
+#     fig3d_leg +
+#       theme(legend.title = element_text(size = 8),
+#             legend.text = element_text(size = 8))
+# 
+#   )
+# 
+# 
+# 
+# 
+# }
 
 
 
