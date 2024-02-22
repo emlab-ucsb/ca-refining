@@ -421,8 +421,16 @@ list(
                                                                     state_ghg_output,
                                                                     dt_ghg_2019)),
   
+  tar_target(name = county_health_labor, command = create_county_health_labor_df(main_path,
+                                                                                 refining_mortality,
+                                                                                 state_ghg_output,
+                                                                                 annual_labor,
+                                                                                 raw_ct_2020_all,
+                                                                                 raw_counties)),
+  
   tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
   
+ 
   tar_target(name = demographic_npv_shares_plot, command = plot_hl_shares(main_path,
                                                                           demographic_npv_df,
                                                                           state_pop_ratios)),
