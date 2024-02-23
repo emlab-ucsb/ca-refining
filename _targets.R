@@ -393,6 +393,11 @@ list(
   
   tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(ref_labor_demog_yr)),
   
+  tar_target(name = county_pm25_2019, command = calc_county_pm25(main_path,
+                                                                 health_weighted,
+                                                                 raw_counties,
+                                                                 raw_ct_2020_all)),
+  
   tar_target(name = npv_plot, command = plot_npv_health_labor(main_path,
                                                               refining_mortality,
                                                               state_ghg_output,
