@@ -933,6 +933,8 @@ calc_county_pm25 <- function(main_path,
   
   fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
   
+  return(health_county_df)
+  
 }
 
 
