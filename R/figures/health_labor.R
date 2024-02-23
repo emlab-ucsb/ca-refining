@@ -917,7 +917,7 @@ calc_county_pm25 <- function(main_path,
   
   ## geoid to census tract 
   county_df <- raw_ct_2020_all %>% 
-    select(census_tract = GEOID, COUNTYFP) %>%
+    select(census_tract = GEOID, COUNTYFP, ALAND) %>%
     st_drop_geometry() %>%
     left_join(county_names)
   
@@ -927,7 +927,7 @@ calc_county_pm25 <- function(main_path,
   
   health_county_df <- health_df %>%
     group_by(NAME, COUNTYFP, year) %>%
-    summarise(avg_pm25 = mean(total_pm25)) %>%
+    summarise(avg_pm25 = weighted.mean(total_pm25, ALAND)) %>%
     ungroup() %>%
     arrange(-avg_pm25)
   
