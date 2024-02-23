@@ -449,7 +449,8 @@ create_county_health_labor_df <- function(main_path,
   
   county_names <- raw_counties %>% 
     select(COUNTYFP, NAME) %>% 
-    st_drop_geometry()
+    st_drop_geometry() %>%
+    unique()
   
   ## calc 2020 pop by demographic
   pop_2020 <- refining_mortality %>%
@@ -513,8 +514,8 @@ create_county_health_labor_df <- function(main_path,
     mutate(npv_health_av_mort_pc = npv_health_av_mort / pop_2020) %>%
     arrange(-npv_health_av_mort_pc) 
 
-  ## save figure inputs
-  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "county_health_npv_fig_inputs.csv"))
+  # ## save figure inputs
+  # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "county_health_npv_fig_inputs.csv"))
 
 
   ## for plotting health
@@ -898,6 +899,41 @@ create_county_health_labor_df <- function(main_path,
 }
 
 
+calc_county_pm25 <- function(main_path,
+                             health_weighted,
+                             raw_counties,
+                             raw_ct_2020_all) {
+  
+  
+  health_df <- copy(health_weighted)
+  
+  health_df <- health_df[year == 2019 &
+                           scen_id == "BAU historic exports"]
+  
+  county_names <- raw_counties %>% 
+    select(COUNTYFP, NAME) %>% 
+    st_drop_geometry() %>%
+    unique()
+  
+  ## geoid to census tract 
+  county_df <- raw_ct_2020_all %>% 
+    select(census_tract = GEOID, COUNTYFP) %>%
+    st_drop_geometry() %>%
+    left_join(county_names)
+  
+  health_df <- merge(health_df, county_df,
+                     by = "census_tract",
+                     all.x = T)
+  
+  health_county_df <- health_df %>%
+    group_by(NAME, COUNTYFP, year) %>%
+    summarise(avg_pm25 = mean(total_pm25)) %>%
+    ungroup() %>%
+    arrange(-avg_pm25)
+  
+  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  
+}
 
 
 plot_health_levels <- function(main_path,
