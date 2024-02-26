@@ -396,7 +396,8 @@ list(
   tar_target(name = county_pm25_2019, command = calc_county_pm25(main_path,
                                                                  health_weighted,
                                                                  raw_counties,
-                                                                 raw_ct_2020_all)),
+                                                                 raw_ct_2020_all,
+                                                                 refining_mortality)),
   
   tar_target(name = npv_plot, command = plot_npv_health_labor(main_path,
                                                               refining_mortality,
