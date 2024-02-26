@@ -902,8 +902,15 @@ create_county_health_labor_df <- function(main_path,
 calc_county_pm25 <- function(main_path,
                              health_weighted,
                              raw_counties,
-                             raw_ct_2020_all) {
+                             raw_ct_2020_all,
+                             refining_mortality) {
   
+  ## calc 2020 pop by demographic
+  pop_2020 <- refining_mortality %>%
+    filter(year == 2020) %>%
+    select(census_tract, year, pop) %>%
+    unique() %>%
+    as.data.table()
   
   health_df <- copy(health_weighted)
   
@@ -917,9 +924,12 @@ calc_county_pm25 <- function(main_path,
   
   ## geoid to census tract 
   county_df <- raw_ct_2020_all %>% 
+    filter(STATEFP == "06") %>%
     select(census_tract = GEOID, COUNTYFP, ALAND) %>%
     st_drop_geometry() %>%
-    left_join(county_names)
+    left_join(county_names) %>%
+    left_join(pop_2020) %>%
+    select(census_tract, COUNTYFP, NAME, pop, ALAND)
   
   health_df <- merge(health_df, county_df,
                      by = "census_tract",
@@ -927,9 +937,10 @@ calc_county_pm25 <- function(main_path,
   
   health_county_df <- health_df %>%
     group_by(NAME, COUNTYFP, year) %>%
-    summarise(avg_pm25 = weighted.mean(total_pm25, ALAND)) %>%
+    summarise(avg_pm25_areaw = weighted.mean(total_pm25, ALAND),
+              avg_pm25_popw = weighted.mean(total_pm25, pop)) %>%
     ungroup() %>%
-    arrange(-avg_pm25)
+    arrange(-avg_pm25_popw)
   
   fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
   
