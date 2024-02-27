@@ -1,8 +1,20 @@
 # PREP DEMAND DATA ------------
+# tar_load(dt_its)
+# tar_load(dt_jet)
+# tar_load(dt_intra)
+# tar_load(tot_fuel_demand_exports)
+# tar_load(state_ghg_output)
+# 
+# dt_its_input = copy(dt_its)
+# dt_intra_input = copy(dt_intra)
+# dt_jet_input = copy(dt_jet)
+# rm(dt_its, dt_intra, dt_jet)
+# 
+# dt_its = copy(dt_its_input)
+# dt_intra = copy(dt_intra_input)
+# dt_jet = copy(dt_jet_input)
+# 
 
-dt_its = copy(dt_its_input)
-dt_intra = copy(dt_intra_input)
-dt_jet = copy(dt_jet_input)
 
 # calculate bge
 dt_jet[, consumption_bge := total_jet_fuel_demand_gge/42]
@@ -89,9 +101,27 @@ inc_full = inc_full[, .(consumption_bge = sum(consumption_bge, na.rm = T)), by =
 inc_full[scenario == 'BAU', scenario := 'Reference Demand']
 inc_full[scenario == 'LC1', scenario := 'Low Carbon Demand']
 
+# combine interstate+military jet fuel with intrastate jet fuel -----
+
+dt_demand2 = copy(dt_demand)
+dt_demand2[, fuel := fifelse(fuel %like% 'Jet Fuel', 'Jet Fuel', as.character(fuel))]
+dt_demand2 = dt_demand2[, .(consumption_bge = sum(consumption_bge, na.rm = T)), by = .(scenario, year, fuel)]
+
+# rename scenario -------
+
+dt_demand2[scenario == 'BAU', scenario := 'Reference Demand']
+dt_demand2[scenario == 'LC1', scenario := 'Low Carbon Demand']
+
+# reorder factor levels ------
+
+dt_demand2[, fuel := factor(fuel, levels = rev(c('Gasoline', 'Renewable Gasoline', 'Diesel', 'Renewable Diesel', 
+                                                 'Jet Fuel', 'Sustainable Aviation Fuel',
+                                                 'Ethanol', 'Biodiesel', 'Renewable Natural Gas', 'LDV Hydrogen', 'HDV Hydrogen', 'LDV Electricity', 'HDV Electricity')))]
+
+
 # refactor scenario -------
 
-dt_demand[, scenario := factor(scenario, levels = c('Reference Demand', 'Low Carbon Demand'))]
+dt_demand2[, scenario := factor(scenario, levels = c('Reference Demand', 'Low Carbon Demand'))]
 inc_its[, scenario := factor(scenario, levels = c('Reference Demand', 'Low Carbon Demand'))]
 inc_full[, scenario := factor(scenario, levels = c('Reference Demand', 'Low Carbon Demand'))]
 
@@ -166,7 +196,7 @@ theme_its = theme_line +
 
 f_ref_its = 
   ggplot() +
-  geom_area(data = dt_demand[scenario == 'Reference Demand'], aes(x = year, y = consumption_bge/1e6, fill = fuel, group = fuel)) +
+  geom_area(data = dt_demand2[scenario == 'Reference Demand'], aes(x = year, y = consumption_bge/1e6, fill = fuel, group = fuel)) +
   geom_line(data = inc_its[scenario == 'Reference Demand'], aes(x = year, y = consumption_bge/1e6, lty = 'its'), linewidth = 1, color = 'black') +
   geom_line(data = inc_full[scenario == 'Reference Demand'], aes(x = year, y = consumption_bge/1e6, lty = 'all'), linewidth = 1, color = 'black') +
   labs(title = 'Reference Demand\n(Only)',
@@ -191,7 +221,7 @@ f_ref_its =
 
 f_lc_its = 
   ggplot() +
-  geom_area(data = dt_demand[scenario == 'Low Carbon Demand'], aes(x = year, y = consumption_bge/1e6, fill = fuel, group = fuel)) +
+  geom_area(data = dt_demand2[scenario == 'Low Carbon Demand'], aes(x = year, y = consumption_bge/1e6, fill = fuel, group = fuel)) +
   geom_line(data = inc_its[scenario == 'Low Carbon Demand'], aes(x = year, y = consumption_bge/1e6, lty = 'its'), linewidth = 1, color = 'black') +
   geom_line(data = inc_full[scenario == 'Low Carbon Demand'], aes(x = year, y = consumption_bge/1e6, lty = 'all'), linewidth = 1, color = 'black') +
   labs(title = 'Low Carbon Demand\n(Only)',
@@ -214,7 +244,7 @@ f_lc_its =
 # legend: its -----------
 f_its_legend = 
   ggplot() +
-  geom_area(data = dt_demand, aes(x = year, y = consumption_bge/1e6, fill = fuel, group = fuel)) +
+  geom_area(data = dt_demand2[! fuel %in% unique(prod_data[, fuel_adj])], aes(x = year, y = consumption_bge/1e6, fill = fuel, group = fuel)) +
   geom_line(data = inc_its, aes(x = year, y = consumption_bge/1e6, lty = 'its'), linewidth = 1, color = 'black') +
   geom_line(data = inc_full, aes(x = year, y = consumption_bge/1e6, lty = 'all'), linewidth = 1, color = 'black') +
   facet_wrap(~ scenario, nrow = 2) +
@@ -222,7 +252,8 @@ f_its_legend =
        subtitle = NULL,
        x = NULL,
        y = 'Fuel demand\n(Million bge)',
-       fill = NULL) +
+       fill = '      ',
+       linetype = NULL) +
   scale_x_continuous(breaks = seq(2020,2040,10), limits = c(2020, 2045), expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0), breaks = seq(0, 700, 100), limits = c(0, 700)) +
   scale_fill_manual(values = pal_fuel, guide = guide_legend(nrow = 7)) + 
@@ -232,7 +263,8 @@ f_its_legend =
                         values = c('its' = 3,
                                    'all' = 2),
                         guide = guide_legend(nrow = 2)) +
-  theme_its
+  theme_its +
+  theme(legend.key.width = unit(1, 'cm'))
 
 grobs_its = ggplotGrob(f_its_legend)$grobs
 legend_its = grobs_its[[which(sapply(grobs_its, function(x) x$name) == "guide-box")]]
@@ -435,7 +467,8 @@ f_prod_legend = ggplot() +
                     guide = guide_legend(reverse = TRUE, nrow = 2)) +
   scale_color_manual(values = pal_label) +
   theme_prod +
-  guides(fill = guide_legend(ncol = 1))
+  guides(fill = guide_legend(ncol = 1)) +
+  theme(legend.key.width = unit(1, 'cm'))
 
 grobs_prod = ggplotGrob(f_prod_legend)$grobs
 legend_prod = grobs_prod[[which(sapply(grobs_prod, function(x) x$name) == "guide-box")]]
@@ -445,10 +478,10 @@ legend_prod = grobs_prod[[which(sapply(grobs_prod, function(x) x$name) == "guide
 plots_ts = plot_grid(f_ref_its, f_ref_histprod, f_ref_histexp, f_ref_lowexp, 
                      f_lc_its, f_lc_histprod, f_lc_histexp, f_lc_lowexp,
                      nrow = 2,
-                     rel_widths = c(0.25, 0.25, 0.25, 0.25))
+                     rel_widths = c(0.2, 0.25, 0.25, 0.25))
 
-plots_legends = plot_grid(legend_its, legend_prod, ncol = 2, rel_widths = c(0.7, 0.3), axis = "cc")
-plots_legends
+plots_legends = plot_grid(legend_its, legend_prod, ncol = 2, rel_widths = c(0.5, 0.5), axis = "cc")
+# plots_legends
 
 plots_all = plot_grid(plots_ts, plots_legends, nrow = 2, rel_heights = c(0.8, 0.2))
 plots_all
@@ -473,3 +506,9 @@ ggsave(plots_all,
        dpi = 600,
        units = 'in')
 
+
+# plot_combined_production <- function(dt_its, dt_intra, dt_jet) {
+#   
+#   
+#   
+# }
