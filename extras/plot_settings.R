@@ -30,19 +30,20 @@ pal_fuel = c('HDV Hydrogen'	=	'#fbb4ae',
              'Biodiesel'	=	'#ffffcc',
              'Ethanol'	=	'#e5d8bd',
              'Jet Fuel (Interstate + Military)' = '#A75D5D',
-             'Sustainable Aviation Fuel'	=	'#D3756B',
-             'Jet Fuel (Intrastate)'	=	'#FFC3A1',
-             'Renewable Diesel'	=	'#366BA1',
-             'Diesel'	=	'#ABC7E3',
-             'Renewable Gasoline'	=	'#3C6255',
-             'Gasoline'	=	'#A6BB8D')
+             'Sustainable Aviation Fuel'	=	'#FFC3A1',
+             'Jet Fuel (Intrastate)'	=	'#D3756B',
+             'Jet Fuel' = '#D3756B',
+             'Renewable Diesel'	=	'#ABC7E3',
+             'Diesel'	=	'#366BA1',
+             'Renewable Gasoline'	=	'#A6BB8D',
+             'Gasoline'	=	'#3C6255')
 
-pal_fuel_title = c('Sustainable Aviation Fuel'	=	'#D3756B',
-                   'Jet Fuel'	=	'#FFC3A1',
-                   'Renewable Diesel'	=	'#366BA1',
-                   'Diesel'	=	'#ABC7E3',
-                   'Renewable Gasoline'	=	'#3C6255',
-                   'Gasoline'	=	'#A6BB8D',
+pal_fuel_title = c('Sustainable Aviation Fuel'	=	'#FFC3A1',
+                   'Jet Fuel'	=	'#D3756B',
+                   'Renewable Diesel'	=	'#ABC7E3',
+                   'Diesel'	=	'#366BA1',
+                   'Renewable Gasoline'	=	'#A6BB8D',
+                   'Gasoline'	=	'#3C6255',
                    'Exports' = '#dadbdf')
 pal_label = c('GHG emissions' = '#000000')
 
