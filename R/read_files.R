@@ -267,6 +267,20 @@ read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
   
 }
 
+read_refin_locs <- function(file) {
+  
+  ## Refineries plus
+  refin_new_locations <- fread(file) %>%
+    mutate(coords = gsub("^c\\(|\\)$", "", geometry)) %>%
+    separate(coords, c('lon', 'lat'), sep = ',') %>%
+    select(-geometry) %>%
+    st_as_sf(coords = c("lon", "lat"),
+             crs = refin_crs) %>%
+    st_transform(ca_crs)
+  
+}
+
+
 
 # track_files_basic <- function(file) {
 #   data = fread(file, header = T)
