@@ -4,7 +4,8 @@
 ## pulse fig info x refinery
 ## --------------------------------------------------
 
-create_srm_xwalk <- function(srm_weighted_pm25,
+create_srm_xwalk <- function(main_path,
+                             srm_weighted_pm25,
                              ct_xwalk,
                              raw_counties,
                              raw_ct_2020_all) {
@@ -75,7 +76,8 @@ create_srm_xwalk <- function(srm_weighted_pm25,
   
 }
 
-create_srm_ct <- function(refinery_pm25_srm) {
+create_srm_ct <- function(main_path,
+                          refinery_pm25_srm) {
   
   pm25_srm <- copy(refinery_pm25_srm)
   
