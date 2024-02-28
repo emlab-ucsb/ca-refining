@@ -1,58 +1,59 @@
 get_cec_interstate_jet_forecast <- function(raw_cec_jet, raw_mil_jet, ei_gasoline, ei_jet) {
-  
-  conv_ratio = ei_gasoline/ei_jet
-  
-  colnames(raw_cec_jet) = c('year', 'Low Case', 'Mid Case', 'High Case')
-  
-  setnames(raw_mil_jet, 'Year', 'year')
-  setnames(raw_mil_jet, 'Gallons', 'military_jet_fuel_gallons')
-  raw_mil_jet = raw_mil_jet[year %in% 2004:2012] # keep years that are reported and not calculated (based on spreadsheet)
-  
+  conv_ratio <- ei_gasoline / ei_jet
+
+  colnames(raw_cec_jet) <- c("year", "Low Case", "Mid Case", "High Case")
+
+  setnames(raw_mil_jet, "Year", "year")
+  setnames(raw_mil_jet, "Gallons", "military_jet_fuel_gallons")
+  raw_mil_jet <- raw_mil_jet[year %in% 2004:2012] # keep years that are reported and not calculated (based on spreadsheet)
+
   # melt data to long format
-  jet_long = melt(raw_cec_jet, id.vars = 'year', variable.name = 'scenario', value.name = 'jet_fuel_demand_gge')
+  jet_long <- melt(raw_cec_jet, id.vars = "year", variable.name = "scenario", value.name = "jet_fuel_demand_gge")
   jet_long[, year := as.numeric(as.character(year))]
-  
+
   # list jet scenarios
-  jet_scenarios = c('Low Case', 'Mid Case', 'High Case')
-  
+  jet_scenarios <- c("Low Case", "Mid Case", "High Case")
+
   # create empty data.table of all jet fuel scenarios with all years
-  blank_jet = data.table(year = rep(2017:2045, length(jet_scenarios)),
-                         scenario = rep(jet_scenarios, each = length(2017:2045)))
-  
+  blank_jet <- data.table(
+    year = rep(2017:2045, length(jet_scenarios)),
+    scenario = rep(jet_scenarios, each = length(2017:2045))
+  )
+
   # create version of data table with existing forecast and empty years to extrapolate
-  jet_extrap = jet_long[blank_jet, on = c('year', 'scenario')]
-  
+  jet_extrap <- jet_long[blank_jet, on = c("year", "scenario")]
+
   # use 2021-2030 jet fuel demand to create linear fit
-  reg_jet = lapply(jet_scenarios, function(z){
-    return(lm(formula = jet_fuel_demand_gge ~ year,
-              data = jet_long[scenario == z & year %in% 2021:2030] ))
+  reg_jet <- lapply(jet_scenarios, function(z) {
+    return(lm(
+      formula = jet_fuel_demand_gge ~ year,
+      data = jet_long[scenario == z & year %in% 2021:2030]
+    ))
   })
-  
-  names(reg_jet) = jet_scenarios
-  
+
+  names(reg_jet) <- jet_scenarios
+
   # use linear fits for each scenario to predict jet fuel demand in 2031-2045
-  extrapolate_jet = lapply(jet_scenarios, function(z){
+  extrapolate_jet <- lapply(jet_scenarios, function(z) {
     jet_extrap[year %in% c(2031:2045) & scenario == z, jet_fuel_demand_gge := predict(reg_jet[[z]], data.table(year = 2031:2045))]
   })
-  
+
   # reorder scenario levels
-  jet_extrap[, scenario := factor(scenario, levels = c('Low Case', 'Mid Case', 'High Case'))]
-  
+  jet_extrap[, scenario := factor(scenario, levels = c("Low Case", "Mid Case", "High Case"))]
+
   # calculate 5 year average of military jet
-  avg_mil_jet = mean(raw_mil_jet[, military_jet_fuel_gallons], na.rm = T)
-  avg_mil_jet_gge = avg_mil_jet*conv_ratio
-  
+  avg_mil_jet <- mean(raw_mil_jet[, military_jet_fuel_gallons], na.rm = T)
+  avg_mil_jet_gge <- avg_mil_jet * conv_ratio
+
   # add military jet to jet fuel demand
   jet_extrap[, military_jet_fuel_demand_gge := avg_mil_jet_gge]
   jet_extrap[, total_jet_fuel_demand_gge := jet_fuel_demand_gge + military_jet_fuel_demand_gge]
-  
+
   # create wide version (of non-military jet demand)
-  jet_extrap_wide = dcast(jet_extrap, year ~ scenario, value.var = 'jet_fuel_demand_gge')
-  jet_extrap_wide[, units := 'gge']
-  
+  jet_extrap_wide <- dcast(jet_extrap, year ~ scenario, value.var = "jet_fuel_demand_gge")
+  jet_extrap_wide[, units := "gge"]
+
   jet_extrap
-  
-  
 }
 
 
