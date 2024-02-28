@@ -356,10 +356,14 @@ list(
   tar_target(name = ct_pm25_srm, command = create_srm_ct(main_path,
                                                          refinery_pm25_srm)),
   
-  # tar_target(name = pulse_fig, command = create_pulse_fig(main_path,
-  #refinery_pm25_srm,
-  #                                                         ct_pm25_srm)),
-  
+  tar_target(name = pulse_fig, command = create_pulse_fig(main_path,
+                                                          refinery_pm25_srm,
+                                                          ct_pm25_srm,
+                                                          raw_counties,
+                                                          raw_ct_2020_all,
+                                                          refin_locs,
+                                                          ca_crs)),
+
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(beta,
                                                                                    se,
                                                                                    vsl_2015,

@@ -90,21 +90,149 @@ create_srm_ct <- function(main_path,
   return(pm25_srm)
   
 }
-# 
-# create_pulse_fig <- function(main_path,
-#                              refinery_pm25_srm,
-#                              ct_pm25_srm,
-#                              raw_counties,
-#                              raw_ct_2020_all,
-#                              refin_locs) {
-# 
-#   ## Refineries plus
-#   refin_new_locations <- copy(refin_locs)
-#   
-#   
-# 
-# 
-#    }
+
+create_pulse_fig <- function(main_path,
+                             refinery_pm25_srm,
+                             ct_pm25_srm,
+                             raw_counties,
+                             raw_ct_2020_all,
+                             refin_locs,
+                             ca_crs) {
+
+  ## Refineries plus
+  refin_new_locations <- copy(refin_locs)
+  
+  ## join census tract sp data with ct pm2.5
+  ct_pm25_srm_sp <- ct_pm25_srm %>%
+    left_join(raw_ct_2020_all %>% 
+                filter(STATEFP == "06") %>% 
+                select(census_tract = GEOID, geometry)) %>%
+    st_as_sf() %>%
+    st_transform(ca_crs)
+  
+  ## join census tract sp data with refinery level pm2.5 srm
+  refinery_pm25_srm_sp <- refinery_pm25_srm %>%
+    left_join(raw_ct_2020_all %>% 
+                filter(STATEFP == "06") %>% 
+                select(census_tract = GEOID, geometry)) %>%
+    filter(!is.na(site_id)) %>%
+    st_as_sf() %>%
+    st_transform(ca_crs)
+  
+  ## site ids
+  site_ids <- unique(refinery_pm25_srm$site_id)
+  
+  ## for each site id, plot and put relevant county boundaries
+  
+  for(i in 1:length(site_ids)) {
+    
+    id_tmp <- site_ids[i]
+    
+    srm_tmp <- refinery_pm25_srm_sp %>%
+      filter(site_id == id_tmp) %>%
+      filter(total_pm25 >= 0.0001)
+    
+    county_plot_tmp <- srm_tmp %>%
+      select(COUNTYFP) %>%
+      st_drop_geometry() %>%
+      unique()
+  
+    county_tmp <- raw_counties %>%
+      filter(COUNTYFP %in% unique(srm_tmp$COUNTYFP))
+    
+    refin_tmp <- refin_new_locations %>%
+      filter(site_id == id_tmp)
+    
+    refin_tmp_name <- as.character(refin_tmp$refinery_name[1])
+    
+    ## figure
+    pm25_fig_tmp <- ggplot() +
+      geom_sf(data = srm_tmp, aes(fill=total_pm25, geometry = geometry), color=NA) +
+      # theme_void() +
+      theme_minimal() +
+      scale_fill_gradient(high = "#A84268", low = "#FAFAFA", space = "Lab", na.value = "grey50",
+                          limits = c(min(srm_tmp$total_pm25), max(srm_tmp$total_pm25)),
+                          breaks = c(0.001, 0.004)) +
+      labs(title = paste0("PM2.5 concentration from ", refin_tmp_name),
+           y = NULL,
+           x = NULL,
+           # title = bold(expression(bold(paste("PM"[2.5], " concentration from ", refin_tmp_name))),
+           fill=expression(paste("PM"[2.5], " (",mu,"/",m^3,")"))) +
+      geom_sf(data = county_tmp, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+      geom_sf_text(data = county_tmp, aes(label = NAME)) +
+      geom_sf(data = refin_tmp, mapping = aes(geometry = geometry), alpha = 0.9, pch = 16) +
+      theme(
+        # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+        legend.justification = c(0, 1),
+        # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+        legend.position = c(0.05, 0.15),
+        legend.key.width = unit(0.7, "line"),
+        legend.key.height = unit(0.5, "line"),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8),
+        plot.margin = margin(0, 2, 0, 8),
+        plot.title = element_text(face = 'bold', size = 8, hjust = -0.05)) +
+      guides(fill = guide_colourbar(title.position="top",
+                                    title.hjust = 0,
+                                    direction = "horizontal",
+                                    ticks.colour = "black", frame.colour = "black",
+                                    order = 1))
+
+
+    ggsave(plot = pm25_fig_tmp, 
+           filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/pulse-figs/pulse_",
+                  id_tmp, ".jpeg"), 
+           device = "jpeg",
+           # width = 6.5,
+           # height = 8,
+           dpi = 300)
+    
+  }
+  
+## make fig for all locations
+  pm25_fig_all<- ggplot() +
+    geom_sf(data = ct_pm25_srm_sp, aes(fill=total_pm25, geometry = geometry), color=NA) +
+    theme_void() +
+    # theme_minimal() +
+    scale_fill_gradient(high = "#A84268", low = "#FAFAFA", space = "Lab", na.value = "grey50",
+                        limits = c(min(ct_pm25_srm_sp$total_pm25), max(ct_pm25_srm_sp$total_pm25)),
+                        breaks = c(0.001, 0.02)) +
+    labs(title = "PM2.5 concentration from refineries",
+         y = NULL,
+         x = NULL,
+         # title = bold(expression(bold(paste("PM"[2.5], " concentration from ", refin_tmp_name))),
+         fill=expression(paste("PM"[2.5], " (",mu,"/",m^3,")"))) +
+    geom_sf(data = raw_counties, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+    # geom_sf_text(data = raw_counties, aes(label = NAME), size = 3) +
+    geom_sf(data = refin_new_locations, mapping = aes(geometry = geometry), alpha = 0.8, pch = 16, size = 0.5) +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = c(0.05, 0.15),
+      legend.key.width = unit(0.7, "line"),
+      legend.key.height = unit(0.5, "line"),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(0, 2, 0, 8),
+      plot.title = element_text(face = 'bold', size = 8, hjust = -0.05)) +
+    guides(fill = guide_colourbar(title.position="top",
+                                  title.hjust = 0,
+                                  direction = "horizontal",
+                                  ticks.colour = "black", frame.colour = "black",
+                                  order = 1))
+  
+  ggsave(plot = pm25_fig_all, 
+         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/pulse-figs/pulse_all.jpeg"), 
+         device = "jpeg",
+         # width = 6.5,
+         # height = 8,
+         dpi = 300)
+  
+  return(pm25_fig_all)
+
+
+   }
 
 
 

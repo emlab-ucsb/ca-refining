@@ -241,7 +241,7 @@
 #   guides(fill = guide_colourbar(title.position="top",
 #                                 title.hjust = 0,
 #                                 direction = "horizontal"))
-# 
+
 # 
 # ## make map
 # fig1_map <- ggplot() +
