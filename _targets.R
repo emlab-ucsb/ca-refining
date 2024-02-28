@@ -342,6 +342,16 @@ list(
                                                                                          refining_health_income,
                                                                                          raw_dac)),
   
+  tar_target(name = refinery_pm25_srm, command = create_srm_xwalk(srm_weighted_pm25,
+                                                                  ct_xwalk,
+                                                                  raw_counties,
+                                                                  raw_ct_2020_all)),
+  
+  tar_target(name = ct_pm25_srm, command = create_srm_ct(refinery_pm25_srm)),
+  
+  # tar_target(name = pulse_fig, command = create_pulse_fig(refinery_pm25_srm,
+  #                                                         ct_pm25_srm)),
+  
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(beta,
                                                                                    se,
                                                                                    vsl_2015,
