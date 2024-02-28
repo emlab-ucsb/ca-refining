@@ -174,7 +174,8 @@ list(
   tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
   tar_target(name = refin_locs, command = read_refin_locs(file_refin_locs,
-                                                          file_refin_locs_orig)),
+                                                          file_refin_locs_orig,
+                                                          ca_crs)),
   
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),

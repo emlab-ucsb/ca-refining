@@ -268,7 +268,8 @@ read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
 }
 
 read_refin_locs <- function(file_refin_locs,
-                            file_refin_locs_orig) {
+                            file_refin_locs_orig,
+                            ca_crs) {
   
   refin_crs <- st_crs(st_read(file_refin_locs_orig))
   
