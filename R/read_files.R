@@ -267,10 +267,13 @@ read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
   
 }
 
-read_refin_locs <- function(file) {
+read_refin_locs <- function(file_refin_locs,
+                            file_refin_locs_orig) {
+  
+  refin_crs <- st_crs(st_read(file_refin_locs_orig))
   
   ## Refineries plus
-  refin_new_locations <- fread(file) %>%
+  refin_new_locations <- fread(file_refin_locs) %>%
     mutate(coords = gsub("^c\\(|\\)$", "", geometry)) %>%
     separate(coords, c('lon', 'lat'), sep = ',') %>%
     select(-geometry) %>%

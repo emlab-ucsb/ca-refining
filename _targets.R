@@ -135,6 +135,7 @@ list(
   tar_target(name = file_df_labor, command = file.path(main_path, "data/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
   tar_target(name = file_ca_counties_sp, command = file.path(main_path, "data/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"), format = "file"),
+  tar_target(name = file_refin_locs_orig, command = file.path(main_path, "data/GIS/raw/Petroleum_Refineries_US_EIA/Petroleum_Refineries_US_2019_v2.shp"), format = "file"), 
   tar_target(name = file_refin_locs, command = file.path(main_path, "/data/stocks-flows/processed/refinery_lat_long_revised.csv"), format = "file"),
   
   # read in raw data files
@@ -172,6 +173,7 @@ list(
   tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
   tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
+  tar_target(name = )
   tar_target(name = refin_locs, command = read_refin_locs(file_refin_locs)),
   
   # create processed data
