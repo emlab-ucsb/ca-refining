@@ -91,20 +91,21 @@ create_srm_ct <- function(main_path,
   
 }
 
-# create_pulse_fig <- function(refinery_pm25_srm,
+# create_pulse_fig <- function(main_path,
+#                              refinery_pm25_srm,
 #                              ct_pm25_srm) {
-#   
-#   
-#                                
-#                                
-#                                
 # 
-#   
-#   
+# 
+# 
+# 
+# 
+# 
+# 
+# 
 #    }
-
-
-
+# 
+# 
+# 
 
 # ## crop
 # ## -----------------------------------
