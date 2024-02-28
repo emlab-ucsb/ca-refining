@@ -90,22 +90,24 @@ create_srm_ct <- function(main_path,
   return(pm25_srm)
   
 }
-
+# 
 # create_pulse_fig <- function(main_path,
 #                              refinery_pm25_srm,
-#                              ct_pm25_srm) {
+#                              ct_pm25_srm,
+#                              raw_counties,
+#                              raw_ct_2020_all,
+#                              refin_locs) {
 # 
-# 
-# 
-# 
-# 
-# 
+#   ## Refineries plus
+#   refin_new_locations <- copy(refin_locs)
+#   
+#   
 # 
 # 
 #    }
-# 
-# 
-# 
+
+
+
 
 # ## crop
 # ## -----------------------------------
