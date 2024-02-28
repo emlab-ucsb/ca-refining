@@ -40,7 +40,7 @@ options(clustermq.scheduler = "multicore")
 # Install packages {{future}}, {{future.callr}}, and {{future.batchtools}} to allow use_targets() to configure tar_make_future() options.
 
 # Run the R scripts in the R/ folder with your custom functions:
-# tar_source()
+tar_source()
 source("extras/plot_settings.R")
 
 # Replace the target list below with your own:
