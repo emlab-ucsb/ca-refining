@@ -4,6 +4,16 @@
 ## pulse fig info x refinery
 ## --------------------------------------------------
 
+
+# test <- ggplot() +
+#   geom_sf(data = raw_ct_2020_all %>% filter(STATEFP == "06" & COUNTYFP %in% c("095", "013")), aes(geometry = geometry), fill="#A84268", color= "black") +
+#   # theme_void() +
+#   theme_minimal() +
+#   labs( y = NULL,
+#        x = NULL) +
+#   geom_sf(data = raw_counties %>% filter(STATEFP == "06" & COUNTYFP %in% c("095", "013")), mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0)
+
+
 create_srm_xwalk <- function(main_path,
                              srm_weighted_pm25,
                              ct_xwalk,
@@ -129,16 +139,19 @@ create_pulse_fig <- function(main_path,
     id_tmp <- site_ids[i]
     
     srm_tmp <- refinery_pm25_srm_sp %>%
+      filter(site_id == id_tmp)
+    
+    srm_tmp_c <- refinery_pm25_srm_sp %>%
       filter(site_id == id_tmp) %>%
       filter(total_pm25 >= 0.0001)
     
-    county_plot_tmp <- srm_tmp %>%
+    county_plot_tmp <- srm_tmp_c %>%
       select(COUNTYFP) %>%
       st_drop_geometry() %>%
       unique()
   
     county_tmp <- raw_counties %>%
-      filter(COUNTYFP %in% unique(srm_tmp$COUNTYFP))
+      filter(COUNTYFP %in% unique(srm_tmp_c$COUNTYFP))
     
     refin_tmp <- refin_new_locations %>%
       filter(site_id == id_tmp)
@@ -147,12 +160,12 @@ create_pulse_fig <- function(main_path,
     
     ## figure
     pm25_fig_tmp <- ggplot() +
-      geom_sf(data = srm_tmp, aes(fill=total_pm25, geometry = geometry), color=NA) +
+      geom_sf(data = srm_tmp %>% filter(COUNTYFP %in% unique(srm_tmp_c$COUNTYFP)), aes(fill=total_pm25, geometry = geometry), color=NA) +
       # theme_void() +
       theme_minimal() +
       scale_fill_gradient(high = "#A84268", low = "#FAFAFA", space = "Lab", na.value = "grey50",
                           limits = c(min(srm_tmp$total_pm25), max(srm_tmp$total_pm25)),
-                          breaks = c(0.001, 0.004)) +
+                          breaks = c(0, 0.004)) +
       labs(title = paste0("PM2.5 concentration from ", refin_tmp_name),
            y = NULL,
            x = NULL,
