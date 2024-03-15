@@ -2377,6 +2377,39 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
+  ## save version for presentation
+  hl_plot_grid_a_pres <- plot_grid(
+    health_level_fig_a + 
+      theme(axis.title.y = element_text(size = 12),
+            axis.text.x = element_text(size = 9),
+            axis.text.y = element_text(size = 12),
+            strip.text =  element_text(size = 12),
+            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+    labor_level_fig_a + labs(y = NULL) + 
+      theme(axis.title.y = element_text(size = 12),
+            axis.text.x = element_text(size = 9),
+            axis.text.y = element_text(size = 12),
+            strip.text =  element_text(size = 12),
+            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+    align = 'vh',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  ggsave(plot = hl_plot_grid_a_pres, 
+         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-race.jpeg"), 
+         device = "jpeg",
+         width = 9,
+         height = 4,
+         units= "in",
+         dpi = 300)
+  
+  
+  
   ## health fig - poverty
   health_level_fig_b <- ggplot() +
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
@@ -2430,6 +2463,38 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           axis.ticks.length.x = unit(0.1, 'cm'))
   
   
+  ## save version for presentation
+  hl_plot_grid_b_pres <- plot_grid(
+    health_level_fig_b + 
+      theme(axis.title.y = element_text(size = 12),
+            axis.text.x = element_text(size = 9),
+            axis.text.y = element_text(size = 12),
+            strip.text =  element_text(size = 12),
+            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+    labor_level_fig_b + labs(y = NULL) + 
+      theme(axis.title.y = element_text(size = 12),
+            axis.text.x = element_text(size = 9),
+            axis.text.y = element_text(size = 12),
+            strip.text =  element_text(size = 12),
+            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+    align = 'vh',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  ggsave(plot = hl_plot_grid_b_pres, 
+         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-income.jpeg"), 
+         device = "jpeg",
+         width = 9,
+         height = 4,
+         units= "in",
+         dpi = 300)
+  
+  
   ## health fig - DAC
   health_level_fig_c <- ggplot() +
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
@@ -2477,6 +2542,37 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## save version for presentation
+  hl_plot_grid_c_pres <- plot_grid(
+    health_level_fig_c + 
+      theme(axis.title.y = element_text(size = 12),
+            axis.text.x = element_text(size = 9),
+            axis.text.y = element_text(size = 12),
+            strip.text =  element_text(size = 12),
+            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+    labor_level_fig_c + labs(y = NULL) + 
+      theme(axis.title.y = element_text(size = 12),
+            axis.text.x = element_text(size = 9),
+            axis.text.y = element_text(size = 12),
+            strip.text =  element_text(size = 12),
+            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+    align = 'vh',
+    # labels = c("A", "B", "C", "D", "E", "F"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  ggsave(plot = hl_plot_grid_c_pres, 
+         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-dac.jpeg"), 
+         device = "jpeg",
+         width = 9,
+         height = 4,
+         units= "in",
+         dpi = 300)
   
   
   ## combine figure
