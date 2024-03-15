@@ -203,6 +203,25 @@ create_pulse_fig <- function(main_path,
   }
   
 ## make fig for all locations
+  
+  ## crop
+  disp_win2_wgs84 <- st_sfc(st_point(c(-122.5, 33)), st_point(c(-117, 39)),
+                            crs = 4326)
+  
+  disp_win2_trans <- st_transform(disp_win2_wgs84, crs = ca_crs)
+  
+  disp_win2_coord <- st_coordinates(disp_win2_trans)
+  
+  disp_win_df <- as.data.frame(disp_win2_coord)
+  
+  ## limits for zoom
+  xlim <- c(disp_win_df$X[1], disp_win_df$X[2]) # Set limits for zoom panel
+  ylim <- c(disp_win_df$Y[1], disp_win_df$Y[2])
+  
+  
+
+  
+  ## plot
   pm25_fig_all<- ggplot() +
     geom_sf(data = ct_pm25_srm_sp, aes(fill=total_pm25, geometry = geometry), color=NA) +
     theme_void() +
@@ -218,6 +237,8 @@ create_pulse_fig <- function(main_path,
     geom_sf(data = raw_counties, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
     # geom_sf_text(data = raw_counties, aes(label = NAME), size = 3) +
     geom_sf(data = refin_new_locations, mapping = aes(geometry = geometry), alpha = 0.8, pch = 16, size = 0.5) +
+    coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
+             datum = ca_crs, expand = FALSE) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
@@ -225,10 +246,10 @@ create_pulse_fig <- function(main_path,
       legend.position = c(0.05, 0.15),
       legend.key.width = unit(0.7, "line"),
       legend.key.height = unit(0.5, "line"),
-      legend.title = element_text(size = 8),
-      legend.text = element_text(size = 8),
+      legend.title = element_text(size = 12),
+      legend.text = element_text(size = 12),
       plot.margin = margin(0, 2, 0, 8),
-      plot.title = element_text(face = 'bold', size = 8, hjust = -0.05)) +
+      plot.title = element_text(face = 'bold', size = 12, hjust = -0.05)) +
     guides(fill = guide_colourbar(title.position="top",
                                   title.hjust = 0,
                                   direction = "horizontal",
@@ -236,7 +257,7 @@ create_pulse_fig <- function(main_path,
                                   order = 1))
   
   ggsave(plot = pm25_fig_all, 
-         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/pulse-figs/pulse_all.jpeg"), 
+         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/pulse-figs/pulse_all_crop.jpeg"), 
          device = "jpeg",
          # width = 6.5,
          # height = 8,
