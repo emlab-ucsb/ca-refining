@@ -2349,7 +2349,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   legend_a <- get_legend(
     legend_figa +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   ## labor fig - race
   labor_level_fig_a <- ggplot() +
@@ -2400,6 +2400,16 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     rel_widths = c(1, 1)
   )
   
+  ## add legend
+  hl_plot_grid_a_pres <- plot_grid(
+    hl_plot_grid_a_pres,
+    legend_a,
+    ncol = 1, 
+    rel_heights = c(0.95, 0.05)
+  )
+  
+  
+  
   ggsave(plot = hl_plot_grid_a_pres, 
          filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-race.jpeg"), 
          device = "jpeg",
@@ -2437,7 +2447,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   legend_b <- get_legend(
     legend_figb +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   ## labor fig - poverty
   labor_level_fig_b <- ggplot() +
@@ -2486,6 +2496,14 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     rel_widths = c(1, 1)
   )
   
+  ## add legend
+  hl_plot_grid_b_pres <- plot_grid(
+    hl_plot_grid_b_pres,
+    legend_b,
+    ncol = 1, 
+    rel_heights = c(0.95, 0.05)
+  )
+  
   ggsave(plot = hl_plot_grid_b_pres, 
          filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-income.jpeg"), 
          device = "jpeg",
@@ -2520,7 +2538,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   
   legend_c <- get_legend(
     legend_figc +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   ## labor fig - DAC
   labor_level_fig_c <- ggplot() +
@@ -2565,6 +2583,15 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     nrow = 1,
     rel_widths = c(1, 1)
   )
+  
+  ## add legend
+  hl_plot_grid_c_pres <- plot_grid(
+    hl_plot_grid_c_pres,
+    legend_c,
+    ncol = 1, 
+    rel_heights = c(0.95, 0.05)
+  )
+  
   
   ggsave(plot = hl_plot_grid_c_pres, 
          filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-dac.jpeg"), 
