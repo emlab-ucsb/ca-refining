@@ -22,13 +22,16 @@ create_prod_px_spread <- function(proc_oil_px_df) {
 }
 
 
-calc_labor_outputs <- function(proc_labor_df,
+calc_labor_outputs <- function(main_path,
+                               proc_labor_dest_df,
                                indiv_prod_output,
                                dt_refcap,
                                product_px,
                                cpi2019,
                                cpi2020,
-                               discount_rate) {
+                               discount_rate,
+                               alpha_comp,
+                               alpha_emp) {
 
 
   ## add product for calculating price
@@ -72,19 +75,27 @@ calc_labor_outputs <- function(proc_labor_df,
   county_out_refining_summary[, county := fifelse(county == "Solano County", "Solano", county)]
   
   ## merge with labor multipliers, calculate labor vals
-  county_out_labor <- merge(county_out_refining_summary, proc_labor_df,
+  county_out_labor <- merge(county_out_refining_summary, proc_labor_dest_df,
                             by = c("county"),
-                            all.x = T)
+                            all.x = T,
+                            allow.cartesian = T)
   
-  county_out_labor[, ':=' (c.dire_emp = (revenue / (10 ^ 6)) * dire_emp_mult,
-                           c.indi_emp = (revenue / (10 ^ 6)) * indi_emp_mult,
-                           c.indu_emp = (revenue / (10 ^ 6)) * indu_emp_mult,
-                           c.dire_comp = (revenue / (10 ^ 6)) * dire_comp_mult,
-                           c.indi_comp = (revenue / (10 ^ 6)) * ip.indi_comp_mult,
-                           c.indu_comp = (revenue / (10 ^ 6)) * ip.indu_comp_mult)]
+  # county_out_labor[, ':=' (c.dire_emp = (revenue / (10 ^ 6)) * dire_emp_mult,
+  #                          c.indi_emp = (revenue / (10 ^ 6)) * indi_emp_mult,
+  #                          c.indu_emp = (revenue / (10 ^ 6)) * indu_emp_mult,
+  #                          c.dire_comp = (revenue / (10 ^ 6)) * dire_comp_mult,
+  #                          c.indi_comp = (revenue / (10 ^ 6)) * ip.indi_comp_mult,
+  #                          c.indu_comp = (revenue / (10 ^ 6)) * ip.indu_comp_mult)]
+  # 
+  # county_out_labor[, ':=' (total_emp = c.dire_emp + c.indi_emp + c.indu_emp,
+  #                          total_comp = c.dire_comp + c.indi_comp + c.indu_comp)]
+   
+  
+  county_out_labor[, ':=' (c.emp = (revenue / (10 ^ 6)) * employment,
+                           c.comp = (revenue / (10 ^ 6)) * emp_comp)]
 
-  county_out_labor[, ':=' (total_emp = c.dire_emp + c.indi_emp + c.indu_emp,
-                           total_comp = c.dire_comp + c.indi_comp + c.indu_comp)]
+  county_out_labor <- county_out_labor[, .(total_emp = sum(c.emp),
+                                           total_comp = sum(c.comp)), .(demand_scenario, refining_scenario, year, destination)]
   
   ## convert to 2019 dollars
   county_out_labor[, total_comp_usd19 := total_comp * cpi2019 / cpi2020]
@@ -92,9 +103,32 @@ calc_labor_outputs <- function(proc_labor_df,
   ## calc PV
   county_out_labor[, total_comp_PV := total_comp_usd19 / ((1 + discount_rate) ^ (year - 2019))]
   
+  ## rename columns
+  setnames(county_out_labor, c("total_comp", "total_comp_usd19", "total_comp_PV"), c("total_comp_h", "total_comp_usd19_h", "total_comp_PV_h"))
   
-  county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, county, year, revenue, total_emp, total_comp,
-                                           total_comp_usd19, total_comp_PV)]
+  ## calculate the lower bound value
+  county_out_labor <- county_out_labor %>%
+    arrange(demand_scenario, refining_scenario, destination, year) %>%
+    group_by(demand_scenario, refining_scenario, destination) %>%
+    mutate(prev_emp = ifelse(year == 2020, NA, lag(total_emp)),
+           total_emp_revised = ifelse(year == 2020, total_emp, total_emp - ((1 - alpha_emp) * prev_emp)),
+           prev_comp_usd19h = ifelse(year == 2020, NA, lag(total_comp_usd19_h)),
+           total_comp_usd19_l = ifelse(year == 2020, total_comp_usd19_h, total_comp_usd19_h - ((1 - alpha_comp) * prev_comp_usd19h))) %>%
+    ungroup() %>%
+    as.data.table()
+  
+  review_df <- county_out_labor %>%
+    select(demand_scenario, refining_scenario, destination, year, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
+  
+  ## save for review
+  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/labor_result_for_review.csv"))
+  
+  ## calc discounted low
+  county_out_labor[, total_comp_PV_l := total_comp_usd19_l / ((1 + discount_rate) ^ (year - 2019))]
+  
+  ## select columns
+  county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, destination, year, total_emp, total_emp_revised, total_comp_h,
+                                           total_comp_usd19_h, total_comp_usd19_l, total_comp_PV_h, total_comp_PV_l)]
 
   county_out_labor
 
@@ -129,6 +163,9 @@ calculate_labor_x_demg_annual <- function(county_pop_ratios,
   ## remove "county" from county name
   ratio_df[, county := str_remove(county, " County")]
   
+  ## remove extra text from county string
+  annual_labor[, county := str_remove(destination, " County, CA")]
+  
   ## filter counties
   ratio_df <- ratio_df[county %in% unique(annual_labor$county)]
   
@@ -138,8 +175,9 @@ calculate_labor_x_demg_annual <- function(county_pop_ratios,
                         allow.cartesian = T)
   
   ## multiply by pct
-  labor_pct_df[, demo_emp := total_emp * pct]
-  labor_pct_df[, demo_comp_pv := total_comp_PV * pct]
+  labor_pct_df[, demo_emp := total_emp_revised * pct]
+  labor_pct_df[, demo_comp_pv_h := total_comp_PV_h * pct]
+  labor_pct_df[, demo_comp_pv_l := total_comp_PV_l * pct]
   
   ## merge with population
   labor_pct_df <-  merge(labor_pct_df, pop_df,
@@ -164,7 +202,8 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
   
   ## summarise over years
   labor_pct <- labor_pct[, .(sum_demo_emp = sum(demo_emp),
-                             sum_demo_comp_pv = sum(demo_comp_pv)),
+                             sum_demo_comp_pv_h = sum(demo_comp_pv_h),
+                             sum_demo_comp_pv_l = sum(demo_comp_pv_l)),
                          by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title)]
   
   return(labor_pct)
