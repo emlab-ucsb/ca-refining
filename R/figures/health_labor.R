@@ -54,22 +54,26 @@ plot_npv_health_labor <- function(main_path,
   
   ## summarize labor for state
   state_labor <- annual_labor[, .(sum_total_emp = sum(total_emp),
-                                  sum_total_comp_pv = sum(total_comp_PV)),
+                                  sum_total_comp_pv_h = sum(total_comp_PV_h),
+                                  sum_total_comp_pv_l = sum(total_comp_PV_l)),
                               by = .(demand_scenario, refining_scenario)]
   
   
   ## ref labor
   ref_labor <- state_labor[demand_scenario == "BAU" & refining_scenario == "historic production"]
-  setnames(ref_labor, c("sum_total_emp", "sum_total_comp_pv"), c("ref_total_emp", "ref_total_comp_pv"))
+  setnames(ref_labor, c("sum_total_emp", "sum_total_comp_pv_h", "sum_total_comp_pv_l"), c("ref_total_emp", "ref_total_comp_pv_h", "ref_total_comp_pv_l"))
   
   ## add values to labor
   state_labor[, `:=` (ref_total_emp = ref_labor$ref_total_emp[1],
-                       ref_total_comp_pv = ref_labor$ref_total_comp_pv[1])]
+                      ref_total_comp_pv_h = ref_labor$ref_total_comp_pv_h[1],
+                      ref_total_comp_pv_l = ref_labor$ref_total_comp_pv_l[1])]
   
-  state_labor[, forgone_wages_bil := (sum_total_comp_pv - ref_total_comp_pv) / 1e9]
+  state_labor[, forgone_wages_bil_h := (sum_total_comp_pv_h - ref_total_comp_pv_h) / 1e9]
+  state_labor[, forgone_wages_bil_l := (sum_total_comp_pv_l - ref_total_comp_pv_l) / 1e9]
 
   ## merge with health and ghg
-  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, sum_total_comp_pv, ref_total_comp_pv, forgone_wages_bil)],
+  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, sum_total_comp_pv_h, ref_total_comp_pv_h, forgone_wages_bil_h,
+                                                              sum_total_comp_pv_l, ref_total_comp_pv_l, forgone_wages_bil_l)],
                          by = c("demand_scenario", "refining_scenario"),
                          all.x = T)
   
@@ -80,7 +84,7 @@ plot_npv_health_labor <- function(main_path,
   
   ## prepare to plot
   plot_df <- health_labor_ghg_df[, .(scen_id, demand_scenario, refining_scenario, sum_cost_pv_b,
-                                                                         sum_cost_2019_pv_b, forgone_wages_bil, avoided_ghg, perc_diff)]
+                                     sum_cost_2019_pv_b, forgone_wages_bil_h, forgone_wages_bil_l, avoided_ghg, perc_diff)]
 
   setnames(plot_df, "perc_diff", "ghg_perc_diff")
   
@@ -92,7 +96,8 @@ plot_npv_health_labor <- function(main_path,
   
   plot_df[, `:=` (avoided_health_cost_ghg = avoided_health_cost / avoided_ghg,
                   avoided_health_cost_ghg_vsl2 = avoided_health_cost_annual_vsl / avoided_ghg,
-                  forgone_wages_bil_ghg = forgone_wages_bil / avoided_ghg)]
+                  forgone_wages_bil_h_ghg = forgone_wages_bil_h / avoided_ghg,
+                  forgone_wages_bil_l_ghg = forgone_wages_bil_l / avoided_ghg)]
   
   plot_df_health <- plot_df %>%
     select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, avoided_health_cost, avoided_health_cost_annual_vsl,
@@ -109,31 +114,33 @@ plot_npv_health_labor <- function(main_path,
   
   
   plot_df_labor <- plot_df %>%
-    select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, forgone_wages_bil, forgone_wages_bil_ghg) %>%
-    pivot_longer(forgone_wages_bil:forgone_wages_bil_ghg, names_to = "metric", values_to = "value") %>%
+    select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l, forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg) %>%
+    pivot_longer(forgone_wages_bil_h:forgone_wages_bil_l_ghg, names_to = "metric", values_to = "value") %>%
     mutate(segment = "labor",
-           unit_desc = ifelse(metric == "forgone_wages_bil", "USD billion", "USD billion per GHG"))
+           unit_desc = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_l"), "USD billion", "USD billion per GHG"),
+           estimate = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_h_ghg"), "high", "low"),
+           metric = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_l"), "forgone_wages_bil", "forgone_wages_bil_ghg")) %>%
+    select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, segment, metric, unit_desc, estimate, value) %>%
+    pivot_wider(names_from = estimate, values_from = value)
   
-  plot_df_long <- rbind(plot_df_health, plot_df_labor)
+  # plot_df_long <- rbind(plot_df_health, plot_df_labor)
   
-  plot_df_long <- plot_df_long %>%
-    mutate(title = ifelse(metric == "avoided_health_cost", "Health: avoided mortality",
-                                  ifelse(metric == "avoided_health_cost_ghg", "Health: avoided mortality per avoided GHG",
-                                         ifelse(metric == "forgone_wages_bil", "Labor: forgone wages", "Labor: forgone wages per avoided GHG"))))
+  ## prepare health for plotting ------------------------------
+  plot_df_health <- plot_df_health %>%
+    mutate(title = ifelse(metric == "avoided_health_cost", "Health: avoided mortality", "Health: avoided mortality per avoided GHG"))
   
-  plot_df_long$title <- factor(plot_df_long$title, levels = c("Health: avoided mortality", "Labor: forgone wages", 
-                                                                "Health: avoided mortality per avoided GHG", "Labor: forgone wages per avoided GHG"))
+  plot_df_health$title <- factor(plot_df_health$title, levels = c("Health: avoided mortality", "Health: avoided mortality per avoided GHG"))
   
   ## rename
-  setDT(plot_df_long)
-  plot_df_long[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  setDT(plot_df_health)
+  plot_df_health[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  plot_df_health[, scenario := gsub('LC1.', 'Low ', scenario)]
   # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
-  plot_df_long[, scenario := gsub('LC1.', 'Low ', scenario)]
   # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
   # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
   
   ## refactor
-  plot_df_long$scenario <- factor(plot_df_long$scenario, levels = c('BAU demand - historic production',
+  plot_df_health$scenario <- factor(plot_df_health$scenario, levels = c('BAU demand - historic production',
                                                                     'BAU demand - historic exports', 
                                                                     'BAU demand - low exports', 
                                                                     'Low demand - historic exports',
@@ -141,20 +148,59 @@ plot_npv_health_labor <- function(main_path,
                                                                     'Low demand - historic production'))
   
   ## convert value of scaled outputs (by ghg) to millions, add unit column
-  plot_df_long[, value := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), value * 1000, value)]
-  plot_df_long[, metric := fifelse(metric =="forgone_wages_bil_ghg", "forgone_wages_ghg", metric)]
-  plot_df_long[, unit := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_ghg"), 
-                                 "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)", 
-                                 "NPV (2019 USD billion)")]
+  plot_df_health[, value := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), value * 1000, value)]
+  plot_df_health[, metric := fifelse(metric =="forgone_wages_bil_ghg", "forgone_wages_ghg", metric)]
+  plot_df_health[, unit := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_ghg"), 
+                                   "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)", 
+                                   "NPV (2019 USD billion)")]
   
   ## change historic to historical
-  plot_df_long[, scen_id := str_replace(scen_id, "historic", "historical")]
-  plot_df_long[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
-  plot_df_long[, scenario := str_replace(scenario, "historic", "historical")]
+  plot_df_health[, scen_id := str_replace(scen_id, "historic", "historical")]
+  plot_df_health[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
   
   ## save figure inputs
-  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs.csv"))
+  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
   
+  
+  ## prepare labor ----------------------
+  plot_df_labor <- plot_df_labor %>%
+    mutate(title = ifelse(metric == "forgone_wages_bil", "Labor: forgone wages", "Labor: forgone wages per avoided GHG"))
+
+  plot_df_labor$title <- factor(plot_df_labor$title, levels = c("Labor: forgone wages", "Labor: forgone wages per avoided GHG"))
+
+  ## rename
+  setDT(plot_df_labor)
+  plot_df_labor[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  plot_df_labor[, scenario := gsub('LC1.', 'Low ', scenario)]
+  # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
+  # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
+  # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
+
+  ## refactor
+  plot_df_labor$scenario <- factor(plot_df_labor$scenario, levels = c('BAU demand - historic production',
+                                                                        'BAU demand - historic exports',
+                                                                        'BAU demand - low exports',
+                                                                        'Low demand - historic exports',
+                                                                        'Low demand - low exports',
+                                                                        'Low demand - historic production'))
+
+  ## convert value of scaled outputs (by ghg) to millions, add unit column
+  plot_df_labor[, high := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), high * 1000, high)]
+  plot_df_labor[, low := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), low * 1000, low)]
+  plot_df_labor[, metric := fifelse(metric =="forgone_wages_bil_ghg", "forgone_wages_ghg", metric)]
+  plot_df_labor[, unit := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_ghg"),
+                                   "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+                                   "NPV (2019 USD billion)")]
+
+  ## change historic to historical
+  plot_df_labor[, scen_id := str_replace(scen_id, "historic", "historical")]
+  plot_df_labor[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
+
+  ## save figure inputs
+  fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
+
   
   ## scenarios for filtering
   remove_scen <- c('LC1 historical production', 'BAU historical production')
@@ -171,14 +217,14 @@ plot_npv_health_labor <- function(main_path,
   ## figs - make each separately
   ## -------------------------------------------------------------------
   
-  hist_prod = as.data.table(plot_df_long %>% filter(scen_id == bau_scen,
+  hist_prod = as.data.table(plot_df_health %>% filter(scen_id == bau_scen,
                                                     unit == "NPV (2019 USD billion)",
                                                     unit_desc == "USD billion (2019 VSL)"))
   
   fig_bxm_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = plot_df_health %>% filter(!scen_id %in% remove_scen,
                                               title == "Health: avoided mortality",
                                               unit == "NPV (2019 USD billion)",
                                               unit_desc == "USD billion (2019 VSL)",
@@ -203,15 +249,19 @@ plot_npv_health_labor <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
     geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
     # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
-                                        title == "Labor: forgone wages",
-                                        unit == "NPV (2019 USD billion)",
-                                        !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, y = value, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
+    geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+                                                   title == "Labor: forgone wages",
+                                                   unit == "NPV (2019 USD billion)",
+                                                   !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = refining_scenario), size = 1, alpha = 0.8) +
+    geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+                                               title == "Labor: forgone wages",
+                                               unit == "NPV (2019 USD billion)",
+                                               !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, y = low, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
     labs(color = "Policy",
          title = "B. Labor: forgone wages",
          y = NULL,
          x = NULL) +
-    ylim(-25, 0) +
+    ylim(-60, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
     theme_line +
@@ -225,11 +275,11 @@ plot_npv_health_labor <- function(main_path,
   ## legends  
   legend_fig <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
-    geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
+    geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
                                               title == "Labor: forgone wages per avoided GHG",
                                               unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
                                               !refining_scenario == "historic production"), 
-               aes(x = ghg_perc_diff * -100, y = value, color = scenario, shape = scenario), size = 3, alpha = 0.8) +
+               aes(x = ghg_perc_diff * -100, y = high, color = scenario, shape = scenario), size = 3, alpha = 9) +
     labs(title = "",
          y = NULL,
          # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
@@ -538,33 +588,58 @@ create_county_health_labor_df <- function(main_path,
   labor_map_df <- labor_map_df[scenario == "Low demand - low exports" | scenario == "BAU demand - historical production"]
 
   ## group by scenario and census tract, sum cost_2019_pv
-  labor_map_df <- labor_map_df[, .(sum_total_comp_usd19 = sum(total_comp_usd19)),
-                               by = .(county, scenario, scen_id)]
+  labor_map_df <- labor_map_df[, .(sum_total_comp_usd19_h = sum(total_comp_usd19_h),
+                                   sum_total_comp_usd19_l = sum(total_comp_usd19_l)),
+                               by = .(destination, scenario, scen_id)]
 
 
 
   labor_map_df[, ref := ifelse(scenario == "BAU demand - historical production", "bau", "alt")]
 
-  labor_map_df <- labor_map_df %>%
-    select(county, ref, sum_total_comp_usd19) %>%
-    pivot_wider(names_from = ref, values_from = sum_total_comp_usd19) %>%
+  ## low
+  labor_map_df_l <- labor_map_df %>%
+    mutate(county = str_remove(destination, " County, CA")) %>%
+    select(county, ref, sum_total_comp_usd19_l) %>%
+    pivot_wider(names_from = ref, values_from = sum_total_comp_usd19_l) %>%
     mutate(diff = alt - bau) %>%
-    rename(delta_total_comp_usd19 = diff) %>%
+    rename(delta_total_comp_usd19_l = diff) %>%
     mutate(scenario = "Low demand - low exports") %>%
-    select(scenario, county, delta_total_comp_usd19) %>%
+    select(scenario, county, delta_total_comp_usd19_l) %>%
     rename(NAME = county) %>%
     left_join(county_names) %>%
     left_join(pop_2020_county) %>%
-    mutate(delta_total_comp_usd19_pc = delta_total_comp_usd19 / pop_2020)
+    mutate(delta_total_comp_usd19_pc_l = delta_total_comp_usd19_l / pop_2020) %>%
+    select(scenario, NAME, COUNTYFP, pop_2020, delta_total_comp_usd19_l, delta_total_comp_usd19_pc_l)
+  
+  labor_map_df_h <- labor_map_df %>%
+    mutate(county = str_remove(destination, " County, CA")) %>%
+    select(county, ref, sum_total_comp_usd19_h) %>%
+    pivot_wider(names_from = ref, values_from = sum_total_comp_usd19_h) %>%
+    mutate(diff = alt - bau) %>%
+    rename(delta_total_comp_usd19_h = diff) %>%
+    mutate(scenario = "Low demand - low exports") %>%
+    select(scenario, county, delta_total_comp_usd19_h) %>%
+    rename(NAME = county) %>%
+    left_join(county_names) %>%
+    left_join(pop_2020_county) %>%
+    mutate(delta_total_comp_usd19_pc_h = delta_total_comp_usd19_h / pop_2020) %>%
+    select(scenario, NAME, COUNTYFP, pop_2020, delta_total_comp_usd19_h, delta_total_comp_usd19_pc_h)
 
+  ## merge
+  health_map_df_hl <- merge(labor_map_df_l, labor_map_df_h,
+                         by = c("scenario", "NAME", "COUNTYFP", "pop_2020"),
+                         all.x = T)
+  
   ## join with county-level health
-  county_map_df <- merge(health_county_df, labor_map_df %>% select(NAME, delta_total_comp_usd19, delta_total_comp_usd19_pc),
+  county_map_df <- merge(health_county_df, health_map_df_hl %>% select(NAME, delta_total_comp_usd19_l, delta_total_comp_usd19_pc_l,
+                                                                       delta_total_comp_usd19_h, delta_total_comp_usd19_pc_h),
                              by = "NAME",
                              all.x = T)
 
   county_map_df <- county_map_df %>%
     select(scenario, scen_id, county = NAME, COUNTYFP, pop_2020, npv_health_av_mort, npv_health_av_mort_pc, 
-           delta_total_comp_usd19, delta_total_comp_usd19_pc)
+           delta_total_comp_usd19_l, delta_total_comp_usd19_pc_l,
+           delta_total_comp_usd19_h, delta_total_comp_usd19_pc_h)
     
 
   ## save county-level inputs
@@ -1399,7 +1474,8 @@ plot_labor_levels <- function(main_path,
 
   ## sum for state
   fig2_l_df <- fig2_l_df[, .(sum_demo_emp = sum(demo_emp),
-                             sum_demo_comp_pv = sum(demo_comp_pv)),
+                             sum_demo_comp_pv_h = sum(demo_comp_pv_h),
+                             sum_demo_comp_pv_l = sum(demo_comp_pv_l)),
                          by = .(year, demand_scenario, refining_scenario,
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
@@ -1410,12 +1486,13 @@ plot_labor_levels <- function(main_path,
   
   ## calculate per capita
   fig2_l_df[, demo_emp_pc := sum_demo_emp / pop_2020]
-  fig2_l_df[, demo_comp_pc := sum_demo_comp_pv / pop_2020]
+  fig2_l_df[, demo_comp_pc_h := sum_demo_comp_pv_h / pop_2020]
+  fig2_l_df[, demo_comp_pc_l := sum_demo_comp_pv_l / pop_2020]
   
   ## select columns
   fig2_l_df <- fig2_l_df[, .(year, demand_scenario, refining_scenario,
                              scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp,
-                             demo_emp_pc, sum_demo_comp_pv, demo_comp_pc)]
+                             demo_emp_pc, sum_demo_comp_pv_h, sum_demo_comp_pv_l, demo_comp_pc_h, demo_comp_pc_l)]
   
   ## change historic to historical
   fig2_l_df[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
@@ -1464,17 +1541,30 @@ plot_labor_levels <- function(main_path,
   # 
   
   ## save figure inputs
-  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
+  fwrite(fig2_l_df, file.path(main_path, "outputs-staged-for-deletion/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
 
   ## labor figure
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
+  
+  ## make the df longer - split in two, rbind
+  fig2_l_df_h <- fig2_l_df %>%
+    select(-sum_demo_comp_pv_l, -demo_comp_pc_l) %>%
+    pivot_longer(sum_demo_comp_pv_h:demo_comp_pc_h, names_to = "comp_metric", values_to = "high_est") %>%
+    mutate(comp_metric = substr(comp_metric, 1, nchar(comp_metric) - 2))
+  
+  fig2_l_df <- fig2_l_df %>%
+    select(-sum_demo_comp_pv_h, -demo_comp_pc_h) %>%
+    pivot_longer(sum_demo_comp_pv_l:demo_comp_pc_l, names_to = "comp_metric", values_to = "low_est") %>%
+    mutate(comp_metric = substr(comp_metric, 1, nchar(comp_metric) - 2)) %>%
+    left_join(fig2_l_df_h)
+ 
 
   ## labor fig a
   labor_level_fig_a <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
                                                   title %in% fig_title_vec,
                                                   demo_cat == "Race")  %>%
-                                mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-                               aes(x = year, y = demo_emp_pc, color = title, group = title)) +
+                                mutate(title = factor(title, levels = c("Hispanic", "white", "Asian", "Black"))),
+                               aes(x = year, y = sum_demo_emp / 1000, color = title, group = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1482,7 +1572,7 @@ plot_labor_levels <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.004)) +
+    ylim(c(0, 50)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1503,7 +1593,7 @@ plot_labor_levels <- function(main_path,
 
   ##
   labor_level_fig_b <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
-                                                  demo_cat == "DAC"), aes(x = year, y = demo_emp_pc, lty = title)) +
+                                                  demo_cat == "DAC"), aes(x = year, y = sum_demo_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1511,7 +1601,7 @@ plot_labor_levels <- function(main_path,
                        values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.004)) +
+    ylim(c(0, 90)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1534,7 +1624,7 @@ plot_labor_levels <- function(main_path,
   labor_level_fig_c <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
                                                   demo_cat == "Poverty") %>%
                                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                               aes(x = year, y = demo_emp_pc, lty = title)) +
+                               aes(x = year, y = sum_demo_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_color_manual(name = "",
                        values = poverty_lty) +
@@ -1542,7 +1632,7 @@ plot_labor_levels <- function(main_path,
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.004)) +
+    ylim(c(0, 110)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1562,7 +1652,7 @@ plot_labor_levels <- function(main_path,
   #     theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years per person", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years (thousand)", size = 8, angle = 90)
 
 
   # ## plot together
@@ -1670,9 +1760,7 @@ plot_labor_levels_gaps <- function(main_path,
                                                                       'BAU demand\nlow exports',
                                                                       'Low demand\nhistorical exports',
                                                                       'Low demand\nlow exports',
-  
-                                                                                                                                          'Low demand\nhistorical production'))
-
+                                                                      'Low demand\nhistorical productio'))
   ## sum for state
   l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
                          by = .(year, demand_scenario, refining_scenario,
@@ -1710,13 +1798,13 @@ plot_labor_levels_gaps <- function(main_path,
 
   
   ## figure a
-  fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
+  fig_title_vec <- c("Black", "Asian", "white", "Hispanic")
   
   labor_gap_fig_a <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
                                                 title %in% fig_title_vec,
                                                 demo_cat == "Race")  %>%
-                              mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-                             aes(x = year, y = gap_emp_pc, color = title)) +
+                              mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
+                             aes(x = year, y = gap_emp /1000, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1727,7 +1815,7 @@ plot_labor_levels_gaps <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-0.0025, 0)) +
+    ylim(c(-35, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1745,7 +1833,7 @@ plot_labor_levels_gaps <- function(main_path,
 
   ##
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                demo_cat == "DAC"), aes(x = year, y = gap_emp_pc, lty = title)) +
+                                                demo_cat == "DAC"), aes(x = year, y = gap_emp /1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1756,7 +1844,7 @@ plot_labor_levels_gaps <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-0.0025, 0)) +
+    ylim(c(-65, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1777,7 +1865,7 @@ plot_labor_levels_gaps <- function(main_path,
                                filter(!scenario %in% remove_scen,
                                       demo_cat == "Poverty") %>%
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                             aes(x = year, y = gap_emp_pc, lty = title)) +
+                             aes(x = year, y = gap_emp /1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -1787,7 +1875,7 @@ plot_labor_levels_gaps <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(-0.0025, 0) +
+    ylim(-65, 0) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1804,7 +1892,7 @@ plot_labor_levels_gaps <- function(main_path,
 #       theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE jobs, difference from reference", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference (thousand)", size = 8, angle = 90)
 
 
   # ## plot together
@@ -1920,18 +2008,20 @@ plot_hl_levels_df <- function(main_path,
    
    ## ref labor
    ref_labor <- labor_df[demand_scenario == "BAU" & refining_scenario == "historic production"]
-   setnames(ref_labor, c("sum_demo_emp", "sum_demo_comp_pv"), c("ref_total_emp", "ref_total_comp_pv"))
-   ref_labor <- ref_labor[, .(demo_cat, demo_group, title, ref_total_emp, ref_total_comp_pv)]
+   setnames(ref_labor, c("sum_demo_emp", "sum_demo_comp_pv_h", "sum_demo_comp_pv_l"), c("ref_total_emp", "ref_total_comp_pv_h", "ref_total_comp_pv_l"))
+   ref_labor <- ref_labor[, .(demo_cat, demo_group, title, ref_total_emp, ref_total_comp_pv_h, ref_total_comp_pv_l)]
    
    ## add values to labor
    labor_df <- merge(labor_df, ref_labor,
                      by = c("demo_cat", "demo_group", "title"))
    
    ## calculate difference
-   labor_df[, forgone_wages := (sum_demo_comp_pv - ref_total_comp_pv)]
+   labor_df[, forgone_wages_h := (sum_demo_comp_pv_h - ref_total_comp_pv_h)]
+   labor_df[, forgone_wages_l := (sum_demo_comp_pv_l - ref_total_comp_pv_l)]
    
    ## merge with health and ghg
-   health_labor_ghg_df <- merge(health_ghg_df, labor_df[, .(demand_scenario, refining_scenario, demo_cat, demo_group, title, sum_demo_comp_pv, ref_total_comp_pv, forgone_wages)],
+   health_labor_ghg_df <- merge(health_ghg_df, labor_df[, .(demand_scenario, refining_scenario, demo_cat, demo_group, title, sum_demo_comp_pv_h, sum_demo_comp_pv_l, 
+                                                            ref_total_comp_pv_h, ref_total_comp_pv_l, forgone_wages_h, forgone_wages_l)],
                                 by = c("demand_scenario", "refining_scenario", "demo_cat", "demo_group", "title"),
                                 all.x = T)
    
@@ -1942,14 +2032,14 @@ plot_hl_levels_df <- function(main_path,
    
    ## prepare to plot
    plot_df <- health_labor_ghg_df[, .(scen_id, demand_scenario, refining_scenario, demo_cat, demo_group, title,
-                                      sum_cost_pv, sum_cost_2019_pv, forgone_wages, avoided_ghg, perc_diff)]
+                                      sum_cost_pv, sum_cost_2019_pv, forgone_wages_h, forgone_wages_l, avoided_ghg, perc_diff)]
    
    setnames(plot_df, "perc_diff", "ghg_perc_diff")
    
    ## pivot longer
    plot_df <- plot_df %>%
-     select(scen_id:title, ghg_perc_diff, sum_cost_pv, sum_cost_2019_pv, forgone_wages) %>%
-     pivot_longer(sum_cost_pv:forgone_wages, names_to = "metric", values_to = "value")
+     select(scen_id:title, ghg_perc_diff, sum_cost_pv, sum_cost_2019_pv, forgone_wages_h, forgone_wages_l) %>%
+     pivot_longer(sum_cost_pv:forgone_wages_l, names_to = "metric", values_to = "value")
    
    ## add column for vsl
    plot_df_health <- plot_df %>%
@@ -1959,7 +2049,7 @@ plot_hl_levels_df <- function(main_path,
             metric_desc = "avoided_health_cost")
           
    plot_df_labor <- plot_df %>%
-     filter(metric == "forgone_wages") %>%
+     filter(metric %in% c("forgone_wages_h", "forgone_wages_l")) %>%
      mutate(segment = "labor",
             unit_desc = "USD",
             metric_desc = "forgone_wages")
@@ -1993,8 +2083,9 @@ plot_hl_levels_df <- function(main_path,
    ## titles for plotting
    plot_df_long[, demand_title := ifelse(demand_scenario == "BAU", "BAU demand", "Low demand")]
    plot_df_long[, scen_title := paste0(demand_title, "\n", str_to_sentence(refining_scenario))]
+  
    
-   plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('BAU demand\nHistorical production',
+    plot_df_long$scen_title <- factor(plot_df_long$scen_title, levels = c('BAU demand\nHistorical production',
                                                                         'BAU demand\nHistorical exports', 
                                                                         'BAU demand\nLow exports', 
                                                                         'Low demand\nHistorical exports',
@@ -2022,6 +2113,9 @@ plot_hl_levels <- function(demographic_npv_df) {
    
    fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
    
+   ## add column for defining shapes
+   plot_df_long[, demo_grp_metric := paste0(demo_group, "_", metric)]
+   
    ## health fig - race
    health_level_fig_a <- ggplot() +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -2029,7 +2123,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                                                demo_cat == "Race",
                                                unit_desc == "USD (2019 VSL)",
                                                title %in% fig_title_vec)  %>%
-                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))), 
+                  mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))), 
                 aes(x = scen_title, y = value / 1e9, color = title),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
@@ -2047,26 +2141,23 @@ plot_hl_levels <- function(demographic_npv_df) {
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
    
-   legend_figa <- health_level_fig_a + theme(legend.position = "bottom")
-
-   legend_a <- get_legend(
-     legend_figa +
-       theme(legend.text = element_text(size = 8)))
-   
    ## labor fig - race
    labor_level_fig_a <- ggplot() +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Race",
                                                segment == "labor",
-                                               title %in% fig_title_vec)%>%
-                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))), 
-                aes(x = scen_title, y = value / 1e9, color = title),
+                                               title %in% fig_title_vec) %>%
+                  mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))), 
+                aes(x = scen_title, y = value / 1e9, color = title, shape = metric),
                 size = 3, alpha = 0.8) +
      facet_wrap(~seg_title) +
      scale_color_manual(name = "",
                         values = race_col_pal) +
-     ylim(-12, 0) +
+     scale_shape_manual(name = "",
+                        values = race_shape_ptc,
+                        labels = high_low_labs) +
+     ylim(-25, 0) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
@@ -2077,6 +2168,15 @@ plot_hl_levels <- function(demographic_npv_df) {
            plot.margin = unit(c(0, 0, 0, 0), "cm"),
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
+   
+   legend_figa <- labor_level_fig_a + 
+     theme(legend.position = "bottom") + 
+     guides(color = guide_legend(order = 1), shape = guide_legend(order = 2))
+   
+   legend_a <- get_legend(
+     legend_figa +
+       theme(legend.text = element_text(size = 8)))
+   
 
    ## health fig - poverty
    health_level_fig_b <- ggplot() +
@@ -2087,7 +2187,7 @@ plot_hl_levels <- function(demographic_npv_df) {
                 aes(x = scen_title, y = value / 1e9, shape = title),
                 color = "black", size = 3, alpha = 0.8) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-     scale_shape_manual(values = poverty_ptc) +
+     scale_shape_manual(values = poverty_ptc_h) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
@@ -2101,27 +2201,22 @@ plot_hl_levels <- function(demographic_npv_df) {
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
    
-   legend_figb <- health_level_fig_b + theme(legend.position = "bottom")
-   
-   legend_b <- get_legend(
-     legend_figb +
-       theme(legend.text = element_text(size = 8)))
-   
    ## labor fig - poverty
    labor_level_fig_b <- ggplot() +
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "Poverty",
                                                segment == "labor") %>%
                   mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
-                aes(x = scen_title, y = value / 1e9, shape = title),
+                aes(x = scen_title, y = value / 1e9, shape = demo_grp_metric),
                 color = "black", size = 3, alpha = 0.8) +
-     scale_shape_manual(values = poverty_ptc) +
+     scale_shape_manual(values = poverty_ptc_l,
+                        labels = poverty_hl_labs) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
-     ylim(-20, 0) +
+     ylim(-50, 0) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -2129,6 +2224,15 @@ plot_hl_levels <- function(demographic_npv_df) {
            plot.margin = unit(c(0, 0, 0, 0), "cm"),
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
+   
+   
+   ## legend
+   legend_figb <- labor_level_fig_b + theme(legend.position = "bottom")
+   
+   legend_b <- get_legend(
+     legend_figb +
+       theme(legend.text = element_text(size = 8)))
+   
    
    
    ## health fig - DAC
@@ -2151,26 +2255,22 @@ plot_hl_levels <- function(demographic_npv_df) {
            plot.margin = unit(c(0, 0, 0, 0), "cm"),
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
-   
-   legend_figc <- health_level_fig_c + theme(legend.position = "bottom")
-   
-   legend_c <- get_legend(
-     legend_figc +
-       theme(legend.text = element_text(size = 8)))
+  
    
    ## labor fig - DAC
    labor_level_fig_c <- ggplot() +
      geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                                demo_cat == "DAC",
-                                               segment == "labor"), aes(x = scen_title, y = value / 1e9, shape = title),
+                                               segment == "labor"), aes(x = scen_title, y = value / 1e9, shape = demo_grp_metric),
                 color = "black", size = 3, alpha = 0.8) +
      geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-     scale_shape_manual(values = dac_ptc) +
+     scale_shape_manual(values = dac_hl_ptc,
+                        labels = dac_hl_labs) +
      facet_wrap(~seg_title) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
-     ylim(-15, 0) +
+     ylim(-40, 0) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -2178,6 +2278,13 @@ plot_hl_levels <- function(demographic_npv_df) {
            plot.margin = unit(c(0, 0, 0, 0), "cm"),
            axis.ticks.length.y = unit(0.1, 'cm'),
            axis.ticks.length.x = unit(0.1, 'cm'))
+   
+   ## legend
+   legend_figc <- labor_level_fig_c + theme(legend.position = "bottom")
+   
+   legend_c <- get_legend(
+     legend_figc +
+       theme(legend.text = element_text(size = 8)))
    
    
    ## combine figure
@@ -2282,6 +2389,10 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   ## copy npv results
   plot_df_long <- copy(demographic_npv_df)
   
+  ## add column for defining shapes
+  plot_df_long[, demo_grp_metric := paste0(demo_group, "_", metric)]
+  
+  
   ## calc 2020 pop by demographic
   pop_2020 <- refining_mortality %>%
     filter(year == 2020) %>%
@@ -2345,12 +2456,6 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
-  legend_figa <- health_level_fig_a + theme(legend.position = "bottom")
-  
-  legend_a <- get_legend(
-    legend_figa +
-      theme(legend.text = element_text(size = 12)))
-  
   ## labor fig - race
   labor_level_fig_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -2359,16 +2464,19 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               segment == "labor",
                                               title %in% fig_title_vec)  %>%
                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))), 
-               aes(x = scen_title, y = value, color = title),
+               aes(x = scen_title, y = value, color = title, shape = metric),
                size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
                        values = race_col_pal) +
+    scale_shape_manual(name = "",
+                       values = race_shape_ptc,
+                       labels = high_low_labs) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -2376,6 +2484,16 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  
+  ## legend
+  legend_figa <- labor_level_fig_a + theme(legend.position = "bottom")
+  
+  legend_a <- get_legend(
+    legend_figa +
+      theme(legend.text = element_text(size = 12)) +
+      guides(color = guide_legend(order = 1), shape = guide_legend(order = 2)))
+  
   
   ## save version for presentation
   hl_plot_grid_a_pres <- plot_grid(
@@ -2429,7 +2547,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                aes(x = scen_title, y = value, shape = title),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = poverty_ptc) +
+    scale_shape_manual(values = poverty_ptc_h) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
@@ -2443,11 +2561,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
-  legend_figb <- health_level_fig_b + theme(legend.position = "bottom")
-  
-  legend_b <- get_legend(
-    legend_figb +
-      theme(legend.text = element_text(size = 12)))
+
   
   ## labor fig - poverty
   labor_level_fig_b <- ggplot() +
@@ -2455,15 +2569,16 @@ plot_hl_levels_pc <- function(demographic_npv_df,
                                               demo_cat == "Poverty",
                                               segment == "labor") %>%
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
-               aes(x = scen_title, y = value, shape = title),
+               aes(x = scen_title, y = value, shape = demo_grp_metric),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = poverty_ptc) +
+    scale_shape_manual(values = poverty_ptc_l,
+                       labels = poverty_hl_labs) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -2471,6 +2586,13 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figb <- labor_level_fig_b + 
+    theme(legend.position = "bottom")
+  
+  legend_b <- get_legend(
+    legend_figb +
+      theme(legend.text = element_text(size = 12)))
   
   
   ## save version for presentation
@@ -2534,25 +2656,20 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
-  legend_figc <- health_level_fig_c + theme(legend.position = "bottom")
-  
-  legend_c <- get_legend(
-    legend_figc +
-      theme(legend.text = element_text(size = 12)))
-  
   ## labor fig - DAC
   labor_level_fig_c <- ggplot() +
     geom_point(data = plot_df_long %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "DAC",
-                                              segment == "labor"), aes(x = scen_title, y = value, shape = title),
+                                              segment == "labor"), aes(x = scen_title, y = value, shape = demo_grp_metric),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = dac_ptc) +
+    scale_shape_manual(values = dac_hl_ptc,
+                       labels = dac_hl_labs) +
     facet_wrap(~seg_title) +
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma, limits = c(-2000,0)) +
+    scale_y_continuous(label = comma, limits = c(-3500,0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -2560,6 +2677,13 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figc <- labor_level_fig_c + theme(legend.position = "bottom")
+  
+  legend_c <- get_legend(
+    legend_figc +
+      theme(legend.text = element_text(size = 12)))
+  
   
   ## save version for presentation
   hl_plot_grid_c_pres <- plot_grid(
@@ -2704,6 +2828,7 @@ plot_hl_shares <- function(main_path,
                            state_pop_ratios) {
 
   plot_df_long <- copy(demographic_npv_df)
+  
 
   ## calculate shares
   plot_df_long[, total_value := sum(value),
@@ -2747,6 +2872,9 @@ plot_hl_shares <- function(main_path,
   
   ## bind
   share_df <- rbind(share_df, pop_share_df)
+  
+  ## add column for defining shapes
+  share_df[, demo_grp_metric := paste0(title, "_", metric)]
 
   ## save figure inputs
   fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
@@ -2787,12 +2915,6 @@ plot_hl_shares <- function(main_path,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
 
-  legend_figa <- health_share_fig_a + theme(legend.position = "bottom")
-
-  legend_a <- get_legend(
-    legend_figa +
-      theme(legend.text = element_text(size = 8)))
-
   ## labor fig - race
   labor_share_fig_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -2801,12 +2923,15 @@ plot_hl_shares <- function(main_path,
                                               segment == "labor",
                                               title %in% fig_title_vec)%>%
                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-               aes(x = scen_title, y = share, color = title),
+               aes(x = scen_title, y = share, color = title, shape = metric),
                size = 3, alpha = 0.8) +
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
                        values = race_col_pal) +
-    ylim(0, 0.5) +
+    scale_shape_manual(name = "",
+                      values = race_shape_ptc,
+                      labels = high_low_labs) +
+    ylim(0, 0.6) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -2817,6 +2942,15 @@ plot_hl_shares <- function(main_path,
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  legend_figa <- labor_share_fig_a + 
+    theme(legend.position = "bottom") + 
+    guides(color = guide_legend(order = 1), shape = guide_legend(order = 2))
+    
+  
+  legend_a <- get_legend(
+    legend_figa +
+      theme(legend.text = element_text(size = 8)))
   
   ## state fig - race
   state_share_fig_a <- ggplot() +
@@ -2853,7 +2987,7 @@ plot_hl_shares <- function(main_path,
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
-    scale_shape_manual(values = poverty_ptc) +
+    scale_shape_manual(values = poverty_ptc_h) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -2866,21 +3000,16 @@ plot_hl_shares <- function(main_path,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
 
-  legend_figb <- health_share_fig_b + theme(legend.position = "bottom")
-
-  legend_b <- get_legend(
-    legend_figb +
-      theme(legend.text = element_text(size = 8)))
-
   ## labor fig - poverty
   labor_share_fig_b <- ggplot() +
     geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "Poverty",
                                               segment == "labor") %>%
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-               aes(x = scen_title, y = share, shape = title),
+               aes(x = scen_title, y = share, shape = demo_grp_metric),
                color = "black", size = 3, alpha = 0.8) +
-    scale_shape_manual(values = poverty_ptc) +
+    scale_shape_manual(values = poverty_pt_share_l,
+                       labels = poverty_hl_share_labs) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     ylim(0, 0.9) +
@@ -2895,6 +3024,14 @@ plot_hl_shares <- function(main_path,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
+  ## legend
+  legend_figb <- labor_share_fig_b + theme(legend.position = "bottom")
+  
+  legend_b <- get_legend(
+    legend_figb +
+      theme(legend.text = element_text(size = 8)))
+  
+  
   ## state - poverty
   state_share_fig_b <- ggplot() +
     geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
@@ -2903,7 +3040,7 @@ plot_hl_shares <- function(main_path,
                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                aes(x = scen_title, y = share, shape = title),
                color = "black", size = 3, alpha = 0.8) +
-    scale_shape_manual(values = poverty_ptc) +
+    scale_shape_manual(values = poverty_ptc_h) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
     ylim(0, 0.9) +
@@ -2940,20 +3077,17 @@ plot_hl_shares <- function(main_path,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
 
-  legend_figc <- health_share_fig_c + theme(legend.position = "bottom")
 
-  legend_c <- get_legend(
-    legend_figc +
-      theme(legend.text = element_text(size = 8)))
 
   ## labor fig - DAC
   labor_share_fig_c <- ggplot() +
     geom_point(data = share_df %>% filter(!scen_id %in% remove_scen,
                                               demo_cat == "DAC",
-                                              segment == "labor"), aes(x = scen_title, y = share, shape = title),
+                                              segment == "labor"), aes(x = scen_title, y = share, shape = demo_grp_metric),
                color = "black", size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
-    scale_shape_manual(values = dac_ptc) +
+    scale_shape_manual(values = dac_hl_ptc_share,
+                       labels = dac_hl_labs_share) +
     facet_wrap(~seg_title) +
     ylim(0, 0.85) +
     labs(y = "NPV share",
@@ -2967,6 +3101,13 @@ plot_hl_shares <- function(main_path,
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
+  
+  ## legend
+  legend_figc <- labor_share_fig_c + theme(legend.position = "bottom")
+  
+  legend_c <- get_legend(
+    legend_figc +
+      theme(legend.text = element_text(size = 8)))
   
   ## general fig - DAC
   state_share_fig_c <- ggplot() +
@@ -3106,7 +3247,7 @@ create_health_labor_table <- function(main_path,
   
   ## fte-job-years
   emp_out <- ref_labor_demog %>%
-    select(-sum_demo_comp_pv) %>%
+    select(-sum_demo_comp_pv_h, -sum_demo_comp_pv_l) %>%
     rename(value = sum_demo_emp) %>%
     mutate(segment = "labor",
            metric = "fte_job_years",
@@ -3393,7 +3534,6 @@ fig4_hl <- function(health_grp,
                                                                           'BAU demand\nlow exports',
                                                                           'Low demand\nhistorical exports',
                                                                           'Low demand\nlow exports',
-                                                                          
                                                                           'Low demand\nhistorical production'))
   
   ## sum for state
@@ -3437,7 +3577,7 @@ fig4_hl <- function(health_grp,
                                                  title %in% fig_title_vec,
                                                  demo_cat == "Race")  %>%
                               mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-                            aes(x = year, y = gap_emp_pc, color = title)) +
+                            aes(x = year, y = gap_emp, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -3448,7 +3588,6 @@ fig4_hl <- function(health_grp,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-0.0025, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -3469,7 +3608,7 @@ fig4_hl <- function(health_grp,
 
   ## labor b
     labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                   demo_cat == "DAC"), aes(x = year, y = gap_emp_pc, lty = title)) +
+                                                   demo_cat == "DAC"), aes(x = year, y = gap_emp, lty = title)) +
       geom_line(linewidth = 1, alpha = 0.8) +
       geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
       facet_grid(demo_cat ~ scenario_title) +
@@ -3480,7 +3619,6 @@ fig4_hl <- function(health_grp,
       scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                          labels = c(2020, 2045)) +  # Specify tick mark labels
       theme_line +
-      ylim(c(-0.0025, 0)) +
       theme(legend.position = "bottom",
             legend.title = element_blank(),
             axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -3504,7 +3642,7 @@ fig4_hl <- function(health_grp,
                               filter(!scenario %in% remove_scen,
                                      demo_cat == "Poverty") %>%
                               mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                            aes(x = year, y = gap_emp_pc, lty = title)) +
+                            aes(x = year, y = gap_emp, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -3514,7 +3652,7 @@ fig4_hl <- function(health_grp,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(-0.0025, 0) +
+    # ylim(-0.0025, 0) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),

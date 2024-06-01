@@ -75,6 +75,11 @@ list(
   tar_target(name = ei_jet, command = (5.670 + 5.355)/2), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_2.pdf
   tar_target(name = gge_to_bbls, command = 42),
 
+  # labor analysis parameters
+  tar_target(name = alpha_comp, command = 0.2), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job. 
+  tar_target(name = alpha_emp, command = 0), # #0-1 representing the share of jobs lost over time when losing a job in refining sector 
+  
+  
   # health analysis parameters
   tar_target(name = beta, command = 0.00582), #Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = se, command = 0.0009628), #Coefficient from Krewski et al (2009) for mortality impact
@@ -106,37 +111,38 @@ list(
   tar_target(name = ca_crs, command = 3310), ## crs NAD83 / California Albers
 
   # set raw data paths
-  tar_target(name = file_raw_its, command = file.path(main_path, "data/stocks-flows/raw/Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx"), format = "file"),
-  tar_target(name = file_raw_avgas, command = file.path(main_path, "data/stocks-flows/raw/Distillates 10-10.xlsx"), format = "file"),
-  tar_target(name = file_raw_cec_jet, command = file.path(main_path, "data/stocks-flows/raw/5-20 Jet Fuel Demand.xlsx"), format = "file"),
-  tar_target(name = file_raw_mil_jet, command = file.path(main_path, "data/stocks-flows/raw/California Transportion Fuel Consumption - Summary 2020-06-01 GDS_rename.xlsx"), format = "file"),
-  tar_target(name = file_raw_fpm, command = file.path(main_path, "data/stocks-flows/raw/Finished_Products_Movements.xlsx"), format = "file"),
-  tar_target(name = file_refcap, command = file.path(main_path, "data/stocks-flows/processed/refinery_loc_cap_manual.csv"), format = "file"), # this is a manually created file
-  tar_target(name = file_rediesel, command = file.path(main_path, "data/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"), format = "file"),
-  tar_target(name = file_renref, command = file.path(main_path, "data/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
-  tar_target(name = file_altair, command = file.path(main_path, "data/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
+  tar_target(name = file_raw_its, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/raw/Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx"), format = "file"),
+  tar_target(name = file_raw_avgas, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/raw/Distillates 10-10.xlsx"), format = "file"),
+  tar_target(name = file_raw_cec_jet, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/raw/5-20 Jet Fuel Demand.xlsx"), format = "file"),
+  tar_target(name = file_raw_mil_jet, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/raw/California Transportion Fuel Consumption - Summary 2020-06-01 GDS_rename.xlsx"), format = "file"),
+  tar_target(name = file_raw_fpm, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/raw/Finished_Products_Movements.xlsx"), format = "file"),
+  tar_target(name = file_refcap, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/refinery_loc_cap_manual.csv"), format = "file"), # this is a manually created file
+  tar_target(name = file_rediesel, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"), format = "file"),
+  tar_target(name = file_renref, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
+  tar_target(name = file_altair, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
 
-  tar_target(name = file_raw_ces, command = file.path(main_path, "data/health/raw/ces3results.xlsx"), format = "file"),
-  tar_target(name = file_raw_dac, command = file.path(main_path, "data/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"), format = "file"),
-  tar_target(name = file_raw_income_house, command = file.path(main_path, "data/Census/ca-median-house-income.csv"), format = "file"), # remove from workflow
-  tar_target(name = file_raw_income_county, command = file.path(main_path, "data/Census/ca-median-house-income-county.csv"), format = "file"), # remove from workflow
-  tar_target(name = file_inmap_re, command = file.path(main_path, "data/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
-  tar_target(name = file_dt_ef, command = file.path(main_path, "data/health/processed/ref_emission_factor.csv"), format = "file"),
-  tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data/health/processed/ct_inc_45_2020.csv"), format = "file"),
+  tar_target(name = file_raw_ces, command = file.path(main_path, "data-staged-for-deletion/health/raw/ces3results.xlsx"), format = "file"),
+  tar_target(name = file_raw_dac, command = file.path(main_path, "data-staged-for-deletion/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"), format = "file"),
+  tar_target(name = file_raw_income_house, command = file.path(main_path, "data-staged-for-deletion/Census/ca-median-house-income.csv"), format = "file"), # remove from workflow
+  tar_target(name = file_raw_income_county, command = file.path(main_path, "data-staged-for-deletion/Census/ca-median-house-income-county.csv"), format = "file"), # remove from workflow
+  tar_target(name = file_inmap_re, command = file.path(main_path, "data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
+  tar_target(name = file_dt_ef, command = file.path(main_path, "data-staged-for-deletion/health/processed/ref_emission_factor.csv"), format = "file"),
+  tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data-staged-for-deletion/health/processed/ct_inc_45_2020.csv"), format = "file"),
 
-  tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
-  tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
-  tar_target(name = file_raw_ct_2019, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"), format = "file"),
-  tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
-  tar_target(name = file_raw_census_2020, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"), format = "file"),
-  tar_target(name = file_raw_census_2021, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
-  tar_target(name = file_raw_ct_race, command = file.path(main_path, "data/Census/nhgis0039_csv/nhgis0039_ds258_2020_tract.csv"), format = "file"),
-  tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
-  tar_target(name = file_df_labor, command = file.path(main_path, "data/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
-  tar_target(name = file_oil_px, command = file.path(main_path, "data/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
-  tar_target(name = file_ca_counties_sp, command = file.path(main_path, "data/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"), format = "file"),
-  tar_target(name = file_refin_locs_orig, command = file.path(main_path, "data/GIS/raw/Petroleum_Refineries_US_EIA/Petroleum_Refineries_US_2019_v2.shp"), format = "file"), 
-  tar_target(name = file_refin_locs, command = file.path(main_path, "/data/stocks-flows/processed/refinery_lat_long_revised.csv"), format = "file"),
+  tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data-staged-for-deletion/benmap/processed/growth_rates.csv"), format = "file"),
+  tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs-staged-for-deletion/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
+  tar_target(name = file_raw_ct_2019, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"), format = "file"),
+  tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
+  tar_target(name = file_raw_census_2020, command = file.path(main_path, "data-staged-for-deletion/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"), format = "file"),
+  tar_target(name = file_raw_census_2021, command = file.path(main_path, "data-staged-for-deletion/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
+  tar_target(name = file_raw_ct_race, command = file.path(main_path, "data-staged-for-deletion/Census/nhgis0039_csv/nhgis0039_ds258_2020_tract.csv"), format = "file"),
+  tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data-staged-for-deletion/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
+  #tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
+  tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
+  tar_target(name = file_oil_px, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
+  tar_target(name = file_ca_counties_sp, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"), format = "file"),
+  tar_target(name = file_refin_locs_orig, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/Petroleum_Refineries_US_EIA/Petroleum_Refineries_US_2019_v2.shp"), format = "file"), 
+  tar_target(name = file_refin_locs, command = file.path(main_path, "/data-staged-for-deletion/stocks-flows/processed/refinery_lat_long_revised.csv"), format = "file"),
   
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
@@ -171,7 +177,8 @@ list(
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
   tar_target(name = raw_ct_race, command = read_census_race_data(file_raw_ct_race)),
   tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
-  tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
+  # tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
+  tar_target(name = proc_labor_dest_df, command = read_labor_inputs(file_df_labor_dest)),
   tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
   tar_target(name = refin_locs, command = read_refin_locs(file_refin_locs,
                                                           file_refin_locs_orig,
@@ -191,15 +198,15 @@ list(
   # set remaining file paths
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
   # tar_target(name = file_jet, command = file.path(main_path, "outputs/fuel-demand/prelim-results/cec_jet_fuel_demand_incl_military_forecasted_2020_2045.csv"), format = "file"),
-  tar_target(name = file_fpm, command = file.path(main_path, "data/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
-  tar_target(name = file_fw, command = file.path(main_path, "data/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
-  tar_target(name = file_ghgfac, command = file.path(main_path, "outputs/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
+  tar_target(name = file_fpm, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/finished_product_movements_weekly_cec.csv"), format = "file"),
+  tar_target(name = file_fw, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
+  tar_target(name = file_ghgfac, command = file.path(main_path, "outputs-staged-for-deletion/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
 
-  tar_target(name = file_processed_ces3, command = file.path(main_path, "data/health/processed/ces3_data.csv"), format = "file"),
+  tar_target(name = file_processed_ces3, command = file.path(main_path, "data-staged-for-deletion/health/processed/ces3_data.csv"), format = "file"),
   # tar_target(name = file_growth_rates, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
-  tar_target(name = file_site_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/site_refining_outputs_2019.csv"), format = "file"),
-  tar_target(name = file_county_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/county_refining_outputs_2019.csv"), format = "file"),
-  tar_target(name = file_ghg_2019, command = file.path(main_path, "model-development/scenario-plot/refinery-outputs/refining_emissions_state_2019_revised.csv"), format = "file"),
+  tar_target(name = file_site_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/site_refining_outputs_2019.csv"), format = "file"),
+  tar_target(name = file_county_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/county_refining_outputs_2019.csv"), format = "file"),
+  tar_target(name = file_ghg_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/refining_emissions_state_2019_revised.csv"), format = "file"),
 
   # read in processed data files
   # tar_target(name = dt_its, command = simple_fread(file_its)),
@@ -399,17 +406,20 @@ list(
                                                                          pop_ratios,
                                                                          main_path)),
 
-  tar_target(name = annual_labor, command = calc_labor_outputs(proc_labor_df,
+  tar_target(name = annual_labor, command = calc_labor_outputs(main_path,
+                                                               proc_labor_dest_df,
                                                                indiv_prod_output,
                                                                dt_refcap,
                                                                product_px,
                                                                cpi2019,
                                                                cpi2020,
-                                                               discount_rate)),
+                                                               discount_rate,
+                                                               alpha_comp,
+                                                               alpha_emp)),
 
   tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(county_pop_ratios,
                                                                                 annual_labor,
-                                                                                raw_ct_race,
+                                                                                raw_pop_income_2021,
                                                                                 refining_mortality)),
 
   tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(ref_labor_demog_yr)),

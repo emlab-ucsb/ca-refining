@@ -236,24 +236,47 @@ read_poverty_data <- function(file) {
   
 }
 
-read_labor_inputs <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
+# read_labor_inputs <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
+#   
+#   dt = setDT(read.xlsx(file, sheet = input_sheet, rows = input_rows, cols = input_cols))
+#   
+#   dt <- dt %>%
+#     filter((county != "Statewide" & segment == "refining") | is.na(segment)==T) %>% 
+#     rename(dire_emp_mult = direct_emp, 
+#            indi_emp_mult = indirect_emp, 
+#            indu_emp_mult = induced_emp,
+#            dire_comp_mult = direct_comp, 
+#            indi_comp_mult = indirect_comp, 
+#            indu_comp_mult = induced_comp,
+#            ip.dire_comp_mult = ip.direct_comp, 
+#            ip.indi_comp_mult = ip.indirect_comp, 
+#            ip.indu_comp_mult = ip.induced_comp)
+#   
+#   dt
+# }
+
+read_labor_inputs <- function(file) {
   
-  dt = setDT(read.xlsx(file, sheet = input_sheet, rows = input_rows, cols = input_cols))
+  dt = fread(file)
   
-  dt <- dt %>%
-    filter((county != "Statewide" & segment == "refining") | is.na(segment)==T) %>% 
-    rename(dire_emp_mult = direct_emp, 
-           indi_emp_mult = indirect_emp, 
-           indu_emp_mult = induced_emp,
-           dire_comp_mult = direct_comp, 
-           indi_comp_mult = indirect_comp, 
-           indu_comp_mult = induced_comp,
-           ip.dire_comp_mult = ip.direct_comp, 
-           ip.indi_comp_mult = ip.indirect_comp, 
-           ip.indu_comp_mult = ip.induced_comp)
+  dt <- janitor::clean_names(dt)
+  
+  dt <- dt[, .(employment = sum(employment),
+               emp_comp = sum(employee_compensation)), .(origin_region, destination_region, impact_type)]
+  
+  dt[, impact_type := tolower(impact_type)]
+  
+  dt[, county := str_remove(origin_region, " County, CA Group")]
+  
+  setnames(dt, c("origin_region", "destination_region"), c("origin","destination"))
+  
+  dt <- dt[, .(county, origin, destination, impact_type, employment, emp_comp)]
   
   dt
+  
 }
+
+
 
 read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
   
