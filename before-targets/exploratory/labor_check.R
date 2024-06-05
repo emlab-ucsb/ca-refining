@@ -21,11 +21,11 @@ library(sf)
 library(ggplot2)
 library(tigris)
 library(cowplot)
-#library(ggsn)
+library(janitor)
 
 
-setwd('C:/Users/mall0065/Dropbox/calepa/refining-labor')
-#setwd('~/Downloads')
+#setwd('C:/Users/mall0065/Dropbox/calepa/refining-labor')
+setwd('~/Downloads')
 
 ### define function for "not in" 
 '%!in%' <- function(x,y)!('%in%'(x,y))
@@ -33,6 +33,25 @@ setwd('C:/Users/mall0065/Dropbox/calepa/refining-labor')
 # Check that string doesn't match any non-letter
 letters_only <- function(x) !grepl("[^A-Za-z*-]", x)
 
+
+# READ IN LABOR MULTIPLIERS 
+
+multipliers <- fread('20240524-1million_la-Detail Economic Indicators.csv') 
+
+multipliers <- janitor::clean_names(multipliers)
+
+multipliers <- multipliers[, .(employment = sum(employment),
+             emp_comp = sum(employee_compensation)), .(origin_region, destination_region, impact_type)]
+
+multipliers[, impact_type := tolower(impact_type)]
+
+multipliers[, county := str_remove(origin_region, " County, CA Group")]
+
+setnames(multipliers, c("origin_region", "destination_region"), c("origin","destination"))
+
+multipliers <- multipliers[, .(county, origin, destination, impact_type, employment, emp_comp)]
+  
+str(multipliers)
 
 # READ IN LABOR IMPACTS 
 
@@ -122,7 +141,7 @@ fig2
 
 #### FIG 3: FTE JOBS 
 fig3 <- filter(df.agg, 
-               demand_scenario=="LC1" & refining_scenario=="low exports" & year>2020) %>%
+               demand_scenario=="LC1" & refining_scenario=="historic exports" & year>2020) %>%
   ggplot(aes(y=total_emp_revised/1000, x=year)) + 
   geom_line(size=1, color="#841617") +
   theme_cowplot(12) +
