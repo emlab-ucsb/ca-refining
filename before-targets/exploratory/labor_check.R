@@ -53,6 +53,14 @@ multipliers <- multipliers[, .(county, origin, destination, impact_type, employm
   
 str(multipliers)
 
+multipliers %>% 
+  filter(destination=="Los Angeles County, CA") %>% 
+  summary()
+
+multipliers %>% 
+  filter(destination != "Los Angeles County, CA") %>% 
+  summary()
+
 # READ IN LABOR IMPACTS 
 
 df <- fread('labor_result_for_review.csv')
@@ -99,7 +107,11 @@ summary(df.agg$total_comp_usd19_l)
 summary(df.agg$total_emp)
 summary(df.agg$total_emp_revised)
 
-
+df.county <- left_join(df,df.bau,by=c("year")) %>% 
+  mutate(total_comp_usd19_h = total_comp_usd19_h-total_comp_usd19_h_bau,
+         total_comp_usd19_l = total_comp_usd19_l-total_comp_usd19_l_bau,
+         total_emp = total_emp-total_emp_bau,
+         total_emp_revised = total_emp_revised-total_emp_revised_bau)
 
 ### PATHWAYS
 
@@ -157,3 +169,83 @@ fig3 <- filter(df.agg,
         axis.title = element_text(size=14)) 
 fig3  
 
+
+## FIG 4: FTE JOBS BY COUNTY
+
+fig4 <- filter(df.county, 
+               demand_scenario=="LC1" & refining_scenario=="historic exports" & year>2020) %>%
+  ggplot(aes(y=total_emp_revised/1000, x=year, color=destination)) + 
+  geom_line(size=1, aes(color=destination)) +
+  theme_cowplot(12) +
+  scale_x_continuous(limits = c(2020, 2045)) + 
+  #scale_y_continuous(limits = c(-60,60)) +
+  labs(y="Labor FTE Job-years (Thousands)", x = "Year",color="",linetype="") +
+  theme(panel.background = element_blank(),
+        legend.position = "top", legend.justification = "center",
+        panel.grid.major.y = element_line(color = "gray",size=0.5),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=14)) 
+fig4
+
+ggsave('emp_check.png',fig4,width = 10,height=5,units = "in",dpi=300)   
+
+
+## FIG 5: Compensation BY COUNTY
+
+fig5 <- filter(df.county, 
+               demand_scenario=="LC1" & refining_scenario=="historic exports" & year>2020) %>%
+  ggplot(aes(y=total_comp_usd19_l/1000000, x=year, color=destination)) + 
+  geom_line(size=1, aes(color=destination)) +
+  theme_cowplot(12) +
+  scale_x_continuous(limits = c(2020, 2045)) + 
+  #scale_y_continuous(limits = c(-60,60)) +
+  labs(y="Compensation (Millions)", x = "Year",color="",linetype="") +
+  theme(panel.background = element_blank(),
+        legend.position = "top", legend.justification = "center",
+        panel.grid.major.y = element_line(color = "gray",size=0.5),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=14)) 
+fig5
+
+ggsave('comp_check.png',fig5,width = 10,height=5,units = "in",dpi=300)   
+
+
+#### FIG 6: COMPENSATION LOWER BOUND
+fig6 <- filter(df.county, 
+               demand_scenario=="LC1" & refining_scenario=="low exports" & year>2022 & destination=="Siskiyou County, CA") %>%
+  ggplot(aes(y=total_comp_usd19_l/1000000, x=year)) + 
+  geom_line(size=1, color="#841617") +
+  theme_cowplot(12) +
+  scale_x_continuous(limits = c(2020, 2045)) + 
+  #scale_y_continuous(limits = c(0,20)) +
+  labs(y="Compensation (2019 USD)", x = "Year",color="",linetype="") +
+  theme(panel.background = element_blank(),
+        legend.position = "top", legend.justification = "center",
+        panel.grid.major.y = element_line(color = "gray",size=0.5),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=14)) 
+fig6       
+
+#### FIG 7: FTE JOBS 
+fig7 <- filter(df.county, 
+               demand_scenario=="LC1" & refining_scenario=="historic exports" & year>2022 & destination=="Siskiyou County, CA") %>%
+  ggplot(aes(y=total_emp_revised/1000, x=year)) + 
+  geom_line(size=1, color="#841617") +
+  theme_cowplot(12) +
+  scale_x_continuous(limits = c(2020, 2045)) + 
+  #scale_y_continuous(limits = c(-60,60)) +
+  labs(y="Labor FTE Job-years (Thousands)", x = "Year",color="",linetype="") +
+  theme(panel.background = element_blank(),
+        legend.position = "top", legend.justification = "center",
+        panel.grid.major.y = element_line(color = "gray",size=0.5),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=14)) 
+fig7 
