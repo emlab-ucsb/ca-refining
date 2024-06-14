@@ -74,6 +74,7 @@ calc_labor_outputs <- function(main_path,
   ## calculate labor impacts
   county_out_refining_summary[, county := fifelse(county == "Solano County", "Solano", county)]
   
+  
   ## merge with labor multipliers, calculate labor vals
   county_out_labor <- merge(county_out_refining_summary, proc_labor_dest_df,
                             by = c("county"),
