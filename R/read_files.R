@@ -255,28 +255,58 @@ read_poverty_data <- function(file) {
 #   dt
 # }
 
-read_labor_inputs <- function(file) {
+
+read_labor_fte_inputs <- function(file, input_sheet) {
   
-  dt = fread(file)
+  dt = setDT(read.xlsx(file, sheet = input_sheet, startRow = 2))
   
   dt <- janitor::clean_names(dt)
+
+  setnames(dt, c("implan546index"), c("IndustryCode"))
   
-  dt <- dt[, .(employment = sum(employment),
-               emp_comp = sum(employee_compensation)), .(origin_region, destination_region, impact_type)]
-  
-  dt[, impact_type := tolower(impact_type)]
-  
-  dt[, county := str_remove(origin_region, " County, CA Group")]
-  
-  setnames(dt, c("origin_region", "destination_region"), c("origin","destination"))
-  
-  dt <- dt[, .(county, origin, destination, impact_type, employment, emp_comp)]
+  dt <- dt[, .(IndustryCode, ft_eper_total_emp)]
   
   dt
   
 }
 
 
+read_labor_inputs <- function(file, fte_file) {
+  
+  dt = fread(file)
+  
+  ## merge with fte-job-years data
+  dt <- merge(dt, fte_file,
+              by = c("IndustryCode"),
+              all.x = T)
+  
+  ## clean column names
+  dt <- janitor::clean_names(dt)
+  
+  ## multiply employment multiplier by ft_eper_total_emp
+  dt[, employment := employment * ft_eper_total_emp]
+  
+  ## summarize by origin region, destination region, and impcact type
+  dt <- dt[, .(employment = sum(employment),
+               emp_comp = sum(employee_compensation)), .(origin_region, destination_region, impact_type)]
+  
+  ## lowercase
+  dt[, impact_type := tolower(impact_type)]
+  
+  ## remove text
+  dt[, county := str_remove(origin_region, " County, CA Group")]
+  dt[, destination_region := str_remove(destination_region, " County, CA")]
+  dt[, destination_region := str_trim(destination_region)]
+  
+  ## rename columns
+  setnames(dt, c("origin_region", "destination_region"), c("origin","destination"))
+  
+  ## select columns
+  dt <- dt[, .(county, origin, destination, impact_type, employment, emp_comp)]
+  
+  dt
+  
+}
 
 read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
   
