@@ -256,6 +256,40 @@ read_poverty_data <- function(file) {
 # }
 
 
+read_ca_regions <- function(file) {
+  
+  dt = fread(file)
+  
+  ## change text to match implan outputs
+  dt[, region := str_replace(region, "region", "census")]
+  
+  ## adjust region names for adjusted regions
+  adj_regions <- c("census_3", "census_4", "census_5", "census_6")
+  
+  ## adjust names, make regions 8 and 9 Los Angeles and Orange, respectively
+  dt[, region := fifelse(region %in% adj_regions, paste0(region, "_v2"), region)]
+  dt[, region := fifelse(region == "census_8", "Los Angeles", region)]
+  dt[, region := fifelse(region == "census_9", "Orange", region)]
+  
+  ## updated method uses regions and counties
+  labor_counties <- c("Contra Costa", "Kern", "Los Angeles", "Orange", "San Luis Obispo", "Solano")
+  
+  ## flag if county is stand alone county, filter out, bind to county_pop_df
+  dt[, remove := fifelse(county %in% labor_counties, 1, 0)]
+  dt <- dt[remove == 0]
+  dt[, remove := NULL]
+  
+  ## create df of regions and counties to for which to create population metrics
+  county_l_df <- data.frame(region = labor_counties,
+                              county = labor_counties)
+  
+  dt <- rbind(county_l_df, dt)
+  
+  dt
+  
+}
+
+
 read_labor_fte_inputs <- function(file, input_sheet) {
   
   dt = setDT(read.xlsx(file, sheet = input_sheet, startRow = 2))

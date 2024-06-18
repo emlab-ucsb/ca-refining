@@ -141,7 +141,8 @@ calc_labor_outputs <- function(main_path,
 calculate_labor_x_demg_annual <- function(county_pop_ratios,
                                           annual_labor,
                                           raw_pop_income_2021,
-                                          refining_mortality) {
+                                          refining_mortality,
+                                          ca_regions) {
 
   ## get county and census tracts
   c_ct_df <- raw_pop_income_2021[state == "California"]
@@ -149,30 +150,27 @@ calculate_labor_x_demg_annual <- function(county_pop_ratios,
   c_ct_df <- c_ct_df[, .(county, census_tract)]
   c_ct_df[, county := str_remove(county, " County")]
   
+  c_ct_df <- merge(c_ct_df, ca_regions,
+                   by = c("county"),
+                   allow.cartesian = T)
+  
   ## get pop from refining_mortality
   pop_df <- refining_mortality %>%
     select(census_tract, year, pop) %>%
     unique() %>%
     left_join(c_ct_df) %>%
-    group_by(county, year) %>%
+    group_by(region, year) %>%
     summarise(pop = sum(pop)) %>%
-    ungroup()
+    ungroup() %>%
+    rename(destination = region)
   
   ## get 
   ratio_df <- copy(county_pop_ratios)
-  
-  ## remove "county" from county name
-  ratio_df[, county := str_remove(county, " County")]
-  
-  ## remove extra text from county string
-  annual_labor[, county := str_remove(destination, " County, CA")]
-  
-  ## filter counties
-  ratio_df <- ratio_df[county %in% unique(annual_labor$county)]
+  setnames(ratio_df, "region", "destination")
   
   ## merge
   labor_pct_df <- merge(annual_labor, ratio_df,
-                        by = c("county"),
+                        by = c("destination"),
                         allow.cartesian = T)
   
   ## multiply by pct
@@ -182,11 +180,11 @@ calculate_labor_x_demg_annual <- function(county_pop_ratios,
   
   ## merge with population
   labor_pct_df <-  merge(labor_pct_df, pop_df,
-                         by = c("county", "year"),
+                         by = c("destination", "year"),
                          all.x = T)
 
   ## rename pop column
-  setnames(labor_pct_df, "pop", "county_pop")
+  setnames(labor_pct_df, "pop", "region_pop")
   
   return(labor_pct_df)
 
@@ -199,7 +197,7 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
   labor_pct <- copy(ref_labor_demog_yr)
   
   ## county pop by demographic group 
-  labor_pct[, demo_pop := county_pop * pct]
+  labor_pct[, demo_pop := region_pop * pct]
   
   ## summarise over years
   labor_pct <- labor_pct[, .(sum_demo_emp = sum(demo_emp),
