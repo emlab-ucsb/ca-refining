@@ -137,6 +137,7 @@ list(
   tar_target(name = file_raw_census_2021, command = file.path(main_path, "data-staged-for-deletion/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"), format = "file"),
   tar_target(name = file_raw_ct_race, command = file.path(main_path, "data-staged-for-deletion/Census/nhgis0039_csv/nhgis0039_ds258_2020_tract.csv"), format = "file"),
   tar_target(name = file_raw_census_poverty, command = file.path(main_path, "data-staged-for-deletion/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"), format = "file"),
+  tar_target(name = file_df_ca_regions, command = file.path(main_path, "data-staged-for-deletion/labor/raw/ca_regions.csv"), format = "file"),
   #tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
   tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240605-census_regions-Detail Economic Indicators.csv"), format = "file"),
@@ -179,6 +180,7 @@ list(
   tar_target(name = raw_pop_income_2021, command = read_nhgis_2021_data(file_raw_census_2021)),
   tar_target(name = raw_ct_race, command = read_census_race_data(file_raw_ct_race)),
   tar_target(name = raw_pop_poverty, command = read_poverty_data(file_raw_census_poverty)),
+  tar_target(name = ca_regions, command = read_ca_regions(file_df_ca_regions)),
   # tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   tar_target(name = proc_labor_fte_df, command = read_labor_fte_inputs(file_df_labor_fte, input_sheet = "2022")),
   tar_target(name = proc_labor_dest_df, command = read_labor_inputs(file_df_labor_dest, proc_labor_fte_df)),
@@ -403,7 +405,8 @@ list(
 
   tar_target(name = county_pop_ratios, command = calc_pop_ratios_county(raw_ct_race,
                                                                         raw_pop_poverty,
-                                                                        refining_mortality)),
+                                                                        refining_mortality,
+                                                                        ca_regions)),
 
   tar_target(name = ref_mortality_demog, command = calculate_mort_x_demg(refining_mortality,
                                                                          pop_ratios,
@@ -423,7 +426,8 @@ list(
   tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(county_pop_ratios,
                                                                                 annual_labor,
                                                                                 raw_pop_income_2021,
-                                                                                refining_mortality)),
+                                                                                refining_mortality,
+                                                                                ca_regions)),
 
   tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(ref_labor_demog_yr)),
 

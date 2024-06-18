@@ -1572,7 +1572,7 @@ plot_labor_levels <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 50)) +
+    # ylim(c(0, 50)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1601,7 +1601,7 @@ plot_labor_levels <- function(main_path,
                        values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 90)) +
+    # ylim(c(0, 90)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1632,7 +1632,7 @@ plot_labor_levels <- function(main_path,
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 110)) +
+    # ylim(c(0, 110)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1804,7 +1804,7 @@ plot_labor_levels_gaps <- function(main_path,
                                                 title %in% fig_title_vec,
                                                 demo_cat == "Race")  %>%
                               mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
-                             aes(x = year, y = gap_emp /1000, color = title)) +
+                             aes(x = year, y = gap_emp, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1815,7 +1815,6 @@ plot_labor_levels_gaps <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-35, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1833,7 +1832,7 @@ plot_labor_levels_gaps <- function(main_path,
 
   ##
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                demo_cat == "DAC"), aes(x = year, y = gap_emp /1000, lty = title)) +
+                                                demo_cat == "DAC"), aes(x = year, y = gap_emp, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1844,7 +1843,7 @@ plot_labor_levels_gaps <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-65, 0)) +
+    # ylim(c(-3500, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1865,7 +1864,7 @@ plot_labor_levels_gaps <- function(main_path,
                                filter(!scenario %in% remove_scen,
                                       demo_cat == "Poverty") %>%
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                             aes(x = year, y = gap_emp /1000, lty = title)) +
+                             aes(x = year, y = gap_emp, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -1875,7 +1874,6 @@ plot_labor_levels_gaps <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(-65, 0) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1892,7 +1890,7 @@ plot_labor_levels_gaps <- function(main_path,
 #       theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference (thousand)", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference", size = 8, angle = 90)
 
 
   # ## plot together

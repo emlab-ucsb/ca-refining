@@ -120,7 +120,11 @@ calc_pop_ratios <- function(raw_pop_income_2021,
 
 calc_pop_ratios_county <- function(raw_pop_income_2021,
                                    raw_pop_poverty,
-                                   refining_mortality) {
+                                   refining_mortality,
+                                   ca_regions) {
+  
+  county_region_df <- copy(ca_regions)
+
   ## get proportions for race and merge
   ## -------------------------------------------------------------------------------
   pop_race_c_df <- copy(raw_pop_income_2021)
@@ -145,8 +149,29 @@ calc_pop_ratios_county <- function(raw_pop_income_2021,
     group_by(county) %>%
     mutate(total_pop = sum(pop)) %>%
     ungroup() %>%
+    mutate(county = str_remove(county, " County")) %>%
     as.data.table()
+  
+  ## merge with county_region_df to group by region
+  pop_race_c_df <- merge(county_region_df, pop_race_c_df,
+                          by = c("county"),
+                          allow.cartesian = T)
 
+  total_pop_grp_df <- pop_race_c_df %>% 
+    select(county, region, total_pop) %>%
+    unique() %>%
+    group_by(region) %>%
+    summarise(total_pop = sum(total_pop)) %>%
+    ungroup()
+  
+  pop_race_c_df <- pop_race_c_df %>%
+    group_by(region, demo_group) %>%
+    summarise(pop = sum(pop)) %>%
+    ungroup() %>%
+    left_join(total_pop_grp_df) %>%
+    as.data.table()
+    
+  
   ## calculate share
   pop_race_c_df[, pct := pop / total_pop]
   pop_race_c_df[, demo_cat := "Race"]
@@ -189,16 +214,38 @@ calc_pop_ratios_county <- function(raw_pop_income_2021,
     ungroup() %>%
     group_by(county) %>%
     mutate(total_pop = sum(pop)) %>%
+    ungroup() %>%
+    mutate(county = str_remove(county, " County")) %>%
     as.data.table()
+
+  ## merge with county_region_df to group by region
+  pop_c_poverty <- merge(county_region_df, pop_c_poverty,
+                         by = c("county"),
+                         allow.cartesian = T)
+  
+  total_pop_grp_df <- pop_c_poverty %>% 
+    select(county, region, total_pop) %>%
+    unique() %>%
+    group_by(region) %>%
+    summarise(total_pop = sum(total_pop)) %>%
+    ungroup()
+  
+  pop_c_poverty <- pop_c_poverty %>%
+    group_by(region, demo_group) %>%
+    summarise(pop = sum(pop)) %>%
+    ungroup() %>%
+    left_join(total_pop_grp_df) %>%
+    as.data.table()
+  
 
   ## add columns
   pop_c_poverty[, pct := pop / total_pop]
   pop_c_poverty[, demo_cat := "Poverty"]
 
   ## select columns
-  pop_c_poverty <- pop_c_poverty[, .(county, demo_cat, demo_group, pct)]
+  pop_c_poverty <- pop_c_poverty[, .(region, demo_cat, demo_group, pct)]
 
-  pop_race_c_df <- pop_race_c_df[, .(county, demo_cat, demo_group, pct)]
+  pop_race_c_df <- pop_race_c_df[, .(region, demo_cat, demo_group, pct)]
 
 
   ## get DAC proportions
@@ -219,14 +266,17 @@ calc_pop_ratios_county <- function(raw_pop_income_2021,
       demo_group = ifelse(disadvantaged == "No", "non_dac", "dac"),
       demo_cat = "DAC"
     ) %>%
-    group_by(county, demo_cat, demo_group) %>%
-    summarise(pop = sum(pop)) %>%
-    ungroup() %>%
-    group_by(county) %>%
+    mutate(county = str_remove(county, " County")) %>%
+    left_join(county_region_df) %>%
+    group_by(region) %>%
     mutate(total_pop = sum(pop)) %>%
     ungroup() %>%
+    group_by(region, demo_cat, demo_group) %>%
+    summarise(pop = sum(pop),
+              total_pop = unique(total_pop)) %>%
+    ungroup() %>%
     mutate(pct = pop / total_pop) %>%
-    select(county, demo_cat, demo_group, pct) %>%
+    select(region, demo_cat, demo_group, pct) %>%
     as.data.table()
 
   ## rbind
