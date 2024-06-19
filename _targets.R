@@ -403,6 +403,9 @@ list(
   #                                                                health_weighted)),
   #
 
+  tar_target(name = cumul_av_mort, command = calc_cumul_av_mort(main_path,
+                                                                health_grp)),
+  
   tar_target(name = county_pop_ratios, command = calc_pop_ratios_county(raw_ct_race,
                                                                         raw_pop_poverty,
                                                                         refining_mortality,
