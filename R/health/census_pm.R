@@ -457,9 +457,43 @@ calculate_race_disp = function(health_weighted,
   ## calculate other variables
   collapsed_data[, num_over_den := sum_num / sum_den]
   
+  ## mortality and avoided mortality
+  ## ---------------------------------------------------------------------------
+  
+  mort_df <- copy(refining_mortality)
+  setDT(mort_df)
+  
+  mort_df <- mort_df[, .(census_tract, scen_id, demand_scenario, refining_scenario,
+                         year, mortality_level, mortality_delta)]
+  
+  ## merge with pop ratios
+  mort_df <- merge(mort_df, pop_ratios,
+                   by = c("census_tract"),
+                   allow.cartesian = T)
+  
+  ## multiply but pct
+  mort_df[, mortality_level_dem := mortality_level * pct]
+  mort_df[, mortality_delta_dem := mortality_delta * pct]
+  mort_df <- mort_df[, .(census_tract, scen_id, demand_scenario, refining_scenario, year, demo_group, demo_cat,
+                         title, mortality_level_dem, mortality_delta_dem)]
+  
+  ## summarise
+  mort_df <- mort_df[, .(mortality_level_dem = sum(mortality_level_dem),
+                         mortality_delta_dem = sum(mortality_delta_dem)),
+                     by = .(scen_id, demand_scenario, refining_scenario, year, demo_cat, demo_group, title)]
+  
+  ## merge
+  health_indicators <- merge(collapsed_data, mort_df,
+                             by = c("scen_id", "demand_scenario", "refining_scenario",
+                                    "year", "demo_group", "demo_cat", "title"),
+                             allow.cartesian = T)
+  
+  
+  
+  
 
   ## return
-  return(collapsed_data)
+  return(health_indicators)
   
   
 }
@@ -659,6 +693,21 @@ calculate_mort_x_demg = function(refining_mortality,
   
 }
 
+
+calc_cumul_av_mort = function(main_path,
+                              health_grp) {
+  
+  dt <- copy(health_grp)
+  dt <- dt[, .(cumul_mort_level = sum(mortality_level_dem),
+               cumul_mort_delta = sum(mortality_delta_dem)),
+           by = .(scen_id, demand_scenario, refining_scenario, demo_group, demo_cat, title)]
+  
+  ## save cumulative 
+  fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  
+  return(dt)
+  
+}
 
 
 

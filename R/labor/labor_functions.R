@@ -68,9 +68,11 @@ calc_labor_outputs <- function(main_path,
   county_out_refining[, revenue := value * product_price]
   
   ## summarize at the county level
-  county_out_refining_summary <- county_out_refining[, .(revenue = sum(revenue)), by = .(demand_scenario, refining_scenario,
+  county_out_refining_summary <- county_out_refining[, .(production_bbl = sum(value),
+                                                         revenue = sum(revenue)), by = .(demand_scenario, refining_scenario,
                                                                                          year, county)]
-
+  
+  
   ## calculate labor impacts
   county_out_refining_summary[, county := fifelse(county == "Solano County", "Solano", county)]
   
@@ -95,7 +97,9 @@ calc_labor_outputs <- function(main_path,
   county_out_labor[, ':=' (c.emp = (revenue / (10 ^ 6)) * employment,
                            c.comp = (revenue / (10 ^ 6)) * emp_comp)]
 
-  county_out_labor <- county_out_labor[, .(total_emp = sum(c.emp),
+  county_out_labor <- county_out_labor[, .(total_production_bbl = sum(production_bbl),
+                                           total_revenue = sum(revenue),
+                                           total_emp = sum(c.emp),
                                            total_comp = sum(c.comp)), .(demand_scenario, refining_scenario, year, destination)]
   
   ## convert to 2019 dollars
@@ -119,7 +123,7 @@ calc_labor_outputs <- function(main_path,
     as.data.table()
   
   review_df <- county_out_labor %>%
-    select(demand_scenario, refining_scenario, destination, year, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
+    select(demand_scenario, refining_scenario, destination, year, total_production_bbl, total_revenue, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
   
   ## save for review
   write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/labor_result_for_review.csv"))
@@ -174,7 +178,8 @@ calculate_labor_x_demg_annual <- function(county_pop_ratios,
                         allow.cartesian = T)
   
   ## multiply by pct
-  labor_pct_df[, demo_emp := total_emp_revised * pct]
+  # labor_pct_df[, demo_emp := total_emp_revised * pct]
+  labor_pct_df[, demo_emp := total_emp * pct]
   labor_pct_df[, demo_comp_pv_h := total_comp_PV_h * pct]
   labor_pct_df[, demo_comp_pv_l := total_comp_PV_l * pct]
   

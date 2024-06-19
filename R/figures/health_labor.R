@@ -1086,7 +1086,7 @@ plot_health_levels <- function(main_path,
                                                   title %in% fig_title_vec,
                                                   demo_cat == "Race")  %>%
                                  mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))), 
-                               aes(x = year, y = num_over_den, color = title)) +
+                               aes(x = year, y = mortality_level_dem, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1094,7 +1094,7 @@ plot_health_levels <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.4)) +
+    # ylim(c(0, 0.4)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1115,13 +1115,13 @@ plot_health_levels <- function(main_path,
   
   ##
   health_level_fig_b <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
-                                                  demo_cat == "DAC"), aes(x = year, y = num_over_den, lty = title)) +
+                                                  demo_cat == "DAC"), aes(x = year, y = mortality_level_dem, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.4)) +
+    # ylim(c(0, 0.4)) +
     scale_linetype_manual(values = dac_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
@@ -1145,14 +1145,14 @@ plot_health_levels <- function(main_path,
   health_level_fig_c <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen,
                                                   demo_cat == "Poverty") %>%
                                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))), 
-                               aes(x = year, y = num_over_den, lty = title)) +
+                               aes(x = year, y = mortality_level_dem, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.4)) +
+    # ylim(c(0, 0.4)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1172,7 +1172,10 @@ plot_health_levels <- function(main_path,
       theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person")), 
+  # yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person")), 
+  #                                    size = 8, angle = 90)
+  
+  yaxis_lab <- ggdraw() + draw_label("Avoided mortalities, difference from reference", 
                                      size = 8, angle = 90)
   
 
@@ -1245,14 +1248,14 @@ plot_health_levels_gaps <- function(main_path,
   
   ## calculate gaps (BAU - scenario)
   bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
-  bau_gaps_df <- bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", "num_over_den")]
-  setnames(bau_gaps_df, "num_over_den", "bau_num_over_den")
+  bau_gaps_df <- bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", "mortality_level_dem")]
+  setnames(bau_gaps_df, "mortality_level_dem", "bau_mortality_level_dem")
   
   gaps_df <- merge(gaps_df, bau_gaps_df,
                    by = c("year", "demo_cat", "demo_group", "title"),
                    all.x = T)
   
-  gaps_df[, gap :=  num_over_den - bau_num_over_den]
+  gaps_df[, gap :=  mortality_level_dem - bau_mortality_level_dem]
   
   ## change historic to historical
   gaps_df[, scen_id := str_replace(scen_id, "historic", "historical")]
@@ -1302,7 +1305,7 @@ plot_health_levels_gaps <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -1326,7 +1329,7 @@ plot_health_levels_gaps <- function(main_path,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     scale_linetype_manual(values = dac_lty) +
@@ -1360,7 +1363,7 @@ plot_health_levels_gaps <- function(main_path,
     scale_linetype_manual(values = poverty_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -1378,7 +1381,10 @@ plot_health_levels_gaps <- function(main_path,
       theme(legend.text = element_text(size = 8)))
   
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
+  # yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
+  #                                    size = 8, angle = 90)
+  
+  yaxis_lab <- ggdraw() + draw_label("Avoided mortalities, difference from reference", 
                                      size = 8, angle = 90)
   
   
@@ -1804,7 +1810,7 @@ plot_labor_levels_gaps <- function(main_path,
                                                 title %in% fig_title_vec,
                                                 demo_cat == "Race")  %>%
                               mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
-                             aes(x = year, y = gap_emp, color = title)) +
+                             aes(x = year, y = gap_emp / 1000, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1832,7 +1838,7 @@ plot_labor_levels_gaps <- function(main_path,
 
   ##
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                demo_cat == "DAC"), aes(x = year, y = gap_emp, lty = title)) +
+                                                demo_cat == "DAC"), aes(x = year, y = gap_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -1864,7 +1870,7 @@ plot_labor_levels_gaps <- function(main_path,
                                filter(!scenario %in% remove_scen,
                                       demo_cat == "Poverty") %>%
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                             aes(x = year, y = gap_emp, lty = title)) +
+                             aes(x = year, y = gap_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -1890,7 +1896,7 @@ plot_labor_levels_gaps <- function(main_path,
 #       theme(legend.text = element_text(size = 8)))
 
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference (thousand)", size = 8, angle = 90)
 
 
   # ## plot together
@@ -3333,14 +3339,14 @@ fig4_hl <- function(health_grp,
   
   ## calculate gaps (BAU - scenario)
   bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
-  bau_gaps_df <- bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", "num_over_den")]
-  setnames(bau_gaps_df, "num_over_den", "bau_num_over_den")
+  bau_gaps_df <- bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", "mortality_level_dem")]
+  setnames(bau_gaps_df, "mortality_level_dem", "bau_mortality_level_dem")
   
   gaps_df <- merge(gaps_df, bau_gaps_df,
                    by = c("year", "demo_cat", "demo_group", "title"),
                    all.x = T)
   
-  gaps_df[, gap :=  num_over_den - bau_num_over_den]
+  gaps_df[, gap :=  mortality_level_dem - bau_mortality_level_dem]
   
   ## change historic to historical
   gaps_df[, scen_id := str_replace(scen_id, "historic", "historical")]
@@ -3388,7 +3394,7 @@ fig4_hl <- function(health_grp,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     theme(legend.position = "none",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -3407,7 +3413,7 @@ fig4_hl <- function(health_grp,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     scale_linetype_manual(values = dac_lty) +
@@ -3435,7 +3441,7 @@ fig4_hl <- function(health_grp,
     scale_linetype_manual(values = poverty_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -3448,7 +3454,10 @@ fig4_hl <- function(health_grp,
   
   
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
+  # yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
+  #                                    size = 8, angle = 90)
+  
+  yaxis_lab <- ggdraw() + draw_label("Avoided mortalities, difference from reference", 
                                      size = 8, angle = 90)
   
   
@@ -3575,7 +3584,7 @@ fig4_hl <- function(health_grp,
                                                  title %in% fig_title_vec,
                                                  demo_cat == "Race")  %>%
                               mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-                            aes(x = year, y = gap_emp, color = title)) +
+                            aes(x = year, y = gap_emp / 1000, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -3606,7 +3615,7 @@ fig4_hl <- function(health_grp,
 
   ## labor b
     labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                   demo_cat == "DAC"), aes(x = year, y = gap_emp, lty = title)) +
+                                                   demo_cat == "DAC"), aes(x = year, y = gap_emp / 1000, lty = title)) +
       geom_line(linewidth = 1, alpha = 0.8) +
       geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
       facet_grid(demo_cat ~ scenario_title) +
@@ -3640,7 +3649,7 @@ fig4_hl <- function(health_grp,
                               filter(!scenario %in% remove_scen,
                                      demo_cat == "Poverty") %>%
                               mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                            aes(x = year, y = gap_emp, lty = title)) +
+                            aes(x = year, y = gap_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -3670,8 +3679,8 @@ fig4_hl <- function(health_grp,
       theme(legend.text = element_text(size = 6)))
   
   ## shared y lab
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
-  
+  #yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference (thousand)", size = 8, angle = 90)
   
   l_gaps_plot_grid <- plot_grid(
     labor_gap_fig_b + theme(legend.position = "none"),
