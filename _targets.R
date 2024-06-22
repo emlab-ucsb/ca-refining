@@ -448,19 +448,46 @@ list(
 
   tar_target(name = health_levels_plot, command = plot_health_levels(main_path,
                                                                      health_grp)),
+  
+  tar_target(name = health_levels_pmil_plot, command = plot_health_levels_pc(main_path,
+                                                                             health_grp,
+                                                                             refining_mortality,
+                                                                             pop_ratios)),
+  
+  tar_target(name = health_levels_plot_pm25, command = plot_health_levels_pm25(main_path,
+                                                                               health_grp)),
 
   tar_target(name = labor_levels_plot, command = plot_labor_levels(main_path,
                                                                    ref_labor_demog_yr,
                                                                    refining_mortality,
                                                                    pop_ratios)),
+  
+  tar_target(name = labor_levels_plot_pmil, command = plot_labor_levels_pmil(main_path,
+                                                                             ref_labor_demog_yr,
+                                                                             refining_mortality,
+                                                                             pop_ratios)),
 
   tar_target(name = health_gaps_plot, command = plot_health_levels_gaps(main_path,
                                                                         health_grp)),
+  
+  tar_target(name = health_gaps_pmil_plot, command = plot_health_levels_gaps_pmil(main_path,
+                                                                                  health_grp,
+                                                                                  refining_mortality,
+                                                                                  pop_ratios)),
+  
+  tar_target(name = health_gaps_plot_pm25, command = plot_health_levels_gaps_pm25(main_path,
+                                                                                  health_grp)),
 
   tar_target(name = labor_gaps_plot, command = plot_labor_levels_gaps(main_path,
                                                                       ref_labor_demog_yr,
                                                                       refining_mortality,
                                                                       pop_ratios)),
+  
+  tar_target(name = labor_gaps_plot_pmil, command = plot_labor_levels_gaps_pmil(main_path,
+                                                                                ref_labor_demog_yr,
+                                                                                refining_mortality,
+                                                                                pop_ratios)),
+  
 
   tar_target(name = demographic_npv_df, command = plot_hl_levels_df(main_path,
                                                                     ref_mortality_demog,
@@ -491,6 +518,11 @@ list(
                                                               ref_labor_demog_yr,
                                                               refining_mortality,
                                                               pop_ratios)),
+  
+  tar_target(name = health_labor_gaps_pmil_plot, command = fig4_hl_pmil(health_grp,
+                                                                        ref_labor_demog_yr,
+                                                                        refining_mortality,
+                                                                        pop_ratios)),
 
   tar_target(name = state_level_results, command = create_health_labor_table(main_path,
                                                                              demographic_npv_df,
@@ -555,12 +587,42 @@ list(
                                      height = 8,
                                      dpi = 600),
              format = "file"),
+  
+  tar_target(name = save_levels_pmil_fig,
+             command = simple_ggsave(health_levels_pmil_plot,
+                                     main_path,
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_levels_pmil_fig",
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_levels_pm25_fig,
+             command = simple_ggsave(health_levels_plot_pm25,
+                                     main_path,
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_levels_pm25_fig",
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
 
   tar_target(name = save_l_levels_fig,
              command = simple_ggsave(labor_levels_plot,
                                      main_path,
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "state_labor_levels_fig",
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_l_levels_pmil_fig,
+             command = simple_ggsave(labor_levels_plot_pmil,
+                                     main_path,
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_labor_levels_pmil_fig",
                                      width = 12,
                                      height = 8,
                                      dpi = 600),
@@ -575,12 +637,42 @@ list(
                                      height = 8,
                                      dpi = 600),
              format = "file"),
-
+  
+  tar_target(name = save_gaps_pmil_fig,
+             command = simple_ggsave(health_gaps_pmil_plot,
+                                     main_path,
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_gaps_pmil_fig",
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_gaps_pm25_fig,
+             command = simple_ggsave(health_gaps_plot_pm25,
+                                     main_path,
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_gaps_pm25_fig",
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
   tar_target(name = save_labor_gaps_fig,
              command = simple_ggsave(labor_gaps_plot,
                                      main_path,
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "state_labor_gaps_fig",
+                                     width = 12,
+                                     height = 8,
+                                     dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_labor_gaps_fig_pmil,
+             command = simple_ggsave(labor_gaps_plot_pmil,
+                                     main_path,
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "state_labor_gaps_pmil_fig",
                                      width = 12,
                                      height = 8,
                                      dpi = 600),
@@ -624,6 +716,19 @@ list(
                                      width = 12,
                                      height = 6,
                                      dpi = 600),
+             format = "file"),
+  
+  tar_target(name = save_health_labor_gaps_pmil_plot,
+             command = simple_ggsave(health_labor_gaps_pmil_plot,
+                                     main_path,
+                                     "outputs/academic-out/refining/figures/2022-12-update",
+                                     "health_labor_gaps_pmil_plot",
+                                     width = 12,
+                                     height = 6,
+                                     dpi = 600),
              format = "file")
   
 )
+
+
+
