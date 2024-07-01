@@ -140,7 +140,7 @@ list(
   tar_target(name = file_df_ca_regions, command = file.path(main_path, "data-staged-for-deletion/labor/raw/ca_regions.csv"), format = "file"),
   #tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
-  tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240605-census_regions-Detail Economic Indicators.csv"), format = "file"),
+  tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240623-census_regions-Detail Economic Indicators.csv"), format = "file"),
   tar_target(name = file_df_labor_fte, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/Emp_FTE and W&S_EC_546 Industry Scheme.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
   tar_target(name = file_ca_counties_sp, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"), format = "file"),
