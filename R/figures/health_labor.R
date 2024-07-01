@@ -245,6 +245,15 @@ plot_npv_health_labor <- function(main_path,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm')) 
   
+  ## make separete df for labor high and low for plotting
+  plot_df_labor_pts <- plot_df_labor %>%
+    filter(!scen_id %in% remove_scen,
+    title == "Labor: forgone wages",
+    unit == "NPV (2019 USD billion)",
+    !refining_scenario == "historical production") %>%
+    select(scen_id, demand_scenario, refining_scenario, scenario, ghg_perc_diff, high, low) %>%
+    pivot_longer(high:low, names_to = "estimate", values_to =  "npv_2019_usd_billion")
+  
   fig_bxm_b <- ggplot() + 
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
     geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
