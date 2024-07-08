@@ -214,4 +214,40 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
   
 }
 
+## function for creating labor output df
+calculate_annual_labor_x_demg_hl <- function(ref_labor_demog_yr) {
+  
+  labor_pct <- copy(ref_labor_demog_yr)
+  
+  ## county pop by demographic group 
+  labor_pct[, demo_emp_revised := total_emp_revised * pct]
+  
+  ## summarise over years
+  labor_pct <- labor_pct[, .(sum_demo_emp = sum(demo_emp),
+                             sum_demo_emp_revised = sum(demo_emp_revised),
+                             sum_demo_comp_pv_h = sum(demo_comp_pv_h),
+                             sum_demo_comp_pv_l = sum(demo_comp_pv_l)),
+                         by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title, year)]
+  
+  
+  ## change scenario names, factor
+  labor_pct[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  labor_pct[, scenario := gsub('LC1.', 'Low ', scenario)]
+  
+  ## change historic to historical
+  labor_pct[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  labor_pct[, scenario := str_replace(scenario, "historic", "historical")]
+
+  ## select columns
+  labor_pct <- labor_pct[, .(scenario, demand_scenario, refining_scenario, year, demo_cat, demo_group,
+                             title, sum_demo_emp, sum_demo_emp_revised, sum_demo_comp_pv_h, sum_demo_comp_pv_l)]
+  
+  ## save df
+  fwrite(labor_pct, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  
+  
+  return(labor_pct)
+  
+}
+
 
