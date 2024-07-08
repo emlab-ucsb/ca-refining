@@ -235,7 +235,7 @@ plot_npv_health_labor <- function(main_path,
          title = "A. Health: avoided mortality",
          y = "NPV (2019 USD billion)",
          x = NULL) +
-    ylim(0, 25) +
+    # ylim(0, 25) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
     theme_line +
@@ -270,7 +270,7 @@ plot_npv_health_labor <- function(main_path,
          title = "B. Labor: forgone wages",
          y = NULL,
          x = NULL) +
-    ylim(-60, 0) +
+    # ylim(-60, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors) +
     theme_line +
@@ -1335,7 +1335,7 @@ plot_health_levels_pc <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 40)) +
+    # ylim(c(0, 40)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1362,7 +1362,7 @@ plot_health_levels_pc <- function(main_path,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 40)) +
+    # ylim(c(0, 40)) +
     scale_linetype_manual(values = dac_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
@@ -1393,7 +1393,7 @@ plot_health_levels_pc <- function(main_path,
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 40)) +
+    # ylim(c(0, 40)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1538,7 +1538,7 @@ plot_health_levels_pm25 <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.4)) +
+    # ylim(c(0, 0.4)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1565,7 +1565,7 @@ plot_health_levels_pm25 <- function(main_path,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.4)) +
+    # ylim(c(0, 0.4)) +
     scale_linetype_manual(values = dac_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
@@ -1596,7 +1596,7 @@ plot_health_levels_pm25 <- function(main_path,
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 0.4)) +
+    # ylim(c(0, 0.4)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -1987,7 +1987,7 @@ plot_health_levels_gaps_pmil <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-30, 0)) +
+    # ylim(c(-30, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -2011,7 +2011,7 @@ plot_health_levels_gaps_pmil <- function(main_path,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-30, 0)) +
+    # ylim(c(-30, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     scale_linetype_manual(values = dac_lty) +
@@ -2045,7 +2045,7 @@ plot_health_levels_gaps_pmil <- function(main_path,
     scale_linetype_manual(values = poverty_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    ylim(c(-30, 0)) +
+    # ylim(c(-30, 0)) +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -2199,7 +2199,7 @@ plot_health_levels_gaps_pm25 <- function(main_path,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -2223,7 +2223,7 @@ plot_health_levels_gaps_pm25 <- function(main_path,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     scale_linetype_manual(values = dac_lty) +
@@ -2257,7 +2257,7 @@ plot_health_levels_gaps_pm25 <- function(main_path,
     scale_linetype_manual(values = poverty_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    ylim(c(-0.31, 0)) +
+    # ylim(c(-0.31, 0)) +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -2470,7 +2470,7 @@ plot_labor_levels <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 45)) +
+    # ylim(c(0, 45)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -2499,7 +2499,7 @@ plot_labor_levels <- function(main_path,
                        values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 45)) +
+    # ylim(c(0, 45)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -2530,7 +2530,7 @@ plot_labor_levels <- function(main_path,
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 45)) +
+    # ylim(c(0, 45)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -2751,7 +2751,7 @@ plot_labor_levels_pmil <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 3500)) +
+    # ylim(c(0, 3500)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -2780,7 +2780,7 @@ plot_labor_levels_pmil <- function(main_path,
                        values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 3500)) +
+    # ylim(c(0, 3500)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -2811,7 +2811,7 @@ plot_labor_levels_pmil <- function(main_path,
     facet_grid(demo_cat ~ scenario) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(0, 3500)) +
+    # ylim(c(0, 3500)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -2941,7 +2941,7 @@ plot_labor_levels_gaps <- function(main_path,
                                                                       'BAU demand\nlow exports',
                                                                       'Low demand\nhistorical exports',
                                                                       'Low demand\nlow exports',
-                                                                      'Low demand\nhistorical productio'))
+                                                                      'Low demand\nhistorical production'))
   ## sum for state
   l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
                          by = .(year, demand_scenario, refining_scenario,
@@ -2995,7 +2995,7 @@ plot_labor_levels_gaps <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-40, 0)) +
+    # ylim(c(-40, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -3023,7 +3023,7 @@ plot_labor_levels_gaps <- function(main_path,
     scale_linetype_manual(values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-40, 0)) +
+    # ylim(c(-40, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -3055,7 +3055,7 @@ plot_labor_levels_gaps <- function(main_path,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-40, 0)) +
+    # ylim(c(-40, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -3184,7 +3184,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
                                                                           'BAU demand\nlow exports',
                                                                           'Low demand\nhistorical exports',
                                                                           'Low demand\nlow exports',
-                                                                          'Low demand\nhistorical productio'))
+                                                                          'Low demand\nhistorical production'))
   ## sum for state
   l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
                          by = .(year, demand_scenario, refining_scenario,
@@ -3192,8 +3192,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   
   ## select columns
   l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario,
-                             scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp,
-                             pop_2020)]
+                             scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp)]
   
   ## calculate gaps (BAU - scenario)
   l_bau_gaps_df <- l_gaps_df[scenario == "BAU demand - historical production"]
@@ -3235,7 +3234,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
                        values = race_col_pal) +
     labs(x = NULL,
          y = NULL) +
-    ylim(-2500, 0) +
+    # ylim(-2500, 0) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -3263,7 +3262,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
     scale_linetype_manual(values = dac_lty) +
     labs(x = NULL,
          y = NULL) +
-    ylim(-2500, 0) +
+    # ylim(-2500, 0) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
@@ -3297,7 +3296,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
          y = NULL) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    ylim(-2500, 0) +
+    # ylim(-2500, 0) +
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
@@ -3551,7 +3550,7 @@ plot_hl_levels <- function(demographic_npv_df) {
      facet_wrap(~seg_title) +
      scale_color_manual(name = "",
                         values = race_col_pal) +
-     ylim(0, 12) +
+     # ylim(0, 12) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
@@ -3579,7 +3578,7 @@ plot_hl_levels <- function(demographic_npv_df) {
      scale_shape_manual(name = "",
                         values = race_shape_ptc,
                         labels = high_low_labs) +
-     ylim(-25, 0) +
+     # ylim(-25, 0) +
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
@@ -3615,7 +3614,7 @@ plot_hl_levels <- function(demographic_npv_df) {
           x = NULL,
           color = NULL) +
      theme_line +
-     ylim(0, 20) +
+     # ylim(0, 20) +
      theme(legend.position = "none",
            legend.title = element_blank(),
            # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -3638,7 +3637,7 @@ plot_hl_levels <- function(demographic_npv_df) {
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
-     ylim(-50, 0) +
+     # ylim(-50, 0) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -3669,7 +3668,7 @@ plot_hl_levels <- function(demographic_npv_df) {
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
-     ylim(0, 15) +
+     # ylim(0, 15) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -3692,7 +3691,7 @@ plot_hl_levels <- function(demographic_npv_df) {
      labs(y = "NPV (USD billion)",
           x = NULL,
           color = NULL) +
-     ylim(-40, 0) +
+     # ylim(-40, 0) +
      theme_line +
      theme(legend.position = "none",
            legend.title = element_blank(),
@@ -4325,7 +4324,7 @@ plot_hl_shares <- function(main_path,
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
                        values = race_col_pal) +
-    ylim(0, 0.5) +
+    # ylim(0, 0.5) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -4353,7 +4352,7 @@ plot_hl_shares <- function(main_path,
     scale_shape_manual(name = "",
                       values = race_shape_ptc,
                       labels = high_low_labs) +
-    ylim(0, 0.6) +
+    # ylim(0, 0.6) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -4387,7 +4386,7 @@ plot_hl_shares <- function(main_path,
     facet_wrap(~seg_title) +
     scale_color_manual(name = "",
                        values = race_col_pal) +
-    ylim(0, 0.5) +
+    # ylim(0, 0.5) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -4414,7 +4413,7 @@ plot_hl_shares <- function(main_path,
          x = NULL,
          color = NULL) +
     theme_line +
-    ylim(0, 0.9) +
+    # ylim(0, 0.9) +
     theme(legend.position = "none",
           legend.title = element_blank(),
           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -4434,7 +4433,7 @@ plot_hl_shares <- function(main_path,
                        labels = poverty_hl_share_labs) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
-    ylim(0, 0.9) +
+    # ylim(0, 0.9) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -4465,7 +4464,7 @@ plot_hl_shares <- function(main_path,
     scale_shape_manual(values = poverty_ptc_h) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_wrap(~seg_title) +
-    ylim(0, 0.9) +
+    # ylim(0, 0.9) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -4487,7 +4486,7 @@ plot_hl_shares <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
-    ylim(0, 0.85) +
+    # ylim(0, 0.85) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -4511,7 +4510,7 @@ plot_hl_shares <- function(main_path,
     scale_shape_manual(values = dac_hl_ptc_share,
                        labels = dac_hl_labs_share) +
     facet_wrap(~seg_title) +
-    ylim(0, 0.85) +
+    # ylim(0, 0.85) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -4540,7 +4539,7 @@ plot_hl_shares <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
-    ylim(0, 0.85) +
+    # ylim(0, 0.85) +
     labs(y = "NPV share",
          x = NULL,
          color = NULL) +
@@ -5271,7 +5270,7 @@ fig4_hl_pmil <- function(health_grp,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    ylim(c(-30, 0)) +
+    # ylim(c(-30, 0)) +
     theme(legend.position = "none",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -5290,7 +5289,7 @@ fig4_hl_pmil <- function(health_grp,
     facet_grid(demo_cat ~ scenario_title) +
     labs(x = NULL,
          y = NULL) +
-    ylim(c(-30, 0)) +
+    # ylim(c(-30, 0)) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     scale_linetype_manual(values = dac_lty) +
@@ -5318,7 +5317,7 @@ fig4_hl_pmil <- function(health_grp,
     scale_linetype_manual(values = poverty_lty) +
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
-    ylim(c(-30, 0)) +
+    # ylim(c(-30, 0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -5536,7 +5535,7 @@ fig4_hl_pmil <- function(health_grp,
     scale_x_continuous(breaks = c(2020, 2045),  # Specify tick mark positions
                        labels = c(2020, 2045)) +  # Specify tick mark labels
     theme_line +
-    # ylim(-0.0025, 0) +
+    # ylim(-70, 0) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
