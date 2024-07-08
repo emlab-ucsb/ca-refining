@@ -1507,6 +1507,11 @@ plot_health_levels_pm25 <- function(main_path,
                                                           'Low demand - low exports',
                                                           'Low demand - historical production'))
   
+  
+  ## save figure inputs
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  
+  
   ## scenarios for filtering
   # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
   remove_scen <- c('LC1 historical production')
@@ -5424,34 +5429,31 @@ fig4_hl_pmil <- function(health_grp,
                          by = .(year, demand_scenario, refining_scenario,
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
-  ## merge with 2020 pop
-  l_gaps_df <- merge(l_gaps_df, pop_2020,
-                     by = c("demo_cat", "demo_group"),
-                     all.x = T)
-  
-  ## calculate per capita
-  l_gaps_df[, demo_emp_pc := sum_demo_emp / pop_2020]
-  
   ## select columns
   l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario,
-                             scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp,
-                             pop_2020, demo_emp_pc)]
+                             scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp)]
   
   ## calculate gaps (BAU - scenario)
   l_bau_gaps_df <- l_gaps_df[scenario == "BAU demand - historical production"]
   l_bau_gaps_df <- l_bau_gaps_df[, c("year", "demo_cat", "demo_group", "title", 
-                                     "sum_demo_emp", "demo_emp_pc")]
+                                     "sum_demo_emp")]
   setnames(l_bau_gaps_df, "sum_demo_emp", "bau_sum_demo_emp")
-  setnames(l_bau_gaps_df, "demo_emp_pc", "bau_demo_emp_pc")
   
   l_gaps_df <- merge(l_gaps_df, l_bau_gaps_df,
                      by = c("year", "demo_cat", "demo_group", "title"),
                      all.x = T)
   
   l_gaps_df[, gap_emp :=  sum_demo_emp - bau_sum_demo_emp]
-  l_gaps_df[, gap_emp_pc :=  demo_emp_pc - bau_demo_emp_pc]
   
   
+  ## merge with 2020 pop
+  l_gaps_df <- merge(l_gaps_df, pop_2020,
+                     by = c("demo_cat", "demo_group"),
+                     all.x = T)
+  
+  ## calculate per capita
+  l_gaps_df[, gap_emp_pc := gap_emp / pop_2020]
+  l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
   
   
   
@@ -5556,7 +5558,7 @@ fig4_hl_pmil <- function(health_grp,
   
   ## shared y lab
   #yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference (thousand)", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference per million people", size = 8, angle = 90)
   
   l_gaps_plot_grid <- plot_grid(
     labor_gap_fig_b + theme(legend.position = "none"),

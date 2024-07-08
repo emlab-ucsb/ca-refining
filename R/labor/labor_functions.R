@@ -134,7 +134,7 @@ calc_labor_outputs <- function(main_path,
   ## select columns
   county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, destination, year, total_emp, total_emp_revised, total_comp_h,
                                            total_comp_usd19_h, total_comp_usd19_l, total_comp_PV_h, total_comp_PV_l)]
-
+  
   county_out_labor
 
 }
