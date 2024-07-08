@@ -215,7 +215,8 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
 }
 
 ## function for creating labor output df
-calculate_annual_labor_x_demg_hl <- function(ref_labor_demog_yr) {
+calculate_annual_labor_x_demg_hl <- function(main_path,
+                                             ref_labor_demog_yr) {
   
   labor_pct <- copy(ref_labor_demog_yr)
   
