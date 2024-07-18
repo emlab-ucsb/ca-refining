@@ -408,8 +408,12 @@ list(
   
   tar_target(name = county_pop_ratios, command = calc_pop_ratios_county(raw_ct_race,
                                                                         raw_pop_poverty,
-                                                                        refining_mortality,
-                                                                        ca_regions)),
+                                                                        refining_mortality)),
+  
+  tar_target(name = county_grp_pop_ratios, command = calc_pop_ratios_county_grp(raw_ct_race,
+                                                                                raw_pop_poverty,
+                                                                                refining_mortality,
+                                                                                ca_regions)),
 
   tar_target(name = ref_mortality_demog, command = calculate_mort_x_demg(refining_mortality,
                                                                          pop_ratios,
@@ -426,11 +430,22 @@ list(
                                                                alpha_comp,
                                                                alpha_emp)),
 
-  tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(county_pop_ratios,
+  tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(county_grp_pop_ratios,
                                                                                 annual_labor,
                                                                                 raw_pop_income_2021,
                                                                                 refining_mortality,
                                                                                 ca_regions)),
+  
+  tar_target(name = county_labor_outputs, command = calc_county_level_outputs(main_path,
+                                                                              ref_labor_demog_yr,
+                                                                              refining_mortality,
+                                                                              ca_regions,
+                                                                              raw_pop_income_2021)),
+  
+  tar_target(name = annual_labor_jobs_comp, command = calculate_annual_labor_x_demg_hl(main_path,
+                                                                                       ref_labor_demog_yr,
+                                                                                       refining_mortality,
+                                                                                       pop_ratios)),
 
   tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(ref_labor_demog_yr)),
 

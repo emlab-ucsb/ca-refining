@@ -118,10 +118,160 @@ calc_pop_ratios <- function(raw_pop_income_2021,
   return(merged_ratio_df)
 }
 
+
 calc_pop_ratios_county <- function(raw_pop_income_2021,
                                    raw_pop_poverty,
-                                   refining_mortality,
-                                   ca_regions) {
+                                   refining_mortality) {
+  
+  
+  ## get proportions for race and merge
+  ## -------------------------------------------------------------------------------
+  pop_race_c_df <- copy(raw_pop_income_2021)
+  
+  ## extract census tract, process
+  pop_race_c_df[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  pop_race_c_df[, year := NULL]
+  pop_race_c_df <- pop_race_c_df[state == "California"]
+  
+  # ## add non-minority column, make longer, add percentages
+  # pop_income_2020[, minority := hispanic + black + aialnative + asian]
+  
+  pop_race_c_df <- pop_race_c_df %>%
+    pivot_longer(
+      cols = c(hispanic, white, black, aialnative, asian, hawaiian_pacisl, nonh_other, nonh_two_or_more),
+      names_to = "demo_group",
+      values_to = "pop"
+    ) %>%
+    group_by(county, demo_group) %>%
+    summarise(pop = sum(pop)) %>%
+    ungroup() %>%
+    group_by(county) %>%
+    mutate(total_pop = sum(pop)) %>%
+    ungroup() %>%
+    mutate(county = str_remove(county, " County")) %>%
+    group_by(county, demo_group) %>%
+    mutate(total_demo_pop = sum(pop)) %>%
+    ungroup() %>%
+    as.data.table()
+  
+  
+  ## calculate share
+  pop_race_c_df[, pct := pop / total_pop]
+  pop_race_c_df[, demo_cat := "Race"]
+  
+  
+  ## get proportions for poverty
+  ## -------------------------------------------------------------------------------
+  
+  ## copy raw_pop_poverty
+  pop_c_poverty <- copy(raw_pop_poverty)
+  
+  ## extract census tract, process
+  pop_c_poverty[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  pop_c_poverty[, year := NULL]
+  pop_c_poverty <- pop_c_poverty[state == "California"]
+  
+  ## take total population from the previous file used to calculate race ratios
+  total_pop_c_df <- copy(raw_pop_income_2021)
+  total_pop_c_df[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  total_pop_c_df[, year := NULL]
+  total_pop_c_df <- total_pop_c_df[state == "California"]
+  
+  total_pop_c_df <- total_pop_c_df[, .(census_tract, county, total_pop)]
+  
+  
+  ## pivot longer, summarize by county, merge, calculate shares
+  pop_c_poverty <- pop_c_poverty %>%
+    select(-total_pop) %>%
+    full_join(total_pop_c_df, by = c("census_tract", "county")) %>%
+    ## re-estimate total above pov line by subtracting below from total
+    mutate(total_above_poverty = total_pop - total_below_poverty) %>%
+    select(county, census_tract, total_pop, total_above_poverty, total_below_poverty) %>%
+    pivot_longer(
+      cols = c(total_above_poverty, total_below_poverty),
+      names_to = "demo_group",
+      values_to = "pop"
+    ) %>%
+    group_by(county, demo_group) %>%
+    summarize(pop = sum(pop)) %>%
+    ungroup() %>%
+    group_by(county) %>%
+    mutate(total_pop = sum(pop)) %>%
+    ungroup() %>%
+    mutate(county = str_remove(county, " County")) %>%
+    as.data.table()
+
+  ## add columns
+  pop_c_poverty[, pct := pop / total_pop]
+  pop_c_poverty[, demo_cat := "Poverty"]
+  
+  ## select columns
+  pop_c_poverty <- pop_c_poverty[, .(county, demo_cat, demo_group, pct)]
+  
+  pop_race_c_df <- pop_race_c_df[, .(county, demo_cat, demo_group, pct)]
+  
+  
+  ## get DAC proportions
+  ## -------------------------------------------------------------------------------
+  
+  ## county and census tracts
+  c_ct_df <- raw_pop_income_2021[state == "California"]
+  c_ct_df[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  c_ct_df <- c_ct_df[, .(county, census_tract, total_pop)]
+  
+  dac_c_df <- refining_mortality %>%
+    ungroup() %>%
+    select(census_tract, disadvantaged) %>%
+    unique() %>%
+    left_join(c_ct_df) %>%
+    mutate(
+      pop = total_pop,
+      demo_group = ifelse(disadvantaged == "No", "non_dac", "dac"),
+      demo_cat = "DAC"
+    ) %>%
+    mutate(county = str_remove(county, " County")) %>%
+    group_by(county) %>%
+    mutate(total_pop = sum(pop)) %>%
+    ungroup() %>%
+    group_by(county, demo_cat, demo_group) %>%
+    summarise(pop = sum(pop),
+              total_pop = unique(total_pop)) %>%
+    ungroup() %>%
+    mutate(pct = pop / total_pop) %>%
+    select(county, demo_cat, demo_group, pct) %>%
+    as.data.table()
+  
+  ## rbind
+  merged_c_ratio_df <- rbind(pop_race_c_df, pop_c_poverty, dac_c_df)
+  
+  ## legend names
+  lnames_df <- tibble(
+    demo_group = c(
+      "non_dac", "dac", "hispanic", "white", "asian", "aialnative", "black",
+      "hawaiian_pacisl", "nonh_other", "nonh_two_or_more", "total_above_poverty", "total_below_poverty"
+    ),
+    title = c(
+      "Non-DAC", "DAC", "Hispanic", "white", "Asian", "American Indian or Alaska Native", "Black",
+      "Hawaiian or Other Pacific Islander", "Other (Non-Hispanic)", "Two or more races (Non-Hispanic)", "Above poverty line", "Below poverty line"
+    )
+  )
+  
+  merged_c_ratio_df <- merge(merged_c_ratio_df, lnames_df,
+                             all.x = T
+  )
+  
+  ## return
+  return(merged_c_ratio_df)
+}
+
+
+
+
+
+calc_pop_ratios_county_grp <- function(raw_pop_income_2021,
+                                       raw_pop_poverty,
+                                       refining_mortality,
+                                       ca_regions) {
   
   county_region_df <- copy(ca_regions)
 

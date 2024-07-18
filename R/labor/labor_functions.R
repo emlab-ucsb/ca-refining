@@ -216,7 +216,9 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
 
 ## function for creating labor output df
 calculate_annual_labor_x_demg_hl <- function(main_path,
-                                             ref_labor_demog_yr) {
+                                             ref_labor_demog_yr,
+                                             refining_mortality,
+                                             pop_ratios) {
   
   labor_pct <- copy(ref_labor_demog_yr)
   
@@ -243,12 +245,185 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
   labor_pct <- labor_pct[, .(scenario, demand_scenario, refining_scenario, year, demo_cat, demo_group,
                              title, sum_demo_emp, sum_demo_emp_revised, sum_demo_comp_pv_h, sum_demo_comp_pv_l)]
   
+  ## compute per million stat
+  ## ---------------------------------------------------------
+  
+  ## calc 2020 pop by demographic
+  pop_2020 <- refining_mortality %>%
+    filter(year == 2020) %>%
+    select(census_tract, year, pop) %>%
+    unique() %>%
+    left_join(pop_ratios) %>%
+    as.data.table()
+  
+  pop_2020[, demo_pop := pop * pct]
+  
+  ## summarize by demographic group
+  pop_2020 <- pop_2020[, .(pop_2020 = sum(demo_pop)),
+                       by = .(demo_group, demo_cat)]
+  
+
+  ## merge with 2020 pop
+  labor_pct <- merge(labor_pct, pop_2020,
+                     by = c("demo_cat", "demo_group"),
+                     all.x = T)
+  
+  ## calculate per capita
+  labor_pct[, demo_emp_pc_h := sum_demo_emp / pop_2020]
+  labor_pct[, demo_emp_pmil_h := demo_emp_pc_h * 1e6]
+  labor_pct[, demo_emp_pc_l := sum_demo_emp_revised / pop_2020]
+  labor_pct[, demo_emp_pmil_l := demo_emp_pc_l * 1e6]
+  labor_pct[, demo_comp_pc_h := sum_demo_comp_pv_h / pop_2020]
+  labor_pct[, demo_comp_pc_pmil_h := demo_comp_pc_h * 1e6]
+  labor_pct[, demo_comp_pc_l := sum_demo_comp_pv_l / pop_2020]
+  labor_pct[, demo_comp_pc_pmil_l := demo_comp_pc_l * 1e6]
+  ## remove pop
+  labor_pct[, pop_2020 := NULL]
+  labor_pct[, title := NULL]
+  
+  ## for renaming
+  high_est_vec <- c("sum_demo_emp", "demo_emp_pc_h", "demo_emp_pmil_h", "sum_demo_comp_pv_h", "demo_comp_pc_h", "demo_comp_pc_pmil_h")
+  low_est_vec <- c("sum_demo_emp_revised", "demo_emp_pc_l", "demo_emp_pmil_l", "sum_demo_comp_pv_l", "demo_comp_pc_l", "demo_comp_pc_pmil_l")
+  
+  labor_metric_df <- tibble(metric = c(high_est_vec, low_est_vec),
+                            metric_name = c("employment",
+                                            "employment_pc",
+                                            "employment_pmil",
+                                            "compensation_pv",
+                                            "compensation_pv_pc",
+                                            "compensation_pv_pmil",
+                                            "employment",
+                                            "employment_pc",
+                                            "employment_pmil",
+                                            "compensation_pv",
+                                            "compensation_pv_pc",
+                                            "compensation_pv_pmil"))
+  
+  ## pivot longer
+  labor_pct_long <- melt(labor_pct, id.vars = c("demo_cat", "demo_group", "scenario", "demand_scenario", "refining_scenario", "year"), variable.name = "metric", value.name = "value")
+  labor_pct_long[, estimate := fifelse(metric %in% high_est_vec, "high", "low")]
+  
+  ## merge
+  labor_pct_long <- merge(labor_pct_long, labor_metric_df,
+                          by = "metric",
+                          all.x = T)
+  
+  labor_pct_long <- labor_pct_long[, .(demo_cat, demo_group, scenario, demand_scenario, 
+                                       refining_scenario, year, metric_name, estimate, value)]
+  
+  
   ## save df
-  fwrite(labor_pct, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
   
   
   return(labor_pct)
   
 }
+
+calc_county_level_outputs <- function(main_path,
+                                      ref_labor_demog_yr,
+                                      refining_mortality,
+                                      ca_regions,
+                                      raw_pop_income_2021) {
+
+  ## compute county populations
+  pop_2020 <- refining_mortality %>%
+    filter(year == 2020) %>%
+    select(census_tract, year, pop) %>%
+    unique() %>%
+    as.data.table()
+  
+  ## census tract x county 
+  c_ct_df <- raw_pop_income_2021[state == "California"]
+  c_ct_df[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  c_ct_df <- c_ct_df[, .(county, census_tract)]
+  c_ct_df[, county := str_remove(county, " County")]
+  
+  ## merge with counties
+  pop_2020 <- merge(pop_2020, c_ct_df,
+                    by = c("census_tract"),
+                    all.x = T)
+  
+  ## summarize by county
+  pop_2020 <- pop_2020[, .(county_pop = sum(pop)), by = .(county)]
+  
+  ## compute county / region ratio
+  county_region_ratio <- merge(pop_2020, ca_regions,
+                               by = "county")
+  
+  ## sum region pop
+  county_region_ratio[, region_pop := sum(county_pop), by = .(region)]
+  
+  ## calc ratio
+  county_region_ratio[, county_ratio := county_pop / region_pop]
+  
+  county_region_ratio <- county_region_ratio[, .(county, region, county_pop, region_pop, county_ratio)]
+  
+  
+  ## make labor outputs long and sum by county region
+  labor_county_region_out <- ref_labor_demog_yr %>%
+    select(demand_scenario, refining_scenario, destination, year, total_emp, total_emp_revised,
+           total_comp_PV_h, total_comp_PV_l) %>%
+    unique() %>%
+    rename(region = destination) %>% 
+    full_join(county_region_ratio) %>%
+    mutate(total_emp_h_county = total_emp * county_ratio,
+           total_emp_l_county = total_emp_revised * county_ratio,
+           total_comp_PV_h_county = total_comp_PV_h * county_ratio,
+           total_comp_PV_l_county = total_comp_PV_l * county_ratio) %>%
+    select(county, demand_scenario, refining_scenario, year, county_pop, total_emp_h_county,
+           total_emp_l_county, total_comp_PV_l_county, total_comp_PV_h_county) %>%
+    pivot_longer(total_emp_h_county:total_comp_PV_h_county, names_to = "metric", values_to = "value") 
+  
+  labor_county_pc_mil <- labor_county_region_out %>% 
+    mutate(pc = value / county_pop,
+           pmil = pc * 1e6) %>%
+    select(county, demand_scenario, refining_scenario, year, metric, pc, pmil) %>%
+    pivot_longer(pc:pmil, names_to = "metric_two", values_to = "value") %>%
+    mutate(metric = paste0(metric, "_", metric_two)) %>%
+    select(county, demand_scenario, refining_scenario, year, metric, value)
+  
+  ## for renaming
+  high_est_vec <- c("total_emp_h_county", "total_emp_h_county_pc", "total_emp_h_county_pmil", "total_comp_PV_h_county", "total_comp_PV_h_county_pc", "total_comp_PV_h_county_pmil")
+  low_est_vec <- c("total_emp_l_county", "total_emp_l_county_pc", "total_emp_l_county_pmil", "total_comp_PV_l_county",  "total_comp_PV_l_county_pc", "total_comp_PV_l_county_pmil")
+  
+  labor_metric_df <- tibble(metric = c(high_est_vec, low_est_vec),
+                            metric_name = c("employment",
+                                            "employment_pc",
+                                            "employment_pmil",
+                                            "compensation_pv",
+                                            "compensation_pv_pc",
+                                            "compensation_pv_pmil",
+                                            "employment",
+                                            "employment_pc",
+                                            "employment_pmil",
+                                            "compensation_pv",
+                                            "compensation_pv_pc",
+                                            "compensation_pv_pmil"))
+
+  
+  labor_county_out_df <- labor_county_region_out %>%
+    select(-county_pop) %>%
+    rbind(labor_county_pc_mil) %>%
+    left_join(labor_metric_df) %>%
+    mutate(estimate = ifelse(metric %in% high_est_vec, "high", "low")) %>%
+    select(county, demand_scenario, refining_scenario, year, metric_name, estimate, value) %>%
+    group_by(county, demand_scenario, refining_scenario, metric_name, estimate) %>%
+    summarise(value = sum(value)) %>% 
+    ungroup() %>%
+    as.data.table()
+    
+  
+  
+  ## save df
+  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "labor_county_outputs.csv"))
+  
+
+  return(labor_county_out_df)
+  
+}
+
+
+
 
 
