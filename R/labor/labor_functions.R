@@ -373,15 +373,20 @@ calc_county_level_outputs <- function(main_path,
            total_comp_PV_l_county = total_comp_PV_l * county_ratio) %>%
     select(county, demand_scenario, refining_scenario, year, county_pop, total_emp_h_county,
            total_emp_l_county, total_comp_PV_l_county, total_comp_PV_h_county) %>%
-    pivot_longer(total_emp_h_county:total_comp_PV_h_county, names_to = "metric", values_to = "value") 
+    pivot_longer(total_emp_h_county:total_comp_PV_h_county, names_to = "metric", values_to = "value") %>%
+    group_by(county, demand_scenario, refining_scenario, county_pop, metric) %>%
+    summarise(value = sum(value)) %>%
+    ungroup()
   
   labor_county_pc_mil <- labor_county_region_out %>% 
     mutate(pc = value / county_pop,
            pmil = pc * 1e6) %>%
-    select(county, demand_scenario, refining_scenario, year, metric, pc, pmil) %>%
+    select(county, demand_scenario, refining_scenario, metric, pc, pmil) %>%
     pivot_longer(pc:pmil, names_to = "metric_two", values_to = "value") %>%
     mutate(metric = paste0(metric, "_", metric_two)) %>%
-    select(county, demand_scenario, refining_scenario, year, metric, value)
+    select(county, demand_scenario, refining_scenario, metric, value)
+  
+  
   
   ## for renaming
   high_est_vec <- c("total_emp_h_county", "total_emp_h_county_pc", "total_emp_h_county_pmil", "total_comp_PV_h_county", "total_comp_PV_h_county_pc", "total_comp_PV_h_county_pmil")
@@ -401,19 +406,14 @@ calc_county_level_outputs <- function(main_path,
                                             "compensation_pv_pc",
                                             "compensation_pv_pmil"))
 
-  
   labor_county_out_df <- labor_county_region_out %>%
     select(-county_pop) %>%
     rbind(labor_county_pc_mil) %>%
     left_join(labor_metric_df) %>%
     mutate(estimate = ifelse(metric %in% high_est_vec, "high", "low")) %>%
-    select(county, demand_scenario, refining_scenario, year, metric_name, estimate, value) %>%
-    group_by(county, demand_scenario, refining_scenario, metric_name, estimate) %>%
-    summarise(value = sum(value)) %>% 
-    ungroup() %>%
+    select(county, demand_scenario, refining_scenario, metric_name, estimate, value) %>%
     as.data.table()
-    
-  
+
   
   ## save df
   fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "labor_county_outputs.csv"))
