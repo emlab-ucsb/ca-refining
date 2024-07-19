@@ -53,8 +53,8 @@ race_col_pal <- c("Black" = "#002147",
                   "white" = "#FFBA00")
 
 
-race_shape_ptc <- c("forgone_wages_h" = 19,
-                    "forgone_wages_l" = 21)
+race_shape_ptc <- c("forgone_wages_h" = 21,
+                    "forgone_wages_l" = 19)
 
 high_low_labs <- c("forgone_wages_h" = "high estimate",
                     "forgone_wages_l" = "low estimate")
@@ -70,25 +70,26 @@ poverty_ptc_h <- c("Above poverty line" = 19,
                    "Below poverty line" = 17)
 
 
-poverty_pt_share_l <- c("Above poverty line_forgone_wages_h" = 19,
-                 "Above poverty line_forgone_wages_l" = 21,
-                 "Below poverty line_forgone_wages_h" = 17,
-                 "Below poverty line_forgone_wages_l" = 24)
+poverty_pt_share_l <- c("Above poverty line_forgone_wages_h" = 21,
+                 "Above poverty line_forgone_wages_l" = 19,
+                 "Below poverty line_forgone_wages_h" = 24,
+                 "Below poverty line_forgone_wages_l" = 17)
 
 poverty_ptc_l <- c("total_above_poverty_forgone_wages_h" = 19,
                    "total_above_poverty_forgone_wages_l" = 21,
                    "total_below_poverty_forgone_wages_h" = 17,
                    "total_below_poverty_forgone_wages_l" = 24)
 
-poverty_hl_share_labs <- c("Above poverty line_forgone_wages_h" = "Above poverty line - high esimate",
-                     "Above poverty line_forgone_wages_l" = "Above poverty line - low estimate",
-                     "Below poverty line_forgone_wages_h" = "Below poverty line - high estimate",
-                     "Below poverty line_forgone_wages_l" = "Below poverty line - low estimate")
+poverty_hl_share_labs <- c( "Below poverty line_forgone_wages_h" = "Below poverty line - no re-emp",
+                     "Below poverty line_forgone_wages_l" = "Below poverty line - with re-emp",
+                     "Above poverty line_forgone_wages_h" = "Above poverty line - no re-emp",
+                     "Above poverty line_forgone_wages_l" = "Above poverty line - with re-emp")
 
-poverty_hl_labs <- c("total_above_poverty_forgone_wages_h" = "Above poverty line - high esimate",
-                     "total_above_poverty_forgone_wages_l" = "Above poverty line - low estimate",
-                     "total_below_poverty_forgone_wages_h" = "Below poverty line - high estimate",
-                     "total_below_poverty_forgone_wages_l" = "Below poverty line - low estimate")
+
+poverty_hl_labs <- c("total_below_poverty_forgone_wages_h" = "Below poverty line - no re-emp",
+                     "total_below_poverty_forgone_wages_l" = "Below poverty line - with re-emp",
+                     "total_above_poverty_forgone_wages_h" = "Above poverty line - no re-emp",
+                     "total_above_poverty_forgone_wages_l" = "Above poverty line - with re-emp")
 
 dac_lty <- c("DAC" = "solid",
              "Non-DAC" = "dotted")
@@ -96,25 +97,25 @@ dac_lty <- c("DAC" = "solid",
 dac_ptc <- c("DAC" = 15,
              "Non-DAC" = 18)
 
-dac_hl_ptc <- c("dac_forgone_wages_h" = 15,
-                 "dac_forgone_wages_l" = 22,
-                 "non_dac_forgone_wages_h" = 18,
-                 "non_dac_forgone_wages_l" = 23)
+dac_hl_ptc <- c("dac_forgone_wages_h" =22,
+                 "dac_forgone_wages_l" = 15,
+                 "non_dac_forgone_wages_h" = 23,
+                 "non_dac_forgone_wages_l" = 18)
 
-dac_hl_labs <- c("dac_forgone_wages_h" = "DAC - high esimate",
-                 "dac_forgone_wages_l" = "DAC - low estimate",
-                 "non_dac_forgone_wages_h" = "Non-DAC - high estimate",
-                 "non_dac_forgone_wages_l" = "Non-DAC - low estimate")
+dac_hl_labs <- c("dac_forgone_wages_h" = "DAC - no re-emp",
+                 "dac_forgone_wages_l" = "DAC - with re-emp",
+                 "non_dac_forgone_wages_h" = "Non-DAC - no re-emp",
+                 "non_dac_forgone_wages_l" = "Non-DAC - with re-emp")
 
-dac_hl_ptc_share <- c("DAC_forgone_wages_h" = 15,
-                "DAC_forgone_wages_l" = 22,
-                "Non-DAC_forgone_wages_h" = 18,
-                "Non-DAC_forgone_wages_l" = 23)
+dac_hl_ptc_share <- c("DAC_forgone_wages_h" = 22,
+                "DAC_forgone_wages_l" = 15,
+                "Non-DAC_forgone_wages_h" = 23,
+                "Non-DAC_forgone_wages_l" = 18)
 
-dac_hl_labs_share <- c("DAC_forgone_wages_h" = "DAC - high esimate",
-                 "DAC_forgone_wages_l" = "DAC - low estimate",
-                 "Non-DAC_forgone_wages_h" = "Non-DAC - high estimate",
-                 "Non-DAC_forgone_wages_l" = "Non-DAC - low estimate")
+dac_hl_labs_share <- c("DAC_forgone_wages_h" = "DAC - no re-emp",
+                 "DAC_forgone_wages_l" = "DAC - with re-emp",
+                 "Non-DAC_forgone_wages_h" = "Non-DAC - no re-emp",
+                 "Non-DAC_forgone_wages_l" = "Non-DAC - with re-emp")
 
 
 
