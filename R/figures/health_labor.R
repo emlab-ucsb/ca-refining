@@ -4330,7 +4330,7 @@ plot_hl_shares <- function(main_path,
     scale_color_manual(name = "",
                        values = race_col_pal) +
     # ylim(0, 0.5) +
-    labs(y = "NPV share",
+    labs(y = " ",
          x = NULL,
          color = NULL) +
     theme_line +
@@ -4537,7 +4537,7 @@ plot_hl_shares <- function(main_path,
     scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     # ylim(0, 0.85) +
-    labs(y = "NPV share",
+    labs(y = " ",
          x = NULL,
          color = NULL) +
     theme_line +
