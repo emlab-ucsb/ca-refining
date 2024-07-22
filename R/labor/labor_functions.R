@@ -362,56 +362,62 @@ calc_county_level_outputs <- function(main_path,
   
   ## make labor outputs long and sum by county region
   labor_county_region_out <- ref_labor_demog_yr %>%
-    select(demand_scenario, refining_scenario, destination, year, total_emp, total_emp_revised,
-           total_comp_PV_h, total_comp_PV_l) %>%
-    unique() %>%
+    mutate(demo_emp_revised = total_emp_revised * pct) %>%
+    select(demand_scenario, refining_scenario, destination, demo_cat, demo_group, title, year, demo_emp, demo_emp_revised, total_emp_revised,
+           demo_comp_pv_h, demo_comp_pv_l) %>%
     rename(region = destination) %>% 
     full_join(county_region_ratio) %>%
-    mutate(total_emp_h_county = total_emp * county_ratio,
-           total_emp_l_county = total_emp_revised * county_ratio,
-           total_comp_PV_h_county = total_comp_PV_h * county_ratio,
-           total_comp_PV_l_county = total_comp_PV_l * county_ratio) %>%
-    select(county, demand_scenario, refining_scenario, year, county_pop, total_emp_h_county,
-           total_emp_l_county, total_comp_PV_l_county, total_comp_PV_h_county) %>%
-    pivot_longer(total_emp_h_county:total_comp_PV_h_county, names_to = "metric", values_to = "value") %>%
-    group_by(county, demand_scenario, refining_scenario, county_pop, metric) %>%
+    mutate(demo_emp_h_county = demo_emp * county_ratio,
+           demo_emp_l_county = demo_emp_revised * county_ratio,
+           demo_comp_PV_h_county = demo_comp_pv_h * county_ratio,
+           demo_comp_PV_l_county = demo_comp_pv_l * county_ratio) %>%
+    select(county, demand_scenario, refining_scenario, demo_cat, demo_group, title, year, demo_emp_h_county,
+           demo_emp_l_county, demo_comp_PV_l_county, demo_comp_PV_h_county) %>%
+    pivot_longer(demo_emp_h_county:demo_comp_PV_h_county, names_to = "metric", values_to = "value") %>%
+    group_by(county, demand_scenario, refining_scenario, demo_cat, demo_group, title, metric) %>%
     summarise(value = sum(value)) %>%
     ungroup()
   
-  labor_county_pc_mil <- labor_county_region_out %>% 
-    mutate(pc = value / county_pop,
-           pmil = pc * 1e6) %>%
-    select(county, demand_scenario, refining_scenario, metric, pc, pmil) %>%
-    pivot_longer(pc:pmil, names_to = "metric_two", values_to = "value") %>%
-    mutate(metric = paste0(metric, "_", metric_two)) %>%
-    select(county, demand_scenario, refining_scenario, metric, value)
-  
+  # ## test
+  # test_df <- labor_county_region_out %>%
+  #   group_by(county, demand_scenario, refining_scenario, demo_cat, metric) %>%
+  #   summarize(sum_value = sum(value)) %>%
+  #   ungroup()
+  # 
+  # ## total for county
+  # total_county_test <- ref_labor_demog_yr %>%
+  #   select(demand_scenario, refining_scenario, destination, year, total_emp, total_emp_revised, 
+  #          total_comp_PV_h, total_comp_PV_l) %>%
+  #   unique() %>%
+  #   rename(region = destination) %>% 
+  #   full_join(county_region_ratio) %>%
+  #   mutate(total_emp_h_county = total_emp * county_ratio,
+  #          total_emp_l_county = total_emp_revised * county_ratio,
+  #          total_comp_PV_h_county = total_comp_PV_h * county_ratio,
+  #          total_comp_PV_l_county = total_comp_PV_l * county_ratio) %>%
+  #   select(county, demand_scenario, refining_scenario, year, total_emp_h_county,
+  #          total_emp_l_county, total_comp_PV_l_county, total_comp_PV_h_county) %>%
+  #   pivot_longer(total_emp_h_county:total_comp_PV_h_county, names_to = "metric", values_to = "value") %>%
+  #   group_by(county, demand_scenario, refining_scenario, metric) %>%
+  #   summarise(value = sum(value)) %>%
+  #   ungroup()
+  # 
   
   
   ## for renaming
-  high_est_vec <- c("total_emp_h_county", "total_emp_h_county_pc", "total_emp_h_county_pmil", "total_comp_PV_h_county", "total_comp_PV_h_county_pc", "total_comp_PV_h_county_pmil")
-  low_est_vec <- c("total_emp_l_county", "total_emp_l_county_pc", "total_emp_l_county_pmil", "total_comp_PV_l_county",  "total_comp_PV_l_county_pc", "total_comp_PV_l_county_pmil")
+  high_est_vec <- c("demo_emp_h_county", "demo_comp_PV_h_county")
+  low_est_vec <- c("demo_emp_l_county", "demo_comp_PV_l_county")
   
   labor_metric_df <- tibble(metric = c(high_est_vec, low_est_vec),
                             metric_name = c("employment",
-                                            "employment_pc",
-                                            "employment_pmil",
                                             "compensation_pv",
-                                            "compensation_pv_pc",
-                                            "compensation_pv_pmil",
                                             "employment",
-                                            "employment_pc",
-                                            "employment_pmil",
-                                            "compensation_pv",
-                                            "compensation_pv_pc",
-                                            "compensation_pv_pmil"))
+                                            "compensation_pv"))
 
   labor_county_out_df <- labor_county_region_out %>%
-    select(-county_pop) %>%
-    rbind(labor_county_pc_mil) %>%
     left_join(labor_metric_df) %>%
     mutate(estimate = ifelse(metric %in% high_est_vec, "high", "low")) %>%
-    select(county, demand_scenario, refining_scenario, metric_name, estimate, value) %>%
+    select(county:title, metric_name, estimate, value) %>%
     as.data.table()
 
   

@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
@@ -510,13 +510,22 @@ list(
                                                                     state_ghg_output,
                                                                     dt_ghg_2019)),
 
-  tar_target(name = county_health_labor, command = create_county_health_labor_df(main_path,
-                                                                                 refining_mortality,
-                                                                                 state_ghg_output,
-                                                                                 annual_labor,
-                                                                                 raw_ct_2020_all,
-                                                                                 raw_counties)),
+  # tar_target(name = county_health_labor, command = create_county_health_labor_df(main_path,
+  #                                                                                refining_mortality,
+  #                                                                                state_ghg_output,
+  #                                                                                annual_labor,
+  #                                                                                raw_ct_2020_all,
+  #                                                                                raw_counties)),
 
+  tar_target(name = health_county_df, command = calculate_county_health(
+                                                                        # health_weighted,
+                                                                        main_path,
+                                                                        pop_ratios,
+                                                                        refining_mortality,
+                                                                        raw_ct_2020_all,
+                                                                        raw_counties,
+                                                                        discount_rate)),
+  
   tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
 
 
