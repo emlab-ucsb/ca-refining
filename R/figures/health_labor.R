@@ -3877,6 +3877,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
+          strip.text = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -3899,69 +3900,70 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     scale_shape_manual(name = "",
                        values = race_shape_ptc,
                        labels = high_low_labs) +
-    labs(y = "NPV per capita (USD)",
+    labs(y = " ",
          x = NULL,
          color = NULL) +
     scale_y_continuous(label = comma, limits = c(-3000, 0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
+          strip.text = element_blank(),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
   
-  ## legend
-  legend_figa <- labor_level_fig_a + theme(legend.position = "bottom")
-  
-  legend_a <- get_legend(
-    legend_figa +
-      theme(legend.text = element_text(size = 12)) +
-      guides(color = guide_legend(order = 1), shape = guide_legend(order = 2)))
-  
-  
-  ## save version for presentation
-  hl_plot_grid_a_pres <- plot_grid(
-    health_level_fig_a + 
-      theme(axis.title.y = element_text(size = 12),
-            axis.text.x = element_text(size = 9),
-            axis.text.y = element_text(size = 12),
-            strip.text =  element_text(size = 12),
-            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
-    labor_level_fig_a + labs(y = NULL) + 
-      theme(axis.title.y = element_text(size = 12),
-            axis.text.x = element_text(size = 9),
-            axis.text.y = element_text(size = 12),
-            strip.text =  element_text(size = 12),
-            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
-    align = 'vh',
-    # labels = c("A", "B", "C", "D", "E", "F"),
-    # # labels = 'AUTO',
-    # label_size = 10,
-    hjust = -1,
-    nrow = 1,
-    rel_widths = c(1, 1)
-  )
-  
-  ## add legend
-  hl_plot_grid_a_pres <- plot_grid(
-    hl_plot_grid_a_pres,
-    legend_a,
-    ncol = 1, 
-    rel_heights = c(0.95, 0.05)
-  )
+  # ## legend
+  # legend_figa <- labor_level_fig_a + theme(legend.position = "bottom")
+  # 
+  # legend_a <- get_legend(
+  #   legend_figa +
+  #     theme(legend.text = element_text(size = 12)) +
+  #     guides(color = guide_legend(order = 1), shape = guide_legend(order = 2)))
   
   
-  
-  ggsave(plot = hl_plot_grid_a_pres, 
-         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-race.jpeg"), 
-         device = "jpeg",
-         width = 9,
-         height = 4,
-         units= "in",
-         dpi = 300)
-  
+  # ## save version for presentation
+  # hl_plot_grid_a_pres <- plot_grid(
+  #   health_level_fig_a + 
+  #     theme(axis.title.y = element_text(size = 12),
+  #           axis.text.x = element_text(size = 9),
+  #           axis.text.y = element_text(size = 12),
+  #           strip.text =  element_text(size = 12),
+  #           plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+  #   labor_level_fig_a + labs(y = NULL) + 
+  #     theme(axis.title.y = element_text(size = 12),
+  #           axis.text.x = element_text(size = 9),
+  #           axis.text.y = element_text(size = 12),
+  #           strip.text =  element_text(size = 12),
+  #           plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+  #   align = 'vh',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   rel_widths = c(1, 1)
+  # )
+  # 
+  # ## add legend
+  # hl_plot_grid_a_pres <- plot_grid(
+  #   hl_plot_grid_a_pres,
+  #   legend_a,
+  #   ncol = 1, 
+  #   rel_heights = c(0.95, 0.05)
+  # )
+  # 
+  # 
+  # 
+  # ggsave(plot = hl_plot_grid_a_pres, 
+  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-race.jpeg"), 
+  #        device = "jpeg",
+  #        width = 9,
+  #        height = 4,
+  #        units= "in",
+  #        dpi = 300)
+  # 
   
   
   ## health fig - poverty
@@ -4001,7 +4003,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     scale_shape_manual(values = poverty_ptc_l,
                        labels = poverty_hl_labs) +
     facet_wrap(~seg_title) +
-    labs(y = "NPV per capita (USD)",
+    labs(y = " ",
          x = NULL,
          color = NULL) +
     scale_y_continuous(label = comma, limits = c(-3000, 0)) +
@@ -4013,52 +4015,52 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
-  legend_figb <- labor_level_fig_b + 
-    theme(legend.position = "bottom")
+  # legend_figb <- labor_level_fig_b + 
+  #   theme(legend.position = "bottom")
+  # 
+  # legend_b <- get_legend(
+  #   legend_figb +
+  #     theme(legend.text = element_text(size = 12)))
+  # 
   
-  legend_b <- get_legend(
-    legend_figb +
-      theme(legend.text = element_text(size = 12)))
-  
-  
-  ## save version for presentation
-  hl_plot_grid_b_pres <- plot_grid(
-    health_level_fig_b + 
-      theme(axis.title.y = element_text(size = 12),
-            axis.text.x = element_text(size = 9),
-            axis.text.y = element_text(size = 12),
-            strip.text =  element_text(size = 12),
-            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
-    labor_level_fig_b + labs(y = NULL) + 
-      theme(axis.title.y = element_text(size = 12),
-            axis.text.x = element_text(size = 9),
-            axis.text.y = element_text(size = 12),
-            strip.text =  element_text(size = 12),
-            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
-    align = 'vh',
-    # labels = c("A", "B", "C", "D", "E", "F"),
-    # # labels = 'AUTO',
-    # label_size = 10,
-    hjust = -1,
-    nrow = 1,
-    rel_widths = c(1, 1)
-  )
-  
-  ## add legend
-  hl_plot_grid_b_pres <- plot_grid(
-    hl_plot_grid_b_pres,
-    legend_b,
-    ncol = 1, 
-    rel_heights = c(0.95, 0.05)
-  )
-  
-  ggsave(plot = hl_plot_grid_b_pres, 
-         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-income.jpeg"), 
-         device = "jpeg",
-         width = 9,
-         height = 4,
-         units= "in",
-         dpi = 300)
+  # ## save version for presentation
+  # hl_plot_grid_b_pres <- plot_grid(
+  #   health_level_fig_b + 
+  #     theme(axis.title.y = element_text(size = 12),
+  #           axis.text.x = element_text(size = 9),
+  #           axis.text.y = element_text(size = 12),
+  #           strip.text =  element_text(size = 12),
+  #           plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+  #   labor_level_fig_b + labs(y = NULL) + 
+  #     theme(axis.title.y = element_text(size = 12),
+  #           axis.text.x = element_text(size = 9),
+  #           axis.text.y = element_text(size = 12),
+  #           strip.text =  element_text(size = 12),
+  #           plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+  #   align = 'vh',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   rel_widths = c(1, 1)
+  # )
+  # 
+  # ## add legend
+  # hl_plot_grid_b_pres <- plot_grid(
+  #   hl_plot_grid_b_pres,
+  #   legend_b,
+  #   ncol = 1, 
+  #   rel_heights = c(0.95, 0.05)
+  # )
+  # 
+  # ggsave(plot = hl_plot_grid_b_pres, 
+  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-income.jpeg"), 
+  #        device = "jpeg",
+  #        width = 9,
+  #        height = 4,
+  #        units= "in",
+  #        dpi = 300)
   
   
   ## health fig - DAC
@@ -4092,7 +4094,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     scale_shape_manual(values = dac_hl_ptc,
                        labels = dac_hl_labs) +
     facet_wrap(~seg_title) +
-    labs(y = "NPV per capita (USD)",
+    labs(y = " ",
          x = NULL,
          color = NULL) +
     scale_y_continuous(label = comma, limits = c(-3500,0)) +
@@ -4104,142 +4106,219 @@ plot_hl_levels_pc <- function(demographic_npv_df,
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'))
   
-  legend_figc <- labor_level_fig_c + theme(legend.position = "bottom")
-  
-  legend_c <- get_legend(
-    legend_figc +
-      theme(legend.text = element_text(size = 12)))
-  
-  
-  ## save version for presentation
-  hl_plot_grid_c_pres <- plot_grid(
-    health_level_fig_c + 
-      theme(axis.title.y = element_text(size = 12),
-            axis.text.x = element_text(size = 9),
-            axis.text.y = element_text(size = 12),
-            strip.text =  element_text(size = 12),
-            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
-    labor_level_fig_c + labs(y = NULL) + 
-      theme(axis.title.y = element_text(size = 12),
-            axis.text.x = element_text(size = 9),
-            axis.text.y = element_text(size = 12),
-            strip.text =  element_text(size = 12),
-            plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
-    align = 'vh',
-    # labels = c("A", "B", "C", "D", "E", "F"),
-    # # labels = 'AUTO',
-    # label_size = 10,
-    hjust = -1,
-    nrow = 1,
-    rel_widths = c(1, 1)
-  )
-  
-  ## add legend
-  hl_plot_grid_c_pres <- plot_grid(
-    hl_plot_grid_c_pres,
-    legend_c,
-    ncol = 1, 
-    rel_heights = c(0.95, 0.05)
-  )
+  # legend_figc <- labor_level_fig_c + theme(legend.position = "bottom")
+  # 
+  # legend_c <- get_legend(
+  #   legend_figc +
+  #     theme(legend.text = element_text(size = 12)))
   
   
-  ggsave(plot = hl_plot_grid_c_pres, 
-         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-dac.jpeg"), 
-         device = "jpeg",
-         width = 9,
-         height = 4,
-         units= "in",
-         dpi = 300)
+  # ## save version for presentation
+  # hl_plot_grid_c_pres <- plot_grid(
+  #   health_level_fig_c + 
+  #     theme(axis.title.y = element_text(size = 12),
+  #           axis.text.x = element_text(size = 9),
+  #           axis.text.y = element_text(size = 12),
+  #           strip.text =  element_text(size = 12),
+  #           plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+  #   labor_level_fig_c + labs(y = NULL) + 
+  #     theme(axis.title.y = element_text(size = 12),
+  #           axis.text.x = element_text(size = 9),
+  #           axis.text.y = element_text(size = 12),
+  #           strip.text =  element_text(size = 12),
+  #           plot.margin = unit(c(0, 0, 0.25, 0.1), "cm")),
+  #   align = 'vh',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   rel_widths = c(1, 1)
+  # )
+  # 
+  # ## add legend
+  # hl_plot_grid_c_pres <- plot_grid(
+  #   hl_plot_grid_c_pres,
+  #   legend_c,
+  #   ncol = 1, 
+  #   rel_heights = c(0.95, 0.05)
+  # )
+  # 
+  # 
+  # ggsave(plot = hl_plot_grid_c_pres, 
+  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-dac.jpeg"), 
+  #        device = "jpeg",
+  #        width = 9,
+  #        height = 4,
+  #        units= "in",
+  #        dpi = 300)
   
   
   ## combine figure
   ## ---------------------------------
+
+  fig_text_size <- 12
   
-  ## race
-  hl_plot_grid_a <- plot_grid(
-    health_level_fig_a + theme(strip.text.x = element_blank()),
-    labor_level_fig_a + labs(y = NULL) + theme(strip.text.x = element_blank()),
-    align = 'vh',
-    # labels = c("A", "B", "C", "D", "E", "F"),
-    # # labels = 'AUTO',
-    # label_size = 10,
-    hjust = -1,
-    nrow = 1,
-    rel_widths = c(1, 1)
-  )
-  
-  ## add race legend
-  hl_plot_grid_a <- plot_grid(
-    hl_plot_grid_a,
-    legend_a,
-    ncol = 1, 
-    rel_heights = c(0.95, 0.05)
-  )
-  
-  ## poverty
-  hl_plot_grid_b <- plot_grid(
+  ## health
+  health_column_fig_nl <- plot_grid(
+    health_level_fig_c + theme(axis.text.x = element_blank(),
+                               legend.position = "none",
+                               plot.margin = margin(1, 1, 20, 1),
+                               strip.text.x = element_text(size = fig_text_size),
+                               axis.text.y = element_text(size = fig_text_size),
+                               axis.title.y = element_text(size = fig_text_size)),
     health_level_fig_b + theme(axis.text.x = element_blank(),
-                               strip.text.x = element_blank()),
+                               strip.text.x = element_blank(),
+                               axis.text.y = element_text(size = fig_text_size),
+                               axis.title.y = element_text(size = fig_text_size),
+                               legend.position = "none",
+                               plot.margin = margin(1, 1, 20, 1)),
+    health_level_fig_a + theme(strip.text.x = element_blank(),
+                               axis.text.y = element_text(size = fig_text_size),
+                               axis.title.y = element_text(size = fig_text_size),
+                               axis.text.x = element_text(size = fig_text_size),
+                               legend.position = "none"),
+    align = 'vh',
+    labels = c("A", "B", "C"),
+    # # labels = 'AUTO',
+    label_size = 10,
+    hjust = -1,
+    nrow = 3
+    # rel_widths = c(1, 0.25, 1),
+    # rel_heights = c(1, 0.1, 1, 0.1, 1)
+  )
+  
+  
+  ## labor
+  labor_column_fig_nl <- plot_grid(
+    labor_level_fig_c + labs(y = NULL) + theme(axis.text.x = element_blank(),
+                                               strip.text.x = element_text(size = fig_text_size),
+                                               axis.text.y = element_text(size = fig_text_size),
+                                               legend.position = "none",
+                                               plot.margin = margin(1, 1, 20, 1)),
     labor_level_fig_b + labs(y = NULL) + theme(axis.text.x = element_blank(),
-                                               strip.text.x = element_blank()),
+                                               axis.text.y = element_text(size = fig_text_size),
+                                               strip.text.x = element_blank(),
+                                               legend.position = "none",
+                                               plot.margin = margin(1, 1, 20, 1)),
+    labor_level_fig_a + labs(y = NULL) + theme(strip.text.x = element_blank(),
+                                               axis.text.y = element_text(size = fig_text_size),
+                                               axis.text.x = element_text(size = fig_text_size),
+                                               legend.position = "none"),
     align = 'vh',
-    # labels = c("A", "B", "C", "D", "E", "F"),
+    labels = c("D", "E", "F"),
     # # labels = 'AUTO',
-    # label_size = 10,
+    label_size = 10,
     hjust = -1,
-    nrow = 1,
-    rel_widths = c(1, 1)
+    nrow = 3
+    # rel_widths = c(1, 0.25, 1),
+    # rel_heights = c(1, 0.1, 1, 0.1, 1)
   )
-  
-  ## add poverty legend
-  hl_plot_grid_b <- plot_grid(
-    hl_plot_grid_b,
-    legend_b,
-    ncol = 1, 
-    rel_heights = c(0.95, 0.05)
-  )
-  
-  ## DAC
-  hl_plot_grid_c <- plot_grid(
-    health_level_fig_c + theme(axis.text.x = element_blank()),
-    labor_level_fig_c + labs(y = NULL) + theme(axis.text.x = element_blank()),
-    align = 'vh',
-    # labels = c("A", "B", "C", "D", "E", "F"),
-    # # labels = 'AUTO',
-    # label_size = 10,
-    hjust = -1,
-    nrow = 1,
-    rel_widths = c(1, 1)
-  )
-  
-  ## add DAC legend
-  hl_plot_grid_c <- plot_grid(
-    hl_plot_grid_c,
-    legend_c,
-    ncol = 1, 
-    rel_heights = c(0.95, 0.05)
-  )
-  
   
   ## all together now
-  hl_plot_grid_pc <- plot_grid(
-    hl_plot_grid_c,
-    NULL,
-    hl_plot_grid_b,
-    NULL,
-    hl_plot_grid_a,
-    align = "v",
+  hl_pc_plot_grid_nl <- plot_grid(
+    health_column_fig_nl,
+    labor_column_fig_nl,
+    align = "h",
     # labels = c("(A)", "(B)", "(C)", ""),
     # # labels = 'AUTO',
     # label_size = 10,
     # hjust = -1,
-    ncol = 1,
-    rel_heights = c(1, 0.1, 1, 0.1, 1)
+    ncol = 2,
+    rel_widths = c(1, 1)
     # rel_widths = c(1, 1, 1)
   )
   
+  hl_pc_plot_grid_nl
   
-  return(hl_plot_grid_pc)
+  
+  
+  
+  # ## race
+  # hl_plot_grid_a <- plot_grid(
+  #   health_level_fig_a + theme(strip.text.x = element_blank()),
+  #   labor_level_fig_a + labs(y = NULL) + theme(strip.text.x = element_blank()),
+  #   align = 'vh',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   rel_widths = c(1, 1)
+  # )
+  # 
+  # ## add race legend
+  # hl_plot_grid_a <- plot_grid(
+  #   hl_plot_grid_a,
+  #   legend_a,
+  #   ncol = 1, 
+  #   rel_heights = c(0.95, 0.05)
+  # )
+  # 
+  # ## poverty
+  # hl_plot_grid_b <- plot_grid(
+  #   health_level_fig_b + theme(axis.text.x = element_blank(),
+  #                              strip.text.x = element_blank()),
+  #   labor_level_fig_b + labs(y = NULL) + theme(axis.text.x = element_blank(),
+  #                                              strip.text.x = element_blank()),
+  #   align = 'vh',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   rel_widths = c(1, 1)
+  # )
+  # 
+  # ## add poverty legend
+  # hl_plot_grid_b <- plot_grid(
+  #   hl_plot_grid_b,
+  #   legend_b,
+  #   ncol = 1, 
+  #   rel_heights = c(0.95, 0.05)
+  # )
+  # 
+  # ## DAC
+  # hl_plot_grid_c <- plot_grid(
+  #   health_level_fig_c + theme(axis.text.x = element_blank()),
+  #   labor_level_fig_c + labs(y = NULL) + theme(axis.text.x = element_blank()),
+  #   align = 'vh',
+  #   # labels = c("A", "B", "C", "D", "E", "F"),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   nrow = 1,
+  #   rel_widths = c(1, 1)
+  # )
+  # 
+  # ## add DAC legend
+  # hl_plot_grid_c <- plot_grid(
+  #   hl_plot_grid_c,
+  #   legend_c,
+  #   ncol = 1, 
+  #   rel_heights = c(0.95, 0.05)
+  # )
+  # 
+  # 
+  # ## all together now
+  # hl_plot_grid_pc <- plot_grid(
+  #   hl_plot_grid_c,
+  #   NULL,
+  #   hl_plot_grid_b,
+  #   NULL,
+  #   hl_plot_grid_a,
+  #   align = "v",
+  #   # labels = c("(A)", "(B)", "(C)", ""),
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   # hjust = -1,
+  #   ncol = 1,
+  #   rel_heights = c(1, 0.1, 1, 0.1, 1)
+  #   # rel_widths = c(1, 1, 1)
+  # )
+  # 
+  
+  return(hl_pc_plot_grid_nl)
   
   
   
@@ -4403,7 +4482,7 @@ plot_hl_shares <- function(main_path,
   
   legend_a_h <- get_legend(
     legend_fig_labor_h +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   ## add no-emp legend to labor fig
   labor_share_fig_a2 <- plot_grid(
@@ -4633,34 +4712,34 @@ plot_hl_shares <- function(main_path,
   
   health_dac_legend <- get_legend(
     health_share_fig_c +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   health_poverty_legend <- get_legend(
     health_share_fig_b +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   health_race_legend <- get_legend(
     health_share_fig_a +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   ## save legends
   ggsave(plot = health_dac_legend,
-         device ="png",
-         filename = "health_dac_legend.png",
+         device ="pdf",
+         filename = "health_dac_legend.pdf",
          path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = health_poverty_legend,
-         device ="png",
-         filename = "health_poverty_legend.png",
+         device ="pdf",
+         filename = "health_poverty_legend.pdf",
          path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = health_race_legend,
-         device ="png",
-         filename = "health_race_legend.png",
+         device ="pdf",
+         filename = "health_race_legend.pdf",
          path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
          dpi = 600)
 
@@ -4757,37 +4836,45 @@ plot_hl_shares <- function(main_path,
   
   labor_dac_legend <- get_legend(
     labor_share_fig_c +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   labor_poverty_legend <- get_legend(
     labor_share_fig_b +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
   
   labor_race_legend <- get_legend(
     labor_share_fig_a +
-      theme(legend.text = element_text(size = 8)))
+      theme(legend.text = element_text(size = 12)))
+  
+
   
   ## save legends
   ggsave(plot = labor_dac_legend,
-         device ="png",
-         filename = "labor_dac_legend.png",
+         device ="pdf",
+         filename = "labor_dac_legend.pdf",
          path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = labor_poverty_legend,
-         device ="png",
-         filename = "labor_poverty_legend.png",
+         device ="pdf",
+         filename = "labor_poverty_legend.pdf",
          path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = labor_race_legend,
-         device ="png",
-         filename = "labor_race_legend.png",
+         device ="pdf",
+         filename = "labor_race_legend.pdf",
          path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
          dpi = 600)
   
+  ## save legends
+  ggsave(plot = legend_a_h,
+         device ="pdf",
+         filename = "labor_race_legend_no_re-emp.pdf",
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         dpi = 600)
   
   ## all together now
   hl_share_plot_grid_nl <- plot_grid(
