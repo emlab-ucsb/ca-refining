@@ -3873,7 +3873,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     labs(y = "NPV per capita (USD)",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma, limits = c(0, 2000)) +
+    scale_y_continuous(label = comma, limits = c(0, 3000)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -3981,7 +3981,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
          x = NULL,
          color = NULL) +
     theme_line +
-    scale_y_continuous(label = comma, limits = c(0, 2000)) +
+    scale_y_continuous(label = comma, limits = c(0, 3000)) +
     theme(legend.position = "none",
           legend.title = element_blank(),
           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -4076,7 +4076,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
          x = NULL,
          color = NULL) +
     theme_line +
-    scale_y_continuous(label = comma, limits = c(0, 2000)) +
+    scale_y_continuous(label = comma, limits = c(0, 3000)) +
     theme(legend.position = "none",
           legend.title = element_blank(),
           # axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
@@ -4097,7 +4097,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     labs(y = " ",
          x = NULL,
          color = NULL) +
-    scale_y_continuous(label = comma, limits = c(-3500,0)) +
+    scale_y_continuous(label = comma, limits = c(-3000,0)) +
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -5594,6 +5594,8 @@ fig4_hl_pmil <- function(health_grp,
   ## figure a
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
   
+  fig_text_size <- 12
+  
   health_gap_fig_a <- ggplot(gaps_df %>% filter(!scen_id %in% remove_scen,
                                                 title %in% fig_title_vec,
                                                 demo_cat == "Race")  %>%
@@ -5612,7 +5614,9 @@ fig4_hl_pmil <- function(health_grp,
     # ylim(c(-30, 0)) +
     theme(legend.position = "none",
           legend.title = element_blank(),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = fig_text_size),
+          axis.text.y = element_text(size = fig_text_size),
+          strip.text.y = element_text(size = fig_text_size),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           strip.text.x = element_blank(),
           # axis.text.x = element_blank(),
@@ -5635,7 +5639,9 @@ fig4_hl_pmil <- function(health_grp,
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = fig_text_size),
+          axis.text.y = element_text(size = fig_text_size),
+          strip.text = element_text(size = fig_text_size),
           # strip.text.x = element_blank(),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           # axis.text.x = element_blank(),
@@ -5660,7 +5666,9 @@ fig4_hl_pmil <- function(health_grp,
     theme_line +
     theme(legend.position = "none",
           legend.title = element_blank(),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = fig_text_size),
+          axis.text.y = element_text(size = fig_text_size),
+          strip.text.y = element_text(size = fig_text_size),
           legend.key.width = unit(10, "mm"),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           strip.text.x = element_blank(),
@@ -5673,23 +5681,29 @@ fig4_hl_pmil <- function(health_grp,
   #                                    size = 8, angle = 90)
   
   yaxis_lab <- ggdraw() + draw_label("Avoided mortalities per million people, difference from reference", 
-                                     size = 8, angle = 90)
+                                     size = fig_text_size, angle = 90)
   
   
   gaps_plot_grid_h <- plot_grid(
+    NULL,
     health_gap_fig_b,
+    NULL,
     health_gap_fig_c,
+    NULL,
     health_gap_fig_a,
     align = 'v',
-    # labels = c("A", "B", "C", "D", "E", "F"),
+    labels = c("", "A", "", "B", "", "C"),
     # # labels = 'AUTO',
     # label_size = 10,
-    hjust = -1,
-    nrow = 3,
+    hjust = -0.5,
+    vjust = 0.25,
+    nrow = 6,
     ncol = 1,
-    rel_widths = c(1, 1, 1),
-    rel_heights = c(1.1, 0.9, 0.9)
+    rel_widths = c(1, 1, 1, 1, 1, 1),
+    rel_heights = c(0.15, 1.1, 0.15, 0.9, 0.15, 0.9)
   )
+  gaps_plot_grid_h
+  
   
   gaps_plot_grid2 <- plot_grid(
     yaxis_lab,
@@ -5809,8 +5823,10 @@ fig4_hl_pmil <- function(health_grp,
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = fig_text_size),
+          axis.text.y = element_text(size = fig_text_size),
+          strip.text.y = element_text(size = fig_text_size),
           strip.text.x = element_blank(),
           # axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -5823,7 +5839,7 @@ fig4_hl_pmil <- function(health_grp,
   
   legend_a <- get_legend(
     legend_a +
-      theme(legend.text = element_text(size = 6)))
+      theme(legend.text = element_text(size = fig_text_size)))
   
   ## labor b
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
@@ -5840,8 +5856,10 @@ fig4_hl_pmil <- function(health_grp,
     theme_line +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
-          # strip.text.x = element_blank(),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = fig_text_size),
+          axis.text.y = element_text(size = fig_text_size),
+          strip.text.y = element_text(size = fig_text_size),
+          strip.text.x = element_text(size = fig_text_size),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           # axis.text.x = element_blank(),
           axis.ticks.length.y = unit(0.1, 'cm'),
@@ -5854,7 +5872,7 @@ fig4_hl_pmil <- function(health_grp,
   
   legend_b <- get_legend(
     legend_b +
-      theme(legend.text = element_text(size = 6)))
+      theme(legend.text = element_text(size = fig_text_size)))
   
   ## labor c
   labor_gap_fig_c <- ggplot(l_gaps_df %>%
@@ -5874,7 +5892,9 @@ fig4_hl_pmil <- function(health_grp,
     # ylim(-70, 0) +
     theme(legend.position = "bottom",
           legend.title = element_blank(),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = fig_text_size),
+          axis.text.y = element_text(size = fig_text_size),
+          strip.text.y = element_text(size = fig_text_size),
           legend.key.width = unit(10, "mm"),
           plot.margin = unit(c(0, 0, 0, 0), "cm"),
           strip.text.x = element_blank(),
@@ -5888,25 +5908,29 @@ fig4_hl_pmil <- function(health_grp,
   
   legend_c <- get_legend(
     legend_c +
-      theme(legend.text = element_text(size = 6)))
+      theme(legend.text = element_text(size = fig_text_size)))
   
   ## shared y lab
   #yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference per million people", size = 8, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference per million people", size = fig_text_size, angle = 90)
   
   l_gaps_plot_grid <- plot_grid(
+    NULL,
     labor_gap_fig_b + theme(legend.position = "none"),
+    NULL,
     labor_gap_fig_c + theme(legend.position = "none"),
+    NULL,
     labor_gap_fig_a + theme(legend.position = "none"),
     align = 'v',
-    # labels = c("A", "B", "C", "D", "E", "F"),
+    labels = c("","D", "", "E", "", "F"),
     # # labels = 'AUTO',
     # label_size = 10,
-    hjust = -1,
-    nrow = 3,
+    hjust = -0.5,
+    vjust = 0.25,
+    nrow = 6,
     ncol = 1,
-    rel_widths = c(1, 1, 1),
-    rel_heights = c(1.05, 0.9, 0.9)
+    rel_widths = c(1, 1, 1, 1, 1, 1),
+    rel_heights = c(0.15, 1.1, 0.15, 0.9, 0.15, 0.9)
   )
   
   l_gaps_plot_grid2 <- plot_grid(
@@ -5928,18 +5952,21 @@ fig4_hl_pmil <- function(health_grp,
   
   ## plot legends
   legends <- plot_grid(
+    NULL,
     legend_b,
+    NULL,
     legend_c,
+    NULL,
     legend_a,
     align = 'v',
     # labels = c("A", "B", "C", "D", "E", "F"),
     # # labels = 'AUTO',
     # label_size = 10,
     hjust = -1,
-    nrow = 3,
+    nrow = 6,
     ncol = 1,
-    rel_widths = c(1, 1, 1),
-    rel_heights = c(1, 1, 1)
+    rel_widths = c(1, 1, 1, 1, 1, 1),
+    rel_heights = c(0.15, 1, 0.15, 1, 0.15, 1)
   )
   
   
