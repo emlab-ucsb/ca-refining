@@ -747,7 +747,7 @@ list(
                                      main_path,
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "health_labor_gaps_pmil_plot",
-                                     width = 12,
+                                     width = 18,
                                      height = 6,
                                      dpi = 600),
              format = "file")
