@@ -210,9 +210,25 @@ plot_npv_health_labor <- function(main_path,
   ## ---------------------------------------------------
   
   ## color for refining scenario
-  refin_colors <- c('historical exports' = '#2F4858', 'historical production' = '#F6AE2D', 'low exports' = '#F26419')
+  refin_colors <- c('LC1 low exports' = '#729b79',
+                    'LC1 historical exports' = '#2F4858', 
+                    'BAU low exports' = '#F6AE2D', 
+                    'BAU historical exports' = '#F26419')
   
- 
+  refin_labs <- c('LC1 low exports' = 'Low demand, low exports',
+                  'LC1 historical exports' = 'Low demand, historical exports', 
+                  'BAU low exports' = 'BAU demand, low exports', 
+                  'BAU historical exports' = 'BAU demand, historical exports')
+
+  
+  ## refactor
+  # plot_df_health$scen_id <- factor(plot_df_health$scen_id, levels = c('LC1 low exports',
+  #                                                                     'LC1 historical production', 
+  #                                                                     'BAU demand\nlow exports', 
+  #                                                                     'Low demand\nhistorical exports',
+  #                                                                     'Low demand\nlow exports',
+  #                                                                     'Low demand\nhistorical production'))
+  # 
   
   ## figs - make each separately
   ## -------------------------------------------------------------------
@@ -228,103 +244,157 @@ plot_npv_health_labor <- function(main_path,
                                               title == "Health: avoided mortality",
                                               unit == "NPV (2019 USD billion)",
                                               unit_desc == "USD billion (2019 VSL)",
-                                              !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, y = value,  color = refining_scenario, shape = demand_scenario),
-               size = 3, alpha = 0.8) +
-    labs(color = "Refing scenario",
-         shape = "Demand scenario",
-         title = "A. Health: avoided mortality",
+                                              !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, y = value,  color = scen_id), 
+               shape = 16,size = 3, alpha = 0.9) +
+    labs(color = NULL,
+         title = "Health: avoided mortality",
          y = "NPV (2019 USD billion)",
          x = NULL) +
-    # ylim(0, 25) +
+    ylim(0, 50) +
     xlim(0, 80) +
-    scale_color_manual(values = refin_colors) +
+    scale_color_manual(values = refin_colors,
+                       labels = refin_labs) +
     theme_line +
-    theme(legend.position = "none",
-          plot.title = element_text(hjust = 0),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+    theme(legend.position = "bottom",
+          legend.text = element_text(size = 10),
+          plot.title = element_text(hjust = 0.5, size = 12),
+          axis.title.y = element_text(size = 12),
           axis.ticks.length.y = unit(0.1, 'cm'),
-          axis.ticks.length.x = unit(0.1, 'cm')) 
+          axis.ticks.length.x = unit(0.1, 'cm'),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+          axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)) +
+    guides(color = guide_legend(nrow = 2))
   
-  ## make separete df for labor high and low for plotting
-  plot_df_labor_pts <- plot_df_labor %>%
-    filter(!scen_id %in% remove_scen,
-    title == "Labor: forgone wages",
-    unit == "NPV (2019 USD billion)",
-    !refining_scenario == "historical production") %>%
-    select(scen_id, demand_scenario, refining_scenario, scenario, ghg_perc_diff, high, low) %>%
-    pivot_longer(high:low, names_to = "estimate", values_to =  "npv_2019_usd_billion")
-  
+  # ## make separete df for labor high and low for plotting
+  # plot_df_labor_pts <- plot_df_labor %>%
+  #   filter(!scen_id %in% remove_scen,
+  #          title == "Labor: forgone wages",
+  #          unit == "NPV (2019 USD billion)",
+  #          refining_scenario != "historical production") %>%
+  #   select(scen_id, demand_scenario, refining_scenario, scenario, ghg_perc_diff, high, low) %>%
+  #   pivot_longer(high:low, names_to = "estimate", values_to =  "npv_2019_usd_billion")
+  # 
   fig_bxm_b <- ggplot() + 
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
     geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
     # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
     geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
-                                                   title == "Labor: forgone wages",
-                                                   unit == "NPV (2019 USD billion)",
-                                                   !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = refining_scenario), size = 1, alpha = 0.8) +
+                                                   refining_scenario != "historical production",
+                                                   metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), linewidth = 0.5, alpha = 0.8) +
     geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
-                                               title == "Labor: forgone wages",
-                                               unit == "NPV (2019 USD billion)",
-                                               !refining_scenario == "historical production"), aes(x = ghg_perc_diff * -100, y = low, color = refining_scenario, shape = demand_scenario), size = 3, alpha = 0.8) +
-    labs(color = "Policy",
-         title = "B. Labor: forgone wages",
+                                               refining_scenario != "historical production",
+                                               metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
+    geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+                                               refining_scenario != "historical production",
+                                               metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.9) +
+    labs(color = NULL,
+         title = "Labor: forgone wages",
          y = NULL,
          x = NULL) +
-    # ylim(-60, 0) +
+    ylim(-50, 0) +
     xlim(0, 80) +
-    scale_color_manual(values = refin_colors) +
+    scale_color_manual(values = refin_colors,
+                       labels = refin_labs) +
     theme_line +
-    theme(legend.position = "none",
-          plot.title = element_text(hjust = 0),
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+    theme(legend.position = "bottom",
+          legend.text = element_text(size = 10),
+          plot.title = element_text(hjust = 0.5, size = 12),
+          axis.title.y = element_text(size = 12),
           axis.ticks.length.y = unit(0.1, 'cm'),
-          axis.ticks.length.x = unit(0.1, 'cm')) 
+          axis.ticks.length.x = unit(0.1, 'cm'),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+          axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)) +
+    guides(color = guide_legend(nrow = 2))
   
   
   ## legends  
-  legend_fig <- ggplot() +
+  low_legend_fig <- ggplot() + 
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historic production"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), size = 0.5, alpha = 0.8) +
     geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
-                                              title == "Labor: forgone wages per avoided GHG",
-                                              unit == "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
-                                              !refining_scenario == "historic production"), 
-               aes(x = ghg_perc_diff * -100, y = high, color = scenario, shape = scenario), size = 3, alpha = 9) +
-    labs(title = "",
+                                               refining_scenario != "historic production",
+                                               metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 1) +
+    # geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                            refining_scenario != "historic production",
+    #                                            metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.8) +
+    labs(color = "with re-emp:",
+         title = "Labor: forgone wages",
          y = NULL,
-         # y = paste("NPV per avoied GHG ", bquotelab, "(2020 USD million / ", bquotelab),
-         x = "GHG emissions reduction (%, 2045 vs 2019)",
-         color = NULL,
-         shape = NULL) +
-    scale_color_manual(name = "",
-                       labels = c("BAU demand - historical exports",
-                                  "BAU demand - low exports",
-                                  "Low demand - historical exports",
-                                  "Low demand - low exports"),
-                       values = c("BAU demand - historical exports" = "#2F4858",
-                                  "BAU demand - low exports" = "#F26419",
-                                  "Low demand - historical exports" = "#2F4858",
-                                  "Low demand - low exports" = "#F26419")) +
-    scale_shape_manual(name = "",
-                       labels = c("BAU demand - historical exports",
-                                  "BAU demand - low exports",
-                                  "Low demand - historical exports",
-                                  "Low demand - low exports"),
-                       values = c(16, 16, 17, 17)) +
+         x = NULL) +
+    ylim(-50, 0) +
+    xlim(0, 80) +
+    scale_color_manual(values = refin_colors,
+                       labels = refin_labs) +
     theme_line +
     theme(legend.position = "bottom",
-          axis.text.x = element_text(vjust = 0.5, hjust = 0.5),
+          legend.text = element_text(size = 10),
+          legend.title = element_text(size = 10),
+          plot.title = element_text(hjust = 0.5, size = 12),
+          axis.title.y = element_text(size = 12),
           axis.ticks.length.y = unit(0.1, 'cm'),
-          axis.ticks.length.x = unit(0.1, 'cm')) +
-    guides(color = guide_legend(nrow = 2, byrow = TRUE))
+          axis.ticks.length.x = unit(0.1, 'cm'),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+          axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)) +
+    guides(color = guide_legend(nrow = 1))
   
   
+  low_legend <- get_legend(
+    low_legend_fig)
   
-  legend_fig_3 <- get_legend(
-    legend_fig + 
-      theme(legend.title = element_text(size = 8),
-            legend.text = element_text(size = 8))
-    
-  )
+  ## save legends
+  ggsave(plot = low_legend,
+         device ="pdf",
+         filename = "fig3_low_legend.pdf",
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         dpi = 600)
+  
+  
+  ## legends  
+  high_legend_fig <- ggplot() + 
+    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historic production"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), size = 0.5, alpha = 0.8) +
+    # geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                            refining_scenario != "historic production",
+    #                                            metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 1) +
+    geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+                                               refining_scenario != "historic production",
+                                               metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.8) +
+    labs(color = "no re-emp:",
+         title = "Labor: forgone wages",
+         y = NULL,
+         x = NULL) +
+    ylim(-50, 0) +
+    xlim(0, 80) +
+    scale_color_manual(values = refin_colors,
+                       labels = refin_labs) +
+    theme_line +
+    theme(legend.position = "bottom",
+          legend.text = element_text(size = 10),
+          legend.title = element_text(size = 10),
+          plot.title = element_text(hjust = 0.5, size = 12),
+          axis.title.y = element_text(size = 12),
+          axis.ticks.length.y = unit(0.1, 'cm'),
+          axis.ticks.length.x = unit(0.1, 'cm'),
+          axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+          axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)) +
+    guides(color = guide_legend(nrow = 1))
+  
+  
+  high_legend <- get_legend(
+    high_legend_fig)
+  
+  ## save legends
+  ggsave(plot = high_legend,
+         device ="pdf",
+         filename = "fig3_high_legend.pdf",
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         dpi = 600)
   
   
   # fig_bxm_c <- ggplot() +
@@ -455,13 +525,13 @@ plot_npv_health_labor <- function(main_path,
   ## ---------------------------------
   
   ## shared x axis
-  xaxis_lab <- ggdraw() + draw_label("GHG emissions reduction (%, 2045 vs 2019)", size = 7)
+  xaxis_lab <- ggdraw() + draw_label("GHG emissions reduction (%, 2045 vs 2019)", size = 12)
   
   fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
     fig_bxm_b,
     align = 'vh',
-    # labels = c("A", "B", "C", "D", "E", "F"),
+    labels = c("A", "B"),
     # # labels = 'AUTO',
     # label_size = 10,
     hjust = -1,
@@ -472,16 +542,13 @@ plot_npv_health_labor <- function(main_path,
   fig3_plot_grid2 <- plot_grid(
     fig3_plot_grid_ab,
     xaxis_lab,
-    NULL,
-    legend_fig_3,
-    NULL,
     align = "v",
     # labels = c("(A)", "(B)", "(C)", ""),
     # # labels = 'AUTO',
     # label_size = 10,
     # hjust = -1,
     ncol = 1,
-    rel_heights = c(0.85, 0.05, 0.05, 0.1, 0.05)
+    rel_heights = c(0.95, 0.05)
     # rel_widths = c(1, 1),
   )
   

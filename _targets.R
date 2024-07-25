@@ -597,8 +597,8 @@ list(
                                      main_path,
                                      "outputs/academic-out/refining/figures/2022-12-update",
                                      "state_npv_fig",
-                                     width = 6,
-                                     height = 4,
+                                     width = 10,
+                                     height = 5,
                                      dpi = 600),
              format = "file"),
 
