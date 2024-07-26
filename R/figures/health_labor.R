@@ -249,7 +249,7 @@ plot_npv_health_labor <- function(main_path,
     labs(color = NULL,
          title = "Health: avoided mortality",
          y = "NPV (2019 USD billion)",
-         x = NULL) +
+         x = "GHG emissions reduction (%, 2045 vs 2019)") +
     ylim(0, 50) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors,
@@ -259,6 +259,7 @@ plot_npv_health_labor <- function(main_path,
           legend.text = element_text(size = 10),
           plot.title = element_text(hjust = 0.5, size = 12),
           axis.title.y = element_text(size = 12),
+          axis.title.x = element_text(size = 11),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
@@ -278,9 +279,9 @@ plot_npv_health_labor <- function(main_path,
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
     geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
     # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
-    geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
-                                                   refining_scenario != "historical production",
-                                                   metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), linewidth = 0.5, alpha = 0.8) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historical production",
+    #                                                metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), linewidth = 0.5, alpha = 0.8) +
     geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
                                                refining_scenario != "historical production",
                                                metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
@@ -290,7 +291,7 @@ plot_npv_health_labor <- function(main_path,
     labs(color = NULL,
          title = "Labor: forgone wages",
          y = NULL,
-         x = NULL) +
+         x = "GHG emissions reduction (%, 2045 vs 2019)") +
     ylim(-50, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors,
@@ -300,6 +301,7 @@ plot_npv_health_labor <- function(main_path,
           legend.text = element_text(size = 10),
           plot.title = element_text(hjust = 0.5, size = 12),
           axis.title.y = element_text(size = 12),
+          axis.title.x = element_text(size = 11),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
@@ -323,7 +325,7 @@ plot_npv_health_labor <- function(main_path,
     labs(color = "with re-emp:",
          title = "Labor: forgone wages",
          y = NULL,
-         x = NULL) +
+         x = "GHG emissions reduction (%, 2045 vs 2019)") +
     ylim(-50, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors,
@@ -334,6 +336,7 @@ plot_npv_health_labor <- function(main_path,
           legend.title = element_text(size = 10),
           plot.title = element_text(hjust = 0.5, size = 12),
           axis.title.y = element_text(size = 12),
+          axis.title.x = element_text(size = 11),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
@@ -368,7 +371,7 @@ plot_npv_health_labor <- function(main_path,
     labs(color = "no re-emp:",
          title = "Labor: forgone wages",
          y = NULL,
-         x = NULL) +
+         x = "GHG emissions reduction (%, 2045 vs 2019)") +
     ylim(-50, 0) +
     xlim(0, 80) +
     scale_color_manual(values = refin_colors,
@@ -379,6 +382,7 @@ plot_npv_health_labor <- function(main_path,
           legend.title = element_text(size = 10),
           plot.title = element_text(hjust = 0.5, size = 12),
           axis.title.y = element_text(size = 12),
+          axis.title.x = element_text(size = 11),
           axis.ticks.length.y = unit(0.1, 'cm'),
           axis.ticks.length.x = unit(0.1, 'cm'),
           axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
