@@ -204,16 +204,17 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
   theme_its <- theme_line +
     theme(
       legend.position = "bottom",
-      legend.title = element_text(size = 20, vjust = 0.5),
-      legend.text = element_text(size = 18, vjust = 0.5),
-      axis.title.y = element_text(size = 22),
-      axis.title.y.right = element_text(size = 22),
+      legend.title = element_text(size = 22, vjust = 0.5),
+      legend.text = element_text(size = 22, vjust = 0.5),
+      axis.title.x = element_text(size = 25),
+      axis.title.y = element_text(size = 25),
+      axis.title.y.right = element_text(size = 25),
       strip.text = element_text(size = 25),
       plot.subtitle = element_text(size = 25),
       plot.title = element_text(size = 25, hjust = 0.5),
       plot.caption = element_text(size = 25),
-      axis.text.x = element_text(size = 20),
-      axis.text.y = element_text(size = 20)
+      axis.text.x = element_text(size = 22),
+      axis.text.y = element_text(size = 22)
     )
 
 
@@ -326,9 +327,10 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
     theme(
       legend.position = "bottom",
       legend.title = element_text(size = 20, vjust = 0.5),
-      legend.text = element_text(size = 18, vjust = 0.5),
-      axis.title.y = element_text(size = 22),
-      axis.title.y.right = element_text(size = 22),
+      legend.text = element_text(size = 22, vjust = 0.5),
+      axis.title.x = element_text(size = 25),
+      axis.title.y = element_text(size = 25),
+      axis.title.y.right = element_text(size = 25),
       strip.text = element_text(size = 25),
       plot.subtitle = element_text(size = 25),
       plot.title = element_text(size = 25, hjust = 0.5),
