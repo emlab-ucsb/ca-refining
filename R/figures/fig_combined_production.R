@@ -30,7 +30,7 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
   dt_jet <- dt_jet[scenario == "Mid Case"]
   un_scens <- CJ(
     year = 2017:2050,
-    scenario = c("Reference Demand", "Low Carbon Demand"),
+    scenario = c("BAU Demand", "Low Carbon Demand"),
     j = 1
   )
 
@@ -84,7 +84,7 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
   dt_demand[, fuel := gsub("Hdv", "HDV", fuel)]
 
   # rename scenario -------
-  dt_demand[scenario == "BAU", scenario := "Reference Demand"]
+  dt_demand[scenario == "BAU", scenario := "BAU Demand"]
   dt_demand[scenario == "LC1", scenario := "Low Carbon Demand"]
 
   # reorder factor levels ------
@@ -103,7 +103,7 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
     "Jet Fuel (Intrastate)", "Sustainable Aviation Fuel"
   )]
   inc_its <- inc_its[, .(consumption_bge = sum(consumption_bge, na.rm = T)), by = .(scenario, year)]
-  inc_its[scenario == "BAU", scenario := "Reference Demand"]
+  inc_its[scenario == "BAU", scenario := "BAU Demand"]
   inc_its[scenario == "LC1", scenario := "Low Carbon Demand"]
 
   # get line of total fuels included (not exports) ---------
@@ -113,7 +113,7 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
     "Jet Fuel (Intrastate)", "Sustainable Aviation Fuel", "Jet Fuel (Interstate + Military)"
   )]
   inc_full <- inc_full[, .(consumption_bge = sum(consumption_bge, na.rm = T)), by = .(scenario, year)]
-  inc_full[scenario == "BAU", scenario := "Reference Demand"]
+  inc_full[scenario == "BAU", scenario := "BAU Demand"]
   inc_full[scenario == "LC1", scenario := "Low Carbon Demand"]
 
   # combine interstate+military jet fuel with intrastate jet fuel -----
@@ -124,7 +124,7 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
 
   # rename scenario -------
 
-  dt_demand2[scenario == "BAU", scenario := "Reference Demand"]
+  dt_demand2[scenario == "BAU", scenario := "BAU Demand"]
   dt_demand2[scenario == "LC1", scenario := "Low Carbon Demand"]
 
   # reorder factor levels ------
@@ -138,9 +138,9 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
 
   # refactor scenario -------
 
-  dt_demand2[, scenario := factor(scenario, levels = c("Reference Demand", "Low Carbon Demand"))]
-  inc_its[, scenario := factor(scenario, levels = c("Reference Demand", "Low Carbon Demand"))]
-  inc_full[, scenario := factor(scenario, levels = c("Reference Demand", "Low Carbon Demand"))]
+  dt_demand2[, scenario := factor(scenario, levels = c("BAU Demand", "Low Carbon Demand"))]
+  inc_its[, scenario := factor(scenario, levels = c("BAU Demand", "Low Carbon Demand"))]
+  inc_full[, scenario := factor(scenario, levels = c("BAU Demand", "Low Carbon Demand"))]
 
   # PREP PRODUCTION DATA ----------
 
@@ -161,8 +161,8 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
   ghg_data[, label := "GHG emissions"]
 
   ## change demand scenario name
-  prod_data[, demand_scenario_adj := ifelse(demand_scenario == "BAU", "Reference Demand", "Low Carbon Demand")]
-  ghg_data[, demand_scenario_adj := ifelse(demand_scenario == "BAU", "Reference Demand", "Low Carbon Demand")]
+  prod_data[, demand_scenario_adj := ifelse(demand_scenario == "BAU", "BAU Demand", "Low Carbon Demand")]
+  ghg_data[, demand_scenario_adj := ifelse(demand_scenario == "BAU", "BAU Demand", "Low Carbon Demand")]
 
 
   ## capitalize first letter of fuel
@@ -196,8 +196,8 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
   ))]
 
   ## refactor demand scenario
-  prod_data[, demand_scenario_adj := factor(demand_scenario_adj, levels = c("Reference Demand", "Low Carbon Demand"))]
-  ghg_data[, demand_scenario_adj := factor(demand_scenario_adj, levels = c("Reference Demand", "Low Carbon Demand"))]
+  prod_data[, demand_scenario_adj := factor(demand_scenario_adj, levels = c("BAU Demand", "Low Carbon Demand"))]
+  ghg_data[, demand_scenario_adj := factor(demand_scenario_adj, levels = c("BAU Demand", "Low Carbon Demand"))]
 
   # its figure theme -----
 
@@ -221,11 +221,11 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
 
   f_ref_its <-
     ggplot() +
-    geom_area(data = dt_demand2[scenario == "Reference Demand"], aes(x = year, y = consumption_bge / 1e6, fill = fuel, group = fuel)) +
-    geom_line(data = inc_its[scenario == "Reference Demand"], aes(x = year, y = consumption_bge / 1e6, lty = "its"), linewidth = 1, color = "black") +
-    geom_line(data = inc_full[scenario == "Reference Demand"], aes(x = year, y = consumption_bge / 1e6, lty = "all"), linewidth = 1, color = "black") +
+    geom_area(data = dt_demand2[scenario == "BAU Demand"], aes(x = year, y = consumption_bge / 1e6, fill = fuel, group = fuel)) +
+    geom_line(data = inc_its[scenario == "BAU Demand"], aes(x = year, y = consumption_bge / 1e6, lty = "its"), linewidth = 1, color = "black") +
+    geom_line(data = inc_full[scenario == "BAU Demand"], aes(x = year, y = consumption_bge / 1e6, lty = "all"), linewidth = 1, color = "black") +
     labs(
-      title = "Reference Demand\n(Only)",
+      title = "BAU Demand\n(Only)",
       subtitle = NULL,
       x = NULL,
       y = "Fuel demand\n(Million bge)",
@@ -341,16 +341,16 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
 
   f_ref_histprod <- ggplot() +
     geom_area(
-      data = prod_data[demand_scenario_adj == "Reference Demand" & refining_scenario_adj == "Historic Production"],
+      data = prod_data[demand_scenario_adj == "BAU Demand" & refining_scenario_adj == "Historic Production"],
       aes(x = year, y = consumption_bge / 1e6, fill = fuel_adj)
     ) +
     geom_line(
-      data = ghg_data[demand_scenario_adj == "Reference Demand" & refining_scenario_adj == "Historic Production"],
+      data = ghg_data[demand_scenario_adj == "BAU Demand" & refining_scenario_adj == "Historic Production"],
       aes(x = year, y = ghg_MtCO2 * coef, color = label), linewidth = 1.3
     ) +
     geom_vline(xintercept = 2020, linetype = "dashed", color = "black", linewidth = 1) +
     labs(
-      title = "Reference Demand\nHistorical Production",
+      title = "BAU Demand\nHistorical Production",
       x = NULL,
       y = "Million bge",
       fill = NULL,
@@ -377,16 +377,16 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
 
   f_ref_histexp <- ggplot() +
     geom_area(
-      data = prod_data[demand_scenario_adj == "Reference Demand" & refining_scenario_adj == "Historic Exports"],
+      data = prod_data[demand_scenario_adj == "BAU Demand" & refining_scenario_adj == "Historic Exports"],
       aes(x = year, y = consumption_bge / 1e6, fill = fuel_adj)
     ) +
     geom_line(
-      data = ghg_data[demand_scenario_adj == "Reference Demand" & refining_scenario_adj == "Historic Exports"],
+      data = ghg_data[demand_scenario_adj == "BAU Demand" & refining_scenario_adj == "Historic Exports"],
       aes(x = year, y = ghg_MtCO2 * coef, color = label), linewidth = 1.3
     ) +
     geom_vline(xintercept = 2020, linetype = "dashed", color = "black", linewidth = 1) +
     labs(
-      title = "Reference Demand\nHistorical Exports",
+      title = "BAU Demand\nHistorical Exports",
       x = NULL,
       y = "Million bge",
       fill = NULL,
@@ -413,16 +413,16 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
 
   f_ref_lowexp <- ggplot() +
     geom_area(
-      data = prod_data[demand_scenario_adj == "Reference Demand" & refining_scenario_adj == "Low Exports"],
+      data = prod_data[demand_scenario_adj == "BAU Demand" & refining_scenario_adj == "Low Exports"],
       aes(x = year, y = consumption_bge / 1e6, fill = fuel_adj)
     ) +
     geom_line(
-      data = ghg_data[demand_scenario_adj == "Reference Demand" & refining_scenario_adj == "Low Exports"],
+      data = ghg_data[demand_scenario_adj == "BAU Demand" & refining_scenario_adj == "Low Exports"],
       aes(x = year, y = ghg_MtCO2 * coef, color = label), linewidth = 1.3
     ) +
     geom_vline(xintercept = 2020, linetype = "dashed", color = "black", linewidth = 1) +
     labs(
-      title = "Reference Demand\nLow Exports",
+      title = "BAU Demand\nLow Exports",
       x = NULL,
       y = "Million bge",
       fill = NULL,
