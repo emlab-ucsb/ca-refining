@@ -599,7 +599,9 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
   plots_ts <- plot_grid(f_ref_its, f_ref_histprod, f_ref_histexp, f_ref_lowexp,
     f_lc_its, f_lc_histprod, f_lc_histexp, f_lc_lowexp,
     nrow = 2,
-    rel_widths = c(0.2, 0.25, 0.25, 0.25)
+    rel_widths = c(0.2, 0.25, 0.25, 0.25),
+    labels = c("(A)", "(C)", "(E)", "(G)", "(B)", "(D)", "(F)", "(H)"),
+    label_size = 20
   )
 
   plots_legends <- plot_grid(legend_its, legend_prod, ncol = 2, rel_widths = c(0.5, 0.5), axis = "cc")
