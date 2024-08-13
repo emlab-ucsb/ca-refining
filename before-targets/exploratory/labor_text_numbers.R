@@ -121,3 +121,38 @@ df.county.agg <- left_join(df.county.agg,df.total,by=c("demand_scenario","refini
   mutate(share = value/total_value) %>% 
   arrange(demand_scenario,refining_scenario,metric_name,estimate,-share)
 summary(df.county.agg$share)
+
+
+# AVERAGE ANNUAL JOB LOSSES (DAN AND NON-DAC) SHOULD THIS BE ADJUSTED FOR FIRST FEW YRS?
+
+df.agg2 <- filter(df,
+                 demo_cat=="DAC") %>% 
+  group_by(scenario,year) %>% 
+  summarize(sum_demo_emp = sum(employment_high),
+            sum_demo_emp_revised = sum(employment_low),
+            sum_demo_comp_pv_h = sum(compensation_pv_high),
+            sum_demo_comp_pv_l = sum(compensation_pv_low)) %>% 
+  ungroup()
+
+
+
+df.agg2 <- filter(df.agg2,
+                 scenario != "BAU demand - historical production") %>% 
+  left_join(df.bau, by="year") %>% 
+  mutate(gap_emp = sum_demo_emp-sum_demo_emp_bau,
+         gap_emp_revised = sum_demo_emp_revised-sum_demo_emp_revised_bau,
+         gap_comp_h = sum_demo_comp_pv_h-sum_demo_comp_pv_h_bau,
+         gap_comp_l = sum_demo_comp_pv_l-sum_demo_comp_pv_l_bau) %>%
+  group_by(scenario) %>% 
+  summarize(gap_emp = mean(gap_emp),
+            gap_emp_revised = mean(gap_emp_revised),
+            gap_comp_h = mean(gap_comp_h),
+            gap_comp_l = mean(gap_comp_l)) %>%
+  ungroup() 
+  
+
+summary(df.agg$gap_emp)
+summary(df.agg$gap_emp_revised)
+summary(df.agg$gap_comp_h)
+summary(df.agg$gap_comp_l)
+
