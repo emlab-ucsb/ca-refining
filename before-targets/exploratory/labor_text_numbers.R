@@ -112,7 +112,12 @@ df.total <- group_by(df.county,
   summarize(total_value = sum(value)) %>% 
   ungroup()
 
-df.county <- left_join(df.county,df.total,by=c("demand_scenario","refining_scenario","metric_name","estimate")) %>%
+df.county.agg <- group_by(df.county,
+                          county,demand_scenario,refining_scenario,metric_name,estimate) %>% 
+  summarize(value = sum(value)) %>% 
+  ungroup() 
+
+df.county.agg <- left_join(df.county.agg,df.total,by=c("demand_scenario","refining_scenario","metric_name","estimate")) %>%
   mutate(share = value/total_value) %>% 
   arrange(demand_scenario,refining_scenario,metric_name,estimate,-share)
-summary(df.county$share)
+summary(df.county.agg$share)
