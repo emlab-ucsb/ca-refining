@@ -25,8 +25,8 @@ library(cowplot)
 library(janitor)
 
 
-#setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
-setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+#setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
 
 ### define function for "not in" 
 '%!in%' <- function(x,y)!('%in%'(x,y))
@@ -127,32 +127,57 @@ summary(df.county.agg$share)
 
 df.agg2 <- filter(df,
                  demo_cat=="DAC") %>% 
-  group_by(scenario,year) %>% 
-  summarize(sum_demo_emp = sum(employment_high),
-            sum_demo_emp_revised = sum(employment_low),
-            sum_demo_comp_pv_h = sum(compensation_pv_high),
-            sum_demo_comp_pv_l = sum(compensation_pv_low)) %>% 
+  group_by(scenario,year,demo_group) %>% 
+  summarize(sum_demo_emp = sum(employment_pmil_high),
+            sum_demo_emp_revised = sum(employment_pmil_low),
+            sum_demo_comp_pv_h = sum(compensation_pv_pmil_high),
+            sum_demo_comp_pv_l = sum(compensation_pv_pmil_low)) %>% 
   ungroup()
 
+df.bau2 <- filter(df,
+                  demo_cat=="DAC" & 
+                    scenario=="BAU demand - historical production") %>% 
+  group_by(year,demo_group) %>% 
+  summarize(sum_demo_emp_bau = sum(employment_pmil_high),
+            sum_demo_emp_revised_bau = sum(employment_pmil_low),
+            sum_demo_comp_pv_h_bau = sum(compensation_pv_pmil_high),
+            sum_demo_comp_pv_l_bau = sum(compensation_pv_pmil_low)) %>% 
+  ungroup() 
 
+
+
+# TREND IN EMPLOYMENT IMPACT DIFFERENCE BETWEEN DAC AND NON-DAC
+df.year <- filter(df.agg2,
+                  scenario != "BAU demand - historical production") %>% 
+  left_join(df.bau2, by=c("year","demo_group")) %>% 
+  mutate(gap_emp = sum_demo_emp-sum_demo_emp_bau,
+         gap_emp_revised = sum_demo_emp_revised-sum_demo_emp_revised_bau,
+         gap_comp_h = sum_demo_comp_pv_h-sum_demo_comp_pv_h_bau,
+         gap_comp_l = sum_demo_comp_pv_l-sum_demo_comp_pv_l_bau) 
+
+
+fig1 <- filter(df.year, scenario=="Low demand - low exports") %>% 
+  ggplot(aes(y=gap_emp,x=year,group=demo_group)) + 
+  geom_line(aes(color=demo_group))
+fig1
+
+
+## COMPARE TO FIG 4 CSV FILE 
+
+df.f4 <- fread('2022-12-update/fig-csv-files/state_labor_levels_fig_gaps_inputs.csv')
+
+# AVERAGE ANNUAL JOB LOSSES (DAN AND NON-DAC) SHOULD THIS BE ADJUSTED FOR FIRST FEW YRS?
 
 df.agg2 <- filter(df.agg2,
-                 scenario != "BAU demand - historical production") %>% 
-  left_join(df.bau, by="year") %>% 
+                  scenario != "BAU demand - historical production") %>% 
+  left_join(df.bau2, by=c("year","demo_group")) %>% 
   mutate(gap_emp = sum_demo_emp-sum_demo_emp_bau,
          gap_emp_revised = sum_demo_emp_revised-sum_demo_emp_revised_bau,
          gap_comp_h = sum_demo_comp_pv_h-sum_demo_comp_pv_h_bau,
          gap_comp_l = sum_demo_comp_pv_l-sum_demo_comp_pv_l_bau) %>%
-  group_by(scenario) %>% 
+  group_by(scenario,demo_group) %>% 
   summarize(gap_emp = mean(gap_emp),
             gap_emp_revised = mean(gap_emp_revised),
             gap_comp_h = mean(gap_comp_h),
             gap_comp_l = mean(gap_comp_l)) %>%
   ungroup() 
-  
-
-summary(df.agg$gap_emp)
-summary(df.agg$gap_emp_revised)
-summary(df.agg$gap_comp_h)
-summary(df.agg$gap_comp_l)
-
