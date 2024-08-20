@@ -5751,7 +5751,7 @@ fig4_hl_pmil <- function(health_grp,
   # yaxis_lab <- ggdraw() + draw_label(expression(paste("PM"[2.5], " (",mu,"g ", m^{-3},")", " per person, difference from reference")), 
   #                                    size = 8, angle = 90)
   
-  yaxis_lab <- ggdraw() + draw_label("Avoided mortalities per million people, difference from reference", 
+  yaxis_lab <- ggdraw() + draw_label("Health: Avoided mortalities per million people (difference from reference)", 
                                      size = fig_text_size, angle = 90)
   
   
@@ -5881,7 +5881,7 @@ fig4_hl_pmil <- function(health_grp,
                                                  title %in% fig_title_vec,
                                                  demo_cat == "Race")  %>%
                               mutate(title = factor(title, levels = c("Black", "Hispanic", "Asian", "white"))),
-                            aes(x = year, y = gap_emp / 1000, color = title)) +
+                            aes(x = year, y = gap_emp_pmil, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -5914,7 +5914,7 @@ fig4_hl_pmil <- function(health_grp,
   
   ## labor b
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                 demo_cat == "DAC"), aes(x = year, y = gap_emp / 1000, lty = title)) +
+                                                 demo_cat == "DAC"), aes(x = year, y = gap_emp_pmil, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -5950,7 +5950,7 @@ fig4_hl_pmil <- function(health_grp,
                               filter(!scenario %in% remove_scen,
                                      demo_cat == "Poverty") %>%
                               mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
-                            aes(x = year, y = gap_emp / 1000, lty = title)) +
+                            aes(x = year, y = gap_emp_pmil, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
     scale_linetype_manual(values = poverty_lty) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -5983,7 +5983,7 @@ fig4_hl_pmil <- function(health_grp,
   
   ## shared y lab
   #yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE-jobs, difference from reference per million people", size = fig_text_size, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE employment changes per million people (difference from reference)", size = fig_text_size, angle = 90)
   
   l_gaps_plot_grid <- plot_grid(
     NULL,
