@@ -126,7 +126,7 @@ summary(df.county.agg$share)
 # AVERAGE ANNUAL JOB LOSSES (DAN AND NON-DAC) SHOULD THIS BE ADJUSTED FOR FIRST FEW YRS?
 
 df.agg2 <- filter(df,
-                 demo_cat=="DAC") %>% 
+                 demo_cat=="Poverty" & year==2045) %>% 
   group_by(scenario,year,demo_group) %>% 
   summarize(sum_demo_emp = sum(employment_pmil_high),
             sum_demo_emp_revised = sum(employment_pmil_low),
@@ -135,8 +135,8 @@ df.agg2 <- filter(df,
   ungroup()
 
 df.bau2 <- filter(df,
-                  demo_cat=="DAC" & 
-                    scenario=="BAU demand - historical production") %>% 
+                  demo_cat=="Poverty" & 
+                    scenario=="BAU demand - historical production" & year==2045) %>% 
   group_by(year,demo_group) %>% 
   summarize(sum_demo_emp_bau = sum(employment_pmil_high),
             sum_demo_emp_revised_bau = sum(employment_pmil_low),
