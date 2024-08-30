@@ -56,8 +56,9 @@ plot_npv_health_labor <- function(main_path,
   state_labor <- annual_labor[, .(sum_total_emp = sum(total_emp),
                                   sum_total_comp_pv_h = sum(total_comp_PV_h),
                                   sum_total_comp_pv_l = sum(total_comp_PV_l)),
-                              by = .(demand_scenario, refining_scenario)]
+                              by = .(demand_scenario, refining_scenario, oil_price_scenario)]
   
+  state_labor <- state_labor[oil_price_scenario == "reference case",]
   
   ## ref labor
   ref_labor <- state_labor[demand_scenario == "BAU" & refining_scenario == "historic production"]
@@ -72,7 +73,7 @@ plot_npv_health_labor <- function(main_path,
   state_labor[, forgone_wages_bil_l := (sum_total_comp_pv_l - ref_total_comp_pv_l) / 1e9]
 
   ## merge with health and ghg
-  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, sum_total_comp_pv_h, ref_total_comp_pv_h, forgone_wages_bil_h,
+  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, oil_price_scenario, sum_total_comp_pv_h, ref_total_comp_pv_h, forgone_wages_bil_h,
                                                               sum_total_comp_pv_l, ref_total_comp_pv_l, forgone_wages_bil_l)],
                          by = c("demand_scenario", "refining_scenario"),
                          all.x = T)
@@ -83,7 +84,7 @@ plot_npv_health_labor <- function(main_path,
                                all.x = T)
   
   ## prepare to plot
-  plot_df <- health_labor_ghg_df[, .(scen_id, demand_scenario, refining_scenario, sum_cost_pv_b,
+  plot_df <- health_labor_ghg_df[, .(scen_id, demand_scenario, refining_scenario, oil_price_scenario, sum_cost_pv_b,
                                      sum_cost_2019_pv_b, forgone_wages_bil_h, forgone_wages_bil_l, avoided_ghg, perc_diff)]
 
   setnames(plot_df, "perc_diff", "ghg_perc_diff")
@@ -114,7 +115,7 @@ plot_npv_health_labor <- function(main_path,
   
   
   plot_df_labor <- plot_df %>%
-    select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l, forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg) %>%
+    select(scen_id, demand_scenario, refining_scenario, oil_price_scenario, ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l, forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg) %>%
     pivot_longer(forgone_wages_bil_h:forgone_wages_bil_l_ghg, names_to = "metric", values_to = "value") %>%
     mutate(segment = "labor",
            unit_desc = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_l"), "USD billion", "USD billion per GHG"),
@@ -160,7 +161,7 @@ plot_npv_health_labor <- function(main_path,
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
   
   ## save figure inputs
-  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
   
   
   ## prepare labor ----------------------
@@ -199,12 +200,13 @@ plot_npv_health_labor <- function(main_path,
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
+  fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
 
   
   ## scenarios for filtering
   remove_scen <- c('LC1 historical production', 'BAU historical production')
   bau_scen <- 'BAU historical production'
+  
   
   ## make the plot
   ## ---------------------------------------------------
@@ -351,7 +353,7 @@ plot_npv_health_labor <- function(main_path,
   ggsave(plot = low_legend,
          device ="pdf",
          filename = "fig3_low_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   
@@ -397,7 +399,7 @@ plot_npv_health_labor <- function(main_path,
   ggsave(plot = high_legend,
          device ="pdf",
          filename = "fig3_high_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   
@@ -615,7 +617,7 @@ plot_npv_health_labor <- function(main_path,
 #                                  by = .(census_tract, scenario, scen_id)]
 # 
 #   # ## save figure inputs
-#   # fwrite(health_map_npv_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "ct_health_npv_fig_inputs.csv"))
+#   # fwrite(health_map_npv_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "ct_health_npv_fig_inputs.csv"))
 # 
 # 
 #   ## health
@@ -645,7 +647,7 @@ plot_npv_health_labor <- function(main_path,
 #     arrange(-npv_health_av_mort_pc) 
 # 
 #   # ## save figure inputs
-#   # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "county_health_npv_fig_inputs.csv"))
+#   # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "county_health_npv_fig_inputs.csv"))
 # 
 # 
 #   ## for plotting health
@@ -723,7 +725,7 @@ plot_npv_health_labor <- function(main_path,
 #     
 # 
 #   ## save county-level inputs
-#   fwrite(county_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "county_health_labor_npv_npv_pc.csv"))
+#   fwrite(county_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "county_health_labor_npv_npv_pc.csv"))
 # 
 #   # ## make the maps
 #   # ##----------------------------------------------------------------------------
@@ -1097,7 +1099,7 @@ calc_county_pm25 <- function(main_path,
     ungroup() %>%
     arrange(-avg_pm25_popw)
   
-  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
   
   return(health_county_df)
   
@@ -1144,7 +1146,7 @@ plot_health_levels <- function(main_path,
   remove_scen <- c('LC1 historical production')
   
   ## save figure inputs
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
   
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
@@ -1376,7 +1378,7 @@ plot_health_levels_pc <- function(main_path,
   remove_scen <- c('LC1 historical production')
   
   ## save figure inputs
-  fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
+  fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
   
   
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
@@ -1580,7 +1582,7 @@ plot_health_levels_pm25 <- function(main_path,
   
   
   ## save figure inputs
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_pm25_inputs.csv"))
   
   
   ## scenarios for filtering
@@ -1797,7 +1799,7 @@ plot_health_levels_gaps <- function(main_path,
   
   
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
   
   ## make figures
   ##---------------------------------------------------------
@@ -2037,7 +2039,7 @@ plot_health_levels_gaps_pmil <- function(main_path,
   
   
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
   
   ## make figures
   ##---------------------------------------------------------
@@ -2249,7 +2251,7 @@ plot_health_levels_gaps_pm25 <- function(main_path,
   
   
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
   
   ## make figures
   ##---------------------------------------------------------
@@ -2450,7 +2452,7 @@ plot_labor_levels <- function(main_path,
   fig2_l_df <- fig2_l_df[, .(sum_demo_emp = sum(demo_emp),
                              sum_demo_comp_pv_h = sum(demo_comp_pv_h),
                              sum_demo_comp_pv_l = sum(demo_comp_pv_l)),
-                         by = .(year, demand_scenario, refining_scenario,
+                         by = .(year, demand_scenario, refining_scenario, oil_price_scenario, 
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
   # ## merge with 2020 pop
@@ -2515,7 +2517,7 @@ plot_labor_levels <- function(main_path,
   # 
   
   ## save figure inputs
-  fwrite(fig2_l_df, file.path(main_path, "outputs-staged-for-deletion/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
+  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
 
   ## labor figure
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
@@ -2536,7 +2538,8 @@ plot_labor_levels <- function(main_path,
   ## labor fig a
   labor_level_fig_a <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
                                                   title %in% fig_title_vec,
-                                                  demo_cat == "Race")  %>%
+                                                  demo_cat == "Race",
+                                                  oil_price_scenario == "reference case")  %>%
                                 mutate(title = factor(title, levels = c("Hispanic", "white", "Asian", "Black"))),
                                aes(x = year, y = sum_demo_emp / 1000, color = title, group = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
@@ -2567,7 +2570,8 @@ plot_labor_levels <- function(main_path,
 
   ##
   labor_level_fig_b <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
-                                                  demo_cat == "DAC"), aes(x = year, y = sum_demo_emp / 1000, lty = title)) +
+                                                  demo_cat == "DAC",
+                                                  oil_price_scenario == "reference case"), aes(x = year, y = sum_demo_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -2596,7 +2600,8 @@ plot_labor_levels <- function(main_path,
 
   ##
   labor_level_fig_c <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
-                                                  demo_cat == "Poverty") %>%
+                                                  demo_cat == "Poverty",
+                                                  oil_price_scenario == "reference case") %>%
                                  mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                                aes(x = year, y = sum_demo_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
@@ -2721,7 +2726,7 @@ plot_labor_levels_pmil <- function(main_path,
   fig2_l_df <- fig2_l_df[, .(sum_demo_emp = sum(demo_emp),
                              sum_demo_comp_pv_h = sum(demo_comp_pv_h),
                              sum_demo_comp_pv_l = sum(demo_comp_pv_l)),
-                         by = .(year, demand_scenario, refining_scenario,
+                         by = .(year, demand_scenario, refining_scenario, oil_price_scenario,
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
   ## merge with 2020 pop
@@ -2738,7 +2743,7 @@ plot_labor_levels_pmil <- function(main_path,
   fig2_l_df[, demo_comp_pc_pmil_l := demo_comp_pc_l * 1e6]
   
   ## select columns
-  fig2_l_df <- fig2_l_df[, .(year, demand_scenario, refining_scenario,
+  fig2_l_df <- fig2_l_df[, .(year, demand_scenario, refining_scenario, oil_price_scenario,
                              scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp,
                              demo_emp_pc, demo_emp_pmil, sum_demo_comp_pv_h, sum_demo_comp_pv_l, 
                              demo_comp_pc_pmil_h, demo_comp_pc_pmil_l, demo_comp_pc_h, demo_comp_pc_l)]
@@ -2790,7 +2795,7 @@ plot_labor_levels_pmil <- function(main_path,
   # 
   
   ## save figure inputs
-  fwrite(fig2_l_df, file.path(main_path, "outputs-staged-for-deletion/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
+  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
   
   ## labor figure
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
@@ -2817,7 +2822,8 @@ plot_labor_levels_pmil <- function(main_path,
   ## labor fig a
   labor_level_fig_a <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
                                                    title %in% fig_title_vec,
-                                                   demo_cat == "Race")  %>%
+                                                   demo_cat == "Race",
+                                                   oil_price_scenario == "reference case")  %>%
                                 mutate(title = factor(title, levels = c("Hispanic", "white", "Asian", "Black"))),
                               aes(x = year, y = demo_emp_pmil, color = title, group = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
@@ -2848,7 +2854,8 @@ plot_labor_levels_pmil <- function(main_path,
   
   ##
   labor_level_fig_b <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
-                                                   demo_cat == "DAC"), aes(x = year, y = demo_emp_pmil, lty = title)) +
+                                                   demo_cat == "DAC",
+                                                   oil_price_scenario == "reference case"), aes(x = year, y = demo_emp_pmil, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -2877,7 +2884,8 @@ plot_labor_levels_pmil <- function(main_path,
   
   ##
   labor_level_fig_c <- ggplot(fig2_l_df %>% filter(!scenario %in% remove_scen,
-                                                   demo_cat == "Poverty") %>%
+                                                   demo_cat == "Poverty",
+                                                   oil_price_scenario == "reference case") %>%
                                 mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                               aes(x = year, y = demo_emp_pmil, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
@@ -2985,6 +2993,7 @@ plot_labor_levels_gaps <- function(main_path,
   # 
   ## labor outputs
   l_gaps_df <- copy(ref_labor_demog_yr)
+  l_gaps_df <- l_gaps_df[oil_price_scenario == "reference case",]
 
   ## change scenario names, factor
   l_gaps_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
@@ -3020,7 +3029,7 @@ plot_labor_levels_gaps <- function(main_path,
                                                                       'Low demand\nhistorical production'))
   ## sum for state
   l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
-                         by = .(year, demand_scenario, refining_scenario,
+                         by = .(year, demand_scenario, refining_scenario, oil_price_scenario,
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
 
@@ -3046,14 +3055,14 @@ plot_labor_levels_gaps <- function(main_path,
   # l_gaps_df[, demo_emp_pc := sum_demo_emp / pop_2020]
   # 
   # ## select columns
-  l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario,
+  l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario, oil_price_scenario,
                              scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp,
                              gap_emp)]
   
   
 
   ## save figure inputs
-  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
+  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
 
   
   ## figure a
@@ -3061,7 +3070,8 @@ plot_labor_levels_gaps <- function(main_path,
   
   labor_gap_fig_a <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
                                                 title %in% fig_title_vec,
-                                                demo_cat == "Race")  %>%
+                                                demo_cat == "Race",
+                                                oil_price_scenario == "reference case")  %>%
                               mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
                              aes(x = year, y = gap_emp / 1000, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
@@ -3092,7 +3102,8 @@ plot_labor_levels_gaps <- function(main_path,
 
   ##
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                demo_cat == "DAC"), aes(x = year, y = gap_emp / 1000, lty = title)) +
+                                                demo_cat == "DAC",
+                                                oil_price_scenario == "reference case"), aes(x = year, y = gap_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -3122,7 +3133,8 @@ plot_labor_levels_gaps <- function(main_path,
   ##
   labor_gap_fig_c <- ggplot(l_gaps_df %>%
                                filter(!scenario %in% remove_scen,
-                                      demo_cat == "Poverty") %>%
+                                      demo_cat == "Poverty",
+                                      oil_price_scenario == "reference case") %>%
                                mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                              aes(x = year, y = gap_emp / 1000, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
@@ -3263,12 +3275,14 @@ plot_labor_levels_gaps_pmil <- function(main_path,
                                                                           'Low demand\nhistorical production'))
   ## sum for state
   l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
-                         by = .(year, demand_scenario, refining_scenario,
+                         by = .(year, demand_scenario, refining_scenario, oil_price_scenario,
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
   ## select columns
-  l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario,
+  l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario, oil_price_scenario,
                              scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp)]
+  
+  l_gaps_df <- l_gaps_df[oil_price_scenario == "reference case",]
   
   ## calculate gaps (BAU - scenario)
   l_bau_gaps_df <- l_gaps_df[scenario == "BAU demand - historical production"]
@@ -3292,7 +3306,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
   
   ## save figure inputs
-  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
+  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
   
   
   ## figure a
@@ -3300,7 +3314,8 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   
   labor_gap_fig_a <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
                                                  title %in% fig_title_vec,
-                                                 demo_cat == "Race")  %>%
+                                                 demo_cat == "Race",
+                                                 oil_price_scenario == "reference case")  %>%
                               mutate(title = factor(title, levels = c("Black", "Asian", "white", "Hispanic"))),
                             aes(x = year, y = gap_emp_pmil, color = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
@@ -3331,7 +3346,8 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   
   ##
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(!scenario %in% remove_scen,
-                                                 demo_cat == "DAC"), aes(x = year, y = gap_emp_pmil, lty = title)) +
+                                                 demo_cat == "DAC",
+                                                 oil_price_scenario == "reference case"), aes(x = year, y = gap_emp_pmil, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8) +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
     facet_grid(demo_cat ~ scenario_title) +
@@ -3361,7 +3377,8 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   ##
   labor_gap_fig_c <- ggplot(l_gaps_df %>%
                               filter(!scenario %in% remove_scen,
-                                     demo_cat == "Poverty") %>%
+                                     demo_cat == "Poverty",
+                                     oil_price_scenario == "reference case") %>%
                               mutate(title = factor(title, levels = c("Below poverty line", "Above poverty line"))),
                             aes(x = year, y = gap_emp_pmil, lty = title)) +
     geom_line(linewidth = 1, alpha = 0.8, color = "black") +
@@ -3502,6 +3519,7 @@ plot_hl_levels_df <- function(main_path,
    
    ## labor
    labor_df <- copy(ref_labor_demog)
+   labor_df <- labor_df[oil_price_scenario == "reference case",]
    
    ## ref labor
    ref_labor <- labor_df[demand_scenario == "BAU" & refining_scenario == "historic production"]
@@ -3590,7 +3608,7 @@ plot_hl_levels_df <- function(main_path,
                                                                         'Low demand\nHistorical production'))
    
    ## save figure inputs
-   fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
+   fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
    
    return(plot_df_long)
    
@@ -3913,7 +3931,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   plot_df_long[, value := value / pop_2020]
   
   ## save figure inputs
-  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
   
   
   
@@ -4028,7 +4046,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   # 
   # 
   # ggsave(plot = hl_plot_grid_a_pres, 
-  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-race.jpeg"), 
+  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/presentation-figs/fig5-race.jpeg"), 
   #        device = "jpeg",
   #        width = 9,
   #        height = 4,
@@ -4126,7 +4144,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   # )
   # 
   # ggsave(plot = hl_plot_grid_b_pres, 
-  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-income.jpeg"), 
+  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/presentation-figs/fig5-income.jpeg"), 
   #        device = "jpeg",
   #        width = 9,
   #        height = 4,
@@ -4217,7 +4235,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   # 
   # 
   # ggsave(plot = hl_plot_grid_c_pres, 
-  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/presentation-figs/fig5-dac.jpeg"), 
+  #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/presentation-figs/fig5-dac.jpeg"), 
   #        device = "jpeg",
   #        width = 9,
   #        height = 4,
@@ -4453,7 +4471,7 @@ plot_hl_shares <- function(main_path,
   share_df[, demo_grp_metric := paste0(title, "_", metric)]
 
   ## save figure inputs
-  fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+  fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
 
   
 
@@ -4797,21 +4815,21 @@ plot_hl_shares <- function(main_path,
   ggsave(plot = health_dac_legend,
          device ="pdf",
          filename = "health_dac_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = health_poverty_legend,
          device ="pdf",
          filename = "health_poverty_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = health_race_legend,
          device ="pdf",
          filename = "health_race_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
 
   
@@ -4923,28 +4941,28 @@ plot_hl_shares <- function(main_path,
   ggsave(plot = labor_dac_legend,
          device ="pdf",
          filename = "labor_dac_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = labor_poverty_legend,
          device ="pdf",
          filename = "labor_poverty_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = labor_race_legend,
          device ="pdf",
          filename = "labor_race_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = legend_a_h,
          device ="pdf",
          filename = "labor_race_legend_no_re-emp.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/legends/"),
+         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## all together now
@@ -5089,19 +5107,21 @@ create_health_labor_table <- function(main_path,
   bau_emp_out <- emp_out %>%
     filter(demand_scenario == "BAU",
            refining_scenario == "historic production") %>%
-    select(demo_cat, demo_group, title, value) %>%
+    select(oil_price_scenario, demo_cat, demo_group, title, value) %>%
     rename(bau_value = value)
   
   ## difference
   emp_out <- merge(emp_out, bau_emp_out,
-                   by = c("demo_cat", "demo_group", "title"),
+                   by = c("oil_price_scenario", "demo_cat", "demo_group", "title"),
                    all.x = T)
   
   emp_out <- emp_out %>%
     mutate(delta_value = value - bau_value) %>%
-    select(demo_cat:refining_scenario, segment, metric, metric_desc, unit_desc, delta_value) %>%
+    select(oil_price_scenario:refining_scenario, segment, metric, metric_desc, unit_desc, delta_value) %>%
     rename(value = delta_value) %>%
-    mutate(refining_scenario = str_replace(refining_scenario, "historic", "historical"))
+    mutate(refining_scenario = str_replace(refining_scenario, "historic", "historical")) %>%
+    filter(oil_price_scenario == "reference case") %>%
+    select(-oil_price_scenario)
   
   
   ## avoided mortality 
@@ -5139,7 +5159,7 @@ create_health_labor_table <- function(main_path,
   result_output <- rbind(npv_out, emp_out, avoid_m_out_total)
   
   ## save figure inputs
-  fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "state_health_labor_ouputs.csv"))
+  fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_health_labor_ouputs.csv"))
   
   
   return(result_output)
