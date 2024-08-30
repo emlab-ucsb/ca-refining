@@ -12,9 +12,15 @@ create_prod_px_spread <- function(proc_oil_px_df) {
                         all.x = T)
   
   prod_price <- copy(proc_oil_px_df)
-  prod_price <- proc_oil_px_df[oil_price_scenario == "reference case"]
-  prod_price <- merge(prod_price, crack_spread,
-                      all = T)
+  # prod_price <- proc_oil_px_df[oil_price_scenario == "reference case"]
+  
+  prod_price <- merge(crack_spread, prod_price, 
+                      by = c("year"),
+                      all = T,
+                      allow.cartesian = T)
+  
+  setDT(prod_price)
+  
   prod_price[, product_price := oil_price_usd_per_bbl + spread]
  
   prod_price
@@ -58,11 +64,12 @@ calc_labor_outputs <- function(main_path,
 
   ## merge with prices
   product_df <- copy(product_px)
-  product_df <- product_df[, .(year, product, product_price)]
+  product_df <- product_df[, .(year, oil_price_scenario, product, product_price)]
   
   county_out_refining <- merge(county_out_refining, product_df,
                                by = c("year", "product"),
-                               all.x = T)
+                               all.x = T,
+                               allow.cartesian = T)
 
   ## calculate revenue
   county_out_refining[, revenue := value * product_price]
@@ -70,7 +77,7 @@ calc_labor_outputs <- function(main_path,
   ## summarize at the county level
   county_out_refining_summary <- county_out_refining[, .(production_bbl = sum(value),
                                                          revenue = sum(revenue)), by = .(demand_scenario, refining_scenario,
-                                                                                         year, county)]
+                                                                                         oil_price_scenario, year, county)]
   
   
   ## calculate labor impacts
@@ -100,7 +107,7 @@ calc_labor_outputs <- function(main_path,
   county_out_labor <- county_out_labor[, .(total_production_bbl = sum(production_bbl),
                                            total_revenue = sum(revenue),
                                            total_emp = sum(c.emp),
-                                           total_comp = sum(c.comp)), .(demand_scenario, refining_scenario, year, destination)]
+                                           total_comp = sum(c.comp)), .(demand_scenario, refining_scenario, oil_price_scenario, year, destination)]
   
   ## convert to 2019 dollars
   county_out_labor[, total_comp_usd19 := total_comp * cpi2019 / cpi2020]
@@ -113,8 +120,8 @@ calc_labor_outputs <- function(main_path,
   
   ## calculate the lower bound value
   county_out_labor <- county_out_labor %>%
-    arrange(demand_scenario, refining_scenario, destination, year) %>%
-    group_by(demand_scenario, refining_scenario, destination) %>%
+    arrange(demand_scenario, refining_scenario, oil_price_scenario, destination, year) %>%
+    group_by(demand_scenario, refining_scenario, oil_price_scenario, destination) %>%
     mutate(prev_emp = ifelse(year == 2020, NA, lag(total_emp)),
            total_emp_revised = ifelse(year == 2020, total_emp, total_emp - ((1 - alpha_emp) * prev_emp)),
            prev_comp_usd19h = ifelse(year == 2020, NA, lag(total_comp_usd19_h)),
@@ -123,16 +130,16 @@ calc_labor_outputs <- function(main_path,
     as.data.table()
   
   review_df <- county_out_labor %>%
-    select(demand_scenario, refining_scenario, destination, year, total_production_bbl, total_revenue, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
+    select(demand_scenario, refining_scenario, oil_price_scenario, destination, year, total_production_bbl, total_revenue, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
   
   ## save for review
-  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/labor_result_for_review.csv"))
+  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_for_review.csv"))
   
   ## calc discounted low
   county_out_labor[, total_comp_PV_l := total_comp_usd19_l / ((1 + discount_rate) ^ (year - 2019))]
   
   ## select columns
-  county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, destination, year, total_emp, total_emp_revised, total_comp_h,
+  county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, oil_price_scenario, destination, year, total_emp, total_emp_revised, total_comp_h,
                                            total_comp_usd19_h, total_comp_usd19_l, total_comp_PV_h, total_comp_PV_l)]
   
   county_out_labor
@@ -142,7 +149,7 @@ calc_labor_outputs <- function(main_path,
 
 ## labor results grouped by demographic
 
-calculate_labor_x_demg_annual <- function(county_pop_ratios,
+calculate_labor_x_demg_annual <- function(county_grp_pop_ratios,
                                           annual_labor,
                                           raw_pop_income_2021,
                                           refining_mortality,
@@ -169,7 +176,7 @@ calculate_labor_x_demg_annual <- function(county_pop_ratios,
     rename(destination = region)
   
   ## get 
-  ratio_df <- copy(county_pop_ratios)
+  ratio_df <- copy(county_grp_pop_ratios)
   setnames(ratio_df, "region", "destination")
   
   ## merge
@@ -208,7 +215,7 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
   labor_pct <- labor_pct[, .(sum_demo_emp = sum(demo_emp),
                              sum_demo_comp_pv_h = sum(demo_comp_pv_h),
                              sum_demo_comp_pv_l = sum(demo_comp_pv_l)),
-                         by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title)]
+                         by = .(demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title)]
   
   return(labor_pct)
   
@@ -230,7 +237,7 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
                              sum_demo_emp_revised = sum(demo_emp_revised),
                              sum_demo_comp_pv_h = sum(demo_comp_pv_h),
                              sum_demo_comp_pv_l = sum(demo_comp_pv_l)),
-                         by = .(demand_scenario, refining_scenario, demo_cat, demo_group, title, year)]
+                         by = .(demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title, year)]
   
   
   ## change scenario names, factor
@@ -242,7 +249,7 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
   labor_pct[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## select columns
-  labor_pct <- labor_pct[, .(scenario, demand_scenario, refining_scenario, year, demo_cat, demo_group,
+  labor_pct <- labor_pct[, .(scenario, demand_scenario, refining_scenario, oil_price_scenario, year, demo_cat, demo_group,
                              title, sum_demo_emp, sum_demo_emp_revised, sum_demo_comp_pv_h, sum_demo_comp_pv_l)]
   
   ## compute per million stat
@@ -300,7 +307,7 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
                                             "compensation_pv_pmil"))
   
   ## pivot longer
-  labor_pct_long <- melt(labor_pct, id.vars = c("demo_cat", "demo_group", "scenario", "demand_scenario", "refining_scenario", "year"), variable.name = "metric", value.name = "value")
+  labor_pct_long <- melt(labor_pct, id.vars = c("demo_cat", "demo_group", "scenario", "demand_scenario", "refining_scenario", "oil_price_scenario", "year"), variable.name = "metric", value.name = "value")
   labor_pct_long[, estimate := fifelse(metric %in% high_est_vec, "high", "low")]
   
   ## merge
@@ -309,14 +316,14 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
                           all.x = T)
   
   labor_pct_long <- labor_pct_long[, .(demo_cat, demo_group, scenario, demand_scenario, 
-                                       refining_scenario, year, metric_name, estimate, value)]
+                                       refining_scenario, oil_price_scenario, year, metric_name, estimate, value)]
   
   
   ## save df
-  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
   
   
-  return(labor_pct)
+  return(labor_pct_long)
   
 }
 
@@ -363,18 +370,24 @@ calc_county_level_outputs <- function(main_path,
   ## make labor outputs long and sum by county region
   labor_county_region_out <- ref_labor_demog_yr %>%
     mutate(demo_emp_revised = total_emp_revised * pct) %>%
-    select(demand_scenario, refining_scenario, destination, demo_cat, demo_group, title, year, demo_emp, demo_emp_revised, total_emp_revised,
+    select(demand_scenario, refining_scenario, oil_price_scenario, destination, demo_cat, demo_group, title, year, demo_emp, demo_emp_revised, total_emp_revised,
            demo_comp_pv_h, demo_comp_pv_l) %>%
-    rename(region = destination) %>% 
-    full_join(county_region_ratio) %>%
+    rename(region = destination)
+  
+  labor_county_region_out <- merge(labor_county_region_out, county_region_ratio,
+                                   by = "region",
+                                   allow.cartesian = T)
+  
+  
+  labor_county_region_out <- labor_county_region_out %>%
     mutate(demo_emp_h_county = demo_emp * county_ratio,
            demo_emp_l_county = demo_emp_revised * county_ratio,
            demo_comp_PV_h_county = demo_comp_pv_h * county_ratio,
            demo_comp_PV_l_county = demo_comp_pv_l * county_ratio) %>%
-    select(county, demand_scenario, refining_scenario, demo_cat, demo_group, title, year, demo_emp_h_county,
+    select(county, demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title, year, demo_emp_h_county,
            demo_emp_l_county, demo_comp_PV_l_county, demo_comp_PV_h_county) %>%
     pivot_longer(demo_emp_h_county:demo_comp_PV_h_county, names_to = "metric", values_to = "value") %>%
-    group_by(county, demand_scenario, refining_scenario, demo_cat, demo_group, title, metric) %>%
+    group_by(county, demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title, metric) %>%
     summarise(value = sum(value)) %>%
     ungroup()
   
@@ -422,7 +435,7 @@ calc_county_level_outputs <- function(main_path,
 
   
   ## save df
-  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "labor_county_outputs.csv"))
+  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_county_outputs.csv"))
   
 
   return(labor_county_out_df)

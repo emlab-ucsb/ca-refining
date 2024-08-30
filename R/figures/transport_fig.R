@@ -80,7 +80,7 @@ create_srm_xwalk <- function(main_path,
   
   
   ## save pm2.5 exposure by refinery
-  fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "srm_pm25_refinery_level.csv"))
+  fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "srm_pm25_refinery_level.csv"))
   
   return(srm_pm25_df)
   
@@ -95,7 +95,7 @@ create_srm_ct <- function(main_path,
                       by = .(census_tract, COUNTYFP, NAME)]
   
   ## save pm2.5 exposure for each ct
-  fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "srm_pm25_ct.csv"))
+  fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "srm_pm25_ct.csv"))
   
   return(pm25_srm)
   
@@ -193,7 +193,7 @@ create_pulse_fig <- function(main_path,
 
 
     ggsave(plot = pm25_fig_tmp, 
-           filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/pulse-figs/pulse_",
+           filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs/pulse_",
                   id_tmp, ".jpeg"), 
            device = "jpeg",
            # width = 6.5,
@@ -257,7 +257,7 @@ create_pulse_fig <- function(main_path,
                                   order = 1))
   
   ggsave(plot = pm25_fig_all, 
-         filename = paste0(main_path, "outputs/academic-out/refining/figures/2022-12-update/pulse-figs/pulse_all_crop.jpeg"), 
+         filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs/pulse_all_crop.jpeg"), 
          device = "jpeg",
          # width = 6.5,
          # height = 8,
