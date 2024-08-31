@@ -5392,7 +5392,7 @@ fig4_hl <- function(health_grp,
   
   ## sum for state
   l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
-                         by = .(year, demand_scenario, refining_scenario,
+                         by = .(year, demand_scenario, refining_scenario, oil_price_scenario,
                                 scenario, scenario_title, demo_cat, demo_group, title)]
   
   # ## merge with 2020 pop
@@ -5404,8 +5404,11 @@ fig4_hl <- function(health_grp,
   # l_gaps_df[, demo_emp_pc := sum_demo_emp / pop_2020]
   
   ## select columns
-  l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario,
+  l_gaps_df <- l_gaps_df[, .(year, demand_scenario, refining_scenario, oil_price_scenario,
                              scenario, scenario_title, demo_cat, demo_group, title, sum_demo_emp)]
+  
+  # filter for oil px == reference case
+  l_gaps_df <- l_gaps_df[oil_price_scenario == "reference case"]
   
   ## calculate gaps (BAU - scenario)
   l_bau_gaps_df <- l_gaps_df[scenario == "BAU demand - historical production"]
@@ -5829,6 +5832,8 @@ fig4_hl_pmil <- function(health_grp,
   
   ## labor outputs
   l_gaps_df <- copy(ref_labor_demog_yr)
+  
+  l_gaps_df <- l_gaps_df[oil_price_scenario == "reference case", ]
   
   ## change scenario names, factor
   l_gaps_df[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]

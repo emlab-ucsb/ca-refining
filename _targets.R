@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 list(
   
   # set user
-  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
   
   # list paths
   tar_target(name = list_paths, c("tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
