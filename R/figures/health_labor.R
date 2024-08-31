@@ -73,7 +73,8 @@ plot_npv_health_labor <- function(main_path,
   state_labor[, forgone_wages_bil_l := (sum_total_comp_pv_l - ref_total_comp_pv_l) / 1e9]
 
   ## merge with health and ghg
-  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, oil_price_scenario, sum_total_comp_pv_h, ref_total_comp_pv_h, forgone_wages_bil_h,
+  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(demand_scenario, refining_scenario, 
+                                                              oil_price_scenario, sum_total_comp_pv_h, ref_total_comp_pv_h, forgone_wages_bil_h, 
                                                               sum_total_comp_pv_l, ref_total_comp_pv_l, forgone_wages_bil_l)],
                          by = c("demand_scenario", "refining_scenario"),
                          all.x = T)
@@ -206,7 +207,6 @@ plot_npv_health_labor <- function(main_path,
   ## scenarios for filtering
   remove_scen <- c('LC1 historical production', 'BAU historical production')
   bau_scen <- 'BAU historical production'
-  
   
   ## make the plot
   ## ---------------------------------------------------
