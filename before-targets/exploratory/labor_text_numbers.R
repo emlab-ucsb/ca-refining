@@ -181,3 +181,51 @@ df.agg2 <- filter(df.agg2,
             gap_comp_h = mean(gap_comp_h),
             gap_comp_l = mean(gap_comp_l)) %>%
   ungroup() 
+
+
+
+
+# IMPORT DISAGGREGATED RESULTS WITH 3 DIFFERENT OIL PRICE PATHWAYS 
+
+df <- fread('2024-08-update/fig-csv-files/labor_high_low_annual_outputs.csv') 
+str(df)
+summary(df$sum_demo_emp)
+summary(df$sum_demo_emp_revised)
+
+
+# KEEP JUST 2045 AND COMPUTE GAP BETWEEN SCENARIO AND BAU FOR EACH OIL PRICE PATHWAY 
+
+df <- filter(df,year==2045) 
+
+## AGGREGATE IMPACTS ACROSS DEMOGRAPHIC GROUPS AND YEARS, SELECT 1 DEMOGRAPHIC CATEGORY SO IMPACTS ARENT DUPLICATED
+df <- pivot_wider(df, 
+                  id_cols=c("scenario","demo_cat","demo_group","demand_scenario","refining_scenario","oil_price_scenario","year"),
+                  names_from = c("metric_name","estimate"),
+                  values_from = value) %>% 
+  filter(demo_cat=="DAC") %>% 
+  group_by(scenario,oil_price_scenario,year) %>% 
+  summarize(compensation_pv_pmil_high = sum(compensation_pv_pmil_high),
+            compensation_pv_pmil_low  = sum(compensation_pv_pmil_low), 
+            employment_pmil_high = sum(employment_pmil_high),
+            employment_pmil_low = sum(employment_pmil_low)) %>% 
+  ungroup()
+
+## BAU 
+
+df.bau <- filter(df, scenario=="BAU demand - historical production") %>% 
+  rename(compensation_pv_pmil_high_bau = compensation_pv_pmil_high,
+         compensation_pv_pmil_low_bau = compensation_pv_pmil_low,
+         employment_pmil_high_bau =  employment_pmil_high, 
+         employment_pmil_low_bau =  employment_pmil_low) %>% 
+  dplyr::select(-scenario)
+
+
+## JOIN BAU TO DF AND COMPUTE GAPS 
+
+df <- filter(df, scenario != "BAU demand - historical production") %>% 
+  left_join(df.bau,by=c("oil_price_scenario","year")) %>% 
+  mutate(gap_comp_pv_pmil_high = compensation_pv_pmil_high - compensation_pv_pmil_high_bau, 
+         gap_comp_pv_pmil_low = compensation_pv_pmil_low - compensation_pv_pmil_low_bau, 
+         gap_emp_pmil_high = employment_pmil_high - employment_pmil_high_bau, 
+         gap_emp_pmil_low = employment_pmil_low - employment_pmil_low_bau)
+ 
