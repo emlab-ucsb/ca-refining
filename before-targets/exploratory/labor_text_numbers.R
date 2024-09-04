@@ -25,8 +25,8 @@ library(cowplot)
 library(janitor)
 
 
-setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
-#setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+#setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
 
 ### define function for "not in" 
 '%!in%' <- function(x,y)!('%in%'(x,y))
@@ -229,3 +229,5 @@ df <- filter(df, scenario != "BAU demand - historical production") %>%
          gap_emp_pmil_high = employment_pmil_high - employment_pmil_high_bau, 
          gap_emp_pmil_low = employment_pmil_low - employment_pmil_low_bau)
  
+
+## NEEDS: COMP AND EMP IN 2019 (FROM IMPLAN), COMP AND EMP IN 2045 HIGH AND LOW ESTIMATES FOR EACH SCENARIO
