@@ -147,6 +147,142 @@ calc_labor_outputs <- function(main_path,
 }
 
 
+
+calc_labor_outputs_x_impact <- function(main_path,
+                                        proc_labor_dest_df,
+                                        indiv_prod_output,
+                                        dt_refcap,
+                                        product_px,
+                                        cpi2019,
+                                        cpi2020,
+                                        discount_rate,
+                                        alpha_comp,
+                                        alpha_emp) {
+  
+  
+  ## add product for calculating price
+  county_out_refining <- copy(indiv_prod_output)
+  
+  county_out_refining[, fuel := as.character(fuel)]
+  
+  county_out_refining[, product := fifelse(fuel %chin% c("gasoline", "drop-in gasoline"), "gasoline",
+                                           fifelse(fuel %chin% c("diesel", "renewable diesel"), "diesel", "jet_fuel"))]
+  
+  ## merge with counties
+  county_df <- dt_refcap[, .(site_id, county)]
+  county_df[, site_id := as.character(site_id)]
+  
+  
+  county_out_refining <- merge(county_out_refining, county_df,
+                               by = c("site_id"),
+                               all.x = T)
+  
+  # fill in missing counties
+  county_out_refining[, county := fifelse(site_id == "342-2", "Contra Costa",
+                                          fifelse(site_id == "99999", "Kern",
+                                                  fifelse(site_id == "t-800", "Los Angeles", county)))]
+  
+  ## merge with prices
+  product_df <- copy(product_px)
+  product_df <- product_df[, .(year, oil_price_scenario, product, product_price)]
+  
+  county_out_refining <- merge(county_out_refining, product_df,
+                               by = c("year", "product"),
+                               all.x = T,
+                               allow.cartesian = T)
+  
+  ## calculate revenue
+  county_out_refining[, revenue := value * product_price]
+  
+  ## summarize at the county level
+  county_out_refining_summary <- county_out_refining[, .(production_bbl = sum(value),
+                                                         revenue = sum(revenue)), by = .(demand_scenario, refining_scenario,
+                                                                                         oil_price_scenario, year, county)]
+  
+  
+  ## calculate labor impacts
+  county_out_refining_summary[, county := fifelse(county == "Solano County", "Solano", county)]
+  
+  
+  ## merge with labor multipliers, calculate labor vals
+  county_out_labor <- merge(county_out_refining_summary, proc_labor_dest_df,
+                            by = c("county"),
+                            all.x = T,
+                            allow.cartesian = T)
+  
+  # county_out_labor[, ':=' (c.dire_emp = (revenue / (10 ^ 6)) * dire_emp_mult,
+  #                          c.indi_emp = (revenue / (10 ^ 6)) * indi_emp_mult,
+  #                          c.indu_emp = (revenue / (10 ^ 6)) * indu_emp_mult,
+  #                          c.dire_comp = (revenue / (10 ^ 6)) * dire_comp_mult,
+  #                          c.indi_comp = (revenue / (10 ^ 6)) * ip.indi_comp_mult,
+  #                          c.indu_comp = (revenue / (10 ^ 6)) * ip.indu_comp_mult)]
+  # 
+  # county_out_labor[, ':=' (total_emp = c.dire_emp + c.indi_emp + c.indu_emp,
+  #                          total_comp = c.dire_comp + c.indi_comp + c.indu_comp)]
+  
+  
+  county_out_labor[, ':=' (c.emp = (revenue / (10 ^ 6)) * employment,
+                           c.comp = (revenue / (10 ^ 6)) * emp_comp)]
+  
+  county_out_labor <- county_out_labor[, .(total_production_bbl = sum(production_bbl),
+                                           total_revenue = sum(revenue),
+                                           total_emp = sum(c.emp),
+                                           total_comp = sum(c.comp)), .(demand_scenario, 
+                                                                        refining_scenario, 
+                                                                        oil_price_scenario,
+                                                                        impact_type,
+                                                                        year, 
+                                                                        destination)]
+  
+  ## convert to 2019 dollars
+  county_out_labor[, total_comp_usd19 := total_comp * cpi2019 / cpi2020]
+  
+  ## calc PV
+  county_out_labor[, total_comp_PV := total_comp_usd19 / ((1 + discount_rate) ^ (year - 2019))]
+  
+  ## rename columns
+  setnames(county_out_labor, c("total_comp", "total_comp_usd19", "total_comp_PV"), c("total_comp_h", "total_comp_usd19_h", "total_comp_PV_h"))
+  
+  ## calculate the lower bound value
+  county_out_labor <- county_out_labor %>%
+    arrange(demand_scenario, refining_scenario, oil_price_scenario, impact_type, destination, year) %>%
+    group_by(demand_scenario, refining_scenario, oil_price_scenario, impact_type, destination) %>%
+    mutate(prev_emp = ifelse(year == 2020, NA, lag(total_emp)),
+           total_emp_revised = ifelse(year == 2020, total_emp, total_emp - ((1 - alpha_emp) * prev_emp)),
+           prev_comp_usd19h = ifelse(year == 2020, NA, lag(total_comp_usd19_h)),
+           total_comp_usd19_l = ifelse(year == 2020, total_comp_usd19_h, total_comp_usd19_h - ((1 - alpha_comp) * prev_comp_usd19h))) %>%
+    ungroup() %>%
+    as.data.table()
+  
+  review_df <- county_out_labor %>%
+    select(demand_scenario, refining_scenario, oil_price_scenario, impact_type,
+           destination, year, total_production_bbl, total_revenue, total_comp_usd19_h, 
+           prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
+  
+  ## save file
+  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
+  
+  
+  ## calc discounted low
+  county_out_labor[, total_comp_PV_l := total_comp_usd19_l / ((1 + discount_rate) ^ (year - 2019))]
+  
+  ## select columns
+  county_out_labor <- county_out_labor[, .(demand_scenario, refining_scenario, oil_price_scenario, impact_type, destination, year, total_emp, total_emp_revised, total_comp_h,
+                                           total_comp_usd19_h, total_comp_usd19_l, total_comp_PV_h, total_comp_PV_l)]
+  
+
+  ## save file
+  write_csv(county_out_labor, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type.csv"))
+  
+  
+  county_out_labor
+  
+}
+
+
+
+
+
 ## labor results grouped by demographic
 
 calculate_labor_x_demg_annual <- function(county_grp_pop_ratios,
