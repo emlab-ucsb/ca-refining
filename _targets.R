@@ -429,6 +429,17 @@ list(
                                                                discount_rate,
                                                                alpha_comp,
                                                                alpha_emp)),
+  
+  tar_target(name = annual_labor_x_impact, command = calc_labor_outputs_x_impact(main_path,
+                                                                                 proc_labor_dest_df,
+                                                                                 indiv_prod_output,
+                                                                                 dt_refcap,
+                                                                                 product_px,
+                                                                                 cpi2019,
+                                                                                 cpi2020,
+                                                                                 discount_rate,
+                                                                                 alpha_comp,
+                                                                                 alpha_emp)),
 
   tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(county_grp_pop_ratios,
                                                                                 annual_labor,
