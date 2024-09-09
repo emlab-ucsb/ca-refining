@@ -457,9 +457,43 @@ calculate_race_disp = function(health_weighted,
   ## calculate other variables
   collapsed_data[, num_over_den := sum_num / sum_den]
   
+  ## mortality and avoided mortality
+  ## ---------------------------------------------------------------------------
+  
+  mort_df <- copy(refining_mortality)
+  setDT(mort_df)
+  
+  mort_df <- mort_df[, .(census_tract, scen_id, demand_scenario, refining_scenario,
+                         year, mortality_level, mortality_delta)]
+  
+  ## merge with pop ratios
+  mort_df <- merge(mort_df, pop_ratios,
+                   by = c("census_tract"),
+                   allow.cartesian = T)
+  
+  ## multiply but pct
+  mort_df[, mortality_level_dem := mortality_level * pct]
+  mort_df[, mortality_delta_dem := mortality_delta * pct]
+  mort_df <- mort_df[, .(census_tract, scen_id, demand_scenario, refining_scenario, year, demo_group, demo_cat,
+                         title, mortality_level_dem, mortality_delta_dem)]
+  
+  ## summarise
+  mort_df <- mort_df[, .(mortality_level_dem = sum(mortality_level_dem),
+                         mortality_delta_dem = sum(mortality_delta_dem)),
+                     by = .(scen_id, demand_scenario, refining_scenario, year, demo_cat, demo_group, title)]
+  
+  ## merge
+  health_indicators <- merge(collapsed_data, mort_df,
+                             by = c("scen_id", "demand_scenario", "refining_scenario",
+                                    "year", "demo_group", "demo_cat", "title"),
+                             allow.cartesian = T)
+  
+  
+  
+  
 
   ## return
-  return(collapsed_data)
+  return(health_indicators)
   
   
 }
@@ -642,7 +676,7 @@ calculate_mort_x_demg = function(refining_mortality,
     filter(grp_pop == 0 & pop > 0)
   
   ## save missing pop
-  fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2022-12-update/fig-csv-files/", "ct_missing_pop.csv"))
+  fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "ct_missing_pop.csv"))
   
 
   
@@ -660,7 +694,145 @@ calculate_mort_x_demg = function(refining_mortality,
 }
 
 
+calc_cumul_av_mort = function(main_path,
+                              health_grp) {
+  
+  dt <- copy(health_grp)
+  dt <- dt[, .(cumul_mort_level = sum(mortality_level_dem),
+               cumul_mort_delta = sum(mortality_delta_dem)),
+           by = .(scen_id, demand_scenario, refining_scenario, demo_group, demo_cat, title)]
+  
+  ## save cumulative 
+  fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  
+  return(dt)
+  
+}
 
 
+## calculate county health outputs
+calculate_county_health = function(
+                                   # health_weighted,
+                                   main_path,
+                                   pop_ratios,
+                                   refining_mortality,
+                                   raw_ct_2020_all,
+                                   raw_counties,
+                                   discount_rate) {
+  
+  ## get county x census tracts
+  ct_county_df <- raw_ct_2020_all %>%
+    filter(STATEFP == "06") %>%
+    select(GEOID, COUNTYFP) %>%
+    st_drop_geometry()
+
+  county_df <- raw_counties %>%
+    select(COUNTYFP, NAME) %>%
+    st_drop_geometry() %>%
+    unique()
+
+  ct_county_df <- ct_county_df %>%
+    left_join(county_df) %>%
+    rename(census_tract = GEOID)
+
+  # ## census pop
+  # census_pop <- refining_mortality %>%
+  #   ungroup() %>%
+  #   filter(year == 2020) %>%
+  #   select(census_tract, pop) %>%
+  #   unique() %>%
+  #   rename(total_pop = pop) %>%
+  #   as.data.table()
+  # 
+  # ## merge with health output
+  # merged_data <- merge(health_weighted, pop_ratios, 
+  #                      all.x = TRUE,
+  #                      allow.cartesian = TRUE)
+  # 
+  # merged_data <- merge(merged_data, census_pop,
+  #                      all.x = T,
+  #                      by = c("census_tract"))
+  # 
+  # merged_data <- merged_data[year != 2019]
+  # 
+  # ## caclualte pop pct * pop
+  # merged_data[, pop := pct * total_pop]
+  # 
+  # ## calculate metrics
+  # merged_data[, num := total_pm25 * pct * total_pop]
+  # 
+  # ## filter out any census tracts with zero pop
+  # merged_data <- merged_data[total_pop != 0]
+  # 
+  # ## merge with counties
+  # merged_data <- merge(merged_data, ct_county_df,
+  #                      by = "census_tract",
+  #                      all.x = T)
+  # 
+  # ## perform the collapse operation
+  # collapsed_data <- merged_data[, .(sum_num = sum(num),
+  #                                   sum_den = sum(pop)),
+  #                               by = .(scen_id, demand_scenario, refining_scenario, COUNTYFP, NAME, year, demo_cat, demo_group, title)]
+  # 
+  # ## calculate other variables
+  # collapsed_data[, num_over_den := sum_num / sum_den]
+  # 
+  # ## compute cumulative value (mean)
+  # mean_collapsed_data <- collapsed_data[, .(mean_num_over_den = mean(num_over_den),
+  #                                          sum_den = unique(sum_den)),
+  #                                       by = .(scen_id, demand_scenario, refining_scenario, COUNTYFP, NAME, demo_cat, demo_group, title)]
+  # 
+  
+  ## cumulative mortality and usd by county
+  ## ---------------------------------------------------------------------------
+  
+  mort_df <- copy(refining_mortality)
+  setDT(mort_df)
+  
+  mort_df <- mort_df[, .(census_tract, scen_id, demand_scenario, refining_scenario,
+                         year, mortality_level, VSL_2019)]
+  
+  mort_df[, mort_val_2019 := mortality_level * VSL_2019]
+  mort_df[, mort_val_2019_PV := mort_val_2019/((1+discount_rate)^(year-2019))]
+  
+  ## merge with pop ratios
+  mort_df <- merge(mort_df, pop_ratios,
+                   by = c("census_tract"),
+                   allow.cartesian = T)
+  
+  ## multiply but pct
+  mort_df[, mortality_level_dem := mortality_level * pct]
+  mort_df[, mortality_pv_dem := mort_val_2019_PV * pct]
+  mort_df <- mort_df[, .(census_tract, scen_id, demand_scenario, refining_scenario, year, demo_group, demo_cat,
+                         title, mortality_level_dem, mortality_pv_dem)]
+  
+  
+  ## merge with census tracts
+  mort_df <- merge(mort_df, ct_county_df,
+                   by = "census_tract",
+                   all.x = T)
+  
+  ## summarise
+  mort_df <- mort_df[, .(mortality_level_dem = sum(mortality_level_dem),
+                         mortality_pv_dem = sum(mortality_pv_dem)),
+                     by = .(scen_id, demand_scenario, refining_scenario, COUNTYFP, NAME, demo_cat, demo_group, title)]
+  
+  fwrite(mort_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "cumulative_health_x_county.csv"))
+  
+  
+  # ## merge
+  # health_indicators <- merge(collapsed_data, mort_df,
+  #                            by = c("scen_id", "demand_scenario", "refining_scenario",
+  #                                   "year", "demo_group", "demo_cat", "title"),
+  #                            allow.cartesian = T)
+  
+  
+
+  
+  ## return
+  return(mort_df)
+  
+  
+}
 
 

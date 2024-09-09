@@ -236,23 +236,110 @@ read_poverty_data <- function(file) {
   
 }
 
-read_labor_inputs <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
+# read_labor_inputs <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
+#   
+#   dt = setDT(read.xlsx(file, sheet = input_sheet, rows = input_rows, cols = input_cols))
+#   
+#   dt <- dt %>%
+#     filter((county != "Statewide" & segment == "refining") | is.na(segment)==T) %>% 
+#     rename(dire_emp_mult = direct_emp, 
+#            indi_emp_mult = indirect_emp, 
+#            indu_emp_mult = induced_emp,
+#            dire_comp_mult = direct_comp, 
+#            indi_comp_mult = indirect_comp, 
+#            indu_comp_mult = induced_comp,
+#            ip.dire_comp_mult = ip.direct_comp, 
+#            ip.indi_comp_mult = ip.indirect_comp, 
+#            ip.indu_comp_mult = ip.induced_comp)
+#   
+#   dt
+# }
+
+
+read_ca_regions <- function(file) {
   
-  dt = setDT(read.xlsx(file, sheet = input_sheet, rows = input_rows, cols = input_cols))
+  dt = fread(file)
   
-  dt <- dt %>%
-    filter((county != "Statewide" & segment == "refining") | is.na(segment)==T) %>% 
-    rename(dire_emp_mult = direct_emp, 
-           indi_emp_mult = indirect_emp, 
-           indu_emp_mult = induced_emp,
-           dire_comp_mult = direct_comp, 
-           indi_comp_mult = indirect_comp, 
-           indu_comp_mult = induced_comp,
-           ip.dire_comp_mult = ip.direct_comp, 
-           ip.indi_comp_mult = ip.indirect_comp, 
-           ip.indu_comp_mult = ip.induced_comp)
+  ## change text to match implan outputs
+  dt[, region := str_replace(region, "region", "census")]
+  
+  ## adjust region names for adjusted regions
+  adj_regions <- c("census_3", "census_4", "census_5", "census_6")
+  
+  ## adjust names, make regions 8 and 9 Los Angeles and Orange, respectively
+  dt[, region := fifelse(region %in% adj_regions, paste0(region, "_v2"), region)]
+  dt[, region := fifelse(region == "census_8", "Los Angeles", region)]
+  dt[, region := fifelse(region == "census_9", "Orange", region)]
+  
+  ## updated method uses regions and counties
+  labor_counties <- c("Contra Costa", "Kern", "Los Angeles", "Orange", "San Luis Obispo", "Solano")
+  
+  ## flag if county is stand alone county, filter out, bind to county_pop_df
+  dt[, remove := fifelse(county %in% labor_counties, 1, 0)]
+  dt <- dt[remove == 0]
+  dt[, remove := NULL]
+  
+  ## create df of regions and counties to for which to create population metrics
+  county_l_df <- data.frame(region = labor_counties,
+                              county = labor_counties)
+  
+  dt <- rbind(county_l_df, dt)
   
   dt
+  
+}
+
+
+read_labor_fte_inputs <- function(file, input_sheet) {
+  
+  dt = setDT(read.xlsx(file, sheet = input_sheet, startRow = 2))
+  
+  dt <- janitor::clean_names(dt)
+
+  setnames(dt, c("implan546index"), c("IndustryCode"))
+  
+  dt <- dt[, .(IndustryCode, ft_eper_total_emp)]
+  
+  dt
+  
+}
+
+
+read_labor_inputs <- function(file, fte_file) {
+  
+  dt = fread(file)
+  
+  ## merge with fte-job-years data
+  dt <- merge(dt, fte_file,
+              by = c("IndustryCode"),
+              all.x = T)
+  
+  ## clean column names
+  dt <- janitor::clean_names(dt)
+  
+  ## multiply employment multiplier by ft_eper_total_emp
+  dt[, employment := employment * ft_eper_total_emp]
+  
+  ## summarize by origin region, destination region, and impcact type
+  dt <- dt[, .(employment = sum(employment),
+               emp_comp = sum(employee_compensation)), .(origin_region, destination_region, impact_type)]
+  
+  ## lowercase
+  dt[, impact_type := tolower(impact_type)]
+  
+  ## remove text
+  dt[, county := str_remove(origin_region, " County, CA Group")]
+  dt[, destination_region := str_remove(destination_region, " County, CA")]
+  dt[, destination_region := str_trim(destination_region)]
+  
+  ## rename columns
+  setnames(dt, c("origin_region", "destination_region"), c("origin","destination"))
+  
+  ## select columns
+  dt <- dt[, .(county, origin, destination, impact_type, employment, emp_comp)]
+  
+  dt
+  
 }
 
 read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
@@ -266,6 +353,24 @@ read_oil_px <- function(file, input_sheet, input_rows=NULL, input_cols=NULL) {
   oilpx_scens_real[, oil_price_scenario := factor(oil_price_scenario, levels = c('reference case', 'high oil price', 'low oil price'))]
   
 }
+
+read_refin_locs <- function(file_refin_locs,
+                            file_refin_locs_orig,
+                            ca_crs) {
+  
+  refin_crs <- st_crs(st_read(file_refin_locs_orig))
+  
+  ## Refineries plus
+  refin_new_locations <- fread(file_refin_locs) %>%
+    mutate(coords = gsub("^c\\(|\\)$", "", geometry)) %>%
+    separate(coords, c('lon', 'lat'), sep = ',') %>%
+    select(-geometry) %>%
+    st_as_sf(coords = c("lon", "lat"),
+             crs = refin_crs) %>%
+    st_transform(ca_crs)
+  
+}
+
 
 
 # track_files_basic <- function(file) {
