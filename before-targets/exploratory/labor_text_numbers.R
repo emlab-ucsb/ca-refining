@@ -25,8 +25,8 @@ library(cowplot)
 library(janitor)
 
 
-#setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
-setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+#setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
 
 ### define function for "not in" 
 '%!in%' <- function(x,y)!('%in%'(x,y))
@@ -304,3 +304,12 @@ df.high <- mutate(df.2045,
                                              ifelse(impact_type=="induced",1-(total_comp_usd19_h/induced.comp.2019),NA))))
 
   
+# TOTAL IMPACT LEVEL BY SCENARIO 
+
+df.cumu <- group_by(df,
+                    demand_scenario,refining_scenario) %>% 
+  summarize(total_emp = sum(total_emp),
+            total_emp_revised = sum(total_emp_revised),
+            total_comp_usd19_h = sum(total_comp_usd19_h),
+            total_comp_usd19_l = sum(total_comp_usd19_l)) %>% 
+  ungroup()
