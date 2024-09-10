@@ -36,23 +36,24 @@ letters_only <- function(x) !grepl("[^A-Za-z*-]", x)
 
 # IMPORT DISAGGREGATED RESULTS 
 
-df <- fread('2022-12-update/fig-csv-files/labor_high_low_annual_outputs.csv') 
+df <- fread('2024-08-update/fig-csv-files/labor_high_low_annual_outputs.csv') 
 str(df)
 summary(df$sum_demo_emp)
 summary(df$sum_demo_emp_revised)
 
 # IMPORT COUNTY LEVEL RESULTS
 
-df.county <- fread('2022-12-update/fig-csv-files/labor_county_outputs.csv')
+df.county <- fread('2024-08-update/fig-csv-files/labor_county_outputs.csv')
 str(df.county)
 
 # CALCULATE PERCENT REDUCTION RELATIVE TO BAU 
 
 ## AGGREGATE IMPACTS ACROSS DEMOGRAPHIC GROUPS AND YEARS, SELECT 1 DEMOGRAPHIC CATEGORY SO IMPACTS ARENT DUPLICATED
 df <- pivot_wider(df, 
-                  id_cols=c("scenario","demo_cat","demo_group","demand_scenario","refining_scenario","year"),
+                  id_cols=c("scenario","demo_cat","demo_group","demand_scenario","refining_scenario","oil_price_scenario","year"),
                   names_from = c("metric_name","estimate"),
-                  values_from = value)
+                  values_from = value) %>% 
+  filter(oil_price_scenario=="reference case")
 str(df)
 
 df.agg <- filter(df,
@@ -90,10 +91,10 @@ df.agg <- filter(df.agg,
             sum_demo_comp_pv_h_bau = sum(sum_demo_comp_pv_h_bau),
             sum_demo_comp_pv_l_bau = sum(sum_demo_comp_pv_l_bau)) %>%
   ungroup() %>%
-  mutate(perc_emp = sum_demo_emp/sum_demo_emp_bau,
-         perc_emp_revised = sum_demo_emp_revised/sum_demo_emp_revised_bau,
-         perc_comp_h = sum_demo_comp_pv_h/sum_demo_comp_pv_h_bau,
-         perc_comp_l = sum_demo_comp_pv_l/sum_demo_comp_pv_l_bau,
+  mutate(perc_emp = 1-sum_demo_emp/sum_demo_emp_bau,
+         perc_emp_revised = 1-sum_demo_emp_revised/sum_demo_emp_revised_bau,
+         perc_comp_h = 1-sum_demo_comp_pv_h/sum_demo_comp_pv_h_bau,
+         perc_comp_l = 1-sum_demo_comp_pv_l/sum_demo_comp_pv_l_bau,
          gap_emp = sum_demo_emp-sum_demo_emp_bau,
          gap_emp_revised = sum_demo_emp_revised-sum_demo_emp_revised_bau,
          gap_comp_h = sum_demo_comp_pv_h-sum_demo_comp_pv_h_bau,
@@ -231,3 +232,45 @@ df <- filter(df, scenario != "BAU demand - historical production") %>%
  
 
 ## NEEDS: COMP AND EMP IN 2019 (FROM IMPLAN), COMP AND EMP IN 2045 HIGH AND LOW ESTIMATES FOR EACH SCENARIO
+
+## FROM IMPLAN: SPREADSHEETS ARE AT /Dropbox/calepa/refining-labor/2019-baseline-ica
+fte.per.emp <- 0.991150442477876
+
+direct.emp.2019 <- 11456.6380044314*fte.per.emp
+indirect.emp.2019 <- 70118.2031857474*fte.per.emp
+induced.emp.2019 <- 43395.822784118*fte.per.emp
+total.emp.2019 <- direct.emp.2019+indirect.emp.2019+induced.emp.2019
+
+direct.comp.2019 <- 3028965833
+indirect.comp.2019 <- 4812737405.89
+induced.comp.2019 <- 2273210360.05
+total.comp.2019 <- direct.comp.2019+indirect.comp.2019+induced.comp.2019 
+
+
+## READ IN IMPACTS 
+
+# IMPORT DISAGGREGATED RESULTS ADD ACROSS COUNTIES
+
+df <- fread('2024-08-update/fig-csv-files/labor_result_for_review.csv') %>% 
+  filter(oil_price_scenario == "reference case") %>% 
+  group_by(demand_scenario,refining_scenario,year) %>% 
+  summarize(total_emp = sum(total_emp),
+            total_emp_revised = sum(total_emp_revised),
+            total_comp_usd19_h = sum(total_comp_usd19_h),
+            total_comp_usd19_l = sum(total_comp_usd19_l)) %>% 
+  ungroup()
+str(df)
+
+
+# KEEP JUST 2045 AND COMPUTE 1-SHARE OF 2019 EMPLOMENT OR COMPENSATION FOR W/REEMPLOYMENT (HIGH)
+
+df.2045 <- filter(df,year==2045) 
+
+df.high <- mutate(df.2045,
+                  emp_perc_h = 1-(total_emp/total.emp.2019),
+                  emp_comp_h = 1-(total_comp_usd19_h/total.comp.2019))
+
+
+
+
+
