@@ -272,5 +272,35 @@ df.high <- mutate(df.2045,
 
 
 
+# DIRECT,INDIRECT,INDUCED SHARES RELATIVE TO 2019 
 
+df <- fread('2024-08-update/fig-csv-files/labor_result_x_impact_type.csv')
+str(df)
+unique(df$oil_price_scenario)
 
+df.review <- fread('2024-08-update/fig-csv-files/labor_result_x_impact_type_for_review.csv')
+str(df.review)
+unique(df.review$oil_price_scenario)
+
+df <- filter(df,
+             oil_price_scenario=="reference case") %>% 
+  group_by(demand_scenario,refining_scenario,impact_type,year) %>% 
+  summarize(total_emp = sum(total_emp),
+            total_emp_revised = sum(total_emp_revised),
+            total_comp_usd19_h = sum(total_comp_usd19_h),
+            total_comp_usd19_l = sum(total_comp_usd19_l)) %>% 
+  ungroup() 
+
+# KEEP JUST 2045 AND COMPUTE 1-SHARE OF 2019 EMPLOMENT OR COMPENSATION FOR W/REEMPLOYMENT (HIGH)
+
+df.2045 <- filter(df,year==2045) 
+
+df.high <- mutate(df.2045,
+                  emp_perc_h = ifelse(impact_type=="direct",1-(total_emp/direct.emp.2019),
+                                      ifelse(impact_type=="indirect",1-(total_emp/indirect.emp.2019),
+                                             ifelse(impact_type=="induced",1-(total_emp/induced.emp.2019),NA))),
+                  comp_perc_h = ifelse(impact_type=="direct",1-(total_comp_usd19_h/direct.comp.2019),
+                                      ifelse(impact_type=="indirect",1-(total_comp_usd19_h/indirect.comp.2019),
+                                             ifelse(impact_type=="induced",1-(total_comp_usd19_h/induced.comp.2019),NA))))
+
+  
