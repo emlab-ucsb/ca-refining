@@ -25,8 +25,8 @@ library(cowplot)
 library(janitor)
 
 
-setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
-#setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+#setwd('G:/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
+setwd('~/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/outputs/academic-out/refining/figures')
 
 ### define function for "not in" 
 '%!in%' <- function(x,y)!('%in%'(x,y))
@@ -43,7 +43,8 @@ summary(df$sum_demo_emp_revised)
 
 # IMPORT COUNTY LEVEL RESULTS
 
-df.county <- fread('2024-08-update/fig-csv-files/labor_county_outputs.csv')
+df.county <- fread('2024-08-update/fig-csv-files/labor_county_outputs.csv') %>% 
+  filter(oil_price_scenario=="reference case")
 str(df.county)
 
 # CALCULATE PERCENT REDUCTION RELATIVE TO BAU 
@@ -113,6 +114,7 @@ df.total <- group_by(df.county,
   summarize(total_value = sum(value)) %>% 
   ungroup()
 
+
 df.county.agg <- group_by(df.county,
                           county,demand_scenario,refining_scenario,metric_name,estimate) %>% 
   summarize(value = sum(value)) %>% 
@@ -122,6 +124,42 @@ df.county.agg <- left_join(df.county.agg,df.total,by=c("demand_scenario","refini
   mutate(share = value/total_value) %>% 
   arrange(demand_scenario,refining_scenario,metric_name,estimate,-share)
 summary(df.county.agg$share)
+
+
+# CALCULATE SHARE OF IMPACT RELATIVE TO BAU FOR EACH COUNTY 
+
+df.total.bau <- filter(df.county, 
+                       demand_scenario=="BAU" & refining_scenario=="historic production") %>% 
+  group_by(metric_name,estimate) %>% 
+  summarize(total_value_bau = sum(value)) %>% 
+  ungroup()
+
+df.total2 <- filter(df.county, 
+                   demand_scenario != "BAU" & refining_scenario != "historic production") %>%  
+  group_by(demand_scenario,refining_scenario,metric_name,estimate) %>% 
+  summarize(total_value = sum(value)) %>% 
+  ungroup() %>% 
+  left_join(df.total.bau,by=c("metric_name","estimate")) %>% 
+  mutate(gap_total_value = total_value-total_value_bau)
+
+
+df.county.agg.bau <- filter(df.county, 
+                            demand_scenario=="BAU" & refining_scenario=="historic production") %>% 
+  group_by(county,metric_name,estimate) %>% 
+  summarize(value_bau = sum(value)) %>% 
+  ungroup() 
+
+df.county.agg2 <- filter(df.county, 
+                        demand_scenario != "BAU" & refining_scenario != "historic production") %>%  
+  group_by(county,demand_scenario,refining_scenario,metric_name,estimate) %>% 
+  summarize(value = sum(value)) %>% 
+  ungroup() %>% 
+  left_join(df.county.agg.bau,by=c("county","metric_name","estimate")) %>% 
+  mutate(gap_value = value - value_bau) %>% 
+  left_join(df.total2,by=c("demand_scenario","refining_scenario","metric_name","estimate")) %>%
+  mutate(share = gap_value/gap_total_value) %>% 
+  arrange(demand_scenario,refining_scenario,metric_name,estimate,-share)
+
 
 
 # AVERAGE ANNUAL JOB LOSSES (DAN AND NON-DAC) SHOULD THIS BE ADJUSTED FOR FIRST FEW YRS?
