@@ -676,7 +676,8 @@ calculate_mort_x_demg = function(refining_mortality,
     filter(grp_pop == 0 & pop > 0)
   
   ## save missing pop
-  fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "ct_missing_pop.csv"))
+  # fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "ct_missing_pop.csv"))
+  fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "ct_missing_pop.csv"))
   
 
   
@@ -703,7 +704,10 @@ calc_cumul_av_mort = function(main_path,
            by = .(scen_id, demand_scenario, refining_scenario, demo_group, demo_cat, title)]
   
   ## save cumulative 
-  fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  #fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  
+  
   
   return(dt)
   
@@ -817,7 +821,8 @@ calculate_county_health = function(
                          mortality_pv_dem = sum(mortality_pv_dem)),
                      by = .(scen_id, demand_scenario, refining_scenario, COUNTYFP, NAME, demo_cat, demo_group, title)]
   
-  fwrite(mort_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "cumulative_health_x_county.csv"))
+  #fwrite(mort_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "cumulative_health_x_county.csv"))
+  fwrite(mort_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "cumulative_health_x_county.csv"))
   
   
   # ## merge
