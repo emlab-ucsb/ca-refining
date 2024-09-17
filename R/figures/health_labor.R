@@ -162,8 +162,8 @@ plot_npv_health_labor <- function(main_path,
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
   
   ## save figure inputs
-  #fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
-  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  #fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
   
   
   ## prepare labor ----------------------
@@ -202,8 +202,8 @@ plot_npv_health_labor <- function(main_path,
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  #fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
-  fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
+  fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
+  #fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
   
   
   ## scenarios for filtering
@@ -1101,8 +1101,8 @@ calc_county_pm25 <- function(main_path,
     ungroup() %>%
     arrange(-avg_pm25_popw)
   
-  # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
-  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  #fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv"))
   
   
   return(health_county_df)
@@ -1150,8 +1150,8 @@ plot_health_levels <- function(main_path,
   remove_scen <- c('LC1 historical production')
   
   ## save figure inputs
-  # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv"))
   
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
@@ -1383,8 +1383,8 @@ plot_health_levels_pc <- function(main_path,
   remove_scen <- c('LC1 historical production')
   
   ## save figure inputs
-  # fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
-  fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
+  fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
+  #fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
   
   
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
@@ -1588,8 +1588,8 @@ plot_health_levels_pm25 <- function(main_path,
   
   
   ## save figure inputs
-  # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_pm25_inputs.csv"))
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  #fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv"))
   
   
   ## scenarios for filtering
@@ -1806,8 +1806,8 @@ plot_health_levels_gaps <- function(main_path,
   
   
   ## save figure inputs
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
   
   
   ## make figures
@@ -2048,8 +2048,8 @@ plot_health_levels_gaps_pmil <- function(main_path,
   
   
   ## save figure inputs
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
+  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
   
   
   
@@ -2263,8 +2263,8 @@ plot_health_levels_gaps_pm25 <- function(main_path,
   
   
   ## save figure inputs
-  #fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
+  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
   
   
   ## make figures
@@ -2531,8 +2531,8 @@ plot_labor_levels <- function(main_path,
   # 
   
   ## save figure inputs
-  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
-  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
+  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
+  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
   
   
   
@@ -2812,8 +2812,8 @@ plot_labor_levels_pmil <- function(main_path,
   # 
   
   ## save figure inputs
-  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
-  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
+  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
+  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
   
   
   ## labor figure
@@ -3081,8 +3081,8 @@ plot_labor_levels_gaps <- function(main_path,
   
 
   ## save figure inputs
-  #fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
-  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
+  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
+  # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
   
   
   ## figure a
@@ -3326,8 +3326,8 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
   
   ## save figure inputs
-  # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
-  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
+  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
+  # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
   
   
   ## figure a
@@ -3629,8 +3629,8 @@ plot_hl_levels_df <- function(main_path,
                                                                         'Low demand\nHistorical production'))
    
    ## save figure inputs
-   # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
-   fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
+   fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
+   # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
    
    
    return(plot_df_long)
@@ -3954,8 +3954,8 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   plot_df_long[, value := value / pop_2020]
   
   ## save figure inputs
-  # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
-  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
   
   
   
@@ -4495,8 +4495,8 @@ plot_hl_shares <- function(main_path,
   share_df[, demo_grp_metric := paste0(title, "_", metric)]
 
   ## save figure inputs
-  #fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
-  fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+  fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+  # fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
   
   
 
@@ -5184,8 +5184,8 @@ create_health_labor_table <- function(main_path,
   result_output <- rbind(npv_out, emp_out, avoid_m_out_total)
   
   ## save figure inputs
-  # fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_health_labor_ouputs.csv"))
-  fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_health_labor_ouputs.csv"))
+  fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_health_labor_ouputs.csv"))
+  # fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_health_labor_ouputs.csv"))
   
   
   return(result_output)
