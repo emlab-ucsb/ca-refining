@@ -7,18 +7,22 @@ cum_h <- fread("state_npv_fig_inputs_health.csv"  , stringsAsFactors = F)
 
 cum_h%>%
   filter(metric %in% "avoided_health_cost")%>%
-  filter(scen_id %in% c("BAU historical production","LC1 historical exports","LC1 low exports"))%>%
+  filter(scen_id %in% c("BAU historical production","BAU historical exports","LC1 low exports"))%>%
   select(scen_id,value,unit_desc,unit)
 
 #cumulative mortality and pop
 
-cum_m <- fread("cumulative_avoided_mortality.csv"  , stringsAsFactors = F) ; cum_m
+# cum_m <- fread("cumulative_avoided_mortality.csv"  , stringsAsFactors = F) ; cum_m
+# 
+# cum_m%>%
+#   filter(demo_cat %in% c("Race"))%>%
+#   group_by(scen_id)%>%
+#   summarise(cumul_mort_level = sum(cumul_mort_level ))
+# filter(scen_id %in% c("BAU historical production","LC1 historical exports","LC1 low exports", "BAU historical exports"))
 
-cum_m%>%
-  filter(demo_cat %in% c("Race"))%>%
-  group_by(scen_id)%>%
-  summarise(cumul_mort_level = sum(cumul_mort_level ))
-filter(scen_id %in% c("BAU historical production","LC1 historical exports","LC1 low exports", "BAU historical exports"))
+#cumulative pop
+
+#fread("state_disaggregated_npv_pc_fig_inputs.csv"  , stringsAsFactors = F)
 
 ### SENSITIVITY ANALYSIS TO DIFF BETA
 
@@ -36,7 +40,7 @@ cum_h <- fread("state_npv_fig_inputs_health.csv"  , stringsAsFactors = F)
 
 cum_h%>%
   filter(metric %in% "avoided_health_cost")%>%
-  filter(scen_id %in% c("BAU historical production","LC1 historical exports","LC1 low exports"))%>%
+  filter(scen_id %in% c("BAU historical production","BAU historical exports","LC1 low exports"))%>%
   select(scen_id,value,unit_desc,unit)
 
 
@@ -47,5 +51,5 @@ cum_h <- fread("state_npv_fig_inputs_health.csv"  , stringsAsFactors = F)
 
 cum_h%>%
   filter(metric %in% "avoided_health_cost")%>%
-  filter(scen_id %in% c("BAU historical production","LC1 historical exports","LC1 low exports"))%>%
+  filter(scen_id %in% c("BAU historical production","BAU historical exports","LC1 low exports"))%>%
   select(scen_id,value,unit_desc,unit)
