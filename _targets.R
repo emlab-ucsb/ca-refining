@@ -55,9 +55,6 @@ list(
                                   "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
                                   "vincent" = "G://Shared drives/emlab/projects/current-projects/calepa-cn",
                                   "meas" = "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn")),
-  # ## save folder
-  # tar_target(name = folder_name, command = "2024-08-beta-adj"),
-  # # tar_target(name = folder_name, command = "2024-08-update"),
   
   # set main path
   tar_target(name = main_path, 
@@ -86,8 +83,8 @@ list(
   
   # health analysis parameters
   # tar_target(name = beta, command = 0.00737932), #Coefficient (high)
-  tar_target(name = beta, command = 0.00422068), #Coefficient (low)
-  # tar_target(name = beta, command = 0.00582), #Coefficient from Krewski et al (2009) for mortality impact
+  # tar_target(name = beta, command = 0.00422068), #Coefficient (low)
+  tar_target(name = beta, command = 0.00582), #Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = se, command = 0.0009628), #Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = vsl_2015, command = 8705114.25462459),
   tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906/100), #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
