@@ -10,8 +10,17 @@ cum_h%>%
   filter(scen_id %in% c("BAU historical production","LC1 historical exports","LC1 low exports"))%>%
   select(scen_id,value,unit_desc,unit)
 
+#cumulative mortality and pop
 
-### Appendix
+cum_m <- fread("cumulative_avoided_mortality.csv"  , stringsAsFactors = F) ; cum_m
+
+cum_m%>%
+  filter(demo_cat %in% c("Race"))%>%
+  group_by(scen_id)%>%
+  summarise(cumul_mort_level = sum(cumul_mort_level ))
+filter(scen_id %in% c("BAU historical production","LC1 historical exports","LC1 low exports", "BAU historical exports"))
+
+### SENSITIVITY ANALYSIS TO DIFF BETA
 
 #Krewski et al Beta (0.0058) and SE (0.0009628)
 
