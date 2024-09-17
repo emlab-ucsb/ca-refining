@@ -1,19 +1,299 @@
 # ## figure 1
-# ## february 26, 2024
-# 
-# library(tidyverse)
-# library(sf)
-# library(maps)
-# library(viridis)
-# library(gridExtra)
-# library(rebus)
-# library(readxl)
-# library(data.table)
-# library(cowplot)
-# library(hrbrthemes)
-# library(extrafont)
-# library(xlsx)
-# 
+# ## september 9, 2024
+
+create_figure_1 <- function(ca_crs,
+                            dt_refcap,
+                            refin_locs,
+                            dt_renref,
+                            renewables_info,
+                            dt_altair,
+                            refining_site_output,
+                            refining_sites_cons_ghg_2019_2045) {
+  
+  ## califonia
+  states <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
+
+  california <- states %>% filter(ID == "california") %>%
+    st_transform(ca_crs)
+  
+  ## select site id and barrels per day for 3422 and 342
+  man_capacity <- dt_refcap %>%
+    filter(site_id %in% c(3422, 342)) %>%
+    select(site_id, barrels_per_day)
+  
+  ## add coordinates to refineries
+  # refin_new_locations = refin locs
+  
+
+  # ## site out
+  # site_out <- fread(file.path(main_path, refin_out_path, site_out_file))
+
+  
+  
+  
+  ## figure 1a: refinery capacity locations
+  ## ---------------------------------------------------------------------------
+  
+  ## alt air 2021 capacity
+  aa_cap <- dt_altair %>%
+    filter(year == 2021) %>%
+    mutate(site_id  = 't-800') %>%
+    select(site_id, barrels_per_day, installation_year = year)
+
+  renewable_cap <- renewables_info %>%
+    left_join(dt_renref) %>%
+    filter(site_id %in% c('342-2', '99999')) %>%
+    select(site_id, barrels_per_day = installation_capacity_bpd, installation_year)
+
+  ## future renewables capacity
+  fut_cap <- rbind(aa_cap, renewable_cap)
+
+  ## capacity
+  refin_capacity <- dt_refcap %>%
+    mutate(site_id = as.character(site_id)) %>%
+    select(site_id, barrels_per_day) %>%
+    filter(!site_id %in% man_capacity$site_id) %>%
+    full_join(man_capacity %>% mutate(site_id = as.character(site_id))) %>%
+    full_join(fut_cap) %>%
+    mutate(installation_year = ifelse(is.na(installation_year), 'pre 2020', as.character(installation_year)))
+
+
+  ## join with locations
+  refin_capacity <- refin_locs %>%
+    left_join(refin_capacity) %>%
+    mutate(installation = ifelse(installation_year == 'pre 2020', 'Existing capacity', 'Future capacity'))
+  ## bbls after reductions
+
+  ## counties boundaries
+  county_boundaries <- st_read(file.path(main_path, "data/GIS/raw/CA_Counties/CA_Counties_TIGER2016.shp")) %>%
+    st_transform(ca_crs) %>%
+    dplyr::select(adj_county_name = NAME)
+
+  # ## counties, no islands
+  # CA_counties <- st_read(file.path(main_path, "data/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp")) %>%
+  #   st_transform(ca_crs)
+  # 
+  # ## remove islands
+  # CA_counties_noisl <- CA_counties %>%
+  #   filter(!OBJECTID %in% c(3, 49))
+  # 
+  # ## census tracts
+  # census_tracts <- st_read(file.path(main_path, "data/GIS/raw/census-tract/tl_2019_06_tract.shp")) %>%
+  #   st_transform(ca_crs) %>%
+  #   rename(census_tract = GEOID) %>%
+  #   select(census_tract, ALAND)
+  # 
+  # ## DAC and CES
+  # dac_ces <- read_xlsx(file.path(main_path, 'data/health/raw/ces3results.xlsx'))
+  # 
+  # ## dac
+  # dac_ces <- dac_ces %>%
+  #   select(`Census Tract`, `SB 535 Disadvantaged Community`) %>%
+  #   rename(census_tract = `Census Tract`,
+  #          dac = `SB 535 Disadvantaged Community`) %>%
+  #   mutate(census_tract = paste0("0", census_tract, sep="")) %>%
+  #   mutate(ct_type = ifelse(dac == "Yes", "DAC", "Not DAC"))
+  # 
+  # ## dac sp
+  # dac_sp <- left_join(census_tracts, dac_ces)
+  # 
+  # ## dac only
+  # dac_areas <- dac_sp %>%
+  #   filter(dac == "Yes")
+  # 
+  # 
+  # ## crop area
+  # disp_win2_wgs84 <- st_sfc(st_point(c(-122.5, 33)), st_point(c(-117, 39)),
+  #                           crs = 4326)
+  # 
+  # disp_win2_trans <- st_transform(disp_win2_wgs84, crs = ca_crs)
+  # 
+  # disp_win2_coord <- st_coordinates(disp_win2_trans)
+  # 
+  # disp_win_df <- as.data.frame(disp_win2_coord)
+  # 
+  # ## limits for zoom
+  # xlim <- c(disp_win_df$X[1], disp_win_df$X[2]) # Set limits for zoom panel
+  # ylim <- c(disp_win_df$Y[1], disp_win_df$Y[2])
+  # 
+  # 
+  # ## st_union of no island counties
+  # ca_union <- st_union(CA_counties_noisl)
+  # 
+  # 
+  # 
+  # ## map inset, CA with box around zoom area
+  # fig1_inset <- ggplot() +
+  #   geom_sf(data = ca_union, mapping = aes(), fill = "#FAFAFA", linewidth = 0.4, show.legend = FALSE) +
+  #   geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#9DBF9E", show.legend = TRUE) +
+  #   # geom_sf(data = disp_win2_wgs84, shape = 0, size = 35, color = "red", stroke = 2) +# Draw box around zoomed region
+  #   annotate(geom = "rect",
+  #            xmin = xlim[1],
+  #            xmax = xlim[2],
+  #            ymin = ylim[1],
+  #            ymax = ylim[2],
+  #            color = "black",
+  #            size = 0.5,
+  #            fill = NA) +
+  #   theme_void() +
+  #   # coord_sf(xlim = disp_win_coord[,'X'], ylim = disp_win_coord[,'Y'],
+  #   #          datum = ca_crs, expand = FALSE) +
+  #   theme(
+  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+  #     legend.justification = c(0, 1),
+  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+  #     legend.position = c(0.15, 0.15),
+  #     legend.title = element_text(size = 7),
+  #     plot.title = element_text(hjust = 0, face = 'bold'),
+  #     plot.title.position = 'plot') +
+  #   guides(fill = guide_colourbar(title.position="top",
+  #                                 title.hjust = 0,
+  #                                 direction = "horizontal"))
+  
+  # 
+  # ## make map
+  # fig1_map <- ggplot() +
+  #   geom_sf(data = ca_union, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+  #   geom_sf(data = dac_areas, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
+  #   geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.8, pch = 17) +
+  #   geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
+  #   # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
+  #   # geom_sf_text(data = county_19, mapping = aes(geometry = geometry, label = adj_county_name), size = 2, fontface = "bold", color = "black") +
+  #   # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+  #   labs(title = "A. Refinery capacity",
+  #        color = NULL,
+  #        size = 'Capacity (thous. bbls per day)',
+  #        x = NULL,
+  #        y = NULL) +
+  #   scale_color_manual(values = c('#3D5A6C', '#F9564F')) +
+  #   coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
+  #            datum = ca_crs, expand = FALSE) +
+  #   scale_size_continuous(range = c(2, 6)) +
+  #   theme_void() +
+  #   theme(legend.position = "none",
+  #         plot.margin = margin(0, 2, 0, 8),
+  #         legend.title = element_text(size = 7),
+  #         plot.title = element_text(hjust = -0.1, face = 'bold', size = 7))
+  # 
+  # ## DAC legend
+  # ## ------------------------
+  # 
+  # fig1_dac_legend <- ggplot() +
+  #   # geom_sf(data = california, mapping = aes(), fill = "white", lwd = 0.4, show.legend = FALSE) +
+  #   geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+  #   geom_sf(data = dac_areas , mapping = aes(geometry = geometry, fill = ct_type), lwd = 0, show.legend = TRUE) +
+  #   labs(title = "Oil production",
+  #        fill = NULL,
+  #        x = NULL,
+  #        y = NULL) +
+  #   scale_fill_manual(values = c("DAC" = "#C0C0C0")) +
+  #   theme(legend.text = element_text(size = 7))
+  # 
+  # dac_legend <- get_legend(
+  #   fig1_dac_legend)
+  # 
+  # fig1_refing_legend <- ggplot() +
+  #   geom_sf(data = ca_union, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+  #   # geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
+  #   geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.8, pch = 17) +
+  #   geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
+  #   # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+  #   labs(title = "A. Refinery capacity",
+  #        color = NULL,
+  #        size = 'Capacity (thous. bbls per day)',
+  #        x = NULL,
+  #        y = NULL) +
+  #   scale_size_continuous(range = c(2, 6),
+  #                         breaks = c(10, 100, 300)) +
+  #   scale_color_manual(values = c('#3D5A6C', '#F9564F')) +
+  #   coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
+  #            datum = ca_crs, expand = FALSE) +
+  #   theme_void() +
+  #   theme(
+  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+  #     legend.justification = c(0, 1),
+  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+  #     legend.position = c(0, 0.2),
+  #     legend.text = element_text(size = 7),
+  #     legend.title = element_text(size = 7),
+  #     plot.title = element_text(hjust = -0.1, face = 'bold', size = 7)) +
+  #   guides(fill = guide_colourbar(title.position="top",
+  #                                 title.hjust = 0,
+  #                                 direction = "horizontal",
+  #                                 ticks.colour = "black", frame.colour = "black"),
+  #          size = guide_legend(direction = "horizontal"))
+  # 
+  # refin_legend <- get_legend(
+  #   fig1_refing_legend)
+  # 
+  # 
+  # 
+  # 
+  # ## plot together
+  # map_fig_a <- ggdraw(fig1_map, clip = "on") +
+  #   draw_plot(fig1_inset, x = 0.7, y = 0.7, width = 0.2, height = 0.35) +
+  #   draw_plot(dac_legend, x = 0.15, y = 0.21, width = 0.05, height = 0.01) +
+  #   draw_plot(refin_legend, x = 0.1, y = 0.18, width = 0.025, height = 0.025)
+  # # +
+  # #   draw_plot_label(
+  # #     c("A. Oil fields and disadvantaged communities (DAC)", "", "", ""),
+  # #     # c(0, 0.45),
+  # #     # c(1, 0.95),
+  # #     size = 12
+  # #   )
+  # 
+  # ggsave(map_fig_a,
+  #        filename = file.path(main_path, fig_path, 'fig1/figure1a.png'),
+  #        width = 88,
+  #        height = 110,
+  #        dpi = 300,
+  #        units = "mm")
+  # 
+  # ggsave(map_fig_a,
+  #        filename = file.path(main_path, fig_path, 'fig1/figure1a.pdf'),
+  #        width = 88,
+  #        height = 110,
+  #        units = "mm",
+  #        dpi = 300,
+  #        device = 'pdf')
+  # 
+  # embed_fonts(paste0(main_path, fig_path, 'fig1/figure1a.pdf'),
+  #             outfile = paste0(main_path, fig_path, 'fig1/figure1a.pdf'))
+  # 
+  # 
+  # 
+  
+  
+  
+  
+  ## figure 1b: PM2.5 concentration from Torrance Refinery
+  
+  
+  
+  
+  
+  ## figure 1c: PM2.5 concentration of all refinery emissions
+  
+  
+  
+  
+  
+  
+  ## figure 1d: wages from refining
+  
+  
+  
+  
+  
+  
+}
+
+
+
+
+
+
+
 # ## paths
 # main_path             = '/Volumes/GoogleDrive-103159311076289514198/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn' # meas path
 # # main_path <- '/Volumes/GoogleDrive/Shared drives/emlab/projects/current-projects/calepa-cn/'

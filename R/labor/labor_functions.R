@@ -133,7 +133,8 @@ calc_labor_outputs <- function(main_path,
     select(demand_scenario, refining_scenario, oil_price_scenario, destination, year, total_production_bbl, total_revenue, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
   
   ## save for review
-  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_for_review.csv"))
+  # write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_for_review.csv"))
+  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
   
   ## calc discounted low
   county_out_labor[, total_comp_PV_l := total_comp_usd19_l / ((1 + discount_rate) ^ (year - 2019))]
@@ -260,7 +261,8 @@ calc_labor_outputs_x_impact <- function(main_path,
            prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
   
   ## save file
-  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
+  # write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
+  write_csv(review_df, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
   
   
   ## calc discounted low
@@ -272,7 +274,8 @@ calc_labor_outputs_x_impact <- function(main_path,
   
 
   ## save file
-  write_csv(county_out_labor, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type.csv"))
+  #write_csv(county_out_labor, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type.csv"))
+  write_csv(county_out_labor, paste0(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_x_impact_type.csv"))
   
   
   county_out_labor
@@ -456,7 +459,8 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
   
   
   ## save df
-  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  # fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
   
   
   return(labor_pct_long)
@@ -571,7 +575,8 @@ calc_county_level_outputs <- function(main_path,
 
   
   ## save df
-  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_county_outputs.csv"))
+  # fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_county_outputs.csv"))
+  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "labor_county_outputs.csv"))
   
 
   return(labor_county_out_df)
