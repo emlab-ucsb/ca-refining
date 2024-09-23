@@ -5,17 +5,17 @@ plot_combined_production <- function(its_data, jet_data, intra_data, fuel_demand
   tar_load(tot_fuel_demand_exports)
   tar_load(state_ghg_output)
 
-  its_data = copy(dt_its)
-  intra_data = copy(dt_intra)
-  jet_data = copy(dt_jet)
-  fuel_demand_exports_data = copy(tot_fuel_demand_exports)
-  state_ghg_data = copy(state_ghg_output)
+  its_data <- copy(dt_its)
+  intra_data <- copy(dt_intra)
+  jet_data <- copy(dt_jet)
+  fuel_demand_exports_data <- copy(tot_fuel_demand_exports)
+  state_ghg_data <- copy(state_ghg_output)
   rm(dt_its, dt_intra, dt_jet, tot_fuel_demand_exports, state_ghg_output)
 
   dt_its <- copy(dt_its_input)
   dt_intra <- copy(dt_intra_input)
   dt_jet <- copy(dt_jet_input)
-  
+
   # dt_its <- copy(its_data)
   # dt_intra <- copy(intra_data)
   # dt_jet <- copy(jet_data)
@@ -617,23 +617,29 @@ plots_all
 
 
 ggsave(plots_all,
-       filename = file.path(main_path,
-                            "outputs/academic-out/refining/figures/2022-12-update",
-                            "combined_its_and_production_2022.png"),
-       width = 25,
-       height = 13,
-       dpi = 600,
-       units = 'in',
-       device = 'png')
+  filename = file.path(
+    main_path,
+    "outputs/academic-out/refining/figures/2022-12-update",
+    "combined_its_and_production_2022.png"
+  ),
+  width = 25,
+  height = 13,
+  dpi = 600,
+  units = "in",
+  device = "png"
+)
 
 ggsave(plots_all,
-       filename = file.path(main_path,
-                            "outputs/academic-out/refining/figures/2022-12-update",
-                            "combined_its_and_production_2022.pdf"),
-       width = 25,
-       height = 13,
-       dpi = 600,
-       units = 'in')
+  filename = file.path(
+    main_path,
+    "outputs/academic-out/refining/figures/2022-12-update",
+    "combined_its_and_production_2022.pdf"
+  ),
+  width = 25,
+  height = 13,
+  dpi = 600,
+  units = "in"
+)
 
 
 # plot_combined_production <- function(dt_its, dt_intra, dt_jet) {
