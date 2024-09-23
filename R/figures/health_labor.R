@@ -355,7 +355,7 @@ plot_npv_health_labor <- function(main_path,
   ggsave(plot = low_legend,
          device ="pdf",
          filename = "fig3_low_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   
@@ -401,7 +401,7 @@ plot_npv_health_labor <- function(main_path,
   ggsave(plot = high_legend,
          device ="pdf",
          filename = "fig3_high_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   
