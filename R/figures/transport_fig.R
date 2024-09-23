@@ -204,13 +204,18 @@ create_pulse_fig <- function(main_path,
     #        # height = 8,
     #        dpi = 300)
     
+    
+    # NOTE from Meas: the plot save directory is hard coded in this function instead of _targets.R, not always easy to track
+    # I've added `create_dir = TRUE` otherwise the function will fail if the directory doesn't exist
+    # I also added the usage of `file.path` to make it more robust to whether a path has "/" at the end or not
     ggsave(plot = pm25_fig_tmp,
-           filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs/pulse_",
-                  id_tmp, ".jpeg"),
+           filename = paste0(file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs", "pulse_"),
+                             id_tmp, ".jpeg"),
            device = "jpeg",
            # width = 6.5,
            # height = 8,
-           dpi = 300)
+           dpi = 300,
+           create_dir = TRUE)
     
   }
   
