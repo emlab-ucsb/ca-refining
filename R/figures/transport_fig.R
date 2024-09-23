@@ -280,12 +280,16 @@ create_pulse_fig <- function(main_path,
   #        # height = 8,
   #        dpi = 300)
   # 
+  
+  # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0 and added `create_dir = TRUE`
   ggsave(plot = pm25_fig_all,
-         filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs/pulse_all_crop.jpeg"),
+         filename = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs", "pulse_all_crop.jpeg"),
          device = "jpeg",
          # width = 6.5,
          # height = 8,
-         dpi = 300)
+         dpi = 300,
+         create_dir = TRUE)
+  
   
   return(pm25_fig_all)
 
