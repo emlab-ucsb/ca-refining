@@ -105,6 +105,13 @@ plot_refined_products_and_ghg <- function(tot_fuel_demand_exports, state_ghg_out
   fig_refined_production_ghg
 }
 
+# for ghg and prod data, aggregate to the state level
+
+# save ghg_data and prod_data
+# data_path = "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn/outputs/academic-out/refining/figures/2022-12-update/fig-csv-files"
+# save(ghg_data, file = file.path(data_path, 'ghg_data.csv'), row.names = F)
+# save(prod_data, file = file.path(data_path, 'prod_data.csv'), row.names = F)
+
 
 # ggsave(fig_fuel_demand_tot,
 #        filename = file.path(fig_path, 'state_GJD_and_reGJD_production_and_ghg_emissions.png'),
