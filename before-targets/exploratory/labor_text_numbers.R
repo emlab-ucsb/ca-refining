@@ -234,7 +234,7 @@ summary(df$sum_demo_emp_revised)
 
 # KEEP JUST 2045 AND COMPUTE GAP BETWEEN SCENARIO AND BAU FOR EACH OIL PRICE PATHWAY 
 
-df <- filter(df,year==2045) 
+#df <- filter(df,year==2045) 
 
 ## AGGREGATE IMPACTS ACROSS DEMOGRAPHIC GROUPS AND YEARS, SELECT 1 DEMOGRAPHIC CATEGORY SO IMPACTS ARENT DUPLICATED
 df <- pivot_wider(df, 
@@ -243,19 +243,19 @@ df <- pivot_wider(df,
                   values_from = value) %>% 
   filter(demo_cat=="DAC") %>% 
   group_by(scenario,oil_price_scenario,year) %>% 
-  summarize(compensation_pv_pmil_high = sum(compensation_pv_pmil_high),
-            compensation_pv_pmil_low  = sum(compensation_pv_pmil_low), 
-            employment_pmil_high = sum(employment_pmil_high),
-            employment_pmil_low = sum(employment_pmil_low)) %>% 
+  summarize(compensation_pv_high = sum(compensation_pv_high),
+            compensation_pv_low  = sum(compensation_pv_low), 
+            employment_high = sum(employment_high),
+            employment_low = sum(employment_low)) %>% 
   ungroup()
 
 ## BAU 
 
 df.bau <- filter(df, scenario=="BAU demand - historical production") %>% 
-  rename(compensation_pv_pmil_high_bau = compensation_pv_pmil_high,
-         compensation_pv_pmil_low_bau = compensation_pv_pmil_low,
-         employment_pmil_high_bau =  employment_pmil_high, 
-         employment_pmil_low_bau =  employment_pmil_low) %>% 
+  rename(compensation_pv_high_bau = compensation_pv_high,
+         compensation_pv_low_bau = compensation_pv_low,
+         employment_high_bau =  employment_high, 
+         employment_low_bau =  employment_low) %>% 
   dplyr::select(-scenario)
 
 
@@ -263,10 +263,20 @@ df.bau <- filter(df, scenario=="BAU demand - historical production") %>%
 
 df <- filter(df, scenario != "BAU demand - historical production") %>% 
   left_join(df.bau,by=c("oil_price_scenario","year")) %>% 
-  mutate(gap_comp_pv_pmil_high = compensation_pv_pmil_high - compensation_pv_pmil_high_bau, 
-         gap_comp_pv_pmil_low = compensation_pv_pmil_low - compensation_pv_pmil_low_bau, 
-         gap_emp_pmil_high = employment_pmil_high - employment_pmil_high_bau, 
-         gap_emp_pmil_low = employment_pmil_low - employment_pmil_low_bau)
+  group_by(scenario,oil_price_scenario) %>% 
+  summarize(compensation_pv_high = sum(compensation_pv_high),
+            compensation_pv_low  = sum(compensation_pv_low), 
+            employment_high = sum(employment_high),
+            employment_low = sum(employment_low),
+            compensation_pv_high_bau = sum(compensation_pv_high_bau),
+            compensation_pv_low_bau  = sum(compensation_pv_low_bau), 
+            employment_high_bau = sum(employment_high_bau),
+            employment_low_bau = sum(employment_low_bau)) %>% 
+  ungroup() %>% 
+  mutate(gap_comp_pv_high = compensation_pv_high - compensation_pv_high_bau, 
+         gap_comp_pv_low = compensation_pv_low - compensation_pv_low_bau, 
+         gap_emp_high = employment_high - employment_high_bau, 
+         gap_emp_low = employment_low - employment_low_bau)
  
 
 ## NEEDS: COMP AND EMP IN 2019 (FROM IMPLAN), COMP AND EMP IN 2045 HIGH AND LOW ESTIMATES FOR EACH SCENARIO
