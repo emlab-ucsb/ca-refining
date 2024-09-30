@@ -345,8 +345,7 @@ list(
   )),
 
   # paper figures
-  tar_target(name = fig_demand, command = plot_its_demand(dt_its, dt_intra, dt_jet)),
-  tar_target(name = fig_refined_production_ghg, command = plot_refined_products_and_ghg(tot_fuel_demand_exports, state_ghg_output)),
+  tar_target(name = fig_demand_ghg, command = plot_combined_production(dt_its, dt_jet, dt_intra, tot_fuel_demand_exports, state_ghg_output)),
 
   # DAC / health: PM2.5 by county
   tar_target(name = county_dac, command = get_county_dac(dt_ces, ces_county)), ## matches county to DAC, but maybe circular
@@ -637,26 +636,18 @@ list(
   #            format = "file"),
   #
   # # save figures
-  # tar_target(name = save_fig_demand,
-  #            command = simple_ggsave(fig_demand,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "its_demand_and_production_2023",
-  #                                    width = 6.5,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_fig_refined_production_ghg,
-  #            command = simple_ggsave(fig_refined_production_ghg,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_GJD_and_reGJD_production_and_ghg_emissions",
-  #                                    width = 20,
-  #                                    height = 12,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
+    tar_target(
+    name = save_fig_demand_ghg,
+    command = simple_ggsave(fig_demand_ghg,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2024-08-update",
+                            "combined_its_and_production",
+                            width = 25,
+                            height = 13,
+                            dpi = 600
+    ),
+    format = "file"
+  ),
   # tar_target(name = save_npv_fig,
   #            command = simple_ggsave(npv_plot,
   #                                    main_path,
@@ -846,35 +837,35 @@ list(
   ),
 
   # save figures
-  tar_target(
-    name = save_fig_demand,
-    command = simple_ggsave(fig_demand,
-      main_path,
-      "outputs/academic-out/refining/figures/", folder_name,
-      "its_demand_and_production_2023",
-      width = 6.5,
-      height = 8,
-      dpi = 600
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_fig_refined_production_ghg,
-    command = simple_ggsave(fig_refined_production_ghg,
-      main_path,
-      "outputs/academic-out/refining/figures/", folder_name,
-      "state_GJD_and_reGJD_production_and_ghg_emissions",
-      width = 20,
-      height = 12,
-      dpi = 600
-    ),
-    format = "file"
-  ),
+  # tar_target(
+  #   name = save_fig_demand,
+  #   command = simple_ggsave(fig_demand,
+  #     main_path,
+  #     "outputs/academic-out/refining/figures/", folder_name,
+  #     "its_demand_and_production_2023",
+  #     width = 6.5,
+  #     height = 8,
+  #     dpi = 600
+  #   ),
+  #   format = "file"
+  # ),
+  # tar_target(
+  #   name = save_fig_refined_production_ghg,
+  #   command = simple_ggsave(fig_refined_production_ghg,
+  #     main_path,
+  #     "outputs/academic-out/refining/figures/", folder_name,
+  #     "state_GJD_and_reGJD_production_and_ghg_emissions",
+  #     width = 20,
+  #     height = 12,
+  #     dpi = 600
+  #   ),
+  #   format = "file"
+  # ),
   tar_target(
     name = save_npv_fig,
     command = simple_ggsave(npv_plot,
       main_path,
-      "outputs/academic-out/refining/figures/", folder_name,
+      "outputs/academic-out/refining/figures/2024-08-update",
       "state_npv_fig",
       width = 10,
       height = 5,
@@ -886,7 +877,7 @@ list(
     name = save_levels_fig,
     command = simple_ggsave(health_levels_plot,
       main_path,
-      "outputs/academic-out/refining/figures/", folder_name,
+      "outputs/academic-out/refining/figures/2024-08-update",
       "state_levels_fig",
       width = 12,
       height = 8,

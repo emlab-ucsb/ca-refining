@@ -355,7 +355,7 @@ plot_npv_health_labor <- function(main_path,
   ggsave(plot = low_legend,
          device ="pdf",
          filename = "fig3_low_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   
@@ -401,7 +401,7 @@ plot_npv_health_labor <- function(main_path,
   ggsave(plot = high_legend,
          device ="pdf",
          filename = "fig3_high_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   
@@ -4840,21 +4840,21 @@ plot_hl_shares <- function(main_path,
   ggsave(plot = health_dac_legend,
          device ="pdf",
          filename = "health_dac_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = health_poverty_legend,
          device ="pdf",
          filename = "health_poverty_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = health_race_legend,
          device ="pdf",
          filename = "health_race_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
 
   
@@ -4966,28 +4966,28 @@ plot_hl_shares <- function(main_path,
   ggsave(plot = labor_dac_legend,
          device ="pdf",
          filename = "labor_dac_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = labor_poverty_legend,
          device ="pdf",
          filename = "labor_poverty_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = labor_race_legend,
          device ="pdf",
          filename = "labor_race_legend.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## save legends
   ggsave(plot = legend_a_h,
          device ="pdf",
          filename = "labor_race_legend_no_re-emp.pdf",
-         path = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
+         path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
          dpi = 600)
   
   ## all together now
