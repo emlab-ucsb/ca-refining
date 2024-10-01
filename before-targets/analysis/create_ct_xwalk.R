@@ -1,6 +1,6 @@
 ## Tracey Mangin
 ## May 27, 2023
-## Create crosswalk 
+## Create crosswalk
 
 ## libraries
 library(tidyverse)
@@ -9,10 +9,10 @@ library(data.table)
 library(plotly)
 
 ## paths
-main_path        <- '/Volumes/GoogleDrive/Shared drives/emlab/projects/current-projects/calepa-cn/'
-main_path        <- '/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/'
-sp_data_path     <- paste0(main_path, "data/GIS/raw/")
-save_path        <- paste0(main_path, "project-materials/refining-paper/model-prep/census-xwalk/")
+main_path <- "/Volumes/GoogleDrive/Shared drives/emlab/projects/current-projects/calepa-cn/"
+main_path <- "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/"
+sp_data_path <- paste0(main_path, "data/GIS/raw/")
+save_path <- paste0(main_path, "project-materials/refining-paper/model-prep/census-xwalk/")
 
 ## file names - use cartographic boundaries, not tigerlines
 prev_ct <- "ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"
@@ -23,7 +23,7 @@ ca_crs <- 3310
 
 ## previous version of cts
 census_tract19 <- read_sf(paste0(sp_data_path, prev_ct)) %>%
-  select(GEOID)%>%
+  select(GEOID) %>%
   st_transform(crs = ca_crs)
 
 ## california id
