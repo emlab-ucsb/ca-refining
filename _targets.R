@@ -46,7 +46,6 @@ source("extras/plot_settings.R")
 
 # Replace the target list below with your own:
 list(
-
   # set user
   tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
@@ -348,7 +347,7 @@ list(
   tar_target(name = fig_demand_ghg, command = plot_combined_production(dt_its, dt_jet, dt_intra, tot_fuel_demand_exports, state_ghg_output)),
   tar_target(name = fig_refinery_capacity, plot_refinery_capacity(res_crude_ref_reg, res_renew_ref_reg, ei_crude, ei_gasoline)),
   tar_target(name = fig_refinery_count, plot_refinery_count(res_crude_ref_reg, res_renew_ref_reg, ei_crude, ei_gasoline)),
-  
+
   # DAC / health: PM2.5 by county
   tar_target(name = county_dac, command = get_county_dac(dt_ces, ces_county)), ## matches county to DAC, but maybe circular
   # tar_target(name = site_ids, command = get_refinery_site_ids(dt_refcap)),
@@ -1058,24 +1057,24 @@ list(
   tar_target(
     name = save_fig_refinery_capacity,
     command = simple_ggsave(fig_refinery_capacity,
-                            main_path,
-                            "outputs/academic-out/refining/figures/2024-08-update",
-                            "refinery_capacity",
-                            width = 16,
-                            height = 12,
-                            dpi = 600
+      main_path,
+      "outputs/academic-out/refining/figures/2024-08-update",
+      "refinery_capacity",
+      width = 16,
+      height = 12,
+      dpi = 600
     ),
     format = "file"
   ),
   tar_target(
     name = save_fig_refinery_count,
     command = simple_ggsave(fig_refinery_count,
-                            main_path,
-                            "outputs/academic-out/refining/figures/2024-08-update",
-                            "refinery_count",
-                            width = 16,
-                            height = 12,
-                            dpi = 600
+      main_path,
+      "outputs/academic-out/refining/figures/2024-08-update",
+      "refinery_count",
+      width = 16,
+      height = 12,
+      dpi = 600
     ),
     format = "file"
   )
