@@ -636,15 +636,15 @@ list(
   #            format = "file"),
   #
   # # save figures
-    tar_target(
+  tar_target(
     name = save_fig_demand_ghg,
     command = simple_ggsave(fig_demand_ghg,
-                            main_path,
-                            "outputs/academic-out/refining/figures/2024-08-update",
-                            "combined_its_and_production",
-                            width = 25,
-                            height = 13,
-                            dpi = 600
+      main_path,
+      "outputs/academic-out/refining/figures/2024-08-update",
+      "combined_its_and_production",
+      width = 25,
+      height = 13,
+      dpi = 600
     ),
     format = "file"
   ),
