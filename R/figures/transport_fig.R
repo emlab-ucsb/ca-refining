@@ -211,10 +211,31 @@ create_pulse_fig <- function(main_path,
     #        # height = 8,
     #        dpi = 300)
 
-
+    
     # NOTE from Meas: the plot save directory is hard coded in this function instead of _targets.R, not always easy to track
     # I've added `create.dir = TRUE` otherwise the function will fail if the directory doesn't exist
     # I also added the usage of `file.path` to make it more robust to whether a path has "/" at the end or not
+    # NOTE from tracey: this throws and erorr for me (Error in f(...): unused argument (create.dir = TRUE))
+    # added code to create the directory if it doesn't exist
+    
+    # check if the folder exists
+    if (!dir.exists(file.path(main_path, 
+                               "outputs",
+                               "academic-out",
+                               "refining",
+                               "figures",
+                               "2024-08-update",
+                               "pulse-figs"))) {
+      # Create the folder if it does not exist
+      dir.create(file.path(main_path, 
+                           "outputs",
+                           "academic-out",
+                           "refining",
+                           "figures",
+                           "2024-08-update",
+                           "pulse-figs"))
+    }
+    
     ggsave(
       plot = pm25_fig_tmp,
       filename = paste0(
@@ -224,8 +245,7 @@ create_pulse_fig <- function(main_path,
       device = "jpeg",
       # width = 6.5,
       # height = 8,
-      dpi = 300,
-      create.dir = TRUE
+      dpi = 300
     )
   }
 
@@ -302,14 +322,14 @@ create_pulse_fig <- function(main_path,
   #
 
   # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0 and added `create.dir = TRUE`
+  # NOTE from Tracey: same error! removed `create.dir = TRUE`
   ggsave(
     plot = pm25_fig_all,
     filename = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs", "pulse_all_crop.jpeg"),
     device = "jpeg",
     # width = 6.5,
     # height = 8,
-    dpi = 300,
-    create.dir = TRUE
+    dpi = 300
   )
 
 

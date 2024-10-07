@@ -511,6 +511,12 @@ list(
     dt_ghg_2019,
     annual_labor
   )),
+  tar_target(name = npv_labor_plot, command = plot_npv_labor_oilpx(
+    main_path,
+    state_ghg_output,
+    dt_ghg_2019,
+    annual_labor
+  )),
   tar_target(name = health_levels_plot, command = plot_health_levels(
     main_path,
     health_grp
@@ -871,6 +877,18 @@ list(
       width = 10,
       height = 5,
       dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_labor_fig,
+    command = simple_ggsave(npv_labor_plot,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2024-08-update",
+                            "state_npv_labor_fig",
+                            width = 10,
+                            height = 5,
+                            dpi = 600
     ),
     format = "file"
   ),
