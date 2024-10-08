@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(name = list_paths, c(
@@ -1030,7 +1030,7 @@ list(
       main_path,
       "outputs/academic-out/refining/figures/2024-08-update",
       "demographic_npv_shares_fig",
-      width = 11,
+      width = 12,
       height = 12,
       dpi = 600
     ),
@@ -1054,7 +1054,7 @@ list(
       main_path,
       "outputs/academic-out/refining/figures/2024-08-update",
       "health_labor_gaps_plot",
-      width = 12,
+      width = 14,
       height = 6,
       dpi = 600
     ),
