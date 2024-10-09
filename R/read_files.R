@@ -95,11 +95,11 @@ read_ghg_2019_data <- function(file) {
 }
 
 read_inmap_data <- function(inmap_path, bsite) {
-  nh3 <- simple_fread(paste0(inmap_path, "/nh3/srm_nh3_site", bsite, ".csv"))
-  nox <- simple_fread(paste0(inmap_path, "/nox/srm_nox_site", bsite, ".csv"))
-  pm25 <- simple_fread(paste0(inmap_path, "/pm25/srm_pm25_site", bsite, ".csv"))
-  sox <- simple_fread(paste0(inmap_path, "/sox/srm_sox_site", bsite, ".csv"))
-  voc <- simple_fread(paste0(inmap_path, "/voc/srm_voc_site", bsite, ".csv"))
+  nh3 <- fread(paste0(inmap_path, "/nh3/srm_nh3_site", bsite, ".csv"), header = TRUE, colClasses = c(GEOID = "character"))
+  nox <- fread(paste0(inmap_path, "/nox/srm_nox_site", bsite, ".csv"), header = TRUE, colClasses = c(GEOID = "character"))
+  pm25 <- fread(paste0(inmap_path, "/pm25/srm_pm25_site", bsite, ".csv"), header = TRUE, colClasses = c(GEOID = "character"))
+  sox <- fread(paste0(inmap_path, "/sox/srm_sox_site", bsite, ".csv"), header = TRUE, colClasses = c(GEOID = "character"))
+  voc <- fread(paste0(inmap_path, "/voc/srm_voc_site", bsite, ".csv"), header = TRUE, colClasses = c(GEOID = "character"))
 
   nh3[, pollutant := "nh3"]
   nox[, pollutant := "nox"]
@@ -115,7 +115,7 @@ read_inmap_data <- function(inmap_path, bsite) {
 
 read_ct_2019_data <- function(file, ca_crs) {
   dt <- read_sf(file) %>%
-    select(GEOID) %>%
+    select(GEOID, COUNTYFP) %>%
     st_transform(crs = ca_crs)
   dt
 }

@@ -280,6 +280,7 @@ plot_npv_health_labor <- function(main_path,
                                   state_ghg_output,
                                   dt_ghg_2019,
                                   annual_labor) {
+  
   npv_df <- refining_mortality %>% as.data.table()
 
   ## state level

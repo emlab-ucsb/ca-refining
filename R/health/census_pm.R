@@ -234,6 +234,7 @@ process_weighted_pm25 <- function(dt_inmap_re) {
 
 create_ct_xwalk <- function(raw_ct_2019,
                             raw_ct_2020) {
+  
   ct_xwalk_df <- raw_ct_2020 %>%
     rename(GEOID_2020 = GEOID) %>%
     mutate(GEOID_2020_area = st_area(.)) %>%
@@ -248,6 +249,7 @@ create_ct_xwalk <- function(raw_ct_2019,
     mutate(rel_intersect = units::drop_units(rel_intersect)) %>%
     select(GEOID_2020, GEOID_2020_area, GEOID_2019, intersect_area, sum_intersect_area, rel_intersect) %>%
     st_drop_geometry()
+  
 }
 
 
@@ -258,6 +260,7 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
                                              dt_ef,
                                              dt_refcap,
                                              renewables_info_altair) {
+  
   refining <- copy(refining_sites_cons_ghg_2019_2045)
 
   cluster_cw <- dt_refcap %>%
@@ -304,10 +307,7 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
     dplyr::select(-NH3:-VOC)
   # -------------------------------------------------------------------
 
-  srm_weighted_pm25 <- srm_weighted_pm25 %>% mutate(GEOID = as.character(GEOID))
-
   srm_weighted_census <- copy(srm_weighted_pm25)
-  srm_weighted_census[, GEOID := paste0("0", GEOID, sep = "")]
 
   print("joining refining outputs with PM2.5 data...")
   ref_health <- merge(refining, srm_weighted_census, by = "site_id", all.y = T, allow.cartesian = T, no.dups = T)

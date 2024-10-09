@@ -1,7 +1,8 @@
 # ## figure 1
 # ## september 9, 2024
 
-create_figure_1 <- function(ca_crs,
+create_figure_1 <- function(main_path,
+                            ca_crs,
                             dt_refcap,
                             refin_locs,
                             dt_renref,
@@ -12,7 +13,8 @@ create_figure_1 <- function(ca_crs,
                             raw_counties,
                             raw_ct_2020_all,
                             raw_ces,
-                            dt_inmap_re) {
+                            dt_inmap_re,
+                            raw_ct_2019) {
   ## califonia
   states <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 
@@ -120,8 +122,8 @@ create_figure_1 <- function(ca_crs,
 
   ## map inset, CA with box around zoom area
   fig1_inset <- ggplot() +
-    geom_sf(data = ca_union, mapping = aes(), fill = "#FAFAFA", linewidth = 0.4, show.legend = FALSE) +
-    geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#9DBF9E", show.legend = TRUE) +
+    geom_sf(data = ca_union, mapping = aes(), fill = "transparent", linewidth = 0.4, show.legend = FALSE) +
+    geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
     # geom_sf(data = disp_win2_wgs84, shape = 0, size = 35, color = "red", stroke = 2) +# Draw box around zoomed region
     annotate(geom = "rect",
              xmin = xlim[1],
@@ -147,9 +149,9 @@ create_figure_1 <- function(ca_crs,
                                   direction = "horizontal"))
   ## make map
   fig1_map <- ggplot() +
-    geom_sf(data = ca_union, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+    geom_sf(data = ca_union, mapping = aes(), fill = "transparent", lwd = 0.4, show.legend = FALSE) +
     geom_sf(data = dac_areas, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
-    geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.7, pch = 17) +
+    geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.6, pch = 16) +
     geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
     # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
     # geom_sf_text(data = county_19, mapping = aes(geometry = geometry, label = adj_county_name), size = 2, fontface = "bold", color = "black") +
@@ -157,17 +159,21 @@ create_figure_1 <- function(ca_crs,
     labs(title = NULL,
          color = NULL,
          size = 'Refinery capacity\n(thous. bbls per day)',
-         x = NULL,
-         y = NULL) +
-    scale_color_manual(values = c('#3D5A6C', '#F9564F')) +
-    coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
-             datum = ca_crs, expand = FALSE) +
-    scale_size_continuous(range = c(2, 6)) +
-    theme_void() +
+         x = "Longitude",
+         y = "Latitude") +
+    scale_color_manual(values = c('#2b2d42', '#e2711d')) +
+    scale_size_continuous(range = c(0.6, 2.4)) +
+    coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'], expand = FALSE) +
+    # theme_void() +
     theme(legend.position = "none",
-          plot.margin = margin(0, 2, 0, 8),
+          plot.margin = margin(6, 2, 0, 8),
           legend.title = element_text(size = 12),
-          plot.title = element_text(hjust = -0.1, face = 'bold', size = 7)) + 
+          plot.title = element_text(hjust = -0.1, face = 'bold', size = 7),
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.title = element_text(size = 5),
+          axis.text = element_text(size = 5)) +
     annotation_custom(
             grob = rectGrob(gp = gpar(lwd = 2, col = "black", fill = NA)), # lwd for line width, col for color
             xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
@@ -179,7 +185,7 @@ create_figure_1 <- function(ca_crs,
   ## figure
   fig1_dac_legend <- ggplot() +
     # geom_sf(data = california, mapping = aes(), fill = "white", lwd = 0.4, show.legend = FALSE) +
-    geom_sf(data = california, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+    geom_sf(data = california, mapping = aes(), fill = "transparent", lwd = 0.4, show.legend = FALSE) +
     geom_sf(data = dac_areas , mapping = aes(geometry = geometry, fill = ct_type), lwd = 0, show.legend = TRUE) +
     labs(title = "Oil production",
          fill = NULL,
@@ -194,9 +200,9 @@ create_figure_1 <- function(ca_crs,
     fig1_dac_legend)
 
   fig1_refing_legend <- ggplot() +
-    geom_sf(data = ca_union, mapping = aes(), fill = "#FAFAFA", lwd = 0.4, show.legend = FALSE) +
+    geom_sf(data = ca_union, mapping = aes(), fill = "transparent", lwd = 0.4, show.legend = FALSE) +
     # geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
-    geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.8, pch = 17) +
+    geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.8, pch = 16) +
     geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
     labs(title = NULL,
@@ -204,9 +210,9 @@ create_figure_1 <- function(ca_crs,
          size = 'Refinery capacity\n(thous. bbls per day)',
          x = NULL,
          y = NULL) +
-    scale_size_continuous(range = c(2, 6),
+    scale_size_continuous(range = c(0.6, 2.4),
                           breaks = c(10, 100, 300)) +
-    scale_color_manual(values = c('#3D5A6C', '#F9564F')) +
+    scale_color_manual(values = c('#2b2d42', '#e2711d')) +
     coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
              datum = ca_crs, expand = FALSE) +
     theme_void() +
@@ -233,9 +239,9 @@ create_figure_1 <- function(ca_crs,
 
   ## plot together
   map_fig_a <- ggdraw(fig1_map, clip = "on") +
-    draw_plot(fig1_inset, x = 0.75, y = 0.70, width = 0.2, height = 0.36) +
-    draw_plot(dac_legend, x = 0.15, y = 0.24, width = 0.03, height = 0.005) +
-    draw_plot(refin_legend, x = 0.1, y = 0.21, width = 0.025, height = 0.025)
+    draw_plot(fig1_inset, x = 0.75, y = 0.68, width = 0.2, height = 0.36) +
+    draw_plot(dac_legend, x = 0.22, y = 0.31, width = 0.03, height = 0.005) +
+    draw_plot(refin_legend, x = 0.16, y = 0.27, width = 0.025, height = 0.025)
   # +
   #   draw_plot_label(
   #     c("A. Oil fields and disadvantaged communities (DAC)", "", "", ""),
@@ -258,6 +264,15 @@ create_figure_1 <- function(ca_crs,
     # Create the folder if it does not exist
     dir.create(fig_1_folder)
   }
+  
+  ggsave(map_fig_a,
+         filename = file.path(fig_1_folder,
+                              "figure1a.png"),
+         width = 88,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = 'png')
 
   ggsave(map_fig_a,
          filename = file.path(fig_1_folder,
@@ -273,6 +288,7 @@ create_figure_1 <- function(ca_crs,
 
 
   ## figure 1b: PM2.5 concentration from Torrance Refinery
+  ## ---------------------------------------------------------------------------
 
   ## refining sites
   sites_vector <- c(226)
@@ -282,12 +298,9 @@ create_figure_1 <- function(ca_crs,
   
   refining_srm_reshape <- refining_srm[, .(total_pm25 = sum(weighted_totalpm25)),
                                        by = c("site", "GEOID")]
-  ## pad GEOID
-  refining_srm_reshape[, GEOID := paste0("0", GEOID)]
-  setnames(refining_srm_reshape, "GEOID", "census_tract")
-  
+
   ## add to map df
-  ct_map <- left_join(census_tracts, refining_srm_reshape, by = c("census_tract"))
+  ct_map <- left_join(raw_ct_2019, refining_srm_reshape, by = c("GEOID"))
 
   ##DACS
 
@@ -316,12 +329,21 @@ create_figure_1 <- function(ca_crs,
     rename(county_name = NAME) %>%
     select(-OBJECTID)
   
-  ## merge
-  ct_map_county <- ct_map %>%
+  # ## merge
+  # ct_map_county <- ct_map %>%
+  #   left_join(county_ct_boundaries)
+  
+  ## create counties based on census tracts
+  county_boundaries_from_census_tracts <- ct_map |>
+    group_by(COUNTYFP) |>
+    summarise(geometry = st_union(geometry)) |>
+    ungroup() |>
     left_join(county_ct_boundaries)
+  
 
   ## crop
   ## -----------------------------------
+  
   disp_win_la_wgs84 <- st_sfc(st_point(c(-118.5, 33.6)), st_point(c(-117.8, 34.2)),
                               crs = 4326)
 
@@ -331,70 +353,86 @@ create_figure_1 <- function(ca_crs,
 
   zoom_coord_df <- as.data.frame(disp_win_la_coord)
 
-  county_crop <- st_crop(CA_counties_noisl, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
-  ct_cropped <- st_crop(ct_map_county, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+  county_crop <- st_crop(county_boundaries_from_census_tracts, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+  ct_cropped <- st_crop(ct_map, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
 
   ## only include census tracts that are in the crop
-  ct_intersect <- st_intersection(ct_map_county, county_crop)
+  ct_intersect <- st_intersection(ct_map |> select(-COUNTYFP), county_crop)
 
   
   ## figure
   total_pm25 <- ggplot() +
-    geom_sf(data = ct_intersect, aes(fill=total_pm25), color=NA) +
-    theme_void() +
-    labs(title = expression(bold(paste("C. PM"[2.5], "concentration from Torrance Refinery"))),
-         fill=expression(paste("PM"[2.5], " (",mu,"/",m^3,")"))) +
-    scale_fill_gradient(high = "#A84268", low = "#FAFAFA", space = "Lab", na.value = "grey50",
+    geom_sf(data = ct_map |> filter(GEOID %in% ct_intersect$GEOID), aes(geometry = geometry, fill = total_pm25), color = NA) +
+    scale_fill_gradient(high = "#A84268", low = "#FFFFFF", space = "Lab", na.value = "grey50",
                         limits = c(min(ct_cropped$total_pm25), max(ct_cropped$total_pm25)),
                         breaks = c(0.001, 0.004)) +
     geom_sf(data = county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+    geom_sf(data = refin_capacity %>% filter(site_id == '226'), mapping = aes(geometry = geometry), alpha = 0.9, pch = 16, color = "#2b2d42") +
+    labs(title = NULL,
+         # title = expression(bold(paste("C. PM"[2.5], "concentration from Torrance Refinery"))),
+         fill = expression("PM"[2.5] ~ "concentration ("*mu*"g"*m^-3*")"),
+         x = "Longitude",
+         y = "Latitude") +
+    annotate("text", x = 154000, y = -465000, label = "Torrance\nrefinery", color = "black", size = 1.5, fontface = "bold") +
+    annotate("text", x = 150000, y = -430000, label = "Los Angeles", color = "#343a40", size = 1.5) +
+    annotate("text", x = 195000, y = -480000, label = "Orange", color = "#343a40", size = 1.5) +
+    xlim(c(142000,200000)) +
+    ylim(c(-489424, -424700)) +
+    # coord_sf(xlim = disp_win_la_coord[,'X'], ylim = disp_win_la_coord[,'Y'], expand = FALSE) +
     # annotate(
     #   geom = "text", x = 75000, y = -375000,
     #   label = "Los Angeles", hjust = 0, vjust = 1, size = 1.25, fontface = "bold"
     # ) +
-    geom_sf(data = refin_new_locations %>% filter(site_id == '226'), mapping = aes(geometry = geometry), alpha = 0.9, pch = 16) +
-    geom_sf_text(data = refin_new_locations %>% filter(site_id == '226') %>% mutate(name = "Torrance Refinery"), mapping = aes(geometry = geometry, label = name), size = 1, fontface = "bold", color = "black", vjust = -1) +
-    theme_void() +
+    # geom_sf_text(data = refin_capacity %>% filter(site_id == '226') %>% mutate(name = "Torrance\nRefinery"), 
+    #              mapping = aes(geometry = geometry, label = name), size = 1, fontface = "bold", color = "black", vjust = 1, hjust = 1) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = c(0.05, 0.15),
+      legend.position = c(0.035, 0.23),
       legend.key.width = unit(0.7, "line"),
       legend.key.height = unit(0.5, "line"),
-      legend.title = element_text(size = 5),
-      legend.text = element_text(size = 5),
-      plot.margin = margin(0, 2, 0, 8),
-      plot.title = element_text(face = 'bold', size = 5, hjust = -0.05)) +
+      legend.title = element_text(size = 4),
+      legend.text = element_text(size = 4),
+      panel.grid.major = element_blank(), 
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.title = element_text(size = 5),
+      axis.text = element_text(size = 4),
+      legend.background = element_rect(fill = NA)  # Make legend background transparent
+      # plot.margin = margin(0, 2, 0, 8),
+      # plot.title = element_text(face = 'bold', size = 5, hjust = -0.05)
+      ) +
     guides(fill = guide_colourbar(title.position="top",
                                   title.hjust = 0,
                                   direction = "horizontal",
                                   ticks.colour = "black", frame.colour = "black",
-                                  order = 1),
-           size = guide_legend(title.position = "top",
-                               title.hjust = 0,
-                               direction = "horizontal",
-                               order = 2))
+                                  order = 1)) +  # Also make the box around the legend transparent)) +
+    annotation_custom(grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
+                      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
+                      )
 
 
-  # ggsave(total_pm25,
-  #        filename = file.path(main_path, fig_path, 'fig1/fig1c.png'),
-  #        width = 50,
-  #        height = 55,
-  #        dpi = 300,
-  #        units = "mm")
-  #
-  # ggsave(total_pm25,
-  #        filename = file.path(main_path, fig_path, 'fig1/fig1c.pdf'),
-  #        width = 50,
-  #        height = 55,
-  #        dpi = 300,
-  #        units = "mm",
-  #        device = 'pdf')
-  #
-  # embed_fonts(paste0(main_path, fig_path, 'fig1/fig1c.pdf'),
-  #             outfile = paste0(main_path, fig_path, 'fig1/fig1c.pdf'))
-  #
+  ggsave(total_pm25,
+         filename = file.path(fig_1_folder, 'fig1c.png'),
+         width = 70,
+         height = 55,
+         dpi = 300,
+         units = "mm",
+         device = "png")
+
+  ggsave(total_pm25,
+         filename = file.path(fig_1_folder, 'fig1c.pdf'),
+         width = 70,
+         height = 55,
+         dpi = 300,
+         units = "mm",
+         device = "pdf",
+         family = "Arial")
+
+  embed_fonts(file.path(fig_1_folder, 'fig1c.pdf'),
+              outfile = file.path(fig_1_folder, 'fig1c.pdf'))
+
   #
 
 
