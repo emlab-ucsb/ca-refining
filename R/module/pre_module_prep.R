@@ -1,5 +1,30 @@
 # ------------------------- historic data prep & analysis -------------------------
 
+# calculate: annual refined products by category
+calculate_annual_refined_products_cat <- function(dt_fw) {
+  
+  # get historic fuel production data
+  prod_refined <- dt_fw[stock_flow == "Refinery Production"]
+  unique(prod_refined[, .(category, sub_cat)])
+  
+  # recategorize fuels
+  prod_refined[category == "Motor Gasoline", fuel := "gasoline"]
+  prod_refined[category == "Distillates", fuel := "diesel"]
+  prod_refined[category == "Jet Fuel: Kerosene-Naphtha", fuel := "jet"]
+  prod_refined[category == "Residual", fuel := "residual"]
+  
+  # adjust production values to remove ethanol from gasoline
+  prod_refined[, adj_thous_barrels := ifelse(category == "Motor Gasoline" & sub_cat == "Reformulated", 0.9 * thous_barrels, thous_barrels)]
+  
+  # aggregate new adjusted production by region, week, and fuel
+  prod_refined_week <- prod_refined[, .(fuel_prod_bbl = sum(adj_thous_barrels, na.rm = T) * 1e3),
+                                    by = .(region, year, fuel, category, sub_cat)
+  ]
+  
+  prod_refined_week
+}
+
+# calculate: weekly refined products
 calculate_weekly_refined_products <- function(dt_fw) {
   # get historic fuel production data
   prod_refined <- dt_fw[stock_flow == "Refinery Production"]
@@ -59,6 +84,7 @@ calculate_annual_refined_crude <- function(crude_refined_week) {
   ]
   crude_refined_annual
 }
+
 
 # calculate: total refined crude ----
 
