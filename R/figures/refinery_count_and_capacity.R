@@ -43,7 +43,7 @@ plot_refinery_capacity <- function(res_crude_ref_reg, res_renew_ref_reg, ei_crud
       labeller = labeller(
         demand_scenario = c(
           "BAU" = "BAU Demand",
-          "LC1" = "Low Carbon Demand"
+          "LC1" = "Low Demand"
         ),
         refining_scenario = c(
           "historic exports" = "Historical Exports",
@@ -89,7 +89,7 @@ plot_refinery_count <- function(res_crude_ref_reg, res_renew_ref_reg, ei_crude, 
       labeller = labeller(
         demand_scenario = c(
           "BAU" = "BAU Demand",
-          "LC1" = "Low Carbon Demand"
+          "LC1" = "Low Demand"
         ),
         refining_scenario = c(
           "historic exports" = "Historical Exports",
