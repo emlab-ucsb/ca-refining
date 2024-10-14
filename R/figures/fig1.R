@@ -674,19 +674,19 @@ create_figure_1 <- function(main_path,
   # ## save
   # ggsave(labor_map,
   #        filename = file.path(fig_1_folder, 'fig1d.png'),
-  width = 65,
-  height = 80,
-  units = "mm",
-  dpi = 300,
-  device = 'pdf')
+  # width = 65,
+  # height = 80,
+  # units = "mm",
+  # dpi = 300,
+  # device = 'pdf')
   #
   # ggsave(labor_map,
   #        filename = file.path(fig_1_folder, 'fig1d.pdf'),
-         width = 65,
-         height = 80,
-         units = "mm",
-         dpi = 300,
-         device = 'pdf')
+         # width = 65,
+         # height = 80,
+         # units = "mm",
+         # dpi = 300,
+         # device = 'pdf')
   #
   # embed_fonts(paste0(main_path, fig_path, 'fig1/fig1e.pdf'),
   #             outfile = paste0(main_path, fig_path, 'fig1/fig1e.pdf'))
