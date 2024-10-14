@@ -126,7 +126,7 @@ list(
   tar_target(name = file_rediesel, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"), format = "file"),
   tar_target(name = file_renref, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/renewable_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
   tar_target(name = file_altair, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/raw/altair_refinery_capacity.xlsx"), format = "file"), # this is a manually created file
-  
+
   tar_target(name = file_raw_ces, command = file.path(main_path, "data-staged-for-deletion/health/raw/ces3results.xlsx"), format = "file"),
   tar_target(name = file_raw_dac, command = file.path(main_path, "data-staged-for-deletion/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"), format = "file"),
   tar_target(name = file_raw_income_house, command = file.path(main_path, "data-staged-for-deletion/Census/ca-median-house-income.csv"), format = "file"), # remove from workflow
@@ -153,7 +153,7 @@ list(
   tar_target(name = file_refin_locs, command = file.path(main_path, "/data-staged-for-deletion/stocks-flows/processed/refinery_lat_long_revised.csv"), format = "file"),
   tar_target(name = file_labor_2019, command = file.path(main_path, "/data-staged-for-deletion/labor/implan/20241010-census_regions_2019-Detail Economic Indicators.csv"), format = "file"),
 
-  
+
   # read in raw data files
   tar_target(name = raw_its_bau, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 7:19), input_cols = c(2:37))),
   tar_target(name = raw_its_lc1, command = read_raw_its_data(file_raw_its, input_sheet = "Sheet1", input_rows = c(1, 23:34), input_cols = c(2:37))),
@@ -196,7 +196,7 @@ list(
     ca_crs
   )),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
-  
+
   # create processed data
   tar_target(name = dt_its, command = get_its_forecast(raw_its_bau, raw_its_lc1, raw_avgas)),
   tar_target(name = dt_intra, command = get_intrastate_jet_forecast(raw_intra_jet)),
@@ -886,12 +886,12 @@ list(
   tar_target(
     name = save_npv_labor_fig,
     command = simple_ggsave(npv_labor_plot,
-                            main_path,
-                            "outputs/academic-out/refining/figures/2024-08-update",
-                            "state_npv_labor_fig",
-                            width = 10,
-                            height = 5,
-                            dpi = 600
+      main_path,
+      "outputs/academic-out/refining/figures/2024-08-update",
+      "state_npv_labor_fig",
+      width = 10,
+      height = 5,
+      dpi = 600
     ),
     format = "file"
   ),
