@@ -18,7 +18,10 @@ create_figure_1 <- function(main_path,
                             health_weighted,
                             refining_mortality,
                             labor_2019,
-                            ca_regions) {
+                            ca_regions,
+                            raw_pop_income_2021,
+                            cpi2020,
+                            cpi2019) {
   ## califonia
   states <- st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 
@@ -597,6 +600,8 @@ create_figure_1 <- function(main_path,
 
   ## figure 1d: wages from refining
   ## -----------------------------------------------------------------------------------
+  
+  ## county compensation 2019 from IMPLAN by destination region
   county_compensation_df <- labor_2019 |>
     group_by(DestinationRegion) |>
     summarise(total_employee_compensation = sum(EmployeeCompensation)) |>
@@ -604,96 +609,224 @@ create_figure_1 <- function(main_path,
     mutate(DestinationRegion = gsub(" County, CA \\(\\d{4}\\)$", "", DestinationRegion),
            DestinationRegion = gsub(" \\(\\d{4}\\)$", "", DestinationRegion)) |>
     rename(region = DestinationRegion) |>
+    ## join with counties
     left_join(ca_regions)
   
+  ## adjust county-level compensation based on population ----------------------
+  
+  ## compute county populations
+  pop_2020 <- refining_mortality %>%
+    filter(year == 2020) %>%
+    select(census_tract, year, pop) %>%
+    unique() %>%
+    as.data.table()
+  
+  ## census tract x county
+  c_ct_df <- raw_pop_income_2021[state == "California"]
+  c_ct_df[, census_tract := as.character(substr(geoid, 10, nchar(geoid)))]
+  c_ct_df <- c_ct_df[, .(county, census_tract)]
+  c_ct_df[, county := str_remove(county, " County")]
+  
+  ## merge with counties
+  pop_2020 <- merge(pop_2020, c_ct_df,
+                    by = c("census_tract"),
+                    all.x = T
+  )
+  
+  ## summarize by county
+  pop_2020 <- pop_2020[, .(county_pop = sum(pop)), by = .(county)]
+  
+  ## compute county / region ratio
+  county_region_ratio <- merge(pop_2020, ca_regions,
+                               by = "county"
+  )
+  
+  ## sum region pop
+  county_region_ratio[, region_pop := sum(county_pop), by = .(region)]
+  
+  ## calc ratio
+  county_region_ratio[, county_ratio := county_pop / region_pop]
+  
+  county_region_ratio <- county_region_ratio[, .(county, region, county_pop, region_pop, county_ratio)]
+  
+  ## merge
+  county_compensation_df_county <- merge(county_compensation_df, county_region_ratio,
+                                         by = c("region", "county"),
+                                         allow.cartesian = T
+  )
+  
+  ## compute county value 
+  setDT(county_compensation_df_county)
+  
+  county_compensation_df_county[, total_employee_compensation_county := total_employee_compensation * county_ratio]
   
   
-  # ## labor
-  # ## ----------------------------------------------
-  # 
-  # labor_out <- county_out[year == 2019]
-  # labor_out <- labor_out[, .(scen_id, county, dac_share, year, total_emp, total_comp)]
-  # labor_out <- labor_out[scen_id == bau_scn_name]
+  ## adjust USD from 2020 to 2019 dollars
+  county_compensation_df_county[, total_employee_compensation_county_2019 := total_employee_compensation_county * cpi2019 / cpi2020]
+  
+  ## prepare for map
+  setnames(county_compensation_df_county, "county", "county_name")
+  
+  labor_map_df <- merge(CA_counties_noisl |> rename(county_name = adj_county_name), county_compensation_df_county,
+                        by = "county_name",
+                        all.x = T)
+  
+  ## color pals
+  blues_pal <- c("#FAFAFA", "#778DA9", "#415A77", "#1B263B", "#0D1B2A")
 
-  # ## deflate to 2019 dollars
-  # #(https://fred.stlouisfed.org/series/CPALTT01USA661S)
-  # cpi2020 <- 109.1951913
-  # cpi2019 <- 107.8645906
-  #
-  # labor_out <- CA_counties_noisl %>%
-  #   select(NAME) %>%
-  #   rename(county = NAME) %>%
-  #   left_join(labor_out) %>%
-  #   mutate(total_emp = ifelse(is.na(total_emp), 0, total_emp),
-  #          total_comp = ifelse(is.na(total_comp), 0, total_comp),
-  #          total_comp_usd19 = total_comp * cpi2019 / cpi2020)
-  #
-  # labor_map <- ggplot() +
-  #   geom_sf(data = labor_out, mapping = aes(geometry = geometry, fill = total_comp_usd19 / 1e6), lwd = 0.05, alpha = 1, show.legend = TRUE) +
-  #   geom_sf_text(data = labor_out %>% filter(total_comp_usd19 > 0,
-  #                                            county != "Los Angeles"), mapping = aes(geometry = geometry, label = county), size = 0.75, fontface = "bold", color = "black") +
-  #   geom_sf_text(data = labor_out %>% filter(county == "Los Angeles"), mapping = aes(geometry = geometry, label = county), size = 0.75, fontface = "bold", color = "#B0B2B8") +
-  #   geom_sf(data = refin_capacity %>%
-  #             mutate(object = "Refinery"), mapping = aes(geometry = geometry, shape = object), alpha = 0.8, color = 'black', size = 0.1) +
-  #   scale_shape_manual(values = c(17)) +
-  #   labs(
-  #     title = 'E. Wages from refining',
-  #     fill = 'USD million',
-  #     shape = NULL,
-  #     x = NULL,
-  #     y = NULL) +
-  #   scale_fill_gradientn(colors = blues_pal,
-  #                        breaks = c(500, 2000)) +
-  #   coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
-  #            datum = ca_crs, expand = FALSE) +
-  #   # geom_sf_text(data = all_county_prod_df %>% filter(metric == 'difference (bbls)', scenario == name), aes(geometry = geometry, label = paste0(adj_county_name, '\n ', round(adj_val, digits = 2), ' mbbls')), colour = "black", size = 2) +
-  #   theme_void() +
-  #   theme(
-  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-  #     legend.justification = c(0, 1),
-  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-  #     legend.position = c(0, 0.28),
-  #     legend.key.width = unit(0.7, "line"),
-  #     legend.key.height = unit(0.5, "line"),
-  #     legend.title = element_text(size = 4),
-  #     legend.text = element_text(size = 4),
-  #     plot.margin = margin(0, 2, 0, 8),
-  #     plot.title = element_text(face = 'bold', size = 4)) +
-  #   guides(fill = guide_colourbar(title.position="top",
-  #                                 title.hjust = 0,
-  #                                 direction = "horizontal",
-  #                                 ticks.colour = "black", frame.colour = "black"))
-  #
-  
-  # ## color pals
-  # blues_pal <- c("#FAFAFA", "#778DA9", "#415A77", "#1B263B", "#0D1B2A")
-  #
-  #
   
   
-  # ## save
-  # ggsave(labor_map,
-  #        filename = file.path(fig_1_folder, 'fig1d.png'),
-  width = 65,
-  height = 80,
-  units = "mm",
-  dpi = 300,
-  device = 'pdf')
-  #
-  # ggsave(labor_map,
-  #        filename = file.path(fig_1_folder, 'fig1d.pdf'),
-         width = 65,
-         height = 80,
-         units = "mm",
-         dpi = 300,
-         device = 'pdf')
-  #
-  # embed_fonts(paste0(main_path, fig_path, 'fig1/fig1e.pdf'),
-  #             outfile = paste0(main_path, fig_path, 'fig1/fig1e.pdf'))
-  #
-  #
-  #
+  ## make map
+  labor_map <- ggplot() +
+    geom_sf(data = labor_map_df, 
+            mapping = aes(geometry = geometry, 
+                          fill = total_employee_compensation_county_2019 / 1e9), lwd = 0.1, color = "lightgrey", alpha = 1, show.legend = TRUE) +
+      scale_fill_gradientn(colors = blues_pal,
+                           breaks = c(0, 1, 2, 3, 4)) +
+    geom_sf_text(data = labor_map_df %>%
+                   filter(county_name %in% c('Los Angeles', 'Orange', 'Solano', 'San Luis Obispo',
+                                                 'Kern', 'Contra Costa')), 
+                 mapping = aes(geometry = geometry, 
+                               label = county_name), size = 1, fontface = "bold", color = "#343a40") +
+    geom_sf(data = refin_capacity %>% 
+              filter(installation == "Existing capacity") %>%
+              mutate(object = "Existing refinery"), 
+            mapping = aes(geometry = geometry, 
+                          shape = object, 
+                          size = barrels_per_day / 1000), alpha = 0.8, color = '#191970', stroke = 0.3) +
+    scale_shape_manual(values = c(1)) +
+    scale_size_continuous(range = c(0.5, 2),
+                          breaks = c(15, 300)) +
+    # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+    labs(
+      # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+      fill = "NPV (2019 USD billion)",
+      size = "Refinery capacity\n(thous. bbls per day)",
+      x = "Longitude",
+      y = "Latitude") +
+    coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'], expand = FALSE) +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = c(0.01, 0.15),
+      legend.key.width = unit(0.7, "line"),
+      legend.key.height = unit(0.5, "line"),
+      legend.title = element_text(size = 4),
+      legend.text = element_text(size = 4),
+      plot.margin = margin(8, 2, 0, 8),
+      plot.title = element_text(face = 'bold', size = 4),
+      panel.grid.major = element_blank(), 
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.title = element_text(size = 5),
+      axis.text = element_text(size = 4),
+      legend.background = element_rect(fill = NA)) +
+    guides(fill = guide_colourbar(title.position="top",
+                                  title.hjust = 0,
+                                  direction = "horizontal",
+                                  ticks.colour = "black", frame.colour = "black",
+                                  order = 1),
+           size = "none",
+           shape = "none") +  
+    annotation_custom(grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
+                      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
+    )
   
+  
+  ## plot together
+  map_fig_d <- ggdraw(labor_map, clip = "on") +
+    draw_plot(refin_legend2, x = 0.2, y = 0.3, width = 0.025, height = 0.025)
+  
+  
+  ## histogram
+  property_value_hist <- ggplot(labor_map_df, aes(total_employee_compensation_county_2019 / 1e9)) +
+    geom_histogram(fill="#69b3a2", alpha=0.9, binwidth = 0.01) +
+    labs(x = "Employee compensation (USD billion)",
+         y = "count (counties)") +
+    theme_minimal() 
+  
+ggsave(map_fig_d,
+       filename = file.path(fig_1_folder,
+                            "figure1d.png"),
+       width = 65,
+       height = 80,
+       units = "mm",
+       dpi = 300,
+       device = 'png')
+
+ggsave(map_fig_d,
+       filename = file.path(fig_1_folder,
+                            "figure1d.pdf"),
+       width = 65,
+       height = 80,
+       units = "mm",
+       dpi = 300,
+       device = 'pdf')
+
+embed_fonts(file.path(fig_1_folder,
+                      "figure1d.pdf"),
+            outfile = file.path(fig_1_folder,
+                                "figure1d.pdf"))
+
+## save histogram
+ggsave(property_value_hist,
+       filename = file.path(fig_1_folder,
+                            "figure1d_hist.png"),
+       width = 80,
+       height = 65,
+       units = "mm",
+       dpi = 300,
+       device = 'png')
+
+  
+## plot all four together
+
+fig1_abcd <- plot_grid(
+  map_fig_a,
+  total_pm25,
+  map_fig_b,
+  map_fig_d,
+  align = "vh",
+  labels = c("A", "C", "B", "D"),
+  nrow = 2,
+  ncol = 2,
+  # # labels = 'AUTO',
+  # label_size = 10,
+  hjust = -1,
+  rel_widths = c(1, 1, 1, 1),
+  rel_heigts = c(1, 1, 1, 1)
+)
+
+fig1_abcd
+
+
+
+ggsave(fig1_abcd,
+       filename = file.path(fig_1_folder,
+                            "figure1.png"),
+       width = 160,
+       height = 160,
+       units = "mm",
+       dpi = 300,
+       device = 'png')
+
+ggsave(fig1_abcd,
+       filename = file.path(fig_1_folder,
+                            "figure1.pdf"),
+       width = 160,
+       height = 160,
+       units = "mm",
+       dpi = 300,
+       device = 'pdf')
+
+embed_fonts(file.path(fig_1_folder,
+                      "figure1.pdf"),
+            outfile = file.path(fig_1_folder,
+                                "figure1.pdf"))
+
+
+
   
   
   
@@ -701,21 +834,6 @@ create_figure_1 <- function(main_path,
 }
 
 
-# ## color pals
-# blues_pal <- c("#FAFAFA", "#778DA9", "#415A77", "#1B263B", "#0D1B2A")
-#
-#
 
-
-
-
-
-# ## health and labor, 2019
-# ## -------------------------------------------------
-#
-#
-# ## health outputs, CT level
-# ## ------------------------------------------------------------------------
-#
 
 
