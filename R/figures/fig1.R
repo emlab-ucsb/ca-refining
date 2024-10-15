@@ -127,6 +127,10 @@ create_figure_1 <- function(main_path,
   ## st_union of no island counties
   ca_union <- st_union(CA_counties_noisl)
 
+  ## refinery color
+  refinery_color <- "#095F66"
+  
+  
   ## map inset, CA with box around zoom area
   fig1_inset <- ggplot() +
     geom_sf(data = ca_union, mapping = aes(), fill = "transparent", linewidth = 0.4, show.legend = FALSE) +
@@ -158,7 +162,14 @@ create_figure_1 <- function(main_path,
   fig1_map <- ggplot() +
     geom_sf(data = ca_union, mapping = aes(), fill = "transparent", lwd = 0.4, show.legend = FALSE) +
     geom_sf(data = dac_areas, mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
-    geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.8, pch = 1) +
+    geom_sf(data = refin_capacity |>
+              filter(installation == "Existing capacity"), 
+            mapping = aes(geometry = geometry, 
+                          size = barrels_per_day / 1000), 
+            alpha = 0.9, 
+            pch = 1,
+            color = refinery_color,
+            lwd = 0.1) +
     geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
     # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
     # geom_sf_text(data = county_19, mapping = aes(geometry = geometry, label = adj_county_name), size = 2, fontface = "bold", color = "black") +
@@ -168,8 +179,8 @@ create_figure_1 <- function(main_path,
          size = 'Refinery capacity\n(thous. bbls per day)',
          x = "Longitude",
          y = "Latitude") +
-    scale_color_manual(values = c('#191970', '#e2711d')) +
-    scale_size_continuous(range = c(1, 4)) +
+    # scale_color_manual(values = c('#191970', '#e2711d')) +
+    scale_size_continuous(range = c(1, 5)) +
     coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'], expand = FALSE) +
     # theme_void() +
     theme(legend.position = "none",
@@ -209,7 +220,14 @@ create_figure_1 <- function(main_path,
   fig1_refing_legend <- ggplot() +
     geom_sf(data = ca_union, mapping = aes(), fill = "transparent", lwd = 0.4, show.legend = FALSE) +
     # geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
-    geom_sf(data = refin_capacity, mapping = aes(geometry = geometry, size = barrels_per_day / 1000, color = installation), alpha = 0.8, pch = 1) +
+    geom_sf(data = refin_capacity |>
+              filter(installation == "Existing capacity"), 
+            mapping = aes(geometry = geometry, 
+                          size = barrels_per_day / 1000), 
+            alpha = 0.9, 
+            pch = 1,
+            color = refinery_color,
+            lwd = 0.1) +
     geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
     labs(title = NULL,
@@ -217,9 +235,9 @@ create_figure_1 <- function(main_path,
          size = 'Refinery capacity\n(thous. bbls per day)',
          x = NULL,
          y = NULL) +
-    scale_size_continuous(range = c(1, 4),
-                          breaks = c(10, 100, 300)) +
-    scale_color_manual(values = c('#191970', '#e2711d')) +
+    scale_size_continuous(range = c(1, 5),
+                          breaks = c(15, 150, 300)) +
+    # scale_color_manual(values = c('#191970', '#e2711d')) +
     coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
              datum = ca_crs, expand = FALSE) +
     theme_void() +
@@ -246,9 +264,9 @@ create_figure_1 <- function(main_path,
 
   ## plot together
   map_fig_a <- ggdraw(fig1_map, clip = "on") +
-    draw_plot(fig1_inset, x = 0.75, y = 0.68, width = 0.2, height = 0.36) +
-    draw_plot(dac_legend, x = 0.22, y = 0.31, width = 0.03, height = 0.005) +
-    draw_plot(refin_legend, x = 0.16, y = 0.27, width = 0.025, height = 0.025)
+    draw_plot(fig1_inset, x = 0.77, y = 0.67, width = 0.2, height = 0.36) +
+    draw_plot(dac_legend, x = 0.22, y = 0.20, width = 0.03, height = 0.005) +
+    draw_plot(refin_legend, x = 0.16, y = 0.16, width = 0.025, height = 0.025)
   # +
   #   draw_plot_label(
   #     c("A. Oil fields and disadvantaged communities (DAC)", "", "", ""),
@@ -370,19 +388,19 @@ create_figure_1 <- function(main_path,
   ## figure
   total_pm25 <- ggplot() +
     geom_sf(data = ct_map |> filter(GEOID %in% ct_intersect$GEOID), aes(geometry = geometry, fill = total_pm25), color = NA) +
-    scale_fill_gradient(high = "#A84268", low = "#FFFFFF", space = "Lab", na.value = "grey50",
+    scale_fill_gradient(high = "#79032E", low = "#FFFFFF", space = "Lab", na.value = "grey50",
                         limits = c(min(ct_cropped$total_pm25), max(ct_cropped$total_pm25)),
                         breaks = c(0.001, 0.004)) +
     geom_sf(data = county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
-    geom_sf(data = refin_capacity %>% filter(site_id == '226'), mapping = aes(geometry = geometry), alpha = 0.9, pch = 1, color = "#191970") +
+    geom_sf(data = refin_capacity %>% filter(site_id == '226'), mapping = aes(geometry = geometry), alpha = 0.9, pch = 1, color = refinery_color, lwd = 0.1) +
     labs(title = NULL,
          # title = expression(bold(paste("C. PM"[2.5], "concentration from Torrance Refinery"))),
-         fill = expression("PM"[2.5] ~ "concentration ("*mu*"g"*m^-3*")"),
+         fill = expression("PM"[2.5] ~ "concentration ("*mu*"g/"*m^3*")"),
          x = "Longitude",
          y = "Latitude") +
-    annotate("text", x = 154000, y = -465000, label = "Torrance\nrefinery", color = "black", size = 1.5, fontface = "bold") +
-    annotate("text", x = 150000, y = -430000, label = "Los Angeles", color = "#343a40", size = 1.5) +
-    annotate("text", x = 195000, y = -480000, label = "Orange", color = "#343a40", size = 1.5) +
+    annotate("text", x = 151000, y = -450000, label = "Torrance\nrefinery", color = "black", size = 2) +
+    annotate("text", x = 150000, y = -430000, label = "Los Angeles", color = "#545E68", size = 2) +
+    annotate("text", x = 195000, y = -480000, label = "Orange", color = "#545E68", size = 2) +
     xlim(c(142000,200000)) +
     ylim(c(-489424, -424700)) +
     # coord_sf(xlim = disp_win_la_coord[,'X'], ylim = disp_win_la_coord[,'Y'], expand = FALSE) +
@@ -473,29 +491,26 @@ create_figure_1 <- function(main_path,
   ## figure
   ct_health_map <- ggplot() +
     geom_sf(data = ct_census_tract_pm25_2019_sp, mapping = aes(geometry = geometry, fill = pop_x_pm25), lwd = 0.0, color = "white", alpha = 1, show.legend = TRUE) +
-    scale_fill_gradient(high = "#A84268", low = "white", space = "Lab", na.value = "grey50",
+    scale_fill_gradient(high = "#79032E", low = "white", space = "Lab", na.value = "grey50",
                         limits = c(min(ct_census_tract_pm25_2019_sp$pop_x_pm25), max(ct_census_tract_pm25_2019_sp$pop_x_pm25)),
-                        breaks = c(0, 5800, 11600)) +
+                        breaks = c(0, 5000, 10000),
+                        labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
     # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
     geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
     geom_sf_text(data = CA_counties_noisl %>%
-                   filter(adj_county_name %in% c('Los Angeles', 'Orange', 'Solano')), 
+                   filter(adj_county_name %in% c('Los Angeles', 'Orange', 'Solano', 'Contra Costa', 'Kern', 'San Joaquin')), 
                  mapping = aes(geometry = geometry, 
-                               label = adj_county_name), size = 1, fontface = "bold", color = "#343a40") +
+                               label = adj_county_name), size = 1.5, fontface = "bold", color = "#343a40") +
     geom_sf(data = refin_capacity %>% 
               filter(installation == "Existing capacity") %>%
-              mutate(object = "Existing refinery"), 
-            mapping = aes(geometry = geometry, 
-                          shape = object, 
-                          size = barrels_per_day / 1000), alpha = 0.8, color = '#191970', stroke = 0.3) +
-    scale_shape_manual(values = c(1)) +
-    scale_size_continuous(range = c(0.5, 2),
-                          breaks = c(15, 300)) +
+              mutate(object = "Refinery location"), 
+            mapping = aes(geometry = geometry, color = object), shape = 19, alpha = 0.9, size = 0.6, stroke = 0) +
+    scale_color_manual(values = c(refinery_color)) +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
     labs(
          # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
-         fill = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")")),
-         size = "Refinery capacity\n(thous. bbls per day)",
+         fill = expression(paste("Population-weighted PM"[2.5], " (",mu,"g/",m^3,")")),
+         color = NULL,
          x = "Longitude",
          y = "Latitude") +
     coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'], expand = FALSE) +
@@ -532,18 +547,15 @@ create_figure_1 <- function(main_path,
     geom_sf(data = ct_census_tract_pm25_2019_sp, mapping = aes(geometry = geometry), lwd = 0.0, color = "white", alpha = 1, show.legend = FALSE) +
     geom_sf(data = refin_capacity %>% 
               filter(installation == "Existing capacity") %>%
-              mutate(object = "Existing refinery"), 
-            mapping = aes(geometry = geometry, shape = object, size = barrels_per_day / 1000), alpha = 0.8, color = '#191970', linewidth = 0.3) +
-    scale_shape_manual(values = c(1)) +
-    scale_size_continuous(range = c(0.5, 2),
-                          breaks = c(15, 300)) +
+              mutate(object = "Refinery location"), 
+            mapping = aes(geometry = geometry, color = object), shape = 19, alpha = 0.7, size = 0.5) +
+    scale_color_manual(values = c(refinery_color)) +
     theme_void() +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
     labs(
       # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
       # fill = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")")),
-      shape = NULL,
-      size = "Refinery capacity\n(thous. bbls per day)",
+      color = NULL,
       x = "Longitude",
       y = "Latitude") +
     coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'],
@@ -566,16 +578,18 @@ create_figure_1 <- function(main_path,
       axis.text = element_text(size = 4)) +
     guides(shape = guide_legend(order = 1),
            fill = guide_legend(show = FALSE),
-           color = guide_legend(show = FALSE),
-           size = guide_legend(direction = "horizontal", 
-                               override.aes = list(pch = 1))) 
+           size = guide_legend(show = FALSE),
+           color = guide_legend(direction = "horizontal", 
+                               override.aes = list(pch = 19,
+                                                   size = 1,
+                                                   alpha = 1))) 
   
   refin_legend2 <- get_legend(
     ct_health_map_legend)
   
   ## plot together
   map_fig_b <- ggdraw(ct_health_map, clip = "on") +
-    draw_plot(refin_legend2, x = 0.2, y = 0.3, width = 0.025, height = 0.025)
+    draw_plot(refin_legend2, x = 0.2, y = 0.22, width = 0.025, height = 0.025)
   
   ## save
   ggsave(map_fig_b,
@@ -687,21 +701,21 @@ create_figure_1 <- function(main_path,
                    filter(county_name %in% c('Los Angeles', 'Orange', 'Solano', 'San Luis Obispo',
                                                  'Kern', 'Contra Costa')), 
                  mapping = aes(geometry = geometry, 
-                               label = county_name), size = 1, fontface = "bold", color = "#343a40") +
+                               label = county_name), size = 2, color = "#343a40") +
     geom_sf(data = refin_capacity %>% 
               filter(installation == "Existing capacity") %>%
-              mutate(object = "Existing refinery"), 
-            mapping = aes(geometry = geometry, 
-                          shape = object, 
-                          size = barrels_per_day / 1000), alpha = 0.8, color = '#191970', stroke = 0.3) +
-    scale_shape_manual(values = c(1)) +
-    scale_size_continuous(range = c(0.5, 2),
-                          breaks = c(15, 300)) +
+              mutate(object = "Refinery location"), 
+            mapping = aes(geometry = geometry, color = object), shape = 19, alpha = 0.9, size = 0.6, stroke = 0) +
+    scale_color_manual(values = c(refinery_color)) +
+    geom_sf(data = refin_capacity %>%
+              filter(installation == "Existing capacity") %>%
+              mutate(object = "Refinery location"),
+            mapping = aes(geometry = geometry), color = "grey", fill = "transparent", shape = 21, size = 0.61, stroke = 0.1) +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
     labs(
       # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
-      fill = "NPV (2019 USD billion)",
-      size = "Refinery capacity\n(thous. bbls per day)",
+      fill = "Employee compensation (2019 USD billion)",
+      color = NULL,
       x = "Longitude",
       y = "Latitude") +
     coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'], expand = FALSE) +
@@ -734,17 +748,72 @@ create_figure_1 <- function(main_path,
     )
   
   
+  # labor_legend <- ggplot() +
+  #   geom_sf(data = labor_map_df, 
+  #           mapping = aes(geometry = geometry, 
+  #                         fill = total_employee_compensation_county_2019 / 1e9), lwd = 0.1, color = "lightgrey", alpha = 1, show.legend = TRUE) +
+  #   scale_fill_gradientn(colors = blues_pal,
+  #                        breaks = c(0, 1, 2, 3, 4)) +
+  #   geom_sf_text(data = labor_map_df %>%
+  #                  filter(county_name %in% c('Los Angeles', 'Orange', 'Solano', 'San Luis Obispo',
+  #                                            'Kern', 'Contra Costa')), 
+  #                mapping = aes(geometry = geometry, 
+  #                              label = county_name), size = 2, color = "#343a40") +
+  #   geom_sf(data = refin_capacity %>% 
+  #             filter(installation == "Existing capacity") %>%
+  #             mutate(object = "Refinery location"), 
+  #           mapping = aes(geometry = geometry, color = object), shape = 19, alpha = 0.9, size = 0.6, stroke = 0) +
+  #   scale_color_manual(values = c(refinery_color)) +
+  #   geom_sf(data = refin_capacity %>%
+  #             filter(installation == "Existing capacity") %>%
+  #             mutate(object = "Refinery location"),
+  #           mapping = aes(geometry = geometry), color = "grey", fill = "transparent", shape = 21, size = 0.61, stroke = 0.1) +
+  #   # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+  #   labs(
+  #     # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+  #     fill = "Employee compensation (2019 USD billion)",
+  #     color = NULL,
+  #     x = "Longitude",
+  #     y = "Latitude") +
+  #   coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'], expand = FALSE) +
+  #   theme(
+  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+  #     legend.justification = c(0, 1),
+  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+  #     legend.position = c(0, 0.2),
+  #     legend.key.width = unit(0.7, "line"),
+  #     legend.key.height = unit(0.5, "line"),
+  #     legend.title = element_text(size = 4),
+  #     legend.text = element_text(size = 4),
+  #     plot.margin = margin(8, 2, 0, 8),
+  #     plot.title = element_text(face = 'bold', size = 4),
+  #     panel.grid.major = element_blank(), 
+  #     panel.grid.minor = element_blank(),
+  #     panel.background = element_blank(),
+  #     axis.title = element_text(size = 5),
+  #     axis.text = element_text(size = 4)) +
+  #   guides(shape = guide_legend(order = 1),
+  #          fill = guide_legend(show = FALSE),
+  #          size = guide_legend(show = FALSE),
+  #          color = guide_legend(direction = "horizontal", 
+  #                               override.aes = list(pch = 19,
+  #                                                   size = 1,
+  #                                                   alpha = 1))) 
+  # 
+  
+  
+
   ## plot together
   map_fig_d <- ggdraw(labor_map, clip = "on") +
-    draw_plot(refin_legend2, x = 0.2, y = 0.3, width = 0.025, height = 0.025)
+    draw_plot(refin_legend2, x = 0.2, y = 0.23, width = 0.025, height = 0.025)
   
   
-  ## histogram
-  property_value_hist <- ggplot(labor_map_df, aes(total_employee_compensation_county_2019 / 1e9)) +
-    geom_histogram(fill="#69b3a2", alpha=0.9, binwidth = 0.01) +
-    labs(x = "Employee compensation (USD billion)",
-         y = "count (counties)") +
-    theme_minimal() 
+  # ## histogram
+  # property_value_hist <- ggplot(labor_map_df, aes(total_employee_compensation_county_2019 / 1e9)) +
+  #   geom_histogram(fill="#69b3a2", alpha=0.9, binwidth = 0.01) +
+  #   labs(x = "Employee compensation (USD billion)",
+  #        y = "count (counties)") +
+  #   theme_minimal() 
   
 ggsave(map_fig_d,
        filename = file.path(fig_1_folder,
@@ -769,15 +838,15 @@ embed_fonts(file.path(fig_1_folder,
             outfile = file.path(fig_1_folder,
                                 "figure1d.pdf"))
 
-## save histogram
-ggsave(property_value_hist,
-       filename = file.path(fig_1_folder,
-                            "figure1d_hist.png"),
-       width = 80,
-       height = 65,
-       units = "mm",
-       dpi = 300,
-       device = 'png')
+# ## save histogram
+# ggsave(property_value_hist,
+#        filename = file.path(fig_1_folder,
+#                             "figure1d_hist.png"),
+#        width = 80,
+#        height = 65,
+#        units = "mm",
+#        dpi = 300,
+#        device = 'png')
 
   
 ## plot all four together
