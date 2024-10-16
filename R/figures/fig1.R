@@ -392,7 +392,7 @@ create_figure_1 <- function(main_path,
                         limits = c(min(ct_cropped$total_pm25), max(ct_cropped$total_pm25)),
                         breaks = c(0.001, 0.004)) +
     geom_sf(data = county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
-    geom_sf(data = refin_capacity %>% filter(site_id == '226'), mapping = aes(geometry = geometry), alpha = 0.9, pch = 1, color = refinery_color, lwd = 0.1) +
+    geom_sf(data = refin_capacity %>% filter(site_id == '226'), mapping = aes(geometry = geometry), alpha = 0.9, pch = 21, color = refinery_color, lwd = 0.1, size = 2) +
     labs(title = NULL,
          # title = expression(bold(paste("C. PM"[2.5], "concentration from Torrance Refinery"))),
          fill = expression("PM"[2.5] ~ "concentration ("*mu*"g/"*m^3*")"),
@@ -440,16 +440,16 @@ create_figure_1 <- function(main_path,
 
   ggsave(total_pm25,
          filename = file.path(fig_1_folder, 'fig1c.png'),
-         width = 70,
-         height = 55,
+         width = 88,
+         height = 120,
          dpi = 300,
          units = "mm",
          device = "png")
 
   ggsave(total_pm25,
          filename = file.path(fig_1_folder, 'fig1c.pdf'),
-         width = 70,
-         height = 55,
+         width = 88,
+         height = 120,
          dpi = 300,
          units = "mm",
          device = "pdf",
@@ -504,13 +504,14 @@ create_figure_1 <- function(main_path,
     geom_sf(data = refin_capacity %>% 
               filter(installation == "Existing capacity") %>%
               mutate(object = "Refinery location"), 
-            mapping = aes(geometry = geometry, color = object), shape = 19, alpha = 0.9, size = 0.6, stroke = 0) +
+            mapping = aes(geometry = geometry, color = object), shape = 21, alpha = 0.9, size = 2, stroke = 0.5) +
     scale_color_manual(values = c(refinery_color)) +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
     labs(
          # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
          fill = expression(paste("Population-weighted PM"[2.5], " (",mu,"g/",m^3,")")),
          color = NULL,
+         shape = NULL,
          x = "Longitude",
          y = "Latitude") +
     coord_sf(xlim = disp_win2_coord[,'X'], ylim = disp_win2_coord[,'Y'], expand = FALSE) +
@@ -521,8 +522,8 @@ create_figure_1 <- function(main_path,
       legend.position = c(0.01, 0.15),
       legend.key.width = unit(0.7, "line"),
       legend.key.height = unit(0.5, "line"),
-      legend.title = element_text(size = 4),
-      legend.text = element_text(size = 4),
+      legend.title = element_text(size = 6),
+      legend.text = element_text(size = 6),
       plot.margin = margin(8, 2, 0, 8),
       plot.title = element_text(face = 'bold', size = 4),
       panel.grid.major = element_blank(), 
@@ -537,7 +538,8 @@ create_figure_1 <- function(main_path,
                                   ticks.colour = "black", frame.colour = "black",
                                   order = 1),
            size = "none",
-           shape = "none") +  
+           shape = "none",
+           color = "none") +  
     annotation_custom(grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
                       xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
     )
@@ -548,7 +550,7 @@ create_figure_1 <- function(main_path,
     geom_sf(data = refin_capacity %>% 
               filter(installation == "Existing capacity") %>%
               mutate(object = "Refinery location"), 
-            mapping = aes(geometry = geometry, color = object), shape = 19, alpha = 0.7, size = 0.5) +
+            mapping = aes(geometry = geometry, color = object), shape = 21, alpha = 0.9, size = 2, stroke = 0.5) +
     scale_color_manual(values = c(refinery_color)) +
     theme_void() +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
@@ -567,8 +569,8 @@ create_figure_1 <- function(main_path,
       legend.position = c(0, 0.2),
       legend.key.width = unit(0.7, "line"),
       legend.key.height = unit(0.5, "line"),
-      legend.title = element_text(size = 4),
-      legend.text = element_text(size = 4),
+      legend.title = element_text(size = 6),
+      legend.text = element_text(size = 6),
       plot.margin = margin(8, 2, 0, 8),
       plot.title = element_text(face = 'bold', size = 4),
       panel.grid.major = element_blank(), 
@@ -580,9 +582,10 @@ create_figure_1 <- function(main_path,
            fill = guide_legend(show = FALSE),
            size = guide_legend(show = FALSE),
            color = guide_legend(direction = "horizontal", 
-                               override.aes = list(pch = 19,
-                                                   size = 1,
-                                                   alpha = 1))) 
+                               override.aes = list(pch = 21,
+                                                   size = 2,
+                                                   alpha = 1,
+                                                   stroke = 0.5))) 
   
   refin_legend2 <- get_legend(
     ct_health_map_legend)
@@ -594,15 +597,15 @@ create_figure_1 <- function(main_path,
   ## save
   ggsave(map_fig_b,
          filename = file.path(fig_1_folder, 'fig1b.png'),
-         width = 65,
-         height = 80,
+         width = 88,
+         height = 120,
          dpi = 300,
          units = "mm")
 
   ggsave(map_fig_b,
          filename = file.path(fig_1_folder, 'fig1b.pdf'),
-         width = 65,
-         height = 80,
+         width = 88,
+         height = 120,
          units = "mm",
          dpi = 300,
          device = 'pdf')
@@ -705,12 +708,12 @@ create_figure_1 <- function(main_path,
     geom_sf(data = refin_capacity %>% 
               filter(installation == "Existing capacity") %>%
               mutate(object = "Refinery location"), 
-            mapping = aes(geometry = geometry, color = object), shape = 19, alpha = 0.9, size = 0.6, stroke = 0) +
+            mapping = aes(geometry = geometry, color = object), shape = 21, alpha = 0.9, size = 0.6, stroke = 0) +
     scale_color_manual(values = c(refinery_color)) +
     geom_sf(data = refin_capacity %>%
               filter(installation == "Existing capacity") %>%
               mutate(object = "Refinery location"),
-            mapping = aes(geometry = geometry), color = "grey", fill = "transparent", shape = 21, size = 0.61, stroke = 0.1) +
+            mapping = aes(geometry = geometry, color = object), shape = 21, alpha = 0.9, size = 2, stroke = 0.5) +
     # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
     labs(
       # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
@@ -726,8 +729,8 @@ create_figure_1 <- function(main_path,
       legend.position = c(0.01, 0.15),
       legend.key.width = unit(0.7, "line"),
       legend.key.height = unit(0.5, "line"),
-      legend.title = element_text(size = 4),
-      legend.text = element_text(size = 4),
+      legend.title = element_text(size = 6),
+      legend.text = element_text(size = 6),
       plot.margin = margin(8, 2, 0, 8),
       plot.title = element_text(face = 'bold', size = 4),
       panel.grid.major = element_blank(), 
@@ -742,7 +745,8 @@ create_figure_1 <- function(main_path,
                                   ticks.colour = "black", frame.colour = "black",
                                   order = 1),
            size = "none",
-           shape = "none") +  
+           shape = "none",
+           color = "none") +  
     annotation_custom(grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
                       xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
     )
@@ -818,8 +822,8 @@ create_figure_1 <- function(main_path,
 ggsave(map_fig_d,
        filename = file.path(fig_1_folder,
                             "figure1d.png"),
-       width = 65,
-       height = 80,
+       width = 88,
+       height = 120,
        units = "mm",
        dpi = 300,
        device = 'png')
@@ -827,8 +831,8 @@ ggsave(map_fig_d,
 ggsave(map_fig_d,
        filename = file.path(fig_1_folder,
                             "figure1d.pdf"),
-       width = 65,
-       height = 80,
+       width = 88,
+       height = 120,
        units = "mm",
        dpi = 300,
        device = 'pdf')
