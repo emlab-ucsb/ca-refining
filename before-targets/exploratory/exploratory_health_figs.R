@@ -1,4 +1,5 @@
-setwd("G://Shared drives/emlab/projects/current-projects/calepa-cn/outputs/refining-2023/health")
+#setwd("G://Shared drives/emlab/projects/current-projects/calepa-cn/outputs/refining-2024/health")
+setwd("H://Shared drives/emlab/projects/current-projects/calepa-cn/outputs/refining-2024/health")
 
 mort <- fread("refining_mortality_2023.csv", stringsAsFactors = F)
 
