@@ -8,40 +8,37 @@
 plot_npv_labor_oilpx <- function(main_path,
                                  state_ghg_output,
                                  dt_ghg_2019,
-                                 annual_labor
-                                 ) {
-  
-  
+                                 annual_labor) {
   ## add ghg emission reduction
   ## 2019 ghg
   ghg_2019_val <- dt_ghg_2019$mtco2e[1]
-  
+
   ## 2045 vs 2019 ghg
   ghg_2045 <- state_ghg_output[year == 2045 & source == "total"]
   setnames(ghg_2045, "value", "ghg_kg")
   ghg_2045[, ghg_2045 := (ghg_kg / 1000) / 1e6]
   ghg_2045[, ghg_2019 := ghg_2019_val]
   ghg_2045[, perc_diff := (ghg_2045 - ghg_2019) / ghg_2019]
-  
+
   perc_diff_df <- ghg_2045[, .(demand_scenario, refining_scenario, ghg_2045, ghg_2019, perc_diff)]
-  
+
   ## summarize by scenario, filter for total
   state_ghg_df <- state_ghg_output[source == "total", .(total_ghg = sum(value)),
-                                   by = .(demand_scenario, refining_scenario)
+    by = .(demand_scenario, refining_scenario)
   ]
-  
+
   state_ghg_df[, total_ghg_mmt := (total_ghg / 1000) / 1e6]
-  
+
   ## reference
   ref_df <- state_ghg_df[demand_scenario == "BAU" & refining_scenario == "historic production", .(total_ghg_mmt)]
   setnames(ref_df, "total_ghg_mmt", "ref_ghg_mmt")
   ref_value <- ref_df$ref_ghg_mmt[1]
-  
+
   ## merge with summarized df
   state_ghg_df[, ref_ghg := ref_value]
   state_ghg_df[, avoided_ghg := (total_ghg_mmt - ref_value) * -1]
-  
-  
+
+
   ## summarize labor for state
   state_labor <- annual_labor[, .(
     sum_total_emp = sum(total_emp),
@@ -50,62 +47,67 @@ plot_npv_labor_oilpx <- function(main_path,
   ),
   by = .(demand_scenario, refining_scenario, oil_price_scenario)
   ]
-  
+
   ## ref labor
   ref_labor <- state_labor[demand_scenario == "BAU" & refining_scenario == "historic production"]
   setnames(ref_labor, c("sum_total_emp", "sum_total_comp_pv_h", "sum_total_comp_pv_l"), c("ref_total_emp", "ref_total_comp_pv_h", "ref_total_comp_pv_l"))
   ref_labor <- ref_labor[, .(oil_price_scenario, ref_total_emp, ref_total_comp_pv_l, ref_total_comp_pv_h)]
-  
+
   ## add values to labor
   state_labor_oil_px <- merge(state_labor, ref_labor,
-                              by = c("oil_price_scenario"))
-  
+    by = c("oil_price_scenario")
+  )
+
   ## compute forgone wages high and low
   state_labor_oil_px[, forgone_wages_bil_h := (sum_total_comp_pv_h - ref_total_comp_pv_h) / 1e9]
   state_labor_oil_px[, forgone_wages_bil_l := (sum_total_comp_pv_l - ref_total_comp_pv_l) / 1e9]
-  
+
   ## merge with health and ghg
-  labor_ghg_df <- merge(state_labor_oil_px[, .(demand_scenario, 
-                                               refining_scenario,
-                                               oil_price_scenario,
-                                               sum_total_comp_pv_h, 
-                                               ref_total_comp_pv_h, 
-                                               forgone_wages_bil_h,
-                                               sum_total_comp_pv_l, 
-                                               ref_total_comp_pv_l, 
-                                              forgone_wages_bil_l
-  )], state_ghg_df,
-  by = c("demand_scenario", "refining_scenario"),
-  all.x = T
+  labor_ghg_df <- merge(
+    state_labor_oil_px[, .(
+      demand_scenario,
+      refining_scenario,
+      oil_price_scenario,
+      sum_total_comp_pv_h,
+      ref_total_comp_pv_h,
+      forgone_wages_bil_h,
+      sum_total_comp_pv_l,
+      ref_total_comp_pv_l,
+      forgone_wages_bil_l
+    )], state_ghg_df,
+    by = c("demand_scenario", "refining_scenario"),
+    all.x = T
   )
-  
+
   ## add ghg perc reduction
   labor_ghg_df <- merge(labor_ghg_df, perc_diff_df,
-                        by = c("demand_scenario", "refining_scenario"),
-                        all.x = T
+    by = c("demand_scenario", "refining_scenario"),
+    all.x = T
   )
 
   ## add scen id
   labor_ghg_df[, scen_id := paste(demand_scenario, refining_scenario)]
-  
+
   ## prepare to plot
   plot_df <- labor_ghg_df[, .(
-    scen_id, demand_scenario, refining_scenario, oil_price_scenario, forgone_wages_bil_h, 
+    scen_id, demand_scenario, refining_scenario, oil_price_scenario, forgone_wages_bil_h,
     forgone_wages_bil_l, avoided_ghg, perc_diff
   )]
-  
+
   setnames(plot_df, "perc_diff", "ghg_perc_diff")
-  
+
   plot_df[, `:=`(
     forgone_wages_bil_h_ghg = forgone_wages_bil_h / avoided_ghg,
     forgone_wages_bil_l_ghg = forgone_wages_bil_l / avoided_ghg
   )]
-  
-  
+
+
   plot_df_labor <- plot_df %>%
-    select(scen_id, demand_scenario, refining_scenario, oil_price_scenario, 
-           ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l, 
-           forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg) %>%
+    select(
+      scen_id, demand_scenario, refining_scenario, oil_price_scenario,
+      ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l,
+      forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg
+    ) %>%
     pivot_longer(forgone_wages_bil_h:forgone_wages_bil_l_ghg, names_to = "metric", values_to = "value") %>%
     mutate(
       segment = "labor",
@@ -115,20 +117,20 @@ plot_npv_labor_oilpx <- function(main_path,
     ) %>%
     select(scen_id, demand_scenario, refining_scenario, oil_price_scenario, ghg_perc_diff, segment, metric, unit_desc, estimate, value) %>%
     pivot_wider(names_from = estimate, values_from = value)
-  
-  
+
+
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
     mutate(title = ifelse(metric == "forgone_wages_bil", "Labor: forgone wages", "Labor: forgone wages per avoided GHG"))
-  
+
   plot_df_labor$title <- factor(plot_df_labor$title, levels = c("Labor: forgone wages", "Labor: forgone wages per avoided GHG"))
-  
+
   ## rename
   setDT(plot_df_labor)
   plot_df_labor[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
   plot_df_labor[, scenario := gsub("LC1.", "Low ", scenario)]
 
-  
+
   ## refactor
   plot_df_labor$scenario <- factor(plot_df_labor$scenario, levels = c(
     "BAU demand - historic production",
@@ -138,7 +140,7 @@ plot_npv_labor_oilpx <- function(main_path,
     "Low demand - low exports",
     "Low demand - historic production"
   ))
-  
+
   ## convert value of scaled outputs (by ghg) to millions, add unit column
   plot_df_labor[, high := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), high * 1000, high)]
   plot_df_labor[, low := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), low * 1000, low)]
@@ -148,30 +150,31 @@ plot_npv_labor_oilpx <- function(main_path,
     "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
     "NPV (2019 USD billion)"
   )]
-  
+
   ## change historic to historical
   plot_df_labor[, scen_id := str_replace(scen_id, "historic", "historical")]
   plot_df_labor[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
-  
+
   ## has oil price label
   plot_df_labor[, oil_px_label := ifelse(oil_price_scenario == "reference case",
-                                         "Reference", ifelse(oil_price_scenario == "high oil price", "High", "Low"))]
-  
-  plot_df_labor$oil_px_label <-factor(plot_df_labor$oil_px_label , levels = c("Low", "Reference", "High"))
-  
+    "Reference", ifelse(oil_price_scenario == "high oil price", "High", "Low")
+  )]
+
+  plot_df_labor$oil_px_label <- factor(plot_df_labor$oil_px_label, levels = c("Low", "Reference", "High"))
+
   ## save figure inputs
   fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "state_npv_fig_inputs_labor_all_oilpx.csv"))
   # fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
-  
-  
+
+
   ## scenarios for filtering
   remove_scen <- c("LC1 historical production", "BAU historical production")
   bau_scen <- "BAU historical production"
-  
+
   ## make the plot
   ## ---------------------------------------------------
-  
+
   ## color for refining scenario
   refin_colors <- c(
     "LC1 low exports" = "#729b79",
@@ -179,26 +182,26 @@ plot_npv_labor_oilpx <- function(main_path,
     "BAU low exports" = "#F6AE2D",
     "BAU historical exports" = "#F26419"
   )
-  
+
   refin_labs <- c(
     "LC1 low exports" = "Low demand, low exports",
     "LC1 historical exports" = "Low demand, historical exports",
     "BAU low exports" = "BAU demand, low exports",
     "BAU historical exports" = "BAU demand, historical exports"
   )
-  
 
-  
+
+
   ## figs - make each separately
   ## -------------------------------------------------------------------
-  
+
   hist_prod <- as.data.table(plot_df_labor %>% filter(
     scen_id == bau_scen,
     oil_price_scenario == "reference case",
     unit == "NPV (2019 USD billion)"
   ))
-  
-##
+
+  ##
   forgone_wages_all_oil_px_fig <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
     geom_vline(xintercept = hist_prod$ghg_perc_diff * -100, color = "darkgray", lty = 2) +
@@ -242,10 +245,9 @@ plot_npv_labor_oilpx <- function(main_path,
       axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
     ) +
     guides(color = guide_legend(nrow = 2))
-  
- 
-  return(forgone_wages_all_oil_px_fig) 
- 
+
+
+  return(forgone_wages_all_oil_px_fig)
 }
 
 
@@ -280,7 +282,6 @@ plot_npv_health_labor <- function(main_path,
                                   state_ghg_output,
                                   dt_ghg_2019,
                                   annual_labor) {
-  
   npv_df <- refining_mortality %>% as.data.table()
 
   ## state level
@@ -4409,7 +4410,6 @@ plot_hl_levels_df <- function(main_path,
 
 
 plot_hl_levels <- function(demographic_npv_df) {
-  
   plot_df_long <- copy(demographic_npv_df)
 
   ## create the figure ---------------------------------------------
@@ -4424,7 +4424,7 @@ plot_hl_levels <- function(demographic_npv_df) {
   ## add column for defining shapes
   plot_df_long[, demo_grp_metric := paste0(demo_group, "_", metric)]
 
-  
+
   ## health fig - race
   health_level_fig_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -4460,7 +4460,7 @@ plot_hl_levels <- function(demographic_npv_df) {
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  
+
   ## labor fig - race
   labor_level_fig_a <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
@@ -4500,7 +4500,7 @@ plot_hl_levels <- function(demographic_npv_df) {
       axis.ticks.length.y = unit(0.1, "cm"),
       axis.ticks.length.x = unit(0.1, "cm")
     )
-  
+
 
   ## health fig - poverty
   health_level_fig_b <- ggplot() +
@@ -4532,7 +4532,7 @@ plot_hl_levels <- function(demographic_npv_df) {
       axis.ticks.length.y = unit(0.1, "cm"),
       axis.ticks.length.x = unit(0.1, "cm")
     )
-  
+
   ## labor fig - poverty
   labor_level_fig_b <- ggplot() +
     geom_point(
@@ -4566,7 +4566,7 @@ plot_hl_levels <- function(demographic_npv_df) {
       axis.ticks.length.y = unit(0.1, "cm"),
       axis.ticks.length.x = unit(0.1, "cm")
     )
-  
+
   ## health fig - DAC
   health_level_fig_c <- ggplot() +
     geom_point(
@@ -4595,7 +4595,7 @@ plot_hl_levels <- function(demographic_npv_df) {
       axis.ticks.length.y = unit(0.1, "cm"),
       axis.ticks.length.x = unit(0.1, "cm")
     )
-  
+
   ## labor fig - DAC
   labor_level_fig_c <- ggplot() +
     geom_point(
@@ -4627,7 +4627,7 @@ plot_hl_levels <- function(demographic_npv_df) {
       axis.ticks.length.y = unit(0.1, "cm"),
       axis.ticks.length.x = unit(0.1, "cm")
     )
-  
+
   ## labor fig - DAC
   labor_level_fig_c <- ggplot() +
     geom_point(
@@ -4748,9 +4748,8 @@ plot_hl_levels <- function(demographic_npv_df) {
     # rel_widths = c(1, 1, 1)
   )
 
-  
+
   return(hl_pc_plot_grid_nl)
-  
 }
 
 plot_hl_levels_pc <- function(demographic_npv_df,
@@ -5346,7 +5345,6 @@ plot_hl_levels_pc <- function(demographic_npv_df,
 plot_hl_shares <- function(main_path,
                            demographic_npv_df,
                            state_pop_ratios) {
-  
   plot_df_long <- copy(demographic_npv_df)
 
 
@@ -5803,25 +5801,25 @@ plot_hl_shares <- function(main_path,
     )
 
 
-  
+
   ## save legends
   ## -----------------------------------------------------------------------
-  
+
   health_dac_legend <- get_legend(
     health_share_fig_c +
       theme(legend.text = element_text(size = 12))
   )
-  
+
   health_poverty_legend <- get_legend(
     health_share_fig_b +
       theme(legend.text = element_text(size = 12))
   )
-  
+
   health_race_legend <- get_legend(
     health_share_fig_a +
       theme(legend.text = element_text(size = 12))
   )
-  
+
   ## save legends
   ggsave(
     plot = health_dac_legend,
@@ -5830,7 +5828,7 @@ plot_hl_shares <- function(main_path,
     path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
     dpi = 600
   )
-  
+
   ## save legends
   ggsave(
     plot = health_poverty_legend,
@@ -5839,7 +5837,7 @@ plot_hl_shares <- function(main_path,
     path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
     dpi = 600
   )
-  
+
   ## save legends
   ggsave(
     plot = health_race_legend,
@@ -5848,24 +5846,24 @@ plot_hl_shares <- function(main_path,
     path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
     dpi = 600
   )
-  
+
   labor_dac_legend <- get_legend(
     labor_share_fig_c +
       theme(legend.text = element_text(size = 12))
   )
-  
+
   labor_poverty_legend <- get_legend(
     labor_share_fig_b +
       theme(legend.text = element_text(size = 12))
   )
-  
+
   labor_race_legend <- get_legend(
     labor_share_fig_a +
       theme(legend.text = element_text(size = 12))
   )
-  
-  
-  
+
+
+
   ## save legends
   ggsave(
     plot = labor_dac_legend,
@@ -5874,7 +5872,7 @@ plot_hl_shares <- function(main_path,
     path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
     dpi = 600
   )
-  
+
   ## save legends
   ggsave(
     plot = labor_poverty_legend,
@@ -5883,7 +5881,7 @@ plot_hl_shares <- function(main_path,
     path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
     dpi = 600
   )
-  
+
   ## save legends
   ggsave(
     plot = labor_race_legend,
@@ -5892,7 +5890,7 @@ plot_hl_shares <- function(main_path,
     path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
     dpi = 600
   )
-  
+
   ## save legends
   ggsave(
     plot = legend_a_h,
@@ -5901,48 +5899,48 @@ plot_hl_shares <- function(main_path,
     path = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/legends/"),
     dpi = 600
   )
-  
-  
-  
-  
-  
+
+
+
+
+
   ## combine figure
   ## ---------------------------------
 
-  
+
   fig_text_size <- 12
-  
+
   ## health
   health_column_fig <- plot_grid(
-    health_share_fig_c + 
+    health_share_fig_c +
       ylim(0, 1) +
       theme(
-      axis.text.x = element_blank(),
-      legend.position = "none",
-      plot.margin = margin(1, 1, 20, 1),
-      strip.text.x = element_text(size = fig_text_size),
-      axis.text.y = element_text(size = fig_text_size),
-      axis.title.y = element_text(size = fig_text_size)
-    ),
-    health_share_fig_b + 
+        axis.text.x = element_blank(),
+        legend.position = "none",
+        plot.margin = margin(1, 1, 20, 1),
+        strip.text.x = element_text(size = fig_text_size),
+        axis.text.y = element_text(size = fig_text_size),
+        axis.title.y = element_text(size = fig_text_size)
+      ),
+    health_share_fig_b +
       ylim(0, 1) +
       theme(
-      axis.text.x = element_blank(),
-      strip.text.x = element_blank(),
-      axis.text.y = element_text(size = fig_text_size),
-      axis.title.y = element_text(size = fig_text_size),
-      legend.position = "none",
-      plot.margin = margin(1, 1, 20, 1)
-    ),
-    health_share_fig_a + 
+        axis.text.x = element_blank(),
+        strip.text.x = element_blank(),
+        axis.text.y = element_text(size = fig_text_size),
+        axis.title.y = element_text(size = fig_text_size),
+        legend.position = "none",
+        plot.margin = margin(1, 1, 20, 1)
+      ),
+    health_share_fig_a +
       ylim(0, 1) +
       theme(
-      strip.text.x = element_blank(),
-      axis.text.y = element_text(size = fig_text_size),
-      axis.title.y = element_text(size = fig_text_size),
-      axis.text.x = element_text(size = fig_text_size),
-      legend.position = "none"
-    ),
+        strip.text.x = element_blank(),
+        axis.text.y = element_text(size = fig_text_size),
+        axis.title.y = element_text(size = fig_text_size),
+        axis.text.x = element_text(size = fig_text_size),
+        legend.position = "none"
+      ),
     align = "vh",
     labels = c("A", "B", "C"),
     # # labels = 'AUTO',
@@ -5952,11 +5950,11 @@ plot_hl_shares <- function(main_path,
     # rel_widths = c(1, 0.25, 1),
     # rel_heights = c(1, 0.1, 1, 0.1, 1)
   )
-  
-  
+
+
   ## state
   state_column_fig <- plot_grid(
-    state_share_fig_c + 
+    state_share_fig_c +
       ylim(0, 1) +
       theme(
         axis.text.x = element_blank(),
@@ -5967,7 +5965,7 @@ plot_hl_shares <- function(main_path,
         # axis.text.y = element_text(size = fig_text_size),
         axis.text.y = element_blank()
       ),
-    state_share_fig_b + 
+    state_share_fig_b +
       ylim(0, 1) +
       theme(
         axis.text.x = element_blank(),
@@ -5978,7 +5976,7 @@ plot_hl_shares <- function(main_path,
         # axis.text.y = element_text(size = fig_text_size),
         axis.text.y = element_blank()
       ),
-    state_share_fig_a + 
+    state_share_fig_a +
       ylim(0, 1) +
       theme(
         strip.text.x = element_blank(),
@@ -5997,43 +5995,43 @@ plot_hl_shares <- function(main_path,
     # rel_widths = c(1, 0.25, 1),
     # rel_heights = c(1, 0.1, 1, 0.1, 1)
   )
-  
-  
-  
+
+
+
   ## labor
   labor_column_fig <- plot_grid(
-    labor_share_fig_c + 
+    labor_share_fig_c +
       ylim(0, 1) +
-      labs(y = " ") + 
+      labs(y = " ") +
       theme(
-      axis.text.x = element_blank(),
-      strip.text.x = element_text(size = fig_text_size),
-      legend.position = "none",
-      plot.margin = margin(1, 1, 20, 1),
-      # axis.text.y = element_text(size = fig_text_size),
-      axis.text.y = element_blank()
-    ),
-    labor_share_fig_b +  
+        axis.text.x = element_blank(),
+        strip.text.x = element_text(size = fig_text_size),
+        legend.position = "none",
+        plot.margin = margin(1, 1, 20, 1),
+        # axis.text.y = element_text(size = fig_text_size),
+        axis.text.y = element_blank()
+      ),
+    labor_share_fig_b +
       ylim(0, 1) +
-      labs(y = " ") + 
+      labs(y = " ") +
       theme(
-      axis.text.x = element_blank(),
-      strip.text.x = element_blank(),
-      legend.position = "none",
-      plot.margin = margin(1, 1, 20, 1),
-      # axis.text.y = element_text(size = fig_text_size),
-      axis.text.y = element_blank()
-    ),
-    labor_share_fig_a + 
+        axis.text.x = element_blank(),
+        strip.text.x = element_blank(),
+        legend.position = "none",
+        plot.margin = margin(1, 1, 20, 1),
+        # axis.text.y = element_text(size = fig_text_size),
+        axis.text.y = element_blank()
+      ),
+    labor_share_fig_a +
       ylim(0, 1) +
-      labs(y = " ") + 
+      labs(y = " ") +
       theme(
-      strip.text.x = element_blank(),
-      axis.text.x = element_text(size = fig_text_size),
-      legend.position = "none",
-      # axis.text.y = element_text(size = fig_text_size),
-      axis.text.y = element_blank()
-    ),
+        strip.text.x = element_blank(),
+        axis.text.x = element_text(size = fig_text_size),
+        legend.position = "none",
+        # axis.text.y = element_text(size = fig_text_size),
+        axis.text.y = element_blank()
+      ),
     align = "vh",
     labels = c("G", "H", "I"),
     # # labels = 'AUTO',
@@ -6043,7 +6041,7 @@ plot_hl_shares <- function(main_path,
     # rel_widths = c(1, 0.25, 1),
     # rel_heights = c(1, 0.1, 1, 0.1, 1)
   )
-  
+
   ## all together now
   hl_pc_plot_grid_nl <- plot_grid(
     health_column_fig,
@@ -6058,10 +6056,8 @@ plot_hl_shares <- function(main_path,
     rel_widths = c(1, 0.3, 0.9)
     # rel_widths = c(1, 1, 1)
   )
-  
+
   return(hl_pc_plot_grid_nl)
-  
-  
 }
 
 create_health_labor_table <- function(main_path,
