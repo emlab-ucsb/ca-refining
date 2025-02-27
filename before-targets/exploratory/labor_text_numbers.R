@@ -194,28 +194,28 @@ df.county.agg2 <- filter(
 
 df.agg2 <- filter(
   df,
-  demo_cat == "Poverty" & year == 2045
+  demo_cat == "Poverty" 
 ) %>%
   group_by(scenario, year, demo_group) %>%
   summarize(
-    sum_demo_emp = sum(employment_pmil_high),
-    sum_demo_emp_revised = sum(employment_pmil_low),
-    sum_demo_comp_pv_h = sum(compensation_pv_pmil_high),
-    sum_demo_comp_pv_l = sum(compensation_pv_pmil_low)
+    sum_demo_emp = sum(employment_pc_high),
+    sum_demo_emp_revised = sum(employment_pc_low),
+    sum_demo_comp_pv_h = sum(compensation_pv_pc_high),
+    sum_demo_comp_pv_l = sum(compensation_pv_pc_low)
   ) %>%
   ungroup()
 
 df.bau2 <- filter(
   df,
   demo_cat == "Poverty" &
-    scenario == "BAU demand - historical production" & year == 2045
+    scenario == "BAU demand - historical production" 
 ) %>%
   group_by(year, demo_group) %>%
   summarize(
-    sum_demo_emp_bau = sum(employment_pmil_high),
-    sum_demo_emp_revised_bau = sum(employment_pmil_low),
-    sum_demo_comp_pv_h_bau = sum(compensation_pv_pmil_high),
-    sum_demo_comp_pv_l_bau = sum(compensation_pv_pmil_low)
+    sum_demo_emp_bau = sum(employment_pc_high),
+    sum_demo_emp_revised_bau = sum(employment_pc_low),
+    sum_demo_comp_pv_h_bau = sum(compensation_pv_pc_high),
+    sum_demo_comp_pv_l_bau = sum(compensation_pv_pc_low)
   ) %>%
   ungroup()
 
@@ -260,10 +260,10 @@ df.agg2 <- filter(
   ) %>%
   group_by(scenario, demo_group) %>%
   summarize(
-    gap_emp = mean(gap_emp),
-    gap_emp_revised = mean(gap_emp_revised),
-    gap_comp_h = mean(gap_comp_h),
-    gap_comp_l = mean(gap_comp_l)
+    gap_emp = sum(gap_emp),
+    gap_emp_revised = sum(gap_emp_revised),
+    gap_comp_h = sum(gap_comp_h),
+    gap_comp_l = sum(gap_comp_l)
   ) %>%
   ungroup()
 
