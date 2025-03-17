@@ -9,7 +9,8 @@ simple_ggsave <- function(x, main_path, sub_path, file_name, width, height, dpi)
     filename = paste0(fig_path, ".png"),
     width = width,
     height = height,
-    dpi = dpi
+    dpi = dpi,
+    create.dir = T
   )
 
   ggsave(x,
