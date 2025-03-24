@@ -1,7 +1,7 @@
 # CalEPA: Homemade refining emission factors from NEI and XXX data
 # vthivierge@ucsb.edu
 # created: 04/05/2023
-# updated: 06/26/2023
+# updated: 03/24/2025
 
 # set up environment
 
@@ -27,13 +27,13 @@ for (i in packages) {
 
 ## Directory
 
-# wd <- c("G:/Shared drives/emlab/projects/current-projects/calepa-cn/data/health/processed/DataFiles_EmissionsFactors") #Vincent's WD
+# wd <- c("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/DataFiles_EmissionsFactors") #Vincent's WD
 # setwd(wd)
 # getwd()
 
 # temporary working direction
 
-wd <- c("G:/My Drive/UCSB/research/current/efficiency/data") # Vincent's WD
+wd <- c("H:/My Drive/UCSB/research/current/efficiency/data") # Vincent's WD
 setwd(wd)
 
 ## 2017 NEI
@@ -67,7 +67,7 @@ nei_2014 <- nei_2014_raw %>%
 
 # Load refining-level data
 
-ref_analysis <- fread("G:/Shared drives/emlab/projects/current-projects/calepa-cn/data/stocks-flows/processed/refinery_loc_cap_manual.csv") %>%
+ref_analysis <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/stocks-flows/processed/refinery_loc_cap_manual.csv") %>%
   clean_names()
 ref_analysis
 
@@ -75,17 +75,17 @@ ref_analysis %>%
   select(cluster, county) %>%
   table()
 
-ref_renewable <- read_excel("G:/Shared drives/emlab/projects/current-projects/calepa-cn/data/stocks-flows/processed/renewable_refinery_capacity.xlsx") %>%
+ref_renewable <- read_excel("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/stocks-flows/processed/renewable_refinery_capacity.xlsx") %>%
   clean_names()
 ref_renewable
 
-ref_alt <- read_excel("G:/Shared drives/emlab/projects/current-projects/calepa-cn/data/stocks-flows/raw/altair_refinery_capacity.xlsx") %>%
+ref_alt <- read_excel("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/stocks-flows/raw/altair_refinery_capacity.xlsx") %>%
   clean_names()
 ref_alt
 
 # Load cluster level production data
 
-ref_prod <- fread("G:/Shared drives/emlab/projects/current-projects/calepa-cn/data/stocks-flows/processed/fuel_watch_data.csv") %>%
+ref_prod <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/stocks-flows/processed/fuel_watch_data.csv") %>%
   clean_names() %>%
   filter(stock_flow == "Refinery Input") %>%
   # filter(stock_flow == "Refinery Production")%>%
@@ -94,7 +94,7 @@ ref_prod <- fread("G:/Shared drives/emlab/projects/current-projects/calepa-cn/da
   ungroup() %>%
   filter(year %in% c(2014, 2017))
 
-# Process NEI data: restrict to refining & california
+# Process NEI data: restrict to refining & California
 
 nei_ca_ref <- nei_2017_raw %>%
   filter(state %in% "CA") %>%
@@ -114,11 +114,13 @@ nei_ca_ref <- nei_2017_raw %>%
 ref_analysis %>%
   select(site_id, company, corp, refinery_name, county) %>%
   arrange(county)
+
 nei_ca_ref %>%
   select(eis_facility_id, naics6, company_name, site_name, county, total_emissions, pollutant_code) %>%
   filter(pollutant_code %in% "NOX") %>%
   distinct() %>%
   arrange(county)
+
 nei_ca_ref %>%
   select(eis_facility_id, naics6, company_name, site_name, county) %>%
   distinct() %>%
@@ -144,12 +146,13 @@ nei_ca_ref %>%
 # From capacity data
 
 ref_analysis_clean <- ref_analysis %>%
-  filter(site_id %notin% c("489", "550", "191")) # remove asphalt refineires
+  filter(site_id %notin% c("489", "550", "191")) # remove asphalt refineries
 
 # From NEI data
 
 nei_ref_clean <- nei_ca_ref %>%
   filter(eis_facility_id %notin% c("15859711", "4789411", "10296811", "2534511", "5683611", "13703511", "365011")) %>% # drop renewable, dehydration, and asphalt refineries
+  filter(eis_facility_id %notin% c("5786211")) %>% # drop what I believe is a duplicate from id 17922111
   mutate(county = ifelse(county %in% "Solano", "Solano County", county))
 
 # Emission factors at the cluster level #################################################
@@ -195,7 +198,7 @@ nei_2017_raw %>%
 
 ## Plot emission factors compared to Jaramillo and Muller (2016) #############################
 
-JM <- fread("G:/Shared drives/emlab/projects/current-projects/calepa-cn/data/health/processed/DataFiles_EmissionsFactors/emission_factors_final.csv")
+JM <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/DataFiles_EmissionsFactors/emission_factors_final.csv")
 
 # poll <-c("pm25","nox","sox","voc","nh3")
 # names(poll) <- c("PM25-PRI","NOX","SO2","VOC","NH3")
@@ -241,7 +244,72 @@ cluster_factors %>%
 
 ## Output emission factors ########################
 
-cluster_factors %>%
+cluster_factors <- cluster_factors %>%
   filter(reporting_year %in% 2017) %>%
-  select(cluster, pollutant_code, kg_bbl) %>%
-  write.csv("C://git/ca-transport-supply-decarb/health/data/ref_emission_factor.csv", row.names = F)
+  select(cluster, pollutant_code, kg_bbl)
+ 
+cluster_factors%>% 
+  #write.csv("C://git/ca-transport-supply-decarb/health/data/ref_emission_factor.csv", row.names = F)
+  write.csv("C://git/ca-transport-supply-decarb/health/data/ref_emission_factor_v2.csv", row.names = F) #(without that exxon duplicate)
+
+################################################################################################################
+## Facility-level emission factors ##########################################################################
+################################################################################################################
+
+# intial work
+
+ref_analysis_clean %>% 
+  select(site_id,company,corp,site,cluster,county)%>%
+  write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_to_match_eia.csv", row.names = F)
+
+nei_ref_clean %>% 
+  filter(reporting_year %in% "2017")%>%
+  select(eis_facility_id, company_name, site_name, city, county)%>%
+  distinct()%>%
+  write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_to_match_nei.csv", row.names = F)
+
+# (matching algorithm outside of here in 0_matching_algo_v1.0_NEI.R)
+
+#rerfinery share of cluster production
+
+ref_prod_cap <- ref_analysis_clean %>%
+  select(site_id, cluster,barrels_per_day)%>%
+  group_by(cluster) %>%
+  mutate(barrels_per_day_cluster = sum(barrels_per_day, na.rm = T)) %>%
+  ungroup()%>%
+  mutate(share_cluster_cap = barrels_per_day/barrels_per_day_cluster)%>%
+  left_join(ref_prod %>% filter(year == 2017) %>% select(-year), by = c("cluster" = "region"))%>%
+  mutate(ref_prod_share = share_cluster_cap*thous_barrels)%>%
+  mutate(site_id= as.character(site_id))
+  
+
+ref_ei <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_matches.csv", 
+             stringsAsFactors = F,
+             colClasses = "character")%>%
+  distinct()%>%
+  left_join(ref_prod_cap %>% select(site_id, ref_prod_share, cluster), by = c("id1" = "site_id"))%>%
+  left_join(nei_ref_clean %>% 
+              filter(reporting_year %in% "2017") %>% 
+              select(eis_facility_id, pollutant_code, total_emissions)%>%
+              mutate(eis_facility_id= as.character(eis_facility_id)), by = c("id2" = "eis_facility_id"))%>%
+  group_by(id1, pollutant_code)%>%
+  summarize(total_emissions = sum(total_emissions, na.rm = T),
+            ref_prod_share = first(ref_prod_share),
+            cluster = first(cluster))%>%
+  ungroup()%>%
+  mutate(bbl_year = ref_prod_share * 1000,
+  emission_kg = total_emissions * 1000, # Ton to kg
+  kg_bbl = emission_kg / bbl_year)%>%
+  left_join(cluster_factors %>% rename(cluster_kg_bbl=kg_bbl), by = c("cluster", "pollutant_code"))
+
+
+ref_ei %>%
+  ggplot(aes(x=kg_bbl)) +
+  geom_density(adjust=1.5) +
+  theme_cowplot() +
+  #facet_grid(pollutant_code~cluster, scales= "free")
+  #facet_wrap(cluster~pollutant_code, scales= "free")+
+  geom_vline(data = ref_ei, aes(xintercept = cluster_kg_bbl, color = "red"))+
+  facet_wrap(pollutant_code~cluster, scales= "free")+ 
+  guides(color="none")
+
