@@ -65,9 +65,9 @@ df <- fread('ca_od_main_JT02_2020.csv') %>%
                                                                                         ifelse(w_geocode == 60133150001075,"Marathon Golden Eagle",
                                                                                                ifelse(w_geocode == 60133580005003,"Phillips 66 Rodeo",
                                                                                                       ifelse(w_geocode == 60379800151000,"Phillips 66 Wilmington",
-                                                                                                              ifelse(w_geocode == 60790123061000,"Phillips 66 Santa Maria",
-                                                                                                                     ifelse(w_geocode == 60375535021000,"AltAir Paramount",
-                                                                                                                            ifelse(w_geocode == 60290005072077,"Global Clean Energy",NA))))))))))))))))
+                                                                                                             ifelse(w_geocode == 60790123061000,"Phillips 66 Santa Maria",
+                                                                                                                    ifelse(w_geocode == 60375535021000,"AltAir Paramount",
+                                                                                                                           ifelse(w_geocode == 60290005072077,"Global Clean Energy",NA))))))))))))))))
 str(df)
 summary(df$SI01)
 summary(df$S000)
@@ -253,14 +253,14 @@ str(df)
 rm(zips,filenames,ldf)
 
 df <- mutate(df,
-                   Total.Output = str_remove_all(Total.Output,"[$,]"),
-                   Total.Output = as.numeric(Total.Output)) 
+             Total.Output = str_remove_all(Total.Output,"[$,]"),
+             Total.Output = as.numeric(Total.Output)) 
 
 df_total <- group_by(df,
                      zcta) %>% 
   summarize(Total.Output = sum(Total.Output)) %>% 
   ungroup()
-  
+
 df_refining <- group_by(df,
                         zcta) %>% 
   filter(Industry.Code==146) %>% 
@@ -339,8 +339,8 @@ summary(df.tract$SI02_share)
 summary(df.tract$SI03_share)
 
 df.tract <- mutate(df.tract,
-       w_tract_geocode = str_pad(as.character(w_tract_geocode),11,pad="0"),
-       h_tract_geocode = str_pad(as.character(h_tract_geocode),11,pad="0"))
+                   w_tract_geocode = str_pad(as.character(w_tract_geocode),11,pad="0"),
+                   h_tract_geocode = str_pad(as.character(h_tract_geocode),11,pad="0"))
 
 ######################################## 
 # Census Tract to Zip Code Xwalk
@@ -402,7 +402,7 @@ load.implan.zip.agg <- function(x){
            county = separated.string[[1]][3],
            Total.Output = as.numeric(str_remove_all(Total.Output,"[$,]"))) 
   
-
+  
   df <- left_join(df,implan.naics.xwalk, by=c("Industry.Code"="Implan546Index")) %>% 
     mutate(ind_type = ifelse((substr(as.character(`2017NaicsCode`),1,2)=="11" | 
                                 substr(as.character(`2017NaicsCode`),1,2)=="21" | 
