@@ -169,16 +169,76 @@ create_figure_1 <- function(main_path,
     select(-OBJECTID)
   
   ## create counties based on census tracts
-  county_boundaries_from_census_tracts <- raw_ct_2019 |>
+  county_boundaries_from_census_tracts <- census_tracts |>
     group_by(COUNTYFP) |>
     summarise(geometry = st_union(geometry)) |>
     ungroup() |>
     left_join(county_ct_boundaries)
   
   
+  ## north cluster - bay area
+  ## -------------------------------------------------------------------
+
+  disp_win_bay_cluster_wgs84 <- st_sfc(st_point(c(-122.3, 37.7)), st_point(c(-121.1, 38.6)),
+                                      crs = 4326)
+  
+  disp_win_bay_cluster_transf <- st_transform(disp_win_bay_cluster_wgs84, crs = ca_crs)
+  
+  disp_win_bay_cluster_coord <- st_coordinates(disp_win_bay_cluster_transf)
+  
+  bay_cluster_zoom_coord_df <- as.data.frame(disp_win_bay_cluster_coord)
+  
+  
+  ## crop county and census tracts
+  bay_cluster_county_crop <- st_crop(county_boundaries_from_census_tracts, 
+                                    xmin = bay_cluster_zoom_coord_df$X[1],
+                                    xmax = bay_cluster_zoom_coord_df$X[2], 
+                                    ymin = bay_cluster_zoom_coord_df$Y[1], 
+                                    ymax = bay_cluster_zoom_coord_df$Y[2])
+  bay_cluster_ct_cropped <- st_crop(ct_census_tract_pm25_2019_sp, 
+                                   xmin = bay_cluster_zoom_coord_df$X[1], 
+                                   xmax = bay_cluster_zoom_coord_df$X[2], 
+                                   ymin = bay_cluster_zoom_coord_df$Y[1], 
+                                   ymax = bay_cluster_zoom_coord_df$Y[2])
+  
+  bay_cluster_ct_cropped <- bay_cluster_ct_cropped |>
+    mutate(cluster_title = "North cluster: Bay area")
+  
+  
+  ## north cluster - kern
+  ## -------------------------------------------------------------------
+  
+  disp_win_kern_cluster_wgs84 <- st_sfc(st_point(c(-121.3, 34.7)), st_point(c(-117.8, 35.8)),
+                                       crs = 4326)
+  
+  disp_win_kern_cluster_transf <- st_transform(disp_win_kern_cluster_wgs84, crs = ca_crs)
+  
+  disp_win_kern_cluster_coord <- st_coordinates(disp_win_kern_cluster_transf)
+  
+  kern_cluster_zoom_coord_df <- as.data.frame(disp_win_kern_cluster_coord)
+  
+  
+  ## crop county and census tracts
+  kern_cluster_county_crop <- st_crop(county_boundaries_from_census_tracts, 
+                                     xmin = kern_cluster_zoom_coord_df$X[1],
+                                     xmax = kern_cluster_zoom_coord_df$X[2], 
+                                     ymin = kern_cluster_zoom_coord_df$Y[1], 
+                                     ymax = kern_cluster_zoom_coord_df$Y[2])
+  kern_cluster_ct_cropped <- st_crop(ct_census_tract_pm25_2019_sp, 
+                                    xmin = kern_cluster_zoom_coord_df$X[1], 
+                                    xmax = kern_cluster_zoom_coord_df$X[2], 
+                                    ymin = kern_cluster_zoom_coord_df$Y[1], 
+                                    ymax = kern_cluster_zoom_coord_df$Y[2])
+  
+  kern_cluster_ct_cropped <- kern_cluster_ct_cropped |>
+    mutate(cluster_title = "North cluster: Central")
+  
+  
   ## southern cluster - LA
-  disp_win_la_cluster_wgs84 <- st_sfc(st_point(c(-119, 33.4)), st_point(c(-117.4, 34.5)),
-                              crs = 4326)
+  ## -------------------------------------------------------
+  disp_win_la_cluster_wgs84 <- st_sfc(st_point(c(-118.9, 33.6)), st_point(c(-117.6, 34.5)),
+                                      crs = 4326)
+  
   
   disp_win_la_cluster_transf <- st_transform(disp_win_la_cluster_wgs84, crs = ca_crs)
   
@@ -186,7 +246,7 @@ create_figure_1 <- function(main_path,
   
   la_cluster_zoom_coord_df <- as.data.frame(disp_win_la_cluster_coord)
   
-
+  
   ## crop county and census tracts
   la_cluster_county_crop <- st_crop(county_boundaries_from_census_tracts, 
                                     xmin = la_cluster_zoom_coord_df$X[1],
@@ -207,6 +267,460 @@ create_figure_1 <- function(main_path,
   ## refinery color
   refinery_color <- "#095F66"
   # refinery_color <- "black"
+  
+  ## figure
+  ct_health_panel_a <- ggplot() +
+    geom_sf(data = bay_cluster_ct_cropped, mapping = aes(geometry = geometry, fill = pop_x_pm25), lwd = 0.0, color = "white", alpha = 1, show.legend = TRUE) +
+    scale_fill_gradient(
+      high = "#79032E", low = "white", space = "Lab", na.value = "grey50",
+      limits = c(min(ct_census_tract_pm25_2019_sp$pop_x_pm25), max(ct_census_tract_pm25_2019_sp$pop_x_pm25)),
+      breaks = c(0, 5000, 10000),
+      labels = function(x) format(x, big.mark = ",", scientific = FALSE)
+    ) +
+    facet_wrap(~cluster_title) +
+    # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
+    geom_sf(data = bay_cluster_county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+    geom_sf_text(
+      data = CA_counties_noisl %>%
+        filter(adj_county_name %in% c("Solano", "Contra Costa", "San Joaquin", "Sacramento")),
+      mapping = aes(
+        geometry = geometry,
+        label = adj_county_name
+      ), size = 2, fontface = "bold", color = "#343a40"
+    ) +
+    geom_sf(
+      data = refin_capacity |>
+        filter(installation == "Existing capacity"),
+      mapping = aes(
+        geometry = geometry,
+        size = barrels_per_day / 1000
+      ),
+      alpha = 0.9,
+      pch = 1,
+      color = refinery_color,
+      lwd = 0.1
+    ) +
+    scale_size_continuous(
+      range = c(1, 5),
+      breaks = c(15, 150, 300)
+    ) +
+    scale_color_manual(values = c(refinery_color)) +
+    # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+    labs(
+      # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+      fill = expression(paste("Population-weighted PM"[2.5], " (", mu, "g/", m^3, ")")),
+      color = NULL,
+      shape = NULL,
+      x = NULL,
+      y = "Latitude"
+    ) +
+    coord_sf(xlim = disp_win_bay_cluster_coord[, "X"], ylim = disp_win_bay_cluster_coord[, "Y"], expand = FALSE) +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = c(0.01, 0.2),
+      legend.key.width = unit(0.9, "line"),
+      legend.key.height = unit(0.5, "line"),
+      legend.title = element_text(size = 10),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(8, 2, 0, 8),
+      plot.title = element_text(face = "bold", size = 4),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 8),
+      legend.background = element_rect(fill = NA)
+    ) +
+    guides(
+      # fill = guide_colourbar(
+      #   title.position = "top",
+      #   title.hjust = 0,
+      #   direction = "horizontal",
+      #   ticks.colour = "black", frame.colour = "black",
+      #   order = 1
+      # ),
+      fill = "none",
+      size = "none",
+      shape = "none",
+      color = "none"
+    ) +
+    annotation_custom(
+      grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
+      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
+    )
+  
+  
+  ggsave(ct_health_panel_a,
+         filename = file.path(
+           fig_1_folder,
+           "figure1a-pop-weighted.png"
+         ),
+         width = 120,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "png"
+  )
+  
+  ggsave(ct_health_panel_a,
+         filename = file.path(
+           fig_1_folder,
+           "figure1a-pop-weighted.pdf"
+         ),
+         width = 120,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "pdf"
+  )
+  
+  embed_fonts(paste0(fig_1_folder, "/figure1a-pop-weighted.pdf"),
+              outfile = paste0(fig_1_folder, "/figure1a-pop-weighted.pdf")
+  )
+  
+  
+  ## figure
+  ct_health_panel_a_total <- ggplot() +
+    geom_sf(data = bay_cluster_ct_cropped, mapping = aes(geometry = geometry, fill = total_pm25), lwd = 0.0, color = "white", alpha = 1, show.legend = TRUE) +
+    scale_fill_gradient(
+      high = "#79032E", low = "white", space = "Lab", na.value = "grey50",
+      limits = c(min(ct_census_tract_pm25_2019_sp$total_pm25), max(ct_census_tract_pm25_2019_sp$total_pm25)),
+      breaks = c(0, 1, 2),
+      labels = function(x) format(x, big.mark = ",", scientific = FALSE)
+    ) +
+    facet_wrap(~cluster_title) +
+    # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
+    geom_sf(data = bay_cluster_county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+    geom_sf_text(
+      data = CA_counties_noisl %>%
+        filter(adj_county_name %in% c("Solano", "Contra Costa", "San Joaquin", "Sacramento")),
+      mapping = aes(
+        geometry = geometry,
+        label = adj_county_name
+      ), size = 2, fontface = "bold", color = "#343a40"
+    ) +
+    geom_sf(
+      data = refin_capacity |>
+        filter(installation == "Existing capacity"),
+      mapping = aes(
+        geometry = geometry,
+        size = barrels_per_day / 1000
+      ),
+      alpha = 0.9,
+      pch = 1,
+      color = refinery_color,
+      lwd = 0.1
+    ) +
+    scale_size_continuous(
+      range = c(1, 5),
+      breaks = c(15, 150, 300)
+    ) +
+    scale_color_manual(values = c(refinery_color)) +
+    # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+    labs(
+      # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+      fill = expression(paste("PM"[2.5], " (", mu, "g/", m^3, ")")),
+      color = NULL,
+      shape = NULL,
+      x = "Longitude",
+      y = "Latitude"
+    ) +
+    coord_sf(xlim = disp_win_bay_cluster_coord[, "X"], ylim = disp_win_bay_cluster_coord[, "Y"], expand = FALSE) +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = c(0.01, 0.2),
+      legend.key.width = unit(0.7, "line"),
+      legend.key.height = unit(0.5, "line"),
+      legend.title = element_text(size = 10),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(8, 2, 0, 8),
+      plot.title = element_text(face = "bold", size = 4),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 8),
+      legend.background = element_rect(fill = NA)
+    ) +
+    guides(
+      # fill = guide_colourbar(
+      #   title.position = "top",
+      #   title.hjust = 0,
+      #   direction = "horizontal",
+      #   ticks.colour = "black", frame.colour = "black",
+      #   order = 1
+      # ),
+      fill = "none",
+      size = "none",
+      shape = "none",
+      color = "none"
+    ) +
+    annotation_custom(
+      grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
+      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
+    )
+  
+  
+  ggsave(ct_health_panel_a_total,
+         filename = file.path(
+           fig_1_folder,
+           "figure1a-not-weighted.png"
+         ),
+         width = 120,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "png"
+  )
+  
+  ggsave(ct_health_panel_a_total,
+         filename = file.path(
+           fig_1_folder,
+           "figure1a-not-weighted.pdf"
+         ),
+         width = 120,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "pdf"
+  )
+  
+  embed_fonts(paste0(fig_1_folder, "/figure1a-not-weighted.pdf"),
+              outfile = paste0(fig_1_folder, "/figure1a-not-weighted.pdf")
+  )
+  
+  
+  
+  ## figure
+  ct_health_panel_b <- ggplot() +
+    geom_sf(data = kern_cluster_ct_cropped, mapping = aes(geometry = geometry, fill = pop_x_pm25), lwd = 0.0, color = "white", alpha = 1, show.legend = TRUE) +
+    scale_fill_gradient(
+      high = "#79032E", low = "white", space = "Lab", na.value = "grey50",
+      limits = c(min(ct_census_tract_pm25_2019_sp$pop_x_pm25), max(ct_census_tract_pm25_2019_sp$pop_x_pm25)),
+      breaks = c(0, 5000, 10000),
+      labels = function(x) format(x, big.mark = ",", scientific = FALSE)
+    ) +
+    facet_wrap(~cluster_title) +
+    # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
+    geom_sf(data = kern_cluster_county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+    geom_sf_text(
+      data = CA_counties_noisl %>%
+        filter(adj_county_name %in% c("Kern", "San Luis Obispo")),
+      mapping = aes(
+        geometry = geometry,
+        label = adj_county_name
+      ), size = 2, fontface = "bold", color = "#343a40"
+    ) +
+    geom_sf(
+      data = refin_capacity |>
+        filter(installation == "Existing capacity"),
+      mapping = aes(
+        geometry = geometry,
+        size = barrels_per_day / 1000
+      ),
+      alpha = 0.9,
+      pch = 1,
+      color = refinery_color,
+      lwd = 0.1
+    ) +
+    scale_size_continuous(
+      range = c(1, 5),
+      breaks = c(15, 150, 300)
+    ) +
+    scale_color_manual(values = c(refinery_color)) +
+    # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+    labs(
+      # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+      fill = expression(paste("Population-weighted PM"[2.5], " (", mu, "g/", m^3, ")")),
+      color = NULL,
+      shape = NULL,
+      x = "Longitude",
+      y = "Latitude"
+    ) +
+    coord_sf(xlim = disp_win_kern_cluster_coord[, "X"], ylim = disp_win_kern_cluster_coord[, "Y"], expand = FALSE) +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = c(0.01, 0.2),
+      legend.key.width = unit(0.9, "line"),
+      legend.key.height = unit(0.5, "line"),
+      legend.title = element_text(size = 10),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(8, 2, 0, 8),
+      plot.title = element_text(face = "bold", size = 4),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 8),
+      legend.background = element_rect(fill = NA)
+    ) +
+    guides(
+      # fill = guide_colourbar(
+      #   title.position = "top",
+      #   title.hjust = 0,
+      #   direction = "horizontal",
+      #   ticks.colour = "black", frame.colour = "black",
+      #   order = 1
+      # ),
+      fill = "none",
+      size = "none",
+      shape = "none",
+      color = "none"
+    ) +
+    annotation_custom(
+      grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
+      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
+    )
+  
+  
+  ggsave(ct_health_panel_b,
+         filename = file.path(
+           fig_1_folder,
+           "figure1b-pop-weighted.png"
+         ),
+         width = 160,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "png"
+  )
+  
+  ggsave(ct_health_panel_b,
+         filename = file.path(
+           fig_1_folder,
+           "figure1b-pop-weighted.pdf"
+         ),
+         width = 160,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "pdf"
+  )
+  
+  embed_fonts(paste0(fig_1_folder, "/figure1b-pop-weighted.pdf"),
+              outfile = paste0(fig_1_folder, "/figure1b-pop-weighted.pdf")
+  )
+  
+  
+  ## figure
+  ct_health_panel_b_total <- ggplot() +
+    geom_sf(data = kern_cluster_ct_cropped, mapping = aes(geometry = geometry, fill = total_pm25), lwd = 0.0, color = "white", alpha = 1, show.legend = TRUE) +
+    scale_fill_gradient(
+      high = "#79032E", low = "white", space = "Lab", na.value = "grey50",
+      limits = c(min(ct_census_tract_pm25_2019_sp$total_pm25), max(ct_census_tract_pm25_2019_sp$total_pm25)),
+      breaks = c(0, 1, 2),
+      labels = function(x) format(x, big.mark = ",", scientific = FALSE)
+    ) +
+    facet_wrap(~cluster_title) +
+    # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
+    geom_sf(data = kern_cluster_county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+    geom_sf_text(
+      data = CA_counties_noisl %>%
+        filter(adj_county_name %in% c("Kern", "San Luis Obispo")),
+      mapping = aes(
+        geometry = geometry,
+        label = adj_county_name
+      ), size = 2, fontface = "bold", color = "#343a40"
+    ) +
+    geom_sf(
+      data = refin_capacity |>
+        filter(installation == "Existing capacity"),
+      mapping = aes(
+        geometry = geometry,
+        size = barrels_per_day / 1000
+      ),
+      alpha = 0.9,
+      pch = 1,
+      color = refinery_color,
+      lwd = 0.1
+    ) +
+    scale_size_continuous(
+      range = c(1, 5),
+      breaks = c(15, 150, 300)
+    ) +
+    scale_color_manual(values = c(refinery_color)) +
+    # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+    labs(
+      # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+      fill = expression(paste("PM"[2.5], " (", mu, "g/", m^3, ")")),
+      color = NULL,
+      shape = NULL,
+      x = "Longitude",
+      y = "Latitude"
+    ) +
+    coord_sf(xlim = disp_win_kern_cluster_coord[, "X"], ylim = disp_win_kern_cluster_coord[, "Y"], expand = FALSE) +
+    theme(
+      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+      legend.justification = c(0, 1),
+      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      legend.position = c(0.01, 0.2),
+      legend.key.width = unit(0.7, "line"),
+      legend.key.height = unit(0.5, "line"),
+      legend.title = element_text(size = 10),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(8, 2, 0, 8),
+      plot.title = element_text(face = "bold", size = 4),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_blank(),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 8),
+      legend.background = element_rect(fill = NA)
+    ) +
+    guides(
+      # fill = guide_colourbar(
+      #   title.position = "top",
+      #   title.hjust = 0,
+      #   direction = "horizontal",
+      #   ticks.colour = "black", frame.colour = "black",
+      #   order = 1
+      # ),
+      fill = "none",
+      size = "none",
+      shape = "none",
+      color = "none"
+    ) +
+    annotation_custom(
+      grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
+      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
+    )
+  
+  
+  ggsave(ct_health_panel_b_total,
+         filename = file.path(
+           fig_1_folder,
+           "figure1b-not-weighted.png"
+         ),
+         width = 160,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "png"
+  )
+  
+  ggsave(ct_health_panel_b_total,
+         filename = file.path(
+           fig_1_folder,
+           "figure1b-not-weighted.pdf"
+         ),
+         width = 160,
+         height = 120,
+         units = "mm",
+         dpi = 300,
+         device = "pdf"
+  )
+  
+  embed_fonts(paste0(fig_1_folder, "/figure1b-not-weighted.pdf"),
+              outfile = paste0(fig_1_folder, "/figure1b-not-weighted.pdf")
+  )
+  
+  
 
   ## figure
   ct_health_panel_c <- ggplot() +
@@ -252,8 +766,8 @@ create_figure_1 <- function(main_path,
       fill = expression(paste("Population-weighted PM"[2.5], " (", mu, "g/", m^3, ")")),
       color = NULL,
       shape = NULL,
-      x = "Longitude",
-      y = "Latitude"
+      x = NULL,
+      y = NULL
     ) +
     coord_sf(xlim = disp_win_la_cluster_coord[, "X"], ylim = disp_win_la_cluster_coord[, "Y"], expand = FALSE) +
     theme(
@@ -275,13 +789,14 @@ create_figure_1 <- function(main_path,
       legend.background = element_rect(fill = NA)
     ) +
     guides(
-      fill = guide_colourbar(
-        title.position = "top",
-        title.hjust = 0,
-        direction = "horizontal",
-        ticks.colour = "black", frame.colour = "black",
-        order = 1
-      ),
+      # fill = guide_colourbar(
+      #   title.position = "top",
+      #   title.hjust = 0,
+      #   direction = "horizontal",
+      #   ticks.colour = "black", frame.colour = "black",
+      #   order = 1
+      # ),
+      fill = "none",
       size = "none",
       shape = "none",
       color = "none"
@@ -388,13 +903,14 @@ create_figure_1 <- function(main_path,
       legend.background = element_rect(fill = NA)
     ) +
     guides(
-      fill = guide_colourbar(
-        title.position = "top",
-        title.hjust = 0,
-        direction = "horizontal",
-        ticks.colour = "black", frame.colour = "black",
-        order = 1
-      ),
+      # fill = guide_colourbar(
+      #   title.position = "top",
+      #   title.hjust = 0,
+      #   direction = "horizontal",
+      #   ticks.colour = "black", frame.colour = "black",
+      #   order = 1
+      # ),
+      fill = "none",
       size = "none",
       shape = "none",
       color = "none"
@@ -403,7 +919,6 @@ create_figure_1 <- function(main_path,
       grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
       xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
     )
-  
   
   ggsave(ct_health_panel_c_total,
          filename = file.path(
@@ -434,195 +949,221 @@ create_figure_1 <- function(main_path,
   )
   
   
-  
-  
-  
-  
-  
-  
-  
-  # 
-  # ## refinery legend
-  # ct_health_map_legend <- ggplot() +
-  #   geom_sf(data = ct_census_tract_pm25_2019_sp, mapping = aes(geometry = geometry), lwd = 0.0, color = "white", alpha = 1, show.legend = FALSE) +
-  #   geom_sf(
-  #     data = refin_capacity %>%
-  #       filter(installation == "Existing capacity") %>%
-  #       mutate(object = "Refinery location"),
-  #     mapping = aes(geometry = geometry, color = object), shape = 21, alpha = 0.9, size = 2, stroke = 0.5
-  #   ) +
-  #   scale_color_manual(values = c(refinery_color)) +
-  #   theme_void() +
-  #   # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
-  #   labs(
-  #     # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
-  #     # fill = expression(paste("Population-weighted PM"[2.5], " (",mu,"/",m^3,")")),
-  #     color = NULL,
-  #     x = "Longitude",
-  #     y = "Latitude"
-  #   ) +
-  #   coord_sf(
-  #     xlim = disp_win2_coord[, "X"], ylim = disp_win2_coord[, "Y"],
-  #     datum = ca_crs, expand = FALSE
-  #   ) +
-  #   theme(
-  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-  #     legend.justification = c(0, 1),
-  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-  #     legend.position = c(0, 0.2),
-  #     legend.key.width = unit(0.7, "line"),
-  #     legend.key.height = unit(0.5, "line"),
-  #     legend.title = element_text(size = 6),
-  #     legend.text = element_text(size = 6),
-  #     plot.margin = margin(8, 2, 0, 8),
-  #     plot.title = element_text(face = "bold", size = 4),
-  #     panel.grid.major = element_blank(),
-  #     panel.grid.minor = element_blank(),
-  #     panel.background = element_blank(),
-  #     axis.title = element_text(size = 5),
-  #     axis.text = element_text(size = 4)
-  #   ) +
-  #   guides(
-  #     shape = guide_legend(order = 1),
-  #     fill = guide_legend(show = FALSE),
-  #     size = guide_legend(show = FALSE),
-  #     color = guide_legend(
-  #       direction = "horizontal",
-  #       override.aes = list(
-  #         pch = 21,
-  #         size = 2,
-  #         alpha = 1,
-  #         stroke = 0.5
-  #       )
-  #     )
-  #   )
-  # 
-  # refin_legend2 <- get_legend(
-  #   ct_health_map_legend
-  # )
-  # 
-  # ## plot together
-  # map_fig_b <- ggdraw(ct_health_map, clip = "on") +
-  #   draw_plot(refin_legend2, x = 0.2, y = 0.22, width = 0.025, height = 0.025)
-  # 
-  # 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  ## pm2.5 legend
+  ## ---------------------------------------------------------------------
   
   ## figure
-  total_pm25 <- ggplot() +
-    geom_sf(data = ct_map |> filter(GEOID %in% ct_intersect$GEOID), aes(geometry = geometry, fill = total_pm25), color = NA) +
+  health_legend_fig <- ggplot() +
+    geom_sf(data = la_cluster_ct_cropped, mapping = aes(geometry = geometry, fill = pop_x_pm25), lwd = 0.0, color = "white", alpha = 1, show.legend = TRUE) +
     scale_fill_gradient(
-      high = "#79032E", low = "#FFFFFF", space = "Lab", na.value = "grey50",
-      limits = c(min(ct_cropped$total_pm25), max(ct_cropped$total_pm25)),
-      breaks = c(0.001, 0.004)
+      high = "#79032E", low = "white", space = "Lab", na.value = "grey50",
+      limits = c(min(ct_census_tract_pm25_2019_sp$pop_x_pm25), max(ct_census_tract_pm25_2019_sp$pop_x_pm25)),
+      breaks = c(0, 5000, 10000),
+      labels = function(x) format(x, big.mark = ",", scientific = FALSE)
     ) +
-    geom_sf(data = county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
-    geom_sf(data = refin_capacity %>% filter(site_id == "226"), mapping = aes(geometry = geometry), alpha = 0.9, pch = 21, color = refinery_color, lwd = 0.1, size = 2) +
     labs(
-      title = NULL,
-      # title = expression(bold(paste("C. PM"[2.5], "concentration from Torrance Refinery"))),
-      fill = expression("PM"[2.5] ~ "concentration (" * mu * "g/" * m^3 * ")"),
+      # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+      fill = expression(paste("Population-weighted PM"[2.5], " (", mu, "g/", m^3, ")")),
+      color = NULL,
+      shape = NULL,
       x = "Longitude",
       y = "Latitude"
     ) +
-    annotate("text", x = 151000, y = -450000, label = "Torrance\nrefinery", color = "black", size = 2) +
-    annotate("text", x = 150000, y = -430000, label = "Los Angeles", color = "#545E68", size = 2) +
-    annotate("text", x = 195000, y = -480000, label = "Orange", color = "#545E68", size = 2) +
-    xlim(c(142000, 200000)) +
-    ylim(c(-489424, -424700)) +
-    # coord_sf(xlim = disp_win_la_coord[,'X'], ylim = disp_win_la_coord[,'Y'], expand = FALSE) +
-    # annotate(
-    #   geom = "text", x = 75000, y = -375000,
-    #   label = "Los Angeles", hjust = 0, vjust = 1, size = 1.25, fontface = "bold"
-    # ) +
-    # geom_sf_text(data = refin_capacity %>% filter(site_id == '226') %>% mutate(name = "Torrance\nRefinery"),
-    #              mapping = aes(geometry = geometry, label = name), size = 1, fontface = "bold", color = "black", vjust = 1, hjust = 1) +
+    coord_sf(xlim = disp_win_la_cluster_coord[, "X"], ylim = disp_win_la_cluster_coord[, "Y"], expand = FALSE) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = c(0.035, 0.23),
-      legend.key.width = unit(0.7, "line"),
+      legend.position = c(0.01, 0.2),
+      legend.key.width = unit(1, "line"),
       legend.key.height = unit(0.5, "line"),
-      legend.title = element_text(size = 4),
-      legend.text = element_text(size = 4),
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.title = element_text(size = 5),
-      axis.text = element_text(size = 4),
-      legend.background = element_rect(fill = NA) # Make legend background transparent
-      # plot.margin = margin(0, 2, 0, 8),
-      # plot.title = element_text(face = 'bold', size = 5, hjust = -0.05)
+      legend.title = element_text(size = 10),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(8, 2, 0, 8),
+      legend.background = element_rect(fill = NA)
     ) +
-    guides(fill = guide_colourbar(
-      title.position = "top",
-      title.hjust = 0,
-      direction = "horizontal",
-      ticks.colour = "black", frame.colour = "black",
-      order = 1
-    )) + # Also make the box around the legend transparent)) +
-    annotation_custom(
-      grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
-      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
-    )
+    guides(
+      fill = guide_colourbar(
+        title.position = "top",
+        title.hjust = 0,
+        direction = "horizontal",
+        ticks.colour = "black", frame.colour = "black",
+        order = 1
+      )) 
   
-  ## save
-  ## ---------------------------------------------------------------------------
   
-  ## create a folder for fig 1
-  fig_1_folder <- file.path(
-    main_path,
-    "outputs",
-    "academic-out",
-    "refining",
-    "figures",
-    "2025-update",
-    "fig1"
+  health_legend <- get_legend(
+    health_legend_fig
+  )
+
+  ## refinery legend
+  ## ---------------------------------------------------------------------
+  
+  refinery_legend_fig <- ggplot() +
+    geom_sf(data = la_cluster_ct_cropped, mapping = aes(geometry = geometry, fill = total_pm25), lwd = 0.0, color = "white", alpha = 1, show.legend = TRUE) +
+    scale_fill_gradient(
+      high = "#79032E", low = "white", space = "Lab", na.value = "grey50",
+      limits = c(min(ct_census_tract_pm25_2019_sp$total_pm25), max(ct_census_tract_pm25_2019_sp$total_pm25)),
+      breaks = c(0, 1, 2),
+      labels = function(x) format(x, big.mark = ",", scientific = FALSE)
+    ) +
+    geom_sf(
+      data = refin_capacity |>
+        filter(installation == "Existing capacity"),
+      mapping = aes(
+        geometry = geometry,
+        size = barrels_per_day / 1000
+      ),
+      alpha = 0.9,
+      pch = 1,
+      color = refinery_color,
+      lwd = 0.1
+    ) +
+    scale_size_continuous(
+      range = c(1, 5),
+      breaks = c(15, 150, 300)
+    ) +
+    scale_color_manual(values = c(refinery_color)) +
+    # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+    labs(
+      # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
+      fill = expression(paste("PM"[2.5], " (", mu, "g/", m^3, ")")),
+      size = "Refinery capacity\n(thous. bbls per day)",
+      color = NULL,
+      shape = NULL,
+      x = "Longitude",
+      y = "Latitude"
+    ) +
+    coord_sf(xlim = disp_win_la_cluster_coord[, "X"], ylim = disp_win_la_cluster_coord[, "Y"], expand = FALSE) +
+    theme(
+      #legend.justification defines the edge of the legend that the legend.position coordinates refer to
+          legend.justification = c(0, 1),
+          # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+          legend.position = c(0, 0.2),
+          legend.key.width = unit(0.7, "line"),
+          legend.key.height = unit(0.5, "line"),
+          legend.key=element_blank(),
+          legend.title = element_text(size = 10),
+          legend.text = element_text(size = 8),
+          plot.margin = margin(8, 2, 0, 8),
+          plot.title = element_text(face = "bold", size = 4),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+      legend.background = element_rect(fill = NA)
+    ) +
+    guides(
+      fill = "none",
+      size = guide_legend(
+         title.position = "left",
+         title.hjust = 0,
+         direction = "horizontal",
+         override.aes=list(fill=NA)
+      ),
+      shape = "none",
+      color = "none"
+    ) 
+  
+  refinery_legend <- get_legend(
+    refinery_legend_fig
   )
   
-  # check if the folder exists
-  if (!dir.exists(fig_1_folder)) {
-    # Create the folder if it does not exist
-    dir.create(fig_1_folder)
-  }
   
-  ggsave(map_fig_a,
+  ## plot health together
+  ## --------------------------------------------------------------------------
+  
+  # ## plot together
+  # ct_health_panel_a_legend <- ggdraw(ct_health_panel_a, clip = "on") +
+  #   draw_plot(refinery_legend, x = 0.25, y = 0.05, width = 0.025, height = 0.025)
+  
+  xaxis_lab <- ggdraw() + draw_label("Longitude",
+                                     size = 10, angle = 0
+  )
+  
+  
+  
+  ## plot all four together
+  
+  fig1_health <- plot_grid(
+    ct_health_panel_a,
+    ct_health_panel_c,
+    align = "vh",
+    # labels = c("A", "B"),
+    nrow = 1,
+    ncol = 2,
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    rel_widths = c(1, 1),
+    rel_heights = c(1, 1)
+  )
+  
+  fig1_health
+  
+  fig1_health_legend <- plot_grid(
+    refinery_legend,
+    health_legend,
+    align = "vh",
+    # labels = c("A", "B"),
+    nrow = 1,
+    ncol = 2,
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    rel_widths = c(1, 1),
+    rel_heights = c(1, 1)
+  )
+  
+  
+  fig1_health_all <- plot_grid(
+    fig1_health, 
+    fig1_health_legend, 
+    ncol = 1, 
+    hjust = -1,
+    rel_widths = c(1, 1),
+    rel_heights = c(1, 0.1))
+  
+ 
+  
+ 
+  
+  
+  
+  ggsave(fig1_abcd,
          filename = file.path(
            fig_1_folder,
-           "figure1a.png"
+           "figure1.png"
          ),
-         width = 88,
-         height = 120,
+         width = 160,
+         height = 160,
          units = "mm",
          dpi = 300,
          device = "png"
   )
   
-  ggsave(map_fig_a,
+  ggsave(fig1_abcd,
          filename = file.path(
            fig_1_folder,
-           "figure1a.pdf"
+           "figure1.pdf"
          ),
-         width = 88,
-         height = 120,
+         width = 160,
+         height = 160,
          units = "mm",
          dpi = 300,
          device = "pdf"
   )
   
-  embed_fonts(paste0(fig_1_folder, "/figure1a.pdf"),
-              outfile = paste0(fig_1_folder, "/figure1a.pdf")
+  embed_fonts(
+    file.path(
+      fig_1_folder,
+      "figure1.pdf"
+    ),
+    outfile = file.path(
+      fig_1_folder,
+      "figure1.pdf"
+    )
   )
+}
   
   
   
@@ -634,14 +1175,116 @@ create_figure_1 <- function(main_path,
   
   
   
-  
-  
-  
-  
+  # ## figure
+  # total_pm25 <- ggplot() +
+  #   geom_sf(data = ct_map |> filter(GEOID %in% ct_intersect$GEOID), aes(geometry = geometry, fill = total_pm25), color = NA) +
+  #   scale_fill_gradient(
+  #     high = "#79032E", low = "#FFFFFF", space = "Lab", na.value = "grey50",
+  #     limits = c(min(ct_cropped$total_pm25), max(ct_cropped$total_pm25)),
+  #     breaks = c(0.001, 0.004)
+  #   ) +
+  #   geom_sf(data = county_crop, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+  #   geom_sf(data = refin_capacity %>% filter(site_id == "226"), mapping = aes(geometry = geometry), alpha = 0.9, pch = 21, color = refinery_color, lwd = 0.1, size = 2) +
+  #   labs(
+  #     title = NULL,
+  #     # title = expression(bold(paste("C. PM"[2.5], "concentration from Torrance Refinery"))),
+  #     fill = expression("PM"[2.5] ~ "concentration (" * mu * "g/" * m^3 * ")"),
+  #     x = "Longitude",
+  #     y = "Latitude"
+  #   ) +
+  #   annotate("text", x = 151000, y = -450000, label = "Torrance\nrefinery", color = "black", size = 2) +
+  #   annotate("text", x = 150000, y = -430000, label = "Los Angeles", color = "#545E68", size = 2) +
+  #   annotate("text", x = 195000, y = -480000, label = "Orange", color = "#545E68", size = 2) +
+  #   xlim(c(142000, 200000)) +
+  #   ylim(c(-489424, -424700)) +
+  #   # coord_sf(xlim = disp_win_la_coord[,'X'], ylim = disp_win_la_coord[,'Y'], expand = FALSE) +
+  #   # annotate(
+  #   #   geom = "text", x = 75000, y = -375000,
+  #   #   label = "Los Angeles", hjust = 0, vjust = 1, size = 1.25, fontface = "bold"
+  #   # ) +
+  #   # geom_sf_text(data = refin_capacity %>% filter(site_id == '226') %>% mutate(name = "Torrance\nRefinery"),
+  #   #              mapping = aes(geometry = geometry, label = name), size = 1, fontface = "bold", color = "black", vjust = 1, hjust = 1) +
+  #   theme(
+  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+  #     legend.justification = c(0, 1),
+  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+  #     legend.position = c(0.035, 0.23),
+  #     legend.key.width = unit(0.7, "line"),
+  #     legend.key.height = unit(0.5, "line"),
+  #     legend.title = element_text(size = 4),
+  #     legend.text = element_text(size = 4),
+  #     panel.grid.major = element_blank(),
+  #     panel.grid.minor = element_blank(),
+  #     panel.background = element_blank(),
+  #     axis.title = element_text(size = 5),
+  #     axis.text = element_text(size = 4),
+  #     legend.background = element_rect(fill = NA) # Make legend background transparent
+  #     # plot.margin = margin(0, 2, 0, 8),
+  #     # plot.title = element_text(face = 'bold', size = 5, hjust = -0.05)
+  #   ) +
+  #   guides(fill = guide_colourbar(
+  #     title.position = "top",
+  #     title.hjust = 0,
+  #     direction = "horizontal",
+  #     ticks.colour = "black", frame.colour = "black",
+  #     order = 1
+  #   )) + # Also make the box around the legend transparent)) +
+  #   annotation_custom(
+  #     grob = rectGrob(gp = gpar(lwd = 1, col = "black", fill = NA)), # lwd for line width, col for color
+  #     xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
+  #   )
+  # 
+  # ## save
+  # ## ---------------------------------------------------------------------------
+  # 
+  # ## create a folder for fig 1
+  # fig_1_folder <- file.path(
+  #   main_path,
+  #   "outputs",
+  #   "academic-out",
+  #   "refining",
+  #   "figures",
+  #   "2025-update",
+  #   "fig1"
+  # )
+  # 
+  # # check if the folder exists
+  # if (!dir.exists(fig_1_folder)) {
+  #   # Create the folder if it does not exist
+  #   dir.create(fig_1_folder)
+  # }
+  # 
+  # ggsave(map_fig_a,
+  #        filename = file.path(
+  #          fig_1_folder,
+  #          "figure1a.png"
+  #        ),
+  #        width = 88,
+  #        height = 120,
+  #        units = "mm",
+  #        dpi = 300,
+  #        device = "png"
+  # )
+  # 
+  # ggsave(map_fig_a,
+  #        filename = file.path(
+  #          fig_1_folder,
+  #          "figure1a.pdf"
+  #        ),
+  #        width = 88,
+  #        height = 120,
+  #        units = "mm",
+  #        dpi = 300,
+  #        device = "pdf"
+  # )
+  # 
+  # embed_fonts(paste0(fig_1_folder, "/figure1a.pdf"),
+  #             outfile = paste0(fig_1_folder, "/figure1a.pdf")
+  # )
+  # 
+  # 
   
   ## ---------------------------------------------------------------------------
-  
-  
   
   ## crop area
   disp_win2_wgs84 <- st_sfc(st_point(c(-122.5, 33)), st_point(c(-117, 39)),
@@ -660,11 +1303,6 @@ create_figure_1 <- function(main_path,
   
   ## st_union of no island counties
   ca_union <- st_union(CA_counties_noisl)
-  
-  ## refinery color
-  refinery_color <- "#095F66"
-  # refinery_color <- "black"
-  
   
   ## map inset, CA with box around zoom area
   fig1_inset <- ggplot() +
@@ -767,66 +1405,66 @@ create_figure_1 <- function(main_path,
   dac_legend <- get_legend(
     fig1_dac_legend
   )
-  
-  fig1_refing_legend <- ggplot() +
-    geom_sf(data = ca_union, mapping = aes(), fill = "transparent", lwd = 0.4, show.legend = FALSE) +
-    # geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
-    geom_sf(
-      data = refin_capacity |>
-        filter(installation == "Existing capacity"),
-      mapping = aes(
-        geometry = geometry,
-        size = barrels_per_day / 1000
-      ),
-      alpha = 0.9,
-      pch = 1,
-      color = refinery_color,
-      lwd = 0.1
-    ) +
-    geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
-    # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
-    labs(
-      title = NULL,
-      color = NULL,
-      size = "Refinery capacity\n(thous. bbls per day)",
-      x = NULL,
-      y = NULL
-    ) +
-    scale_size_continuous(
-      range = c(1, 5),
-      breaks = c(15, 150, 300)
-    ) +
-    # scale_color_manual(values = c('#191970', '#e2711d')) +
-    coord_sf(
-      xlim = disp_win2_coord[, "X"], ylim = disp_win2_coord[, "Y"],
-      datum = ca_crs, expand = FALSE
-    ) +
-    theme_void() +
-    theme(
-      # legend.justification defines the edge of the legend that the legend.position coordinates refer to
-      legend.justification = c(0, 1),
-      # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = c(0, 0.2),
-      legend.text = element_text(size = 7),
-      legend.title = element_text(size = 7),
-      plot.title = element_text(hjust = -0.1, face = "bold", size = 7)
-    ) +
-    guides(
-      fill = guide_colourbar(
-        title.position = "top",
-        title.hjust = 0,
-        direction = "horizontal",
-        ticks.colour = "black", frame.colour = "black"
-      ),
-      size = guide_legend(direction = "horizontal"),
-      color = guide_legend(override.aes = list(size = 3))
-    )
-  
-  refin_legend <- get_legend(
-    fig1_refing_legend
-  )
-  
-  
+  # 
+  # fig1_refing_legend <- ggplot() +
+  #   geom_sf(data = ca_union, mapping = aes(), fill = "transparent", lwd = 0.4, show.legend = FALSE) +
+  #   # geom_sf(data = dac_areas , mapping = aes(geometry = geometry), fill = "#C0C0C0", lwd = 0, color = "#C0C0C0", show.legend = TRUE) +
+  #   geom_sf(
+  #     data = refin_capacity |>
+  #       filter(installation == "Existing capacity"),
+  #     mapping = aes(
+  #       geometry = geometry,
+  #       size = barrels_per_day / 1000
+  #     ),
+  #     alpha = 0.9,
+  #     pch = 1,
+  #     color = refinery_color,
+  #     lwd = 0.1
+  #   ) +
+  #   geom_sf(data = CA_counties_noisl, mapping = aes(geometry = geometry), lwd = 0.05, fill = NA) +
+  #   # scale_fill_gradient2(midpoint = 0, low = "red", mid = "white", high = "blue") +
+  #   labs(
+  #     title = NULL,
+  #     color = NULL,
+  #     size = "Refinery capacity\n(thous. bbls per day)",
+  #     x = NULL,
+  #     y = NULL
+  #   ) +
+  #   scale_size_continuous(
+  #     range = c(1, 5),
+  #     breaks = c(15, 150, 300)
+  #   ) +
+  #   # scale_color_manual(values = c('#191970', '#e2711d')) +
+  #   coord_sf(
+  #     xlim = disp_win2_coord[, "X"], ylim = disp_win2_coord[, "Y"],
+  #     datum = ca_crs, expand = FALSE
+  #   ) +
+  #   theme_void() +
+  #   theme(
+  #     # legend.justification defines the edge of the legend that the legend.position coordinates refer to
+  #     legend.justification = c(0, 1),
+  #     # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+  #     legend.position = c(0, 0.2),
+  #     legend.text = element_text(size = 7),
+  #     legend.title = element_text(size = 7),
+  #     plot.title = element_text(hjust = -0.1, face = "bold", size = 7)
+  #   ) +
+  #   guides(
+  #     fill = guide_colourbar(
+  #       title.position = "top",
+  #       title.hjust = 0,
+  #       direction = "horizontal",
+  #       ticks.colour = "black", frame.colour = "black"
+  #     ),
+  #     size = guide_legend(direction = "horizontal"),
+  #     color = guide_legend(override.aes = list(size = 3))
+  #   )
+  # 
+  # refin_legend <- get_legend(
+  #   fig1_refing_legend
+  # )
+  # 
+  # 
   
   
   ## plot together
