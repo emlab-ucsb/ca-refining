@@ -282,6 +282,23 @@ read_ca_regions <- function(file) {
 }
 
 
+read_labor_direct_mult_inputs <- function(file) {
+  dt <- fread(file, colClasses = c(w_tract_geocode = "character",
+                                   h_tract_geocode = "character"))
+  dt
+}
+
+
+read_labor_indirect_mult_inputs <- function(file, input_sheet) {
+  dt <- fread(file)
+  
+  dt
+}
+
+
+
+
+
 read_labor_fte_inputs <- function(file, input_sheet) {
   dt <- setDT(read.xlsx(file, sheet = input_sheet, startRow = 2))
 

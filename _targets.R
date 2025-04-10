@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(name = list_paths, c(
@@ -145,6 +145,8 @@ list(
   tar_target(name = file_df_ca_regions, command = file.path(main_path, "data-staged-for-deletion/labor/raw/ca_regions.csv"), format = "file"),
   # tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
+  tar_target(name = file_direct_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv")),
+  tar_target(name = file_indirect_state_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv")),
   tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240623-census_regions-Detail Economic Indicators.csv"), format = "file"),
   tar_target(name = file_df_labor_fte, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/Emp_FTE and W&S_EC_546 Industry Scheme.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
@@ -189,6 +191,8 @@ list(
   # tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   tar_target(name = proc_labor_fte_df, command = read_labor_fte_inputs(file_df_labor_fte, input_sheet = "2022")),
   tar_target(name = proc_labor_dest_df, command = read_labor_inputs(file_df_labor_dest, proc_labor_fte_df)),
+  tar_target(name = dt_direct_multipliers, command = read_labor_direct_mult_inputs(file_direct_multipliers)),
+  tar_target(name = dt_indirect_state_multipliers, command = read_labor_indirect_mult_inputs(file_indirect_state_multipliers)),
   tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
   tar_target(name = refin_locs, command = read_refin_locs(
     file_refin_locs,
