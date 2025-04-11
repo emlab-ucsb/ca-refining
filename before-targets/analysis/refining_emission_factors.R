@@ -1,7 +1,7 @@
 # CalEPA: Homemade refining emission factors from NEI and XXX data
 # vthivierge@ucsb.edu
 # created: 04/05/2023
-# updated: 03/24/2025
+# updated: 04/11/2025
 
 # set up environment
 
@@ -14,7 +14,7 @@ options(scipen = 999)
 
 packages <- c(
   "data.table", "dplyr", "janitor", "stringr", "ggplot2", "cowplot",
-  "forcats", "readxl"
+  "forcats", "readxl", "forcats"
 )
 
 for (i in packages) {
@@ -249,8 +249,8 @@ cluster_factors <- cluster_factors %>%
   select(cluster, pollutant_code, kg_bbl)
  
 cluster_factors%>% 
-  #write.csv("C://git/ca-transport-supply-decarb/health/data/ref_emission_factor.csv", row.names = F)
-  write.csv("C://git/ca-transport-supply-decarb/health/data/ref_emission_factor_v2.csv", row.names = F) #(without that exxon duplicate)
+  #write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/ref_emission_factor.csv", row.names = F)
+  write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/cluster_emission_factor_v2.csv", row.names = F) #(without that exxon duplicate)
 
 ################################################################################################################
 ## Facility-level emission factors ##########################################################################
@@ -300,8 +300,13 @@ ref_ei <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data
   mutate(bbl_year = ref_prod_share * 1000,
   emission_kg = total_emissions * 1000, # Ton to kg
   kg_bbl = emission_kg / bbl_year)%>%
-  left_join(cluster_factors %>% rename(cluster_kg_bbl=kg_bbl), by = c("cluster", "pollutant_code"))
+  left_join(cluster_factors %>% rename(cluster_kg_bbl=kg_bbl), by = c("cluster", "pollutant_code"))%>%
+  left_join(ref_analysis %>% select(refinery_name,site_id) %>% distinct() %>% mutate(refinery_name_short = gsub(",.*$", "", refinery_name),
+                                                                                     site_id = as.character(site_id)),
+            by = c("id1"="site_id"))
 
+ref_ei%>% 
+  write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/refinery_emission_factor.csv", row.names = F) #(without that exxon duplicate)
 
 ref_ei %>%
   ggplot(aes(x=kg_bbl)) +
@@ -313,3 +318,48 @@ ref_ei %>%
   facet_wrap(pollutant_code~cluster, scales= "free")+ 
   guides(color="none")
 
+#North
+ref_ei %>%
+  mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
+  filter(cluster == "North")%>%
+  ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
+  geom_point()+
+  theme_cowplot()+
+  facet_wrap(~pollutant_code) + 
+  theme(axis.text.x = element_text(angle = 75,
+                                   vjust=1,
+                                   hjust=1,
+                                   lineheight=1))+
+  labs(x="", y = "Emission factor (kg/bbl)")+
+  geom_hline(data = ref_ei%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  guides(color="none")
+  
+#South
+ref_ei %>%
+  mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
+  filter(cluster == "South")%>%
+  ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
+  geom_point()+
+  theme_cowplot()+
+  facet_wrap(~pollutant_code) + 
+  theme(axis.text.x = element_text(angle = 75,
+                                   vjust=1,
+                                   hjust=1,
+                                   lineheight=1))+
+  labs(x="", y = "Emission factor (kg/bbl)")+
+  geom_hline(data = ref_ei%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  guides(color="none")
+
+### Debug
+
+fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_matches.csv", 
+                stringsAsFactors = F,
+                colClasses = "character")%>%
+  distinct()%>%
+  left_join(ref_analysis %>% select(refinery_name,site_id) %>% distinct() %>% mutate(site_id = as.character(site_id)),
+            by = c("id1"="site_id"))%>%
+  left_join(nei_ca_ref %>% select(eis_facility_id, site_name)%>% distinct() %>% mutate(eis_facility_id = as.character(eis_facility_id)),
+            by = c("id2"="eis_facility_id"))%>%
+  arrange(id1)
+
+  
