@@ -1085,8 +1085,8 @@ create_figure_1 <- function(main_path,
   ## plot all four together
   
   fig1_health <- plot_grid(
-    ct_health_panel_a,
-    ct_health_panel_c,
+    ct_health_panel_a_total,
+    ct_health_panel_c_total,
     align = "vh",
     # labels = c("A", "B"),
     nrow = 1,
