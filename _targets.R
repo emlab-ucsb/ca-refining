@@ -145,14 +145,15 @@ list(
   tar_target(name = file_df_ca_regions, command = file.path(main_path, "data-staged-for-deletion/labor/raw/ca_regions.csv"), format = "file"),
   # tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
-  tar_target(name = file_direct_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv")),
-  tar_target(name = file_indirect_state_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv")),
+  tar_target(name = file_direct_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"), format = "file"),
+  tar_target(name = file_indirect_state_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv"), format = "file"),
   tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240623-census_regions-Detail Economic Indicators.csv"), format = "file"),
   tar_target(name = file_df_labor_fte, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/Emp_FTE and W&S_EC_546 Industry Scheme.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
   tar_target(name = file_ca_counties_sp, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"), format = "file"),
   tar_target(name = file_refin_locs_orig, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/Petroleum_Refineries_US_EIA/Petroleum_Refineries_US_2019_v2.shp"), format = "file"),
   tar_target(name = file_refin_locs, command = file.path(main_path, "/data-staged-for-deletion/stocks-flows/processed/refinery_lat_long_revised.csv"), format = "file"),
+  tar_target(name = file_refin_locs_ct, command = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/refinery_cluster_tract.csv", format = "file")),
   tar_target(name = file_labor_2019, command = file.path(main_path, "/data-staged-for-deletion/labor/implan/20241010-census_regions_2019-Detail Economic Indicators.csv"), format = "file"),
 
 
@@ -199,6 +200,8 @@ list(
     file_refin_locs_orig,
     ca_crs
   )),
+  tar_target(name = refin_locs_ct, command = read_refin_locs_ct(file_refin_locs_ct,
+                                                                refin_locs),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
   # create processed data
@@ -459,9 +462,8 @@ list(
     pop_ratios,
     main_path
   )),
-  tar_target(name = annual_labor, command = calc_labor_outputs(
+  tar_target(name = annual_direct_labor, command = calc_labor_outputs(
     main_path,
-    proc_labor_dest_df,
     indiv_prod_output,
     dt_refcap,
     product_px,
@@ -469,11 +471,14 @@ list(
     cpi2020,
     discount_rate,
     alpha_comp,
-    alpha_emp
+    alpha_emp,
+    refin_locs_ct,
+    dt_direct_multipliers
   )),
-  tar_target(name = annual_labor_x_impact, command = calc_labor_outputs_x_impact(
+  tar_target(name = state_annual_direct_comp,  command = calc_state_direct_impacts(annual_direct_labor)),
+  tar_target(name = annual_all_impacts_labor, command = calc_labor_all_impacts_outputs(
     main_path,
-    proc_labor_dest_df,
+    state_annual_direct_comp,
     indiv_prod_output,
     dt_refcap,
     product_px,
@@ -481,15 +486,19 @@ list(
     cpi2020,
     discount_rate,
     alpha_comp,
-    alpha_emp
+    alpha_emp,
+    dt_indirect_state_multipliers
   )),
-  tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
-    county_grp_pop_ratios,
-    annual_labor,
-    raw_pop_income_2021,
-    refining_mortality,
-    ca_regions
-  )),
+  tar_target(ref_labor_demog_yr, command = calculate_labor_x_demg_annual(annual_direct_labor,
+                                                                         pop_ratios,
+                                                                         refining_mortality)),
+  # tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
+  #   county_grp_pop_ratios,
+  #   annual_labor,
+  #   raw_pop_income_2021,
+  #   refining_mortality,
+  #   ca_regions
+  # )),
   tar_target(name = county_labor_outputs, command = calc_county_level_outputs(
     main_path,
     ref_labor_demog_yr,
