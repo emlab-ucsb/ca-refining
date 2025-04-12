@@ -84,7 +84,7 @@ create_srm_xwalk <- function(main_path,
 
 
   ## save pm2.5 exposure by refinery
-  fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "srm_pm25_refinery_level.csv"))
+  fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "srm_pm25_refinery_level.csv"))
   # fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv"))
 
 
@@ -100,7 +100,7 @@ create_srm_ct <- function(main_path,
   ]
 
   ## save pm2.5 exposure for each ct
-  fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "srm_pm25_ct.csv"))
+  fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "srm_pm25_ct.csv"))
   # fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv"))
 
 
@@ -243,7 +243,7 @@ create_pulse_fig <- function(main_path,
     ggsave(
       plot = pm25_fig_tmp,
       filename = paste0(
-        file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs", "pulse_"),
+        file.path(main_path, "outputs/academic-out/refining/-update/pulse-figs", "pulse_"),
         id_tmp, ".jpeg"
       ),
       device = "jpeg",
@@ -329,7 +329,7 @@ create_pulse_fig <- function(main_path,
   # NOTE from Tracey: same error! removed `create.dir = TRUE`
   ggsave(
     plot = pm25_fig_all,
-    filename = file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/pulse-figs", "pulse_all_crop.jpeg"),
+    filename = file.path(main_path, "outputs/academic-out/refining/-update/pulse-figs", "pulse_all_crop.jpeg"),
     device = "jpeg",
     # width = 6.5,
     # height = 8,
