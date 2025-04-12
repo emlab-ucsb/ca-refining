@@ -145,8 +145,8 @@ list(
   tar_target(name = file_df_ca_regions, command = file.path(main_path, "data-staged-for-deletion/labor/raw/ca_regions.csv"), format = "file"),
   # tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
-  tar_target(name = file_direct_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"), format = "file"),
-  tar_target(name = file_indirect_state_multipliers, commanad = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv"), format = "file"),
+  tar_target(name = file_direct_multipliers, command = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"), format = "file"),
+  tar_target(name = file_indirect_state_multipliers, command = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv"), format = "file"),
   tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240623-census_regions-Detail Economic Indicators.csv"), format = "file"),
   tar_target(name = file_df_labor_fte, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/Emp_FTE and W&S_EC_546 Industry Scheme.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
@@ -201,7 +201,7 @@ list(
     ca_crs
   )),
   tar_target(name = refin_locs_ct, command = read_refin_locs_ct(file_refin_locs_ct,
-                                                                refin_locs),
+                                                                refin_locs)),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
   # create processed data
@@ -834,27 +834,27 @@ list(
   # save outputs
   tar_target(
     name = save_ct_xwalk,
-    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2024/health", "ct_xwalk_2019_2020.csv"),
+    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2025/health", "ct_xwalk_2019_2020.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income,
-    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2024/health", "refining_health_income_2023.csv"),
+    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2025/health", "refining_health_income_2023.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income_2000,
-    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2024/health", "refining_health_census_tract.csv"),
+    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2025/health", "refining_health_census_tract.csv"),
     format = "file"
   ),
   tar_target(
     name = save_mortality,
-    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2024/health", "refining_mortality_2023.csv"),
+    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2025/health", "refining_mortality_2023.csv"),
     format = "file"
   ),
   tar_target(
     name = save_state_mort_levels,
-    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2024/health", "refining_state_mortality.csv"),
+    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2025/health", "refining_state_mortality.csv"),
     format = "file"
   ),
 
@@ -1111,4 +1111,4 @@ list(
     ),
     format = "file"
   )
-)
+))
