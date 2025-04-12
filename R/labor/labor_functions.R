@@ -42,8 +42,7 @@ calc_labor_outputs <- function(main_path,
                                alpha_comp,
                                alpha_emp,
                                refin_locs_ct,
-                               dt_direct_multipliers,
-                               pop_ratios) {
+                               dt_direct_multipliers) {
   ## add product for calculating price
   county_out_refining <- copy(indiv_prod_output)
 
@@ -259,7 +258,7 @@ calc_labor_outputs <- function(main_path,
   # 
   # ## save for review
   # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_for_review.csv"))
-  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
+  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
   # 
   # ## calc discounted low
   # county_out_labor[, total_comp_PV_l := total_comp_usd19_l / ((1 + discount_rate)^(year - 2019))]
@@ -274,9 +273,9 @@ calc_labor_outputs <- function(main_path,
 }
 
 
-calc_state_direct_impacts <- function(annual_labor) {
+calc_state_direct_impacts <- function(annual_directlabor) {
   
-  dt <- annual_labor
+  dt <- annual_direct_labor
   
   dt_state <- dt[, .(
     state_comp_h = sum(total_comp_h),
@@ -589,8 +588,8 @@ calc_labor_all_impacts_outputs <- function(main_path,
   #   )
   # 
   # ## save file
-  # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
-  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
+  # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-update/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
+  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
   # 
   # 
   # ## calc discounted low
@@ -604,8 +603,8 @@ calc_labor_all_impacts_outputs <- function(main_path,
   # 
   # 
   # ## save file
-  # write_csv(county_out_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_x_impact_type.csv"))
-  # # write_csv(county_out_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_x_impact_type.csv"))
+  # write_csv(county_out_labor, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-update/fig-csv-files/labor_result_x_impact_type.csv"))
+  # # write_csv(county_out_labor, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files/labor_result_x_impact_type.csv"))
   # 
   # 
   # county_out_labor
@@ -618,17 +617,16 @@ calc_labor_all_impacts_outputs <- function(main_path,
 ## labor results grouped by demographic
 
 calculate_labor_x_demg_annual <- function(annual_direct_labor,
-                                          pop_ratios,
-                                          refining_mortality) {
+                                          pop_ratios) {
   
-  ## census pop
-  census_pop <- refining_mortality %>%
-    ungroup() %>%
-    filter(year == 2020) %>%
-    select(census_tract, pop) %>%
-    unique() %>%
-    rename(total_pop = pop) %>%
-    as.data.table()
+  # ## census pop
+  # census_pop <- refining_mortality %>%
+  #   ungroup() %>%
+  #   filter(year == 2020) %>%
+  #   select(census_tract, pop) %>%
+  #   unique() %>%
+  #   rename(total_pop = pop) %>%
+  #   as.data.table()
   
   ## merge with demographic info
   ct_out_demo <- merge(annual_direct_labor,
@@ -654,15 +652,14 @@ calculate_labor_x_demg_annual <- function(annual_direct_labor,
                                  total_comp_PV_h,
                                  total_comp_PV_l)]
   
-  
-  ## merge with population
-  ct_out_demo <- merge(ct_out_demo, census_pop,
-                       by = c("census_tract"),
-                       all.x = T)
+  # 
+  # ## merge with population
+  # ct_out_demo <- merge(ct_out_demo, census_pop,
+  #                      by = c("census_tract"),
+  #                      all.x = T)
   
   ## multiply by pct
-  ct_out_demo[, `:=` (demo_pop = total_pop * pct,
-                      demo_emp = total_emp * pct,
+  ct_out_demo[, `:=` (demo_emp = total_emp * pct,
                       demo_emp_revised = total_emp_revised * pct,
                       demo_comp_h = total_comp_h * pct,
                       demo_comp_usd19_h = total_comp_usd19_h * pct,
@@ -671,13 +668,12 @@ calculate_labor_x_demg_annual <- function(annual_direct_labor,
                       demo_comp_PV_l = total_comp_PV_l * pct)]
   
   ## summarize at the state level
-  state_demo_labor_out <- ct_out_demo[, .(sum_demo_pop = sum(demo_pop),
-                                          sum_demo_emp = sum(demo_emp),
+  state_demo_labor_out <- ct_out_demo[, .(sum_demo_emp = sum(demo_emp),
                                           sum_demo_emp_revised = sum(demo_emp_revised),
                                           sum_demo_usd19_h = sum(demo_comp_usd19_h),
                                           sum_demo_usd19_l = sum(demo_comp_usd19_l),
                                           sum_demo_comp_pv_h = sum(demo_comp_PV_h),
-                                          sum_demo_comp_pv_l = sum(demo_comp_PV_h)
+                                          sum_demo_comp_pv_l = sum(demo_comp_PV_l)
                                       ),
                                       by = .(demand_scenario, refining_scenario, oil_price_scenario, year, demo_cat, demo_group, title)]
   
@@ -689,7 +685,6 @@ calculate_labor_x_demg_annual <- function(annual_direct_labor,
                                                    demo_group,
                                                    title,
                                                    year,
-                                                   sum_demo_pop,
                                                    sum_demo_emp,
                                                    sum_demo_emp_revised,
                                                    sum_demo_usd19_h,
@@ -753,14 +748,14 @@ calculate_labor_x_demg_annual <- function(annual_direct_labor,
 calculate_labor_x_demg <- function(ref_labor_demog_yr) {
   labor_pct <- copy(ref_labor_demog_yr)
 
-  ## county pop by demographic group
-  labor_pct[, demo_pop := region_pop * pct]
+  # ## county pop by demographic group
+  # labor_pct[, demo_pop := region_pop * pct]
 
   ## summarise over years
   labor_pct <- labor_pct[, .(
-    sum_demo_emp = sum(demo_emp),
-    sum_demo_comp_pv_h = sum(demo_comp_pv_h),
-    sum_demo_comp_pv_l = sum(demo_comp_pv_l)
+    sum_demo_emp = sum(sum_demo_emp),
+    sum_demo_comp_pv_h = sum(sum_demo_comp_pv_h),
+    sum_demo_comp_pv_l = sum(sum_demo_comp_pv_l)
   ),
   by = .(demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title)
   ]
@@ -775,19 +770,18 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
                                              pop_ratios) {
   labor_pct <- copy(ref_labor_demog_yr)
 
-  ## county pop by demographic group
-  labor_pct[, demo_emp_revised := total_emp_revised * pct]
-
-  ## summarise over years
-  labor_pct <- labor_pct[, .(
-    sum_demo_emp = sum(demo_emp),
-    sum_demo_emp_revised = sum(demo_emp_revised),
-    sum_demo_comp_pv_h = sum(demo_comp_pv_h),
-    sum_demo_comp_pv_l = sum(demo_comp_pv_l)
-  ),
-  by = .(demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title, year)
-  ]
-
+  # ## county pop by demographic group
+  # labor_pct[, demo_emp_revised := total_emp_revised * pct]
+# 
+#   ## summarise over years
+#   labor_pct <- labor_pct[, .(
+#     sum_demo_emp = sum(demo_emp),
+#     sum_demo_emp_revised = sum(demo_emp_revised),
+#     sum_demo_comp_pv_h = sum(demo_comp_pv_h),
+#     sum_demo_comp_pv_l = sum(demo_comp_pv_l)
+#   ),
+#   by = .(demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title, year)
+#   ]
 
   ## change scenario names, factor
   labor_pct[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
@@ -797,11 +791,11 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
   labor_pct[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
   labor_pct[, scenario := str_replace(scenario, "historic", "historical")]
 
-  ## select columns
-  labor_pct <- labor_pct[, .(
-    scenario, demand_scenario, refining_scenario, oil_price_scenario, year, demo_cat, demo_group,
-    title, sum_demo_emp, sum_demo_emp_revised, sum_demo_comp_pv_h, sum_demo_comp_pv_l
-  )]
+  # ## select columns
+  # labor_pct <- labor_pct[, .(
+  #   scenario, demand_scenario, refining_scenario, oil_price_scenario, year, demo_cat, demo_group,
+  #   title, sum_demo_emp, sum_demo_emp_revised, sum_demo_comp_pv_h, sum_demo_comp_pv_l
+  # )]
 
   ## compute per million stat
   ## ---------------------------------------------------------
@@ -880,8 +874,8 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
 
 
   ## save df
-  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
-  # fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files", "labor_high_low_annual_outputs.csv"))
+  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  # fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files", "labor_high_low_annual_outputs.csv"))
 
 
   return(labor_pct_long)
@@ -1007,7 +1001,7 @@ calc_county_level_outputs <- function(main_path,
 
 
   ## save df
-  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_county_outputs.csv"))
+  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "labor_county_outputs.csv"))
   # fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files", "labor_county_outputs.csv"))
 
 
