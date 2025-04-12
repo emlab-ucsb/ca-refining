@@ -289,12 +289,50 @@ read_labor_direct_mult_inputs <- function(file) {
 }
 
 
-read_labor_indirect_mult_inputs <- function(file, input_sheet) {
+read_labor_indirect_mult_inputs <- function(file) {
   dt <- fread(file)
   
   dt
 }
 
+read_refin_locs_ct <- function(file,
+                               refin_locs) {
+  dt <- fread(file, colClasses = c(`GEOID (from Census Geocoder)` = "character"))
+  
+  dt <- janitor::clean_names(dt)
+  dt[, geoid_from_census_geocoder := paste0("0", geoid_from_census_geocoder)]
+  
+  setnames(dt, c("geoid_from_census_geocoder"), c("GEOID"))
+  
+  dt <- unique(dt[, .(name, cluster, GEOID)])
+  
+  remove_refin <- c("Marathon Petroleum Corp., Golden  Eagle Martinez Refinery",
+                    "AltAir Paramount (2020)")
+  
+  add_refinery <- c("Chevron U.S.A. Inc., El Segundo",
+                    "Chevron U.S.A. Inc., Richmond",
+                    "Marathon Petroleum Corp., Carson",
+                    "Phillips 66, Rodeo San Francisco")
+  
+  dt <- dt[!name %in% remove_refin]
+  dt <- dt[GEOID != "06.01336E+13"]
+  
+  dt[, adj_name := fifelse(name == "AltAir Paramount (2021)", "AltAir Paramount", 
+                           fifelse(name %in% add_refinery, paste0(name, " Refinery"),
+                                   fifelse(name == "PBF Energy, Martinez Refinery", "Shell Oil Products US, Martinez Refinery", name)))]
+  
+  setnames(dt, c("adj_name"), c("refinery_name"))
+  setnames(dt, c("cluster"), c("region"))
+  
+  ## merge with refin_locs
+  dt2 <- merge(dt, refin_locs,
+              by = c("refinery_name", "region"),
+              all.x = T
+  )
+  
+  return(dt2)
+  
+}
 
 
 
