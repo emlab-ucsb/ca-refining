@@ -632,10 +632,10 @@ calculate_labor_x_demg_annual <- function(annual_direct_labor,
   
   ## merge with demographic info
   ct_out_demo <- merge(annual_direct_labor,
-                                  pop_ratios,
-                                  by = c("census_tract"),
-                                  all.x = T,
-                                  allow.cartesian = T)
+                       pop_ratios,
+                       by = c("census_tract"),
+                       all.x = T,
+                       allow.cartesian = T)
   
   ct_out_demo <- ct_out_demo[, .(demand_scenario,
                                  refining_scenario,
@@ -679,7 +679,7 @@ calculate_labor_x_demg_annual <- function(annual_direct_labor,
                                           sum_demo_comp_pv_h = sum(demo_comp_PV_h),
                                           sum_demo_comp_pv_l = sum(demo_comp_PV_h)
                                       ),
-                                      by = .(demand_scenario, refining_scenario, oil_price_scenario, year, demo_cat, demo_group, title, pct)]
+                                      by = .(demand_scenario, refining_scenario, oil_price_scenario, year, demo_cat, demo_group, title)]
   
   
   state_demo_labor_out <- state_demo_labor_out[, .(demand_scenario,
@@ -688,7 +688,6 @@ calculate_labor_x_demg_annual <- function(annual_direct_labor,
                                                    demo_cat,
                                                    demo_group,
                                                    title,
-                                                   pct,
                                                    year,
                                                    sum_demo_pop,
                                                    sum_demo_emp,
