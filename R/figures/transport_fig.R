@@ -100,7 +100,7 @@ create_srm_ct <- function(main_path,
   ]
 
   ## save pm2.5 exposure for each ct
-  fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "srm_pm25_ct.csv"))
+  fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "srm_pm25_ct.csv"))
   # fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv"))
 
 
