@@ -273,7 +273,7 @@ calc_labor_outputs <- function(main_path,
 }
 
 
-calc_state_direct_impacts <- function(annual_directlabor) {
+calc_state_direct_impacts <- function(annual_direct_labor) {
   
   dt <- annual_direct_labor
   
