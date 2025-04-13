@@ -84,7 +84,7 @@ create_srm_xwalk <- function(main_path,
 
 
   ## save pm2.5 exposure by refinery
-  fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "srm_pm25_refinery_level.csv"))
+  fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "srm_pm25_refinery_level.csv"))
   # fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv"))
 
 
