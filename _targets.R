@@ -489,7 +489,8 @@ list(
     alpha_emp,
     dt_indirect_state_multipliers
   )),
-  tar_target(ref_labor_demog_yr, command = calculate_labor_x_demg_annual(annual_direct_labor,
+  tar_target(ref_labor_demog_yr, command = calculate_labor_x_demg_annual(main_path,
+                                                                         annual_direct_labor,
                                                                          pop_ratios)),
   # tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
   #   county_grp_pop_ratios,
@@ -498,13 +499,13 @@ list(
   #   refining_mortality,
   #   ca_regions
   # )),
-  # tar_target(name = county_labor_outputs, command = calc_county_level_outputs(
-  #   main_path,
-  #   ref_labor_demog_yr,
-  #   refining_mortality,
-  #   ca_regions,
-  #   raw_pop_income_2021
-  # )),
+  tar_target(name = county_labor_outputs, command = calc_county_level_outputs(
+    main_path,
+    annual_direct_labor,
+    refining_mortality,
+    raw_pop_income_2021,
+    pop_ratios
+  )),
   tar_target(name = annual_labor_jobs_comp, command = calculate_annual_labor_x_demg_hl(
     main_path,
     ref_labor_demog_yr,

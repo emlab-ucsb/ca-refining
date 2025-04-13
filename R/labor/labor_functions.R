@@ -616,7 +616,8 @@ calc_labor_all_impacts_outputs <- function(main_path,
 
 ## labor results grouped by demographic
 
-calculate_labor_x_demg_annual <- function(annual_direct_labor,
+calculate_labor_x_demg_annual <- function(main_path,
+                                          annual_direct_labor,
                                           pop_ratios) {
   
   # ## census pop
@@ -882,10 +883,48 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
 }
 
 calc_county_level_outputs <- function(main_path,
-                                      ref_labor_demog_yr,
+                                      annual_direct_labor,
                                       refining_mortality,
-                                      ca_regions,
-                                      raw_pop_income_2021) {
+                                      raw_pop_income_2021,
+                                      pop_ratios) {
+  
+  
+  
+  ## merge with demographic info
+  ct_out_demo <- merge(annual_direct_labor,
+                       pop_ratios,
+                       by = c("census_tract"),
+                       all.x = T,
+                       allow.cartesian = T)
+  
+  ct_out_demo <- ct_out_demo[, .(demand_scenario,
+                                 refining_scenario,
+                                 oil_price_scenario,
+                                 census_tract,
+                                 demo_cat,
+                                 demo_group,
+                                 title,
+                                 pct,
+                                 year,
+                                 total_emp,
+                                 total_emp_revised,
+                                 total_comp_h,
+                                 total_comp_usd19_h,
+                                 total_comp_usd19_l,
+                                 total_comp_PV_h,
+                                 total_comp_PV_l)]
+  
+  ## multiply by pct
+  ct_out_demo[, `:=` (demo_emp = total_emp * pct,
+                      demo_emp_revised = total_emp_revised * pct,
+                      demo_comp_h = total_comp_h * pct,
+                      demo_comp_usd19_h = total_comp_usd19_h * pct,
+                      demo_comp_usd19_l = total_comp_usd19_l * pct,
+                      demo_comp_PV_h = total_comp_PV_h * pct,
+                      demo_comp_PV_l = total_comp_PV_l * pct)]
+  
+  
+
   ## compute county populations
   pop_2020 <- refining_mortality %>%
     filter(year == 2020) %>%
@@ -904,55 +943,51 @@ calc_county_level_outputs <- function(main_path,
     by = c("census_tract"),
     all.x = T
   )
+  
+  pop_2020 <- pop_2020[, .(census_tract, pop, county)]
+
+  ## merge
+  labor_county_out <- merge(ct_out_demo, pop_2020,
+                    by = c("census_tract"),
+                    all.x = T
+  )
+  
+  
+  ## direct impact
+  ## make labor outputs long and sum by county region
+  labor_county_out <- labor_county_out %>%
+    select(
+      demand_scenario, 
+      refining_scenario,
+      oil_price_scenario, 
+      demo_cat, 
+      demo_group, 
+      title, 
+      census_tract,
+      county,
+      pop,
+      year, 
+      demo_emp, 
+      demo_emp_revised, 
+      demo_comp_PV_h, 
+      demo_comp_PV_l)
+  
 
   ## summarize by county
-  pop_2020 <- pop_2020[, .(county_pop = sum(pop)), by = .(county)]
+  labor_county_out <- labor_county_out[, .(county_pop = sum(pop),
+                                           demo_emp = sum(demo_emp),
+                                           demo_emp_revised = sum(demo_emp_revised),
+                                           demo_comp_PV_h = sum(demo_comp_PV_h),
+                                           demo_comp_PV_l = sum(demo_comp_PV_l)), 
+                                       by = .(demand_scenario,
+                                                     refining_scenario,
+                                                     oil_price_scenario,
+                                                     demo_cat,
+                                                     demo_group,
+                                                     title,
+                                                     county)]
 
-  ## compute county / region ratio
-  county_region_ratio <- merge(pop_2020, ca_regions,
-    by = "county"
-  )
-
-  ## sum region pop
-  county_region_ratio[, region_pop := sum(county_pop), by = .(region)]
-
-  ## calc ratio
-  county_region_ratio[, county_ratio := county_pop / region_pop]
-
-  county_region_ratio <- county_region_ratio[, .(county, region, county_pop, region_pop, county_ratio)]
-
-
-  ## make labor outputs long and sum by county region
-  labor_county_region_out <- ref_labor_demog_yr %>%
-    mutate(demo_emp_revised = total_emp_revised * pct) %>%
-    select(
-      demand_scenario, refining_scenario, oil_price_scenario, destination, demo_cat, demo_group, title, year, demo_emp, demo_emp_revised, total_emp_revised,
-      demo_comp_pv_h, demo_comp_pv_l
-    ) %>%
-    rename(region = destination)
-
-  labor_county_region_out <- merge(labor_county_region_out, county_region_ratio,
-    by = "region",
-    allow.cartesian = T
-  )
-
-
-  labor_county_region_out <- labor_county_region_out %>%
-    mutate(
-      demo_emp_h_county = demo_emp * county_ratio,
-      demo_emp_l_county = demo_emp_revised * county_ratio,
-      demo_comp_PV_h_county = demo_comp_pv_h * county_ratio,
-      demo_comp_PV_l_county = demo_comp_pv_l * county_ratio
-    ) %>%
-    select(
-      county, demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title, year, demo_emp_h_county,
-      demo_emp_l_county, demo_comp_PV_l_county, demo_comp_PV_h_county
-    ) %>%
-    pivot_longer(demo_emp_h_county:demo_comp_PV_h_county, names_to = "metric", values_to = "value") %>%
-    group_by(county, demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title, metric) %>%
-    summarise(value = sum(value)) %>%
-    ungroup()
-
+  
   # ## test
   # test_df <- labor_county_region_out %>%
   #   group_by(county, demand_scenario, refining_scenario, demo_cat, metric) %>%
@@ -980,8 +1015,8 @@ calc_county_level_outputs <- function(main_path,
 
 
   ## for renaming
-  high_est_vec <- c("demo_emp_h_county", "demo_comp_PV_h_county")
-  low_est_vec <- c("demo_emp_l_county", "demo_comp_PV_l_county")
+  high_est_vec <- c("demo_emp", "demo_comp_PV_h")
+  low_est_vec <- c("demo_emp_revised","demo_comp_PV_l")
 
   labor_metric_df <- tibble(
     metric = c(high_est_vec, low_est_vec),
@@ -993,10 +1028,11 @@ calc_county_level_outputs <- function(main_path,
     )
   )
 
-  labor_county_out_df <- labor_county_region_out %>%
+  labor_county_out_df <- labor_county_out %>%
+    pivot_longer(demo_emp:demo_comp_PV_l, names_to = "metric", values_to = "value") %>%
     left_join(labor_metric_df) %>%
     mutate(estimate = ifelse(metric %in% high_est_vec, "high", "low")) %>%
-    select(county:title, metric_name, estimate, value) %>%
+    select(demand_scenario:county_pop, metric_name, estimate, value) %>%
     as.data.table()
 
 
