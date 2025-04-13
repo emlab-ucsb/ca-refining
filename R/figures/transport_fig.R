@@ -243,7 +243,7 @@ create_pulse_fig <- function(main_path,
     ggsave(
       plot = pm25_fig_tmp,
       filename = paste0(
-        file.path(main_path, "outputs/academic-out/refining/-update/pulse-figs", "pulse_"),
+        file.path(main_path, "outputs/academic-out/refining/figures/2025-update/pulse-figs", "pulse_"),
         id_tmp, ".jpeg"
       ),
       device = "jpeg",
@@ -329,7 +329,7 @@ create_pulse_fig <- function(main_path,
   # NOTE from Tracey: same error! removed `create.dir = TRUE`
   ggsave(
     plot = pm25_fig_all,
-    filename = file.path(main_path, "outputs/academic-out/refining/-update/pulse-figs", "pulse_all_crop.jpeg"),
+    filename = file.path(main_path, "outputs/academic-out/refining/figures/2025-update/pulse-figs", "pulse_all_crop.jpeg"),
     device = "jpeg",
     # width = 6.5,
     # height = 8,
