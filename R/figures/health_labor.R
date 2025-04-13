@@ -1462,7 +1462,7 @@ calc_county_pm25 <- function(main_path,
     ungroup() %>%
     arrange(-avg_pm25_popw)
 
-  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "avg_pm25_county_2019.csv"))
   # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv"))
 
 
@@ -1513,7 +1513,7 @@ plot_health_levels <- function(main_path,
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "state_levels_fig_inputs.csv"))
   # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv"))
 
 
@@ -1784,7 +1784,7 @@ plot_health_levels_pc <- function(main_path,
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
+  fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
   # fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
 
 
@@ -2025,7 +2025,7 @@ plot_health_levels_pm25 <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "state_levels_pm25_inputs.csv"))
   # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv"))
 
 
@@ -2283,7 +2283,7 @@ plot_health_levels_gaps <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
   # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
 
 
@@ -2563,7 +2563,7 @@ plot_health_levels_gaps_pmil <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
   # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
 
 
@@ -2815,7 +2815,7 @@ plot_health_levels_gaps_pm25 <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/-update/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
   # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
 
 
@@ -5903,15 +5903,15 @@ plot_hl_shares <- function(main_path,
     dpi = 600
   )
 
-  ## save legends
-  ggsave(
-    plot = legend_a_h,
-    device = "pdf",
-    filename = "labor_race_legend_no_re-emp.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-update/legends/"),
-    dpi = 600
-  )
-
+  # ## save legends
+  # ggsave(
+  #   plot = legend_a_h,
+  #   device = "pdf",
+  #   filename = "labor_race_legend_no_re-emp.pdf",
+  #   path = file.path(main_path, "outputs/academic-out/refining/figures/2025-update/legends/"),
+  #   dpi = 600
+  # )
+  # 
 
 
 
@@ -6091,9 +6091,8 @@ create_health_labor_table <- function(main_path,
   ## fte-job-years
   emp_out <- ref_labor_demog %>%
     # select(-sum_demo_comp_pv_h, -sum_demo_comp_pv_l) %>%
-    select(demand_scenario:year, sum_demo_emp, sum_demo_emp_revised) %>%
-    rename(value = sum_demo_emp,
-           value_revised = sum_demo_emp_revised) %>%
+    select(demand_scenario:title, sum_demo_emp) %>%
+    rename(value = sum_demo_emp) %>%
     group_by(demand_scenario, refining_scenario, oil_price_scenario, demo_cat, demo_group, title) %>%
     summarise(value = sum(value)) %>%
     # summarise(value = sum(value),
@@ -6448,7 +6447,7 @@ fig4_hl <- function(health_grp,
   ))
 
   ## sum for state
-  l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(demo_emp)),
+  l_gaps_df <- l_gaps_df[, .(sum_demo_emp = sum(sum_demo_emp)),
     by = .(
       year, demand_scenario, refining_scenario, oil_price_scenario,
       scenario, scenario_title, demo_cat, demo_group, title
