@@ -389,20 +389,30 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                                                        revenue,
                                                                        state_comp_all_impacts)]
   
+  state_out_refining_all_impacts_bau <- filter(state_out_refining_all_impacts,
+                                               demand_scenario=="BAU" & refining_scenario=="historic exports" & oil_price_scenario=="reference case") 
+  
+  state_out_refining_all_impacts_bau <- state_out_refining_all_impacts_bau[, .(year,
+                                                                       state_comp_all_impacts_bau)]
   
   ## step 7: lag state_comp_all_impacts by one year.
   ## step 8: multiply lagged state_comp_all_impacts by 0.8 and 
   ## then separately by emp.li and ec.li. This will leave you with 
   ## induced employment and compensation effects from rehires’ labor 
   ## income at their new jobs for each year and scenario. 
-  state_out_refining_all_impacts <- state_out_refining_all_impacts %>%
+  state_out_refining_all_impacts <- merge(state_out_refining_all_impacts,state_out_refining_all_impacts_bau,
+                                          by=c("year"),
+                                          all = T) %>%
     arrange(demand_scenario, refining_scenario, oil_price_scenario, year) %>%
     group_by(demand_scenario, refining_scenario, oil_price_scenario) %>%
     mutate(
       prev_comp = ifelse(year == 2020, NA, lag(state_comp_all_impacts)),
+      prev_comp_bau = ifelse(year == 2020, NA, lag(state_comp_all_impacts_bau)),
       state_comp_all_impacts_l = ifelse(year == 2020, state_comp_all_impacts, state_comp_all_impacts - ((1 - alpha_comp) * prev_comp)),
-      state_comp_all_impacts_l = ifelse(state_comp_all_impacts_l > 0, NA, -1*state_comp_all_impacts_l),
-      prev_comp_l = ifelse(year == 2020, NA, lag(state_comp_all_impacts_l)),
+      state_comp_all_impacts_l_bau = ifelse(year == 2020, state_comp_all_impacts_bau, state_comp_all_impacts_bau - ((1 - alpha_comp) * prev_comp_bau)),
+      state_comp_all_impacts_l_relative = state_comp_all_impacts_l - state_comp_all_impacts_l_bau,
+      state_comp_all_impacts_l_relative = ifelse(state_comp_all_impacts_l > 0, NA, -1*state_comp_all_impacts_l_relative),
+      prev_comp_l = ifelse(year == 2020, NA, lag(state_comp_all_impacts_l_relative)),
       state_comp_emp_li = ifelse(year == 2020, NA, 
                                  (prev_comp_l / 1e6) * total_indir_induc_multipliers$emp.li[1]),
       state_comp_ec_li = ifelse(year == 2020, NA, 
@@ -410,6 +420,8 @@ calc_labor_all_impacts_outputs <- function(main_path,
     ) %>%
     ungroup() %>%
     as.data.table()
+  
+  rm(state_out_refining_all_impacts_bau)
   
   ## step 9: calc revised statewide indirect and induced impact that is equal to
   ## the indirect and induced impact from step 4 - direct and indirect impact from 
