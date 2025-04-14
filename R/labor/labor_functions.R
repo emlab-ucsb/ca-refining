@@ -400,10 +400,13 @@ calc_labor_all_impacts_outputs <- function(main_path,
     group_by(demand_scenario, refining_scenario, oil_price_scenario) %>%
     mutate(
       prev_comp = ifelse(year == 2020, NA, lag(state_comp_all_impacts)),
+      state_comp_all_impacts_l = ifelse(year == 2020, state_comp_all_impacts, state_comp_all_impacts - ((1 - alpha_comp) * prev_comp)),
+      state_comp_all_impacts_l = ifelse(state_comp_all_impacts_l > 0, NA, -1*state_comp_all_impacts_l),
+      prev_comp_l = ifelse(year == 2020, NA, lag(state_comp_all_impacts_l)),
       state_comp_emp_li = ifelse(year == 2020, NA, 
-                                 (1 - alpha_comp) * (prev_comp / 1e6) * total_indir_induc_multipliers$emp.li[1]),
+                                 (prev_comp_l / 1e6) * total_indir_induc_multipliers$emp.li[1]),
       state_comp_ec_li = ifelse(year == 2020, NA, 
-                                (1 - alpha_comp) * (prev_comp / 1e6) * total_indir_induc_multipliers$ec.li[1])
+                                 (prev_comp_l / 1e6) * total_indir_induc_multipliers$ec.li[1])
     ) %>%
     ungroup() %>%
     as.data.table()
