@@ -1,7 +1,7 @@
 # CalEPA: Homemade refining emission factors from NEI and XXX data
 # vthivierge@ucsb.edu
 # created: 04/05/2023
-# updated: 04/11/2025
+# updated: 04/14/2025
 
 # set up environment
 
@@ -14,7 +14,7 @@ options(scipen = 999)
 
 packages <- c(
   "data.table", "dplyr", "janitor", "stringr", "ggplot2", "cowplot",
-  "forcats", "readxl", "forcats"
+  "forcats", "readxl", "forcats", "tidyr"
 )
 
 for (i in packages) {
@@ -283,7 +283,7 @@ ref_prod_cap <- ref_analysis_clean %>%
   mutate(site_id= as.character(site_id))
   
 
-ref_ei <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_matches.csv", 
+ref_ei_2017 <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_matches.csv", 
              stringsAsFactors = F,
              colClasses = "character")%>%
   distinct()%>%
@@ -303,12 +303,15 @@ ref_ei <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data
   left_join(cluster_factors %>% rename(cluster_kg_bbl=kg_bbl), by = c("cluster", "pollutant_code"))%>%
   left_join(ref_analysis %>% select(refinery_name,site_id) %>% distinct() %>% mutate(refinery_name_short = gsub(",.*$", "", refinery_name),
                                                                                      site_id = as.character(site_id)),
-            by = c("id1"="site_id"))
+            by = c("id1"="site_id"))%>%
+  left_join(JM_ref %>% select(pollutant,quantity_kg_bbl) %>% rename(JM_kg_bbl= quantity_kg_bbl), by = c("pollutant_code" = "pollutant"))%>%
+  mutate(year = 2017)
+  
 
-ref_ei%>% 
+ref_ei_2017%>% 
   write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/refinery_emission_factor.csv", row.names = F) #(without that exxon duplicate)
 
-ref_ei %>%
+ref_ei_2017 %>%
   ggplot(aes(x=kg_bbl)) +
   geom_density(adjust=1.5) +
   theme_cowplot() +
@@ -319,7 +322,7 @@ ref_ei %>%
   guides(color="none")
 
 #North
-ref_ei %>%
+ref_ei_2017 %>%
   mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
   filter(cluster == "North")%>%
   ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
@@ -330,12 +333,14 @@ ref_ei %>%
                                    vjust=1,
                                    hjust=1,
                                    lineheight=1))+
-  labs(x="", y = "Emission factor (kg/bbl)")+
+  labs(x="", y = "Emission factor (kg/bbl)", title = "North cluster emission intensities (2017)")+
   geom_hline(data = ref_ei%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
-  guides(color="none")
+  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  labs(color="")+ 
+  scale_colour_discrete(labels=c("Mean","JM"))
   
 #South
-ref_ei %>%
+ref_ei_2017 %>%
   mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
   filter(cluster == "South")%>%
   ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
@@ -346,11 +351,13 @@ ref_ei %>%
                                    vjust=1,
                                    hjust=1,
                                    lineheight=1))+
-  labs(x="", y = "Emission factor (kg/bbl)")+
+  labs(x="", y = "Emission factor (kg/bbl)", title = "South cluster emission intensities (2017)")+
   geom_hline(data = ref_ei%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
-  guides(color="none")
+  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  labs(color="")+ 
+  scale_colour_discrete(labels=c("Mean","JM"))
 
-### Debug
+### Debug match
 
 fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_matches.csv", 
                 stringsAsFactors = F,
@@ -362,4 +369,146 @@ fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-fo
             by = c("id2"="eis_facility_id"))%>%
   arrange(id1)
 
+#########################
+#2014 PM2.5 weights
+########################
+
+weights <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining/nh3/srm_nh3_site97.csv")%>%
+  mutate(pollutant_code = "NH3")%>%
+  bind_rows(fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining/nox/srm_nox_site97.csv")%>%
+              mutate(pollutant_code = "NOx"))%>%
+  bind_rows(fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining/pm25/srm_pm25_site97.csv")%>%
+              mutate(pollutant_code = "PM25"))%>%
+  bind_rows(fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining/sox/srm_sox_site97.csv")%>%
+              mutate(pollutant_code = "SOx"))%>%
+  bind_rows(fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining/voc/srm_voc_site97.csv")%>%
+              mutate(pollutant_code = "VOC"))%>%
+  select(-totalpm25_aw)%>%
+  group_by(pollutant_code)%>%
+  summarise(totalpm25_mean = mean(totalpm25,na.rm = T),
+            totalpm25_sum = sum(totalpm25,na.rm = T))%>%
+  ungroup()%>%
+  arrange(totalpm25_mean)
+
+#########################
+#2014 refineries
+########################
+
+match_2017 <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/raw/ref_match/ref_matches.csv", 
+      stringsAsFactors = F,
+      colClasses = "character")%>%
+  distinct()
+
+match_2014 <- match_2017%>%
+  mutate(id2 = ifelse(id1 %in% "226", "5786211",id2))
+
+#13507511 (pipeline)
+
+nei_2014_raw %>%
+  #filter(locality %in% "TORRANCE")%>%
+  filter(county_name %in% "Los Angeles")%>%
+  filter(tolower(facility_site_name) %in% str_subset(tolower(facility_site_name), "exxon"))%>%
+  select(facility_site_name,eis_facility_site_id,naics_cd,locality)%>%
+  distinct()%>%
+  arrange(naics_cd)
+
+#match same refineries
+match_2014%>%
+  left_join(nei_2014_raw %>% mutate(eis_facility_site_id = as.character(eis_facility_site_id)) %>%
+              mutate(reporting_year=2014),
+            by = c("id2"="eis_facility_site_id"))%>%
+  select(id1,id2,reporting_year)%>%
+  distinct()
+
+ref_prod_cap_2014 <- ref_analysis_clean %>%
+  select(site_id, cluster,barrels_per_day)%>%
+  group_by(cluster) %>%
+  mutate(barrels_per_day_cluster = sum(barrels_per_day, na.rm = T)) %>%
+  ungroup()%>%
+  mutate(share_cluster_cap = barrels_per_day/barrels_per_day_cluster)%>%
+  left_join(ref_prod %>% filter(year == 2014) %>% select(-year), by = c("cluster" = "region"))%>%
+  mutate(ref_prod_share = share_cluster_cap*thous_barrels)%>%
+  mutate(site_id= as.character(site_id))
+
+ref_ei_2014 <- match_2014%>%
+  left_join(nei_2014_raw %>% mutate(eis_facility_site_id = as.character(eis_facility_site_id)) %>%
+              mutate(reporting_year=2014),
+            by = c("id2"="eis_facility_site_id"))%>%
+  filter(pollutant_cd %in% c("NOX", "SO2", "NH3", "PM25-PRI", "VOC"))%>%
+  select(id1,id2,reporting_year, pollutant_cd,total_emissions)%>%
+  rename(pollutant_code= pollutant_cd)%>%
+  distinct()%>%
+  left_join(ref_prod_cap_2014 %>% select(site_id, ref_prod_share, cluster), by = c("id1" = "site_id"))%>%
+  group_by(id1, pollutant_code)%>%
+  summarize(total_emissions = sum(total_emissions, na.rm = T),
+            ref_prod_share = first(ref_prod_share),
+            cluster = first(cluster),
+            year = first(reporting_year))%>%
+  ungroup()%>%
+  mutate(bbl_year = ref_prod_share * 1000,
+         emission_kg = total_emissions * 1000, # Ton to kg
+         kg_bbl = emission_kg / bbl_year)%>%
+  left_join(cluster_factors %>% rename(cluster_kg_bbl=kg_bbl), by = c("cluster", "pollutant_code"))%>%
+  left_join(ref_analysis %>% select(refinery_name,site_id) %>% distinct() %>% mutate(refinery_name_short = gsub(",.*$", "", refinery_name),
+                                                                                     site_id = as.character(site_id)),
+            by = c("id1"="site_id"))%>%
+  left_join(JM_ref %>% select(pollutant,quantity_kg_bbl) %>% rename(JM_kg_bbl= quantity_kg_bbl), by = c("pollutant_code" = "pollutant"))
+
+
+#North
+ref_ei_2014 %>%
+  mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
+  filter(cluster == "North")%>%
+  #ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
+  ggplot(aes(y=kg_bbl, x= refinery_name)) +
+  geom_point()+
+  theme_cowplot()+
+  facet_wrap(~pollutant_code) + 
+  theme(axis.text.x = element_text(angle = 75,
+                                   vjust=1,
+                                   hjust=1,
+                                   lineheight=1))+
+  labs(x="", y = "Emission factor (kg/bbl)", title = "North cluster emission intensities (2014)")+
+  geom_hline(data = ref_ei%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  labs(color="")+ 
+  scale_colour_discrete(labels=c("Mean","JM"))
+
+#South
+ref_ei_2014 %>%
+  mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
+  filter(cluster == "South")%>%
+  #ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
+  ggplot(aes(y=kg_bbl, x= refinery_name)) +
+  geom_point()+
+  theme_cowplot()+
+  facet_wrap(~pollutant_code) + 
+  theme(axis.text.x = element_text(angle = 75,
+                                   vjust=1,
+                                   hjust=1,
+                                   lineheight=1))+
+  labs(x="", y = "Emission factor (kg/bbl)", title = "South cluster emission intensities (2014)")+
+  geom_hline(data = ref_ei%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  labs(color="")+ 
+  scale_colour_discrete(labels=c("Mean","JM"))
+
+###########################
+##### 2014 vs 2017
+############################
+#  bind_rows(ref_ei_2014 %>% mutate(kg_bbl_2014 = kg_bbl))%>%
+
+ref_ei_2017 %>% 
+  mutate(kg_bbl_2017 = kg_bbl)%>%
+  select(id1,kg_bbl_2017,pollutant_code)%>%
+  left_join(ref_ei_2014 %>% mutate(kg_bbl_2014 = kg_bbl) %>%  select(id1,kg_bbl_2014,pollutant_code), 
+            by = c("id1","pollutant_code"))%>%
+  ggplot(aes(kg_bbl_2014,kg_bbl_2017))+
+  geom_point()+
+  facet_wrap(~pollutant_code)+ 
+  theme_cowplot()+
+  geom_abline(intercept = 0, slope = 1, size = 0.5)+
+  labs(x= "Emission intensity (2014)", y="Emission intensity (2017)", 
+       title = "Emission intensities 2014 vs 2017")
+  
   
