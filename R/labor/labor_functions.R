@@ -392,7 +392,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
   
   ## merge with BAU to compute relative impact and induced and indirect impacts
   state_out_refining_all_impacts_bau <- filter(state_out_refining_all_impacts,
-                                               demand_scenario=="BAU" & refining_scenario=="historic exports" & oil_price_scenario=="reference case")
+                                               demand_scenario=="BAU" & refining_scenario=="historic production" & oil_price_scenario=="reference case")
 
   state_out_refining_all_impacts_bau <- state_out_refining_all_impacts_bau[, .(year,
                                                                                state_comp_all_impacts)]
@@ -447,10 +447,20 @@ calc_labor_all_impacts_outputs <- function(main_path,
   
   
   ## subtract indirect and induced values computed in step 8 (if year 2020, use original 2020 value)
+  state_out_refining_summary <- arrange(state_out_refining_summary,
+                                        demand_scenario, refining_scenario, oil_price_scenario, year) %>%
+    group_by(demand_scenario, refining_scenario, oil_price_scenario) %>%
+    mutate(
+      prev_comp = ifelse(year == 2020, NA, lag(comp_indir_induc_impact)),
+      prev_empl = ifelse(year == 2020, NA, lag(empl_indir_induc_impact)),
+      comp_indir_induc_impact_l = ifelse(year == 2020, comp_indir_induc_impact, comp_indir_induc_impact - ((1 - alpha_comp) * prev_comp)),
+      empl_indir_induc_impact_l = ifelse(year == 2020, empl_indir_induc_impact, empl_indir_induc_impact - ((1 - alpha_emp) * prev_empl))
+      )
+  
   state_out_refining_summary[, `:=` (empl_indir_induc_impact_l = 
-                                       fifelse(year == 2020, empl_indir_induc_impact, empl_indir_induc_impact - state_comp_emp_li),
+                                       fifelse(year == 2020, empl_indir_induc_impact_l, empl_indir_induc_impact_l - state_comp_emp_li),
                                      comp_indir_induc_impact_l = 
-                                       fifelse(year == 2020, comp_indir_induc_impact, comp_indir_induc_impact - state_comp_ec_li))]
+                                       fifelse(year == 2020, comp_indir_induc_impact_l, comp_indir_induc_impact_l - state_comp_ec_li))]
   
   ## create df with low and high induced and indirect impacts, convert to 2019, calc pv
   state_out_labor_induc_indir <- state_out_refining_summary[, .(demand_scenario,
