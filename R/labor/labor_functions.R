@@ -278,6 +278,8 @@ calc_state_direct_impacts <- function(annual_direct_labor) {
   dt <- annual_direct_labor
   
   dt_state <- dt[, .(
+    state_emp_h = sum(total_emp),
+    state_emp_l = sum(total_emp_revised),
     state_comp_h = sum(total_comp_h),
     state_comp_usd19_h = sum(total_comp_usd19_h),
     state_comp_PV_h = sum(total_comp_PV_h),
@@ -293,7 +295,7 @@ calc_state_direct_impacts <- function(annual_direct_labor) {
 
 
 calc_labor_all_impacts_outputs <- function(main_path,
-                                           state_annual_direct_comp,
+                                           state_annual_direct_impacts,
                                            indiv_prod_output,
                                            dt_refcap,
                                            product_px,
@@ -371,7 +373,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
   
   
   ## step 5: merge with state direct impacts
-  state_out_refining_all_impacts <- merge(state_out_refining_summary, state_annual_direct_comp,
+  state_out_refining_all_impacts <- merge(state_out_refining_summary, state_annual_direct_impacts,
                                       by = c("year", 
                                              "demand_scenario", 
                                              "refining_scenario", 
@@ -455,7 +457,8 @@ calc_labor_all_impacts_outputs <- function(main_path,
       prev_empl = ifelse(year == 2020, NA, lag(empl_indir_induc_impact)),
       comp_indir_induc_impact_l = ifelse(year == 2020, comp_indir_induc_impact, comp_indir_induc_impact - ((1 - alpha_comp) * prev_comp)),
       empl_indir_induc_impact_l = ifelse(year == 2020, empl_indir_induc_impact, empl_indir_induc_impact - ((1 - alpha_emp) * prev_empl))
-      )
+      ) %>%
+    as.data.table()
   
   state_out_refining_summary[, `:=` (empl_indir_induc_impact_l = 
                                        fifelse(year == 2020, empl_indir_induc_impact_l, empl_indir_induc_impact_l - state_comp_emp_li),
@@ -487,10 +490,12 @@ calc_labor_all_impacts_outputs <- function(main_path,
 
   ## merge with direct impact 
   state_out_labor_induc_indir <- merge(state_out_labor_induc_indir, 
-                                       state_annual_direct_comp[, .(demand_scenario,
+                                       state_annual_direct_impacts[, .(demand_scenario,
                                                                     refining_scenario,
                                                                     oil_price_scenario,
                                                                     year,
+                                                                    state_emp_h,
+                                                                    state_emp_l,
                                                                     state_comp_h,
                                                                     state_comp_usd19_h,
                                                                     state_comp_PV_h,
@@ -498,7 +503,9 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                                                     state_comp_PV_l)])
   
   ## compute total impact, high and low
-  state_out_labor_induc_indir[, `:=` (comp_all_impacts_h = comp_indir_induc_impact_h + state_comp_h,
+  state_out_labor_induc_indir[, `:=` (empl_all_impacts_h = state_emp_h + empl_indir_induc_impact_h,
+                                      emp_all_impacts_l = state_emp_l + empl_indir_induc_impact_l,
+                                      comp_all_impacts_h = comp_indir_induc_impact_h + state_comp_h,
                                       comp_all_impacts_usd19_h = comp_indir_induc_impact_h_usd19 + state_comp_usd19_h,
                                       comp_all_impacts_PV_h = comp_indir_induc_impact_h_PV + state_comp_PV_h,
                                       comp_all_impacts_usd19_l = comp_indir_induc_impact_l_usd19 + state_comp_usd19_l,
@@ -510,8 +517,12 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                                                  refining_scenario,
                                                                  oil_price_scenario,
                                                                  year,
+                                                                 state_emp_h,
                                                                  empl_indir_induc_impact_h,
+                                                                 empl_all_impacts_h,
+                                                                 state_emp_l,
                                                                  empl_indir_induc_impact_l,
+                                                                 emp_all_impacts_l,
                                                                  state_comp_h,
                                                                  comp_indir_induc_impact_h,
                                                                  comp_all_impacts_h,

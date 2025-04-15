@@ -43,7 +43,7 @@ plot_npv_labor_oilpx <- function(main_path,
   state_labor <- annual_all_impacts_labor[, .(
     # sum_total_emp = sum(total_emp),
     sum_total_comp_pv_h = sum(comp_all_impacts_PV_h),
-    sum_total_comp_pv_l = sum(comp_all_impacts_PV_l)
+    sum_total_comp_pv_l = sum(comp_all_impacts_PV_l, na.rm = T)
   ),
   by = .(demand_scenario, refining_scenario, oil_price_scenario)
   ]
@@ -226,7 +226,7 @@ plot_npv_labor_oilpx <- function(main_path,
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-90, 0) +
+    ylim(-90, 10) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -337,7 +337,7 @@ plot_npv_health_labor <- function(main_path,
   state_labor <- annual_all_impacts_labor[, .(
     # sum_total_emp = sum(total_emp),
     sum_total_comp_pv_h = sum(comp_all_impacts_PV_h),
-    sum_total_comp_pv_l = sum(comp_all_impacts_PV_l)
+    sum_total_comp_pv_l = sum(comp_all_impacts_PV_l, na.rm = T)
   ),
   by = .(demand_scenario, refining_scenario, oil_price_scenario)
   ]
