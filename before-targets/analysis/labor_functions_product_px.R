@@ -204,9 +204,9 @@ calc_labor_outputs <- function(main_path,
            prev_emp,
            total_emp_revised)
   
-  ## save for review
-  write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/labor_result_for_review.csv"))
-  # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
+  # ## save for review
+  # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/labor_result_for_review.csv"))
+  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
   
   ## calc discounted low
   ct_out_refining_direct[, total_comp_PV_l := total_comp_usd19_l / ((1 + discount_rate)^(year - 2019))]
@@ -481,7 +481,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
     as.data.table()
   
   ## save for review
-  write_csv(state_out_refining_all_impacts, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/step_8_output_for_review.csv"))
+  #write_csv(state_out_refining_all_impacts, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/step_8_output_for_review.csv"))
   
   ## step 9: calc revised statewide indirect and induced impact that is equal to
   ## the indirect and induced impact from step 4 - direct and indirect impact from 
@@ -610,7 +610,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
   #   as.data.table()
   
   ## save for review
-  write_csv(state_out_labor_all_impacts, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/state_out_labor_all_impacts.csv"))
+  #write_csv(state_out_labor_all_impacts, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/state_out_labor_all_impacts.csv"))
   
   return(state_out_labor_all_impacts)
   
