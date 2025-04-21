@@ -4846,7 +4846,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   ##
   labor_gap_fig_b <- ggplot(l_gaps_df %>% filter(
     !scenario %in% remove_scen,
-    prodcut_scenario == "changing prices",
+    product_scenario == "changing prices",
     demo_cat == "DAC",
     oil_price_scenario == "reference case"
   ), aes(x = year, y = gap_emp_pmil, lty = title)) +
@@ -4887,7 +4887,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
-        prodcut_scenario == "changing prices",
+        product_scenario == "changing prices",
         demo_cat == "Poverty",
         oil_price_scenario == "reference case"
       ) %>%
@@ -5204,7 +5204,8 @@ plot_hl_levels_df <- function(main_path,
 }
 
 
-plot_hl_levels <- function(demographic_npv_df) {
+plot_hl_levels <- function(main_path,
+                           demographic_npv_df) {
   plot_df_long <- copy(demographic_npv_df)
   
   ## create the figure ---------------------------------------------
@@ -7480,7 +7481,8 @@ create_health_labor_table <- function(main_path,
 }
 
 
-fig4_hl <- function(health_grp,
+fig4_hl <- function(main_path,
+                    health_grp,
                     ref_labor_demog_yr,
                     refining_mortality,
                     pop_ratios) {
@@ -8162,7 +8164,8 @@ fig4_hl <- function(health_grp,
 }
 
 
-fig4_hl_pmil <- function(health_grp,
+fig4_hl_pmil <- function(main_path,
+                         health_grp,
                          ref_labor_demog_yr,
                          refining_mortality,
                          pop_ratios) {
