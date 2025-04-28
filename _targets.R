@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(name = list_paths, c(
@@ -475,10 +475,10 @@ list(
     refin_locs_ct,
     dt_direct_multipliers
   )),
-  tar_target(name = state_annual_direct_comp,  command = calc_state_direct_impacts(annual_direct_labor)),
+  tar_target(name = state_annual_direct_impacts,  command = calc_state_direct_impacts(annual_direct_labor)),
   tar_target(name = annual_all_impacts_labor, command = calc_labor_all_impacts_outputs(
     main_path,
-    state_annual_direct_comp,
+    state_annual_direct_impacts,
     indiv_prod_output,
     dt_refcap,
     product_px,
@@ -609,7 +609,8 @@ list(
     raw_counties,
     discount_rate
   )),
-  tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
+  tar_target(name = demographic_npv_plot, command = plot_hl_levels(main_path,
+                                                                   demographic_npv_df)),
   tar_target(name = demographic_npv_shares_plot, command = plot_hl_shares(
     main_path,
     demographic_npv_df,
@@ -622,12 +623,14 @@ list(
     main_path
   )),
   tar_target(name = health_labor_gaps_plot, command = fig4_hl(
+    main_path,
     health_grp,
     ref_labor_demog_yr,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = health_labor_gaps_pmil_plot, command = fig4_hl_pmil(
+    main_path,
     health_grp,
     ref_labor_demog_yr,
     refining_mortality,
