@@ -45,17 +45,17 @@ plot_npv_labor_oilpx <- function(main_path,
     sum_total_comp_pv_h = sum(comp_all_impacts_PV_h),
     sum_total_comp_pv_l = sum(comp_all_impacts_PV_l, na.rm = T)
   ),
-  by = .(demand_scenario, refining_scenario, product_scenario, oil_price_scenario)
+  by = .(demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario, oil_price_scenario)
   ]
   
   ## ref labor
   ref_labor <- state_labor[demand_scenario == "BAU" & refining_scenario == "historic production"]
   setnames(ref_labor, c("sum_total_comp_pv_h", "sum_total_comp_pv_l"), c("ref_total_comp_pv_h", "ref_total_comp_pv_l"))
-  ref_labor <- ref_labor[, .(product_scenario, oil_price_scenario, ref_total_comp_pv_l, ref_total_comp_pv_h)]
+  ref_labor <- ref_labor[, .(product_scenario, indirect_induced_scenario, oil_price_scenario, ref_total_comp_pv_l, ref_total_comp_pv_h)]
   
   ## add values to labor
   state_labor_oil_px <- merge(state_labor, ref_labor,
-                              by = c("oil_price_scenario", "product_scenario")
+                              by = c("oil_price_scenario", "product_scenario", "indirect_induced_scenario")
   )
   
   ## compute forgone wages high and low
@@ -68,6 +68,7 @@ plot_npv_labor_oilpx <- function(main_path,
       demand_scenario,
       refining_scenario,
       product_scenario,
+      indirect_induced_scenario,
       oil_price_scenario,
       sum_total_comp_pv_h,
       ref_total_comp_pv_h,
@@ -91,7 +92,7 @@ plot_npv_labor_oilpx <- function(main_path,
   
   ## prepare to plot
   plot_df <- labor_ghg_df[, .(
-    scen_id, demand_scenario, refining_scenario, product_scenario, oil_price_scenario, forgone_wages_bil_h,
+    scen_id, demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario, oil_price_scenario, forgone_wages_bil_h,
     forgone_wages_bil_l, avoided_ghg, perc_diff
   )]
   
@@ -105,7 +106,7 @@ plot_npv_labor_oilpx <- function(main_path,
   
   plot_df_labor <- plot_df %>%
     select(
-      scen_id, demand_scenario, refining_scenario, product_scenario, oil_price_scenario,
+      scen_id, demand_scenario, refining_scenario, indirect_induced_scenario, product_scenario, oil_price_scenario,
       ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l,
       forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg
     ) %>%
@@ -116,7 +117,7 @@ plot_npv_labor_oilpx <- function(main_path,
       estimate = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_h_ghg"), "high", "low"),
       metric = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_l"), "forgone_wages_bil", "forgone_wages_bil_ghg")
     ) %>%
-    select(scen_id, demand_scenario, refining_scenario, product_scenario, oil_price_scenario, ghg_perc_diff, segment, metric, unit_desc, estimate, value) %>%
+    select(scen_id, demand_scenario, refining_scenario, indirect_induced_scenario, product_scenario, oil_price_scenario, ghg_perc_diff, segment, metric, unit_desc, estimate, value) %>%
     pivot_wider(names_from = estimate, values_from = value)
   
   
@@ -213,12 +214,14 @@ plot_npv_labor_oilpx <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario != "changing prices",
+      indirect_induced_scenario == "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       refining_scenario != "historical production",
+      indirect_induced_scenario == "baseline",
       product_scenario != "changing prices",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.9) +
@@ -254,6 +257,66 @@ plot_npv_labor_oilpx <- function(main_path,
                 main_path,
                 "outputs/academic-out/refining/figures/2025-update",
                 "state_npv_labor_fig_2020ppx",
+                width = 10,
+                height = 5,
+                dpi = 600
+  )
+      
+  
+  ## 2020 prices and bartik
+  forgone_wages_all_oil_px_fig_2020ppx_bc <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+    geom_vline(xintercept = hist_prod$ghg_perc_diff * -100, color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historical production",
+    #                                                metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), linewidth = 0.5, alpha = 0.8) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      product_scenario != "changing prices",
+      indirect_induced_scenario != "baseline",
+      refining_scenario != "historical production",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      refining_scenario != "historical production",
+      indirect_induced_scenario != "baseline",
+      product_scenario != "changing prices",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.9) +
+    facet_wrap(~oil_px_label) +
+    labs(
+      color = NULL,
+      title = "Labor: forgone wages",
+      y = "NPV (2019 USD billion)",
+      x = "GHG emissions reduction (%, 2045 vs 2019)"
+    ) +
+    ylim(-90, 20) +
+    xlim(0, 80) +
+    scale_color_manual(
+      values = refin_colors,
+      labels = refin_labs
+    ) +
+    theme_line +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = 10),
+      plot.title = element_text(hjust = 0.5, size = 12),
+      axis.title.y = element_text(size = 12),
+      axis.title.x = element_text(size = 11),
+      axis.ticks.length.y = unit(0.1, "cm"),
+      axis.ticks.length.x = unit(0.1, "cm"),
+      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+      axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
+    ) +
+    guides(color = guide_legend(nrow = 2))
+  
+  
+  simple_ggsave(forgone_wages_all_oil_px_fig_2020ppx_bc,
+                main_path,
+                "outputs/academic-out/refining/figures/2025-update",
+                "state_npv_labor_fig_2020ppx_bartik",
                 width = 10,
                 height = 5,
                 dpi = 600
@@ -400,7 +463,7 @@ plot_npv_health_labor <- function(main_path,
     sum_total_comp_pv_h = sum(comp_all_impacts_PV_h),
     sum_total_comp_pv_l = sum(comp_all_impacts_PV_l, na.rm = T)
   ),
-  by = .(demand_scenario, refining_scenario, product_scenario, oil_price_scenario)
+  by = .(demand_scenario, refining_scenario,  product_scenario, indirect_induced_scenario, oil_price_scenario)
   ]
   
   state_labor <- state_labor[oil_price_scenario == "reference case", ]
@@ -409,12 +472,12 @@ plot_npv_health_labor <- function(main_path,
   ref_labor <- state_labor[demand_scenario == "BAU" & refining_scenario == "historic production"]
   setnames(ref_labor, c("sum_total_comp_pv_h", "sum_total_comp_pv_l"), c("ref_total_comp_pv_h", "ref_total_comp_pv_l"))
   # setnames(ref_labor, c("sum_total_emp", "sum_total_comp_pv_h", "sum_total_comp_pv_l"), c("ref_total_emp", "ref_total_comp_pv_h", "ref_total_comp_pv_l"))
-  ref_labor <- ref_labor[, .(product_scenario, ref_total_comp_pv_h, ref_total_comp_pv_l)]
+  ref_labor <- ref_labor[, .(product_scenario, indirect_induced_scenario, ref_total_comp_pv_h, ref_total_comp_pv_l)]
   
   
   ## add values to labor
   state_labor <- merge(state_labor, ref_labor,
-                       by = "product_scenario",
+                       by = c("product_scenario", "indirect_induced_scenario"),
                        all.x = T)
   
   # state_labor[, `:=`(
@@ -428,7 +491,7 @@ plot_npv_health_labor <- function(main_path,
   
   ## merge with health and ghg
   health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(
-    demand_scenario, refining_scenario, product_scenario,
+    demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario,
     oil_price_scenario, sum_total_comp_pv_h, ref_total_comp_pv_h, forgone_wages_bil_h,
     sum_total_comp_pv_l, ref_total_comp_pv_l, forgone_wages_bil_l
   )],
@@ -444,8 +507,9 @@ plot_npv_health_labor <- function(main_path,
   
   ## prepare to plot
   plot_df <- health_labor_ghg_df[, .(
-    scen_id, demand_scenario, refining_scenario, product_scenario, oil_price_scenario, sum_cost_pv_b,
-    sum_cost_2019_pv_b, forgone_wages_bil_h, forgone_wages_bil_l, avoided_ghg, perc_diff
+    scen_id, demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario,
+    oil_price_scenario, sum_cost_pv_b, sum_cost_2019_pv_b, forgone_wages_bil_h, 
+    forgone_wages_bil_l, avoided_ghg, perc_diff
   )]
   
   setnames(plot_df, "perc_diff", "ghg_perc_diff")
@@ -484,7 +548,7 @@ plot_npv_health_labor <- function(main_path,
   
   
   plot_df_labor <- plot_df %>%
-    select(scen_id, demand_scenario, refining_scenario, product_scenario,
+    select(scen_id, demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario,
            oil_price_scenario, ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l, forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg) %>%
     pivot_longer(forgone_wages_bil_h:forgone_wages_bil_l_ghg, names_to = "metric", values_to = "value") %>%
     mutate(
@@ -493,7 +557,7 @@ plot_npv_health_labor <- function(main_path,
       estimate = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_h_ghg"), "high", "low"),
       metric = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_l"), "forgone_wages_bil", "forgone_wages_bil_ghg")
     ) %>%
-    select(scen_id, demand_scenario, refining_scenario, product_scenario, ghg_perc_diff, segment, metric, unit_desc, estimate, value) %>%
+    select(scen_id, demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario, ghg_perc_diff, segment, metric, unit_desc, estimate, value) %>%
     pivot_wider(names_from = estimate, values_from = value)
   
   # plot_df_long <- rbind(plot_df_health, plot_df_labor)
@@ -684,12 +748,14 @@ plot_npv_health_labor <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario == "changing prices",
+      indirect_induced_scenario == "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario == "changing prices",
+      indirect_induced_scenario == "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.9) +
@@ -729,12 +795,14 @@ plot_npv_health_labor <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario != "changing prices",
+      indirect_induced_scenario == "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario != "changing prices",
+      indirect_induced_scenario == "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.9) +
@@ -763,6 +831,55 @@ plot_npv_health_labor <- function(main_path,
       axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
     ) +
     guides(color = guide_legend(nrow = 2))
+  
+  ## 2020px, bartik correction
+  fig_bxm_b_2020_ppx_bc <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historical production",
+    #                                                metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), linewidth = 0.5, alpha = 0.8) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      product_scenario != "changing prices",
+      indirect_induced_scenario != "baseline",
+      refining_scenario != "historical production",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      product_scenario != "changing prices",
+      indirect_induced_scenario != "baseline",
+      refining_scenario != "historical production",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.9) +
+    labs(
+      color = NULL,
+      title = "Labor: forgone wages",
+      y = NULL,
+      x = "GHG emissions reduction (%, 2045 vs 2019)"
+    ) +
+    ylim(-60, 0) +
+    xlim(0, 80) +
+    scale_color_manual(
+      values = refin_colors,
+      labels = refin_labs
+    ) +
+    theme_line +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = 10),
+      plot.title = element_text(hjust = 0.5, size = 12),
+      axis.title.y = element_text(size = 12),
+      axis.title.x = element_text(size = 11),
+      axis.ticks.length.y = unit(0.1, "cm"),
+      axis.ticks.length.x = unit(0.1, "cm"),
+      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+      axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
+    ) +
+    guides(color = guide_legend(nrow = 2))
+  
   
   
   ## legends
@@ -1028,6 +1145,30 @@ plot_npv_health_labor <- function(main_path,
                 height = 5,
                 dpi = 600
   )
+  
+  ## bartik correction
+  fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
+    fig_bxm_a,
+    fig_bxm_b_2020_ppx_bc,
+    align = "vh",
+    labels = c("A", "B"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  simple_ggsave(fig3_plot_grid_ab_2020ppx_bc,
+                main_path,
+                "outputs/academic-out/refining/figures/2025-update",
+                "state_npv_fig_2020_ppx_bartik",
+                width = 10,
+                height = 5,
+                dpi = 600
+  )
+  
+  
   
   
   fig3_plot_grid_ab <- plot_grid(

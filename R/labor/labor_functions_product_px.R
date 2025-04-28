@@ -421,7 +421,18 @@ calc_labor_all_impacts_outputs <- function(main_path,
   state_out_refining_summary[, `:=` (empl_indir_induc_impact = (revenue / 1e6) * total_indir_induc_multipliers$emp.rev[1],
                                      comp_indir_induc_impact = (revenue / 1e6) * total_indir_induc_multipliers$ec.rev[1])]
   
+  state_out_refining_summary[, indirect_induced_scenario := "baseline"]
   
+  
+  ## step 4.5 make bartik correction for indirect and induced impacts
+  state_out_refining_summary_bartik <- copy(state_out_refining_summary)
+  
+  state_out_refining_summary_bartik[, `:=` (indirect_induced_scenario = "bartik-corrected",
+                                            empl_indir_induc_impact = empl_indir_induc_impact * indirect_induced_mult,
+                                            comp_indir_induc_impact = comp_indir_induc_impact * indirect_induced_mult)]
+  
+  ## bind
+  state_out_refining_summary <- rbind(state_out_refining_summary, state_out_refining_summary_bartik)
   
   ## step 5: merge with state direct impacts
   state_out_refining_all_impacts <- merge(state_out_refining_summary, state_annual_direct_impacts,
@@ -432,6 +443,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                                  "oil_price_scenario"),
                                           all = T)
   
+
   ## step 6: sum direct and indirct/induced impacts
   state_out_refining_all_impacts <- state_out_refining_all_impacts[, state_comp_all_impacts := comp_indir_induc_impact + state_comp_h]
   
@@ -439,6 +451,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                                                        demand_scenario,
                                                                        refining_scenario,
                                                                        oil_price_scenario,
+                                                                       indirect_induced_scenario,
                                                                        year,
                                                                        production_bbl,
                                                                        revenue,
@@ -450,6 +463,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                                demand_scenario=="BAU" & refining_scenario=="historic production" & oil_price_scenario=="reference case")
   
   state_out_refining_all_impacts_bau <- state_out_refining_all_impacts_bau[, .(product_scenario,
+                                                                               indirect_induced_scenario,
                                                                                year,
                                                                                state_comp_all_impacts)]
   
@@ -461,10 +475,10 @@ calc_labor_all_impacts_outputs <- function(main_path,
   ## induced employment and compensation effects from rehires’ labor 
   ## income at their new jobs for each year and scenario. 
   state_out_refining_all_impacts <- merge(state_out_refining_all_impacts, state_out_refining_all_impacts_bau,
-                                          by=c("product_scenario", "year"),
+                                          by=c("product_scenario", "indirect_induced_scenario", "year"),
                                           all.x = T) %>%
-    arrange(demand_scenario, refining_scenario, product_scenario, oil_price_scenario, year) %>%
-    group_by(demand_scenario, refining_scenario, product_scenario, oil_price_scenario) %>%
+    arrange(demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario, oil_price_scenario, year) %>%
+    group_by(demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario, oil_price_scenario) %>%
     mutate(
       prev_comp = ifelse(year == 2020, NA, lag(state_comp_all_impacts)),
       prev_comp_bau = ifelse(year == 2020, NA, lag(state_comp_all_impacts_bau)),
@@ -491,12 +505,14 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                       state_out_refining_all_impacts[, .(demand_scenario,
                                                                          refining_scenario,
                                                                          product_scenario,
+                                                                         indirect_induced_scenario,
                                                                          oil_price_scenario,
                                                                          year,
                                                                          state_comp_all_impacts,
                                                                          state_comp_emp_li,
                                                                          state_comp_ec_li)],
                                       by = c("product_scenario",
+                                             "indirect_induced_scenario",
                                              "demand_scenario", 
                                              "refining_scenario", 
                                              "oil_price_scenario",
@@ -509,9 +525,10 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                         demand_scenario, 
                                         refining_scenario,
                                         product_scenario,
+                                        indirect_induced_scenario,
                                         oil_price_scenario, 
                                         year) %>%
-    group_by(demand_scenario, refining_scenario, product_scenario, oil_price_scenario) %>%
+    group_by(demand_scenario, refining_scenario, product_scenario, indirect_induced_scenario, oil_price_scenario) %>%
     mutate(
       prev_comp = ifelse(year == 2020, NA, lag(comp_indir_induc_impact)),
       prev_empl = ifelse(year == 2020, NA, lag(empl_indir_induc_impact)),
@@ -529,6 +546,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
   state_out_labor_induc_indir <- state_out_refining_summary[, .(demand_scenario,
                                                                 refining_scenario,
                                                                 product_scenario,
+                                                                indirect_induced_scenario,
                                                                 oil_price_scenario,
                                                                 year,
                                                                 empl_indir_induc_impact,
@@ -578,6 +596,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
   state_out_labor_all_impacts <- state_out_labor_induc_indir[, .(demand_scenario,
                                                                  refining_scenario,
                                                                  product_scenario,
+                                                                 indirect_induced_scenario,
                                                                  oil_price_scenario,
                                                                  year,
                                                                  state_emp_h,
