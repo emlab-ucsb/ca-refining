@@ -333,7 +333,8 @@ calc_labor_all_impacts_outputs <- function(main_path,
                                            discount_rate,
                                            alpha_comp,
                                            alpha_emp,
-                                           dt_indirect_state_multipliers) {
+                                           dt_indirect_state_multipliers,
+                                           indirect_induced_mult) {
   ## add product for calculating price
   county_out_refining <- copy(indiv_prod_output)
   
