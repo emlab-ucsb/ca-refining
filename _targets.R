@@ -82,6 +82,7 @@ list(
   # labor analysis parameters
   tar_target(name = alpha_comp, command = 0.2), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
   tar_target(name = alpha_emp, command = 0), # #0-1 representing the share of jobs lost over time when losing a job in refining sector
+  tar_target(name = indirect_induced_mult, command = 0.741), # multiplier for indirect and induced effects
 
 
   # health analysis parameters
@@ -487,7 +488,8 @@ list(
     discount_rate,
     alpha_comp,
     alpha_emp,
-    dt_indirect_state_multipliers
+    dt_indirect_state_multipliers,
+    indirect_induced_mult
   )),
   tar_target(ref_labor_demog_yr, command = calculate_labor_x_demg_annual(main_path,
                                                                          annual_direct_labor,
