@@ -82,6 +82,7 @@ list(
   # labor analysis parameters
   tar_target(name = alpha_comp, command = 0.2), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
   tar_target(name = alpha_emp, command = 0), # #0-1 representing the share of jobs lost over time when losing a job in refining sector
+  tar_target(name = indirect_induced_mult, command = 0.741), # multiplier for indirect and induced effects
 
 
   # health analysis parameters
@@ -145,12 +146,15 @@ list(
   tar_target(name = file_df_ca_regions, command = file.path(main_path, "data-staged-for-deletion/labor/raw/ca_regions.csv"), format = "file"),
   # tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
+  tar_target(name = file_direct_multipliers, command = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"), format = "file"),
+  tar_target(name = file_indirect_state_multipliers, command = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv"), format = "file"),
   tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240623-census_regions-Detail Economic Indicators.csv"), format = "file"),
   tar_target(name = file_df_labor_fte, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/Emp_FTE and W&S_EC_546 Industry Scheme.xlsx"), format = "file"),
   tar_target(name = file_oil_px, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/oil_price_projections_revised.xlsx"), format = "file"),
   tar_target(name = file_ca_counties_sp, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"), format = "file"),
   tar_target(name = file_refin_locs_orig, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/Petroleum_Refineries_US_EIA/Petroleum_Refineries_US_2019_v2.shp"), format = "file"),
   tar_target(name = file_refin_locs, command = file.path(main_path, "/data-staged-for-deletion/stocks-flows/processed/refinery_lat_long_revised.csv"), format = "file"),
+  tar_target(name = file_refin_locs_ct, command = file.path(main_path, "data-staged-for-deletion/labor/ncomms-revisions/refinery_cluster_tract.csv"), format = "file"),
   tar_target(name = file_labor_2019, command = file.path(main_path, "/data-staged-for-deletion/labor/implan/20241010-census_regions_2019-Detail Economic Indicators.csv"), format = "file"),
 
 
@@ -189,12 +193,16 @@ list(
   # tar_target(name = proc_labor_df, command = read_labor_inputs(file_df_labor, input_sheet = "ica_total")),
   tar_target(name = proc_labor_fte_df, command = read_labor_fte_inputs(file_df_labor_fte, input_sheet = "2022")),
   tar_target(name = proc_labor_dest_df, command = read_labor_inputs(file_df_labor_dest, proc_labor_fte_df)),
+  tar_target(name = dt_direct_multipliers, command = read_labor_direct_mult_inputs(file_direct_multipliers)),
+  tar_target(name = dt_indirect_state_multipliers, command = read_labor_indirect_mult_inputs(file_indirect_state_multipliers)),
   tar_target(name = proc_oil_px_df, command = read_oil_px(file_oil_px, input_sheet = "real", input_cols = c(1:4))),
   tar_target(name = refin_locs, command = read_refin_locs(
     file_refin_locs,
     file_refin_locs_orig,
     ca_crs
   )),
+  tar_target(name = refin_locs_ct, command = read_refin_locs_ct(file_refin_locs_ct,
+                                                                refin_locs)),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
   # create processed data
@@ -455,9 +463,8 @@ list(
     pop_ratios,
     main_path
   )),
-  tar_target(name = annual_labor, command = calc_labor_outputs(
+  tar_target(name = annual_direct_labor, command = calc_labor_outputs(
     main_path,
-    proc_labor_dest_df,
     indiv_prod_output,
     dt_refcap,
     product_px,
@@ -465,11 +472,14 @@ list(
     cpi2020,
     discount_rate,
     alpha_comp,
-    alpha_emp
+    alpha_emp,
+    refin_locs_ct,
+    dt_direct_multipliers
   )),
-  tar_target(name = annual_labor_x_impact, command = calc_labor_outputs_x_impact(
+  tar_target(name = state_annual_direct_impacts,  command = calc_state_direct_impacts(annual_direct_labor)),
+  tar_target(name = annual_all_impacts_labor, command = calc_labor_all_impacts_outputs(
     main_path,
-    proc_labor_dest_df,
+    state_annual_direct_impacts,
     indiv_prod_output,
     dt_refcap,
     product_px,
@@ -477,21 +487,26 @@ list(
     cpi2020,
     discount_rate,
     alpha_comp,
-    alpha_emp
+    alpha_emp,
+    dt_indirect_state_multipliers,
+    indirect_induced_mult
   )),
-  tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
-    county_grp_pop_ratios,
-    annual_labor,
-    raw_pop_income_2021,
-    refining_mortality,
-    ca_regions
-  )),
+  tar_target(ref_labor_demog_yr, command = calculate_labor_x_demg_annual(main_path,
+                                                                         annual_direct_labor,
+                                                                         pop_ratios)),
+  # tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
+  #   county_grp_pop_ratios,
+  #   annual_labor,
+  #   raw_pop_income_2021,
+  #   refining_mortality,
+  #   ca_regions
+  # )),
   tar_target(name = county_labor_outputs, command = calc_county_level_outputs(
     main_path,
-    ref_labor_demog_yr,
+    annual_direct_labor,
     refining_mortality,
-    ca_regions,
-    raw_pop_income_2021
+    raw_pop_income_2021,
+    pop_ratios
   )),
   tar_target(name = annual_labor_jobs_comp, command = calculate_annual_labor_x_demg_hl(
     main_path,
@@ -512,13 +527,13 @@ list(
     refining_mortality,
     state_ghg_output,
     dt_ghg_2019,
-    annual_labor
+    annual_all_impacts_labor
   )),
   tar_target(name = npv_labor_plot, command = plot_npv_labor_oilpx(
     main_path,
     state_ghg_output,
     dt_ghg_2019,
-    annual_labor
+    annual_all_impacts_labor
   )),
   tar_target(name = health_levels_plot, command = plot_health_levels(
     main_path,
@@ -596,7 +611,8 @@ list(
     raw_counties,
     discount_rate
   )),
-  tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
+  tar_target(name = demographic_npv_plot, command = plot_hl_levels(main_path,
+                                                                   demographic_npv_df)),
   tar_target(name = demographic_npv_shares_plot, command = plot_hl_shares(
     main_path,
     demographic_npv_df,
@@ -609,12 +625,14 @@ list(
     main_path
   )),
   tar_target(name = health_labor_gaps_plot, command = fig4_hl(
+    main_path,
     health_grp,
     ref_labor_demog_yr,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = health_labor_gaps_pmil_plot, command = fig4_hl_pmil(
+    main_path,
     health_grp,
     ref_labor_demog_yr,
     refining_mortality,
@@ -650,7 +668,7 @@ list(
     name = save_fig_demand_ghg,
     command = simple_ggsave(fig_demand_ghg,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "combined_its_and_production",
       width = 25,
       height = 13,
@@ -822,27 +840,27 @@ list(
   # save outputs
   tar_target(
     name = save_ct_xwalk,
-    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2024/health", "ct_xwalk_2019_2020.csv"),
+    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2025/health", "ct_xwalk_2019_2020.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income,
-    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2024/health", "refining_health_income_2023.csv"),
+    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2025/health", "refining_health_income_2023.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income_2000,
-    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2024/health", "refining_health_census_tract.csv"),
+    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2025/health", "refining_health_census_tract.csv"),
     format = "file"
   ),
   tar_target(
     name = save_mortality,
-    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2024/health", "refining_mortality_2023.csv"),
+    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2025/health", "refining_mortality_2023.csv"),
     format = "file"
   ),
   tar_target(
     name = save_state_mort_levels,
-    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2024/health", "refining_state_mortality.csv"),
+    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2025/health", "refining_state_mortality.csv"),
     format = "file"
   ),
 
@@ -875,7 +893,7 @@ list(
     name = save_npv_fig,
     command = simple_ggsave(npv_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_npv_fig",
       width = 10,
       height = 5,
@@ -887,7 +905,7 @@ list(
     name = save_npv_labor_fig,
     command = simple_ggsave(npv_labor_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_npv_labor_fig",
       width = 10,
       height = 5,
@@ -899,7 +917,7 @@ list(
     name = save_levels_fig,
     command = simple_ggsave(health_levels_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_levels_fig",
       width = 12,
       height = 8,
@@ -911,7 +929,7 @@ list(
     name = save_levels_pmil_fig,
     command = simple_ggsave(health_levels_pmil_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_levels_pmil_fig",
       width = 12,
       height = 8,
@@ -923,7 +941,7 @@ list(
     name = save_levels_pm25_fig,
     command = simple_ggsave(health_levels_plot_pm25,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_levels_pm25_fig",
       width = 12,
       height = 8,
@@ -935,7 +953,7 @@ list(
     name = save_l_levels_fig,
     command = simple_ggsave(labor_levels_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_labor_levels_fig",
       width = 12,
       height = 8,
@@ -947,7 +965,7 @@ list(
     name = save_l_levels_pmil_fig,
     command = simple_ggsave(labor_levels_plot_pmil,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_labor_levels_pmil_fig",
       width = 12,
       height = 8,
@@ -959,7 +977,7 @@ list(
     name = save_gaps_fig,
     command = simple_ggsave(health_gaps_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_gaps_fig",
       width = 12,
       height = 8,
@@ -971,7 +989,7 @@ list(
     name = save_gaps_pmil_fig,
     command = simple_ggsave(health_gaps_pmil_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_gaps_pmil_fig",
       width = 12,
       height = 8,
@@ -983,7 +1001,7 @@ list(
     name = save_gaps_pm25_fig,
     command = simple_ggsave(health_gaps_plot_pm25,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_gaps_pm25_fig",
       width = 12,
       height = 8,
@@ -995,7 +1013,7 @@ list(
     name = save_labor_gaps_fig,
     command = simple_ggsave(labor_gaps_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_labor_gaps_fig",
       width = 12,
       height = 8,
@@ -1007,7 +1025,7 @@ list(
     name = save_labor_gaps_fig_pmil,
     command = simple_ggsave(labor_gaps_plot_pmil,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "state_labor_gaps_pmil_fig",
       width = 12,
       height = 8,
@@ -1019,7 +1037,7 @@ list(
     name = save_demo_npv_fig,
     command = simple_ggsave(demographic_npv_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "demographic_npv_fig",
       width = 11,
       height = 12,
@@ -1031,7 +1049,7 @@ list(
     name = save_demo_share_fig,
     command = simple_ggsave(demographic_npv_shares_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "demographic_npv_shares_fig",
       width = 12,
       height = 12,
@@ -1043,7 +1061,7 @@ list(
     name = save_demo_npv_pc_fig,
     command = simple_ggsave(demographic_npv_plot_pc,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "demographic_npv_pc_fig",
       width = 11,
       height = 12,
@@ -1055,7 +1073,7 @@ list(
     name = save_health_labor_gaps_plot,
     command = simple_ggsave(health_labor_gaps_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "health_labor_gaps_plot",
       width = 14,
       height = 6,
@@ -1067,7 +1085,7 @@ list(
     name = save_health_labor_gaps_pmil_plot,
     command = simple_ggsave(health_labor_gaps_pmil_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "health_labor_gaps_pmil_plot",
       width = 18,
       height = 6,
@@ -1079,7 +1097,7 @@ list(
     name = save_fig_refinery_capacity,
     command = simple_ggsave(fig_refinery_capacity,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "refinery_capacity",
       width = 16,
       height = 12,
@@ -1091,7 +1109,7 @@ list(
     name = save_fig_refinery_count,
     command = simple_ggsave(fig_refinery_count,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-update",
       "refinery_count",
       width = 16,
       height = 12,
