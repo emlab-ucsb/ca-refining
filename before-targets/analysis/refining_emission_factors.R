@@ -317,7 +317,7 @@ ref_ei_2017 %>%
   theme_cowplot() +
   #facet_grid(pollutant_code~cluster, scales= "free")
   #facet_wrap(cluster~pollutant_code, scales= "free")+
-  geom_vline(data = ref_ei, aes(xintercept = cluster_kg_bbl, color = "red"))+
+  geom_vline(data = ref_ei_2017, aes(xintercept = cluster_kg_bbl, color = "red"))+
   facet_wrap(pollutant_code~cluster, scales= "free")+ 
   guides(color="none")
 
@@ -334,8 +334,8 @@ ref_ei_2017 %>%
                                    hjust=1,
                                    lineheight=1))+
   labs(x="", y = "Emission factor (kg/bbl)", title = "North cluster emission intensities (2017)")+
-  geom_hline(data = ref_ei%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
-  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  geom_hline(data = ref_ei_2017%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei_2017, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
   labs(color="")+ 
   scale_colour_discrete(labels=c("Mean","JM"))
   
@@ -352,8 +352,8 @@ ref_ei_2017 %>%
                                    hjust=1,
                                    lineheight=1))+
   labs(x="", y = "Emission factor (kg/bbl)", title = "South cluster emission intensities (2017)")+
-  geom_hline(data = ref_ei%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
-  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  geom_hline(data = ref_ei_2017%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei_2017, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
   labs(color="")+ 
   scale_colour_discrete(labels=c("Mean","JM"))
 
@@ -469,8 +469,8 @@ ref_ei_2014 %>%
                                    hjust=1,
                                    lineheight=1))+
   labs(x="", y = "Emission factor (kg/bbl)", title = "North cluster emission intensities (2014)")+
-  geom_hline(data = ref_ei%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
-  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  geom_hline(data = ref_ei_2014%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei_2014, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
   labs(color="")+ 
   scale_colour_discrete(labels=c("Mean","JM"))
 
@@ -488,8 +488,8 @@ ref_ei_2014 %>%
                                    hjust=1,
                                    lineheight=1))+
   labs(x="", y = "Emission factor (kg/bbl)", title = "South cluster emission intensities (2014)")+
-  geom_hline(data = ref_ei%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
-  geom_hline(data = ref_ei, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  geom_hline(data = ref_ei_2014%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei_2014, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
   labs(color="")+ 
   scale_colour_discrete(labels=c("Mean","JM"))
 
@@ -512,3 +512,61 @@ ref_ei_2017 %>%
        title = "Emission intensities 2014 vs 2017")
   
   
+#######################################################
+##### Average between 2014 and 2017
+########################################################
+
+ref_ei <- ref_ei_2017 %>% 
+  bind_rows(ref_ei_2014)%>%
+  group_by(id1,pollutant_code)%>%
+  summarise(kg_bbl = mean(kg_bbl, na.rm = T),
+            cluster = first(cluster),
+            refinery_name = first(refinery_name))
+
+#North
+ref_ei %>%
+  mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
+  filter(cluster == "North")%>%
+  #ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
+  ggplot(aes(y=kg_bbl, x= refinery_name)) +
+  geom_point()+
+  theme_cowplot()+
+  facet_wrap(~pollutant_code) + 
+  theme(axis.text.x = element_text(angle = 75,
+                                   vjust=1,
+                                   hjust=1,
+                                   lineheight=1))+
+  labs(x="", y = "Emission factor (kg/bbl)", title = "North cluster emission intensities")+
+  geom_hline(data = ref_ei_2014%>% filter(cluster == "North"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei_2014, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  labs(color="")+ 
+  scale_colour_discrete(labels=c("Mean","JM"))
+
+#South
+ref_ei %>%
+  mutate(refinery_name = str_remove_all(refinery_name, " Refinery"))%>%
+  filter(cluster == "South")%>%
+  #ggplot(aes(y=kg_bbl, x= fct_reorder(refinery_name,-kg_bbl))) +
+  ggplot(aes(y=kg_bbl, x= refinery_name)) +
+  geom_point()+
+  theme_cowplot()+
+  facet_wrap(~pollutant_code) + 
+  theme(axis.text.x = element_text(angle = 75,
+                                   vjust=1,
+                                   hjust=1,
+                                   lineheight=1))+
+  labs(x="", y = "Emission factor (kg/bbl)", title = "South cluster emission intensities")+
+  geom_hline(data = ref_ei_2014%>% filter(cluster == "South"), aes(yintercept = cluster_kg_bbl, color = "red"))+ 
+  geom_hline(data = ref_ei_2014, aes(yintercept = JM_kg_bbl, color = "blue"))+ 
+  labs(color="")+ 
+  scale_colour_discrete(labels=c("Mean","JM"))
+
+#Output
+
+ref_ei%>%
+  select(id1, pollutant_code, kg_bbl)%>%
+  distinct()%>%
+  write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/refinery_emission_factor.csv", row.names = F) #(without that exxon duplicate)
+
+
+
