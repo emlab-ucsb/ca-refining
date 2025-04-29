@@ -132,7 +132,8 @@ list(
   tar_target(name = file_raw_income_house, command = file.path(main_path, "data-staged-for-deletion/Census/ca-median-house-income.csv"), format = "file"), # remove from workflow
   tar_target(name = file_raw_income_county, command = file.path(main_path, "data-staged-for-deletion/Census/ca-median-house-income-county.csv"), format = "file"), # remove from workflow
   tar_target(name = file_inmap_re, command = file.path(main_path, "data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
-  tar_target(name = file_dt_ef, command = file.path(main_path, "data-staged-for-deletion/health/processed/ref_emission_factor.csv"), format = "file"),
+  #tar_target(name = file_dt_ef, command = file.path(main_path, "data-staged-for-deletion/health/processed/ref_emission_factor.csv"), format = "file"), #cluster-level emission factors
+  tar_target(name = file_dt_ef_ref, command = file.path(main_path, "data-staged-for-deletion/health/processed/refinery_emission_factor.csv"), format = "file"), #refinery-level emission factors
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data-staged-for-deletion/health/processed/ct_inc_45_2020.csv"), format = "file"),
   tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data-staged-for-deletion/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs-staged-for-deletion/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
@@ -173,7 +174,8 @@ list(
   tar_target(name = raw_dac, command = read_raw_dac_data(file_raw_dac, input_sheet = "SB535 tract list (2022)", input_cols = c(1, 2, 7, 11))),
   tar_target(name = raw_income_house, command = read_census_data(file_raw_income_house)),
   tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
-  tar_target(name = dt_ef, command = fread_data(file_dt_ef)),
+  #tar_target(name = dt_ef, command = fread_data(file_dt_ef)), #cluster-level emission factors
+  tar_target(name = dt_ef_ref, command = fread_data(file_dt_ef_ref)), #refinery-level emission factors
   tar_target(name = ct_inc_45, command = fread_data(file_dt_ct_inc_pop)),
   tar_target(name = growth_rates, command = fread_data(file_dt_growth_rate)),
   tar_target(name = health_income, command = fread_data(file_dt_health_income)),
@@ -374,7 +376,8 @@ list(
     srm_weighted_pm25,
     county_dac,
     med_house_income,
-    dt_ef,
+    #dt_ef, #cluster-level emission factors
+    dt_ef_ref, #refinery-level emission factors
     dt_refcap,
     renewables_info_altair
   )),
