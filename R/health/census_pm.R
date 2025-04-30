@@ -256,6 +256,7 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
                                              county_dac,
                                              med_house_income,
                                              dt_ef,
+                                             dt_ef_ref,
                                              dt_refcap,
                                              renewables_info_altair) {
   refining <- copy(refining_sites_cons_ghg_2019_2045)
