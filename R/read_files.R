@@ -541,3 +541,18 @@ read_refin_locs <- function(file_refin_locs, file_refin_locs_orig, ca_crs) {
 #   fwrite(output, output_name)
 #   output_name
 # }
+
+read_and_bind_csv_files <- function(path, pattern) {
+  library(data.table)
+
+  # List all files in the directory matching the pattern
+  file_list <- list.files(path, pattern = pattern, full.names = TRUE)
+
+  # Read each file into a data.table
+  data_list <- lapply(file_list, fread)
+
+  # Combine all data.tables into one
+  combined_data <- rbindlist(data_list, fill = TRUE, use.names = TRUE)
+
+  return(combined_data)
+}
