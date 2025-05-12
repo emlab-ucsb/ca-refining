@@ -445,6 +445,22 @@ list(
     ),
     format = "file"
   ),
+  # tar_target(
+  #   name = file_ghg_emissions,
+  #   command = file.path(
+  #     main_path,
+  #     "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
+  #   ),
+  #   format = "file"
+  # ),
+  tar_target(
+    name = file_hydrogen_facilities,
+    command = file.path(
+      main_path,
+      "data-staged-for-deletion/stocks-flows/raw/hydrogen_facilities_list.xlsx"
+    ),
+    format = "file"
+  ),
 
   # read in raw data files
   tar_target(
@@ -680,6 +696,24 @@ list(
       read_inmap_data,
       inmap_path = file_inmap_re
     ))
+  ),
+  # tar_target(
+  #   name = dt_ghg_emissions,
+  #   command = simple_fread(file_ghg_emissions),
+  # ),
+  tar_target(
+    name = dt_hydrogen_facilities,
+    command = simple_read_xlsx(file_hydrogen_facilities),
+  ),
+  tar_target(
+    dt_mrr,
+    command = read_and_bind_csv_files(
+      file.path(
+        main_path,
+        'data-staged-for-deletion/stocks-flows/processed/ghg_mrr'
+      ),
+      ".csv"
+    )
   ),
 
   # set remaining file paths
