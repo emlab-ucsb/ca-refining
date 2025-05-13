@@ -90,7 +90,8 @@ list(
   tar_target(name = beta, command = 0.00582), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = se, command = 0.0009628), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = vsl_2015, command = 8705114.25462459),
-  tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906 / 100), # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  #tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906 / 100), # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  tar_target(name = vsl_2019, command = 14512127), # see VSL_9719 in age_VSL.R
   tar_target(name = income_elasticity_mort, command = 0.4),
   tar_target(name = discount_rate, command = 0.03),
   tar_target(name = buff_sites, command = c(97, 119, 164, 202, 209, 226, 271, 279, 332, 342, 343, 800, 3422, 34222, 99999)),
@@ -135,7 +136,7 @@ list(
   tar_target(name = file_dt_ef, command = file.path(main_path, "data-staged-for-deletion/health/processed/ref_emission_factor.csv"), format = "file"), #cluster-level emission factors
   tar_target(name = file_dt_ef_ref, command = file.path(main_path, "data-staged-for-deletion/health/processed/refinery_emission_factor.csv"), format = "file"), #refinery-level emission factors
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data-staged-for-deletion/health/processed/ct_inc_45_2020.csv"), format = "file"),
-  tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data-staged-for-deletion/benmap/processed/growth_rates.csv"), format = "file"),
+  tar_target(name = file_dt_growth_cap_rate, command = file.path(main_path, "data-staged-for-deletion/benmap/processed/growth_per_cap.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs-staged-for-deletion/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
   tar_target(name = file_raw_ct_2019, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"), format = "file"),
   tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
@@ -177,7 +178,7 @@ list(
   tar_target(name = dt_ef, command = fread_data(file_dt_ef)), #cluster-level emission factors
   tar_target(name = dt_ef_ref, command = fread_data(file_dt_ef_ref)), #refinery-level emission factors
   tar_target(name = ct_inc_45, command = fread_data(file_dt_ct_inc_pop)),
-  tar_target(name = growth_rates, command = fread_data(file_dt_growth_rate)),
+  tar_target(name = growth_cap_rates, command = fread_data(file_dt_growth_cap_rate)),
   tar_target(name = health_income, command = fread_data(file_dt_health_income)),
   tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
   tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
@@ -216,7 +217,6 @@ list(
   tar_target(name = file_fw, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
   tar_target(name = file_ghgfac, command = file.path(main_path, "outputs-staged-for-deletion/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
   tar_target(name = file_processed_ces3, command = file.path(main_path, "data-staged-for-deletion/health/processed/ces3_data.csv"), format = "file"),
-  # tar_target(name = file_growth_rates, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_site_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/site_refining_outputs_2019.csv"), format = "file"),
   tar_target(name = file_county_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/county_refining_outputs_2019.csv"), format = "file"),
   tar_target(name = file_ghg_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/refining_emissions_state_2019_revised.csv"), format = "file"),
@@ -231,8 +231,6 @@ list(
   tar_target(name = dt_county_2019, command = simple_fread(file_county_2019)),
   tar_target(name = dt_ghg_2019, command = read_ghg_2019_data(file_ghg_2019)),
   # tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
-
-  # tar_target(name = dt_growth_rates, command = read_census_data(file_growth_rates)),
 
   # prep for module
   tar_target(name = prod_refined_week_wide, command = calculate_weekly_refined_products(dt_fw)),
@@ -415,7 +413,7 @@ list(
     discount_rate,
     health_weighted,
     ct_inc_45,
-    growth_rates
+    growth_cap_rates
   )),
   tar_target(name = ref_mort_level, command = calculate_mort_level(refining_mortality)),
   tar_target(name = pop_ratios, command = calc_pop_ratios(

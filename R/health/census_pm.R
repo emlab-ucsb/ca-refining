@@ -613,7 +613,7 @@ calculate_census_tract_mortality <- function(beta,
                                              discount_rate,
                                              health_weighted,
                                              ct_inc_45,
-                                             growth_rates) {
+                                             growth_cap_rates) {
   ## is this in a separate function?
   # 1 Calculate census-tract level population-weighted incidence rate (for age>29)
   ct_inc_pop_45_weighted <- ct_inc_45 %>%
@@ -633,10 +633,11 @@ calculate_census_tract_mortality <- function(beta,
     mutate(GEO_ID = str_remove(GEO_ID, "US"))
 
   # for monetary mortality impact - growth in income for use in WTP function
-  growth_rates <- growth_rates %>%
+  growth_rates <- growth_cap_rates %>%
     filter(year > 2019) %>%
-    mutate(cum_growth = cumprod(1 + growth_2030)) %>%
-    select(-growth_2030)
+    mutate(cum_growth = cumprod(1 + growth_2035)) %>%
+    select(-growth_2035)%>%
+    drop_na(year)
 
   # Function to grow WTP
   future_WTP <- function(elasticity, growth_rate, WTP) {
