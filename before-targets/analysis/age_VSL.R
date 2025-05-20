@@ -89,6 +89,10 @@ age_vsl_2019 %>%
   theme_cowplot(16)+
   labs(x= "Age", y = "2019 Cohort-Adjusted VSL (million 2019 $) from Aldy & Viscusi (2008)")
 
+age_vsl_2019%>%
+  select(age_min, age_max,year,age_VSL_2019)%>%
+  write.csv("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/health/processed/age_based_VSL_2019.csv", row.names = F)
+
 
 ################################################################      
 # what about relative to the average vsp we are using^!^!^!^

@@ -613,7 +613,8 @@ calculate_census_tract_mortality <- function(beta,
                                              discount_rate,
                                              health_weighted,
                                              ct_inc_45,
-                                             growth_cap_rates) {
+                                             growth_cap_rates,
+                                             dt_age_vsl) {
   ## is this in a separate function?
   # 1 Calculate census-tract level population-weighted incidence rate (for age>29)
   ct_inc_pop_45_weighted <- ct_inc_45 %>%

@@ -135,6 +135,7 @@ list(
   tar_target(name = file_inmap_re, command = file.path(main_path, "data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
   tar_target(name = file_dt_ef, command = file.path(main_path, "data-staged-for-deletion/health/processed/ref_emission_factor.csv"), format = "file"), #cluster-level emission factors
   tar_target(name = file_dt_ef_ref, command = file.path(main_path, "data-staged-for-deletion/health/processed/refinery_emission_factor.csv"), format = "file"), #refinery-level emission factors
+  tar_target(name = file_dt_age_vsl, command = file.path(main_path, "data-staged-for-deletion/health/processed/age_based_VSL_2019.csv"), format = "file"), 
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data-staged-for-deletion/health/processed/ct_inc_45_2020.csv"), format = "file"),
   tar_target(name = file_dt_growth_cap_rate, command = file.path(main_path, "data-staged-for-deletion/benmap/processed/growth_per_cap.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs-staged-for-deletion/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
@@ -177,6 +178,7 @@ list(
   tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
   tar_target(name = dt_ef, command = fread_data(file_dt_ef)), #cluster-level emission factors
   tar_target(name = dt_ef_ref, command = fread_data(file_dt_ef_ref)), #refinery-level emission factors
+  tar_target(name = dt_age_vsl, command = fread_data(file_dt_age_vsl)),
   tar_target(name = ct_inc_45, command = fread_data(file_dt_ct_inc_pop)),
   tar_target(name = growth_cap_rates, command = fread_data(file_dt_growth_cap_rate)),
   tar_target(name = health_income, command = fread_data(file_dt_health_income)),
@@ -413,7 +415,8 @@ list(
     discount_rate,
     health_weighted,
     ct_inc_45,
-    growth_cap_rates
+    growth_cap_rates,
+    dt_age_vsl
   )),
   tar_target(name = ref_mort_level, command = calculate_mort_level(refining_mortality)),
   tar_target(name = pop_ratios, command = calc_pop_ratios(
