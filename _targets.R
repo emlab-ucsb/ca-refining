@@ -96,13 +96,6 @@ list(
   tar_target(name = discount_rate, command = 0.03),
   tar_target(name = buff_sites, command = c(97, 119, 164, 202, 209, 226, 271, 279, 332, 342, 343, 800, 3422, 34222, 99999)),
 
-  # # emission factors
-  # tar_target(name = ef_nh3, command = 0.00056),
-  # tar_target(name = ef_nox, command = 0.01495),
-  # tar_target(name = ef_pm25, command = 0.00402),
-  # tar_target(name = ef_sox, command = 0.00851),
-  # tar_target(name = ef_voc, command = 0.01247),
-
   ## CPI values
   # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
   tar_target(name = cpi2020, command = 109.1951913),
