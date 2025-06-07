@@ -256,9 +256,9 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
                                              county_dac,
                                              med_house_income,
                                              dt_ef,
-                                             dt_ef_ref,
                                              dt_refcap,
                                              renewables_info_altair) {
+  
   refining <- copy(refining_sites_cons_ghg_2019_2045)
 
   cluster_cw <- dt_refcap %>%
@@ -273,14 +273,14 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
   refining[, site_id := ifelse(site_id == "342-2", "34222", site_id)]
   refining[, site_id := as.numeric(site_id)]
   
-  dt_ef <- dt_ef %>%
+  dt_ef_wide <- copy(dt_ef) %>%
     mutate(ton_bbl = kg_bbl / 1000) %>%
     dplyr::select(-kg_bbl) %>%
     spread(pollutant_code, ton_bbl)
 
   # Cluster-level emission factors -----------------------------------------
 
-  refining <- merge(refining, dt_ef, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
+  refining <- merge(refining, dt_ef_wide, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
 
   refining <- refining %>%
     mutate(
@@ -291,36 +291,6 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
       voc = bbls_consumed * VOC
     ) %>%
     dplyr::select(-NH3:-VOC)
-  
-  # Refinery-level emission factors -----------------------------------------
-  
-  # dt_ef_ref <- dt_ef_ref %>%
-  #   mutate(ton_bbl = kg_bbl / 1000) %>%
-  #   dplyr::select(-kg_bbl) %>%
-  #   spread(pollutant_code, ton_bbl)%>% #0 for NH3 for facility 271 (San Joaquin Refining Company Inc., Bakersfield Refinery)
-  #   mutate(NH3 = replace_na(NH3,0)) # didnt report any for NEI 2011, 2014 and 2017
-  # 
-  # refining <- merge(refining, dt_ef_ref, by.x = "site_id", by.y = "id1", all.x = T, allow.cartesian = T, no.dups = T)
-  # refining <- merge(refining, dt_ef, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
-  # 
-  # #Assign cluster-specific EF for renewable fuel refineries
-  # refining <- refining%>%
-  #   mutate(NH3 = coalesce(NH3.x,NH3.y),
-  #          NOX = coalesce(NOX.x,NOX.y),
-  #          `PM25-PRI` = coalesce(`PM25-PRI.x`,`PM25-PRI.y`),
-  #          SO2 = coalesce(SO2.x,SO2.y),
-  #          VOC = coalesce(VOC.x,VOC.y))
-  # 
-  # refining <- refining %>%
-  #   mutate(
-  #     nh3 = bbls_consumed * NH3,
-  #     nox = bbls_consumed * NOX,
-  #     pm25 = bbls_consumed * `PM25-PRI`,
-  #     sox = bbls_consumed * SO2,
-  #     voc = bbls_consumed * VOC
-  #   ) %>%
-  #   dplyr::select(-NH3.x:-VOC)
-  
   
   # -------------------------------------------------------------------
 
@@ -386,6 +356,132 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
 
   health_income[, prim_pm25 := NULL]
 
+  return(health_income)
+}
+
+calculate_census_tract_emissions_ref <- function(refining_sites_cons_ghg_2019_2045,
+                                             srm_weighted_pm25,
+                                             county_dac,
+                                             med_house_income,
+                                             dt_ef,
+                                             dt_ef_ref,
+                                             dt_refcap,
+                                             renewables_info_altair) {
+  
+  refining <- copy(refining_sites_cons_ghg_2019_2045)
+  
+  cluster_cw <- dt_refcap %>%
+    dplyr::select(site_id, region) %>%
+    mutate(site_id = as.character(site_id)) %>%
+    bind_rows(renewables_info_altair %>% dplyr::select(site_id, region)) %>%
+    distinct()
+  
+  refining <- merge(refining, cluster_cw, by = "site_id", all.x = T, allow.cartesian = T, no.dups = T)
+  
+  refining[, site_id := ifelse(site_id == "t-800", "800", site_id)]
+  refining[, site_id := ifelse(site_id == "342-2", "34222", site_id)]
+  refining[, site_id := as.numeric(site_id)]
+  
+  dt_ef_wide <- copy(dt_ef) %>%
+    mutate(ton_bbl = kg_bbl / 1000) %>%
+    dplyr::select(-kg_bbl) %>%
+    spread(pollutant_code, ton_bbl)
+  
+  
+  # Refinery-level emission factors -----------------------------------------
+  
+  dt_ef_ref_wide <- copy(dt_ef_ref) %>%
+    mutate(ton_bbl = kg_bbl / 1000) %>%
+    dplyr::select(-kg_bbl) %>%
+    spread(pollutant_code, ton_bbl) %>% #0 for NH3 for facility 271 (San Joaquin Refining Company Inc., Bakersfield Refinery)
+    mutate(NH3 = replace_na(NH3,0)) # didnt report any for NEI 2011, 2014 and 2017
+
+  refining <- merge(refining, dt_ef_ref_wide, by.x = "site_id", by.y = "id1", all.x = T, allow.cartesian = T, no.dups = T)
+  refining <- merge(refining, dt_ef_wide, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
+
+  #Assign cluster-specific EF for renewable fuel refineries
+  refining <- refining%>%
+    mutate(NH3 = coalesce(NH3.x,NH3.y),
+           NOX = coalesce(NOX.x,NOX.y),
+           `PM25-PRI` = coalesce(`PM25-PRI.x`,`PM25-PRI.y`),
+           SO2 = coalesce(SO2.x,SO2.y),
+           VOC = coalesce(VOC.x,VOC.y))
+
+  refining <- refining %>%
+    mutate(
+      nh3 = bbls_consumed * NH3,
+      nox = bbls_consumed * NOX,
+      pm25 = bbls_consumed * `PM25-PRI`,
+      sox = bbls_consumed * SO2,
+      voc = bbls_consumed * VOC
+    ) %>%
+    dplyr::select(-NH3.x:-VOC)
+
+  
+  # -------------------------------------------------------------------
+  
+  srm_weighted_census <- copy(srm_weighted_pm25)
+  
+  print("joining refining outputs with PM2.5 data...")
+  ref_health <- merge(refining, srm_weighted_census, by = "site_id", all.y = T, allow.cartesian = T, no.dups = T)
+  
+  ref_health[, `:=`(
+    tot_nh3 = weighted_totalpm25_nh3 * nh3,
+    tot_nox = weighted_totalpm25_nox * nox,
+    tot_sox = weighted_totalpm25_sox * sox,
+    tot_pm25 = weighted_totalpm25_pm25 * pm25,
+    tot_voc = weighted_totalpm25_voc * voc
+  )]
+  ref_health[, total_pm25 := tot_nh3 + tot_nox + tot_pm25 + tot_sox + tot_voc]
+  ref_health[, prim_pm25 := tot_pm25]
+  
+  ## Adjust mismatch of census tract ids between inmap and benmap (census ID changed in 2012
+  ## http://www.diversitydatakids.org/sites/default/files/2020-02/ddk_coi2.0_technical_documentation_20200212.pdf)
+  ref_health[, GEOID := ifelse(GEOID == "06037137000", "06037930401", GEOID)]
+  
+  ref_health_agg <- ref_health[, .(
+    total_pm25 = sum(total_pm25, na.rm = T),
+    prim_pm25 = sum(prim_pm25, na.rm = T)
+  ),
+  by = .(GEOID, year, scen_id, demand_scenario, refining_scenario)
+  ]
+  
+  setnames(ref_health_agg, "GEOID", "census_tract")
+  setorder(ref_health_agg, "census_tract", "year")
+  
+  ## convert all census tracts to character
+  # ref_health_agg[, census_tract := as.character(census_tract)]
+  # county_dac[, census_tract := as.character(census_tract)]
+  
+  ## add ces score, income, and dac
+  health_ces <- merge(ref_health_agg,
+                      county_dac[, .(census_tract, population, CES3_score, disadvantaged)],
+                      by = c("census_tract"),
+                      all.x = T
+  )
+  
+  ## add income
+  health_income <- merge(health_ces, med_house_income,
+                         by = c("census_tract"),
+                         all.x = T
+  )
+  
+  ## set order
+  setorder(health_income, "demand_scenario", "refining_scenario", "census_tract", "year")
+  
+  ## set column order
+  setcolorder(
+    health_income,
+    c(
+      "scen_id", "demand_scenario", "refining_scenario",
+      "census_tract", "year",
+      "population", "disadvantaged", "CES3_score",
+      "median_hh_income", "total_pm25"
+    )
+  )
+  
+  health_income[, prim_pm25 := NULL]
+  
   return(health_income)
 }
 
@@ -770,6 +866,372 @@ calculate_census_tract_mortality <- function(beta,
   #     cost_2019_PV = cost_2019 / ((1 + discount_rate)^(year - 2019)),
   #     cost_PV = cost / ((1 + discount_rate)^(year - 2019))
   #   )
+
+  ##########################################################################
+  
+  return(ct_mort_cost)
+}
+
+# calculate_census_tract_mortality = function(health_income,
+calculate_census_tract_mortality <- function(beta,
+                                             se,
+                                             vsl_2015,
+                                             vsl_2019,
+                                             income_elasticity_mort,
+                                             discount_rate,
+                                             health_weighted,
+                                             ct_inc_45,
+                                             growth_cap_rates,
+                                             dt_age_vsl) {
+  
+  ####################### SELECT BELOW CHUNK OF CODE FOR AGE OR NOT AGE BASED VSL ########################################
+  ####################### SAME FINAL VARIALBE: cost_PV ####################################
+  
+  # # for monetary mortality impact - growth in income for use in WTP function
+  # growth_rates <- growth_cap_rates %>%
+  #   filter(year > 2019) %>%
+  #   mutate(cum_growth = cumprod(1 + growth_2035)) %>%
+  #   select(-growth_2035)%>%
+  #   drop_na(year)
+  # 
+  # # Function to grow WTP
+  # future_WTP <- function(elasticity, growth_rate, WTP) {
+  #   return(elasticity * growth_rate * WTP + WTP)
+  # }
+  
+  #### VSL age cross-walk
+  vsl_cross_walk <- dt_age_vsl %>%
+    filter(age_min > 29)%>%
+    select(-year)%>%
+    fuzzyjoin::fuzzy_left_join(
+      ct_inc_45 %>%
+        select(start_age, end_age) %>%
+        distinct()%>%
+        filter(start_age > 29),
+      by = c("age_min" = "start_age",
+             "age_max" = "end_age"),
+      match_fun = list(`>=`, `<=`))%>%
+    group_by(start_age)%>%
+    summarise(end_age = first(end_age),
+              age_VSL_2019 = mean(age_VSL_2019))%>%
+    drop_na(start_age)%>%
+    ungroup()
+  
+  
+  ########### Add VSL 2019 by age group
+  ct_inc_45_temp <- ct_inc_45 %>%
+    select(GEO_ID:end_age, year, pop, incidence_2015) %>%
+    filter(start_age > 29)%>%
+    left_join(vsl_cross_walk, by = c("start_age", "end_age"))%>%
+    mutate(age_VSL_2019 = ifelse(start_age>64, 
+                                 dt_age_vsl %>% filter(age_min>61) %>% select(age_VSL_2019) %>% pull(),
+                                 age_VSL_2019))
+  
+  ########### Grow VSL 
+  # for monetary mortality impact - growth in income for use in WTP function
+  growth_rates <- growth_cap_rates %>%
+    filter(year > 2019) %>%
+    mutate(cum_growth = cumprod(1 + growth_2035)) %>%
+    select(-growth_2035)%>%
+    drop_na(year)
+  
+  # Function to grow WTP
+  future_WTP <- function(elasticity, growth_rate, WTP) {
+    return(elasticity * growth_rate * WTP + WTP)
+  }
+  
+  # Merge growth factors 
+  ct_inc_45_temp <- ct_inc_45_temp%>%
+    mutate(VSL_2019 = vsl_2019) %>%
+    left_join(growth_rates, by = c("year" = "year")) %>%
+    mutate(
+      VSL = future_WTP(
+        income_elasticity_mort,
+        (cum_growth - 1),
+        VSL_2019
+      ),
+      age_VSL = future_WTP(
+        income_elasticity_mort,
+        (cum_growth - 1),
+        age_VSL_2019
+      ))
+  
+  ########### Aggregate at census tract and year level 
+  
+  ct_inc_pop_45_weighted <- ct_inc_45_temp %>%
+    group_by(GEO_ID, year) %>%
+    mutate(
+      ct_pop = sum(pop, na.rm = T),
+      share = pop / ct_pop,
+      weighted_incidence = sum(share * incidence_2015, na.rm = T),
+      weighted_monetized_incidence = sum(share * incidence_2015 * VSL, na.rm = T),
+      weighted_monetized_age_incidence = sum(share * incidence_2015 * age_VSL, na.rm = T),
+      weighted_monetized_age_incidence_2019 = sum(share * incidence_2015 * age_VSL_2019, na.rm = T)) %>%
+    summarize(
+      weighted_incidence = unique(weighted_incidence),
+      weighted_monetized_incidence = unique(weighted_monetized_incidence),
+      weighted_monetized_age_incidence = unique(weighted_monetized_age_incidence),
+      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence),
+      pop = unique(ct_pop)
+    ) %>%
+    ungroup() %>%
+    mutate(GEO_ID = str_remove(GEO_ID, "US"))
+  
+  #  Delta of pollution change ######################################
+  
+  # refining pm25 BAU
+  refining_BAU <- subset(health_weighted, (scen_id == "BAU historic production")) %>%
+    # refining_BAU<-subset(health_income,(scen_id=="BAU historic production"))%>%
+    rename(bau_total_pm25 = total_pm25) # %>%
+  # mutate(census_tract = paste0("0",census_tract))
+  
+  # refining pm25 difference
+  deltas_refining <- health_weighted %>%
+    # deltas_refining<- health_income%>%
+    # mutate(census_tract = paste0("0",census_tract))%>%
+    # left_join(refining_BAU %>% select(-scen_id,-demand_scenario,-refining_scenario,-population:-median_hh_income),by=c("census_tract", "year"))%>%
+    left_join(refining_BAU %>% select(-scen_id, -demand_scenario, -refining_scenario, -ces4_score, -disadvantaged), by = c("census_tract", "year")) %>%
+    mutate(delta_total_pm25 = total_pm25 - bau_total_pm25) %>%
+    select(census_tract, scen_id:year, total_pm25:delta_total_pm25)
+  
+  ## Merge demographic data to pollution scenarios
+  
+  ct_incidence_ca_poll <- deltas_refining %>%
+    right_join(ct_inc_pop_45_weighted, by = c("census_tract" = "GEO_ID", "year" = "year")) %>%
+    drop_na(scen_id) # CURRENTLY DROPPING ALL THE MISMATCHED 2010/2022 GEOIDs
+  
+  #####################################################################
+  # AGE-BASED VSL: Monetized mortality for adults (>=29 years old) by age-based VSL
+  #######################################################################
+  
+  ct_mort_cost <- ct_incidence_ca_poll %>%
+    mutate(
+      mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
+      mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop,
+      benefit_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_incidence * pop,
+      benefit_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_incidence * pop,
+      benefit_age_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
+      benefit_age_delta_2019 = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop,
+      benefit_age_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence * pop
+    )%>%
+    group_by(year) %>%
+    mutate(
+      cost_2019_PV = benefit_age_delta_2019 / ((1 + discount_rate)^(year - 2019)),
+      cost_PV = benefit_age_delta / ((1 + discount_rate)^(year - 2019))
+    )%>%
+    ungroup()
+  
+  #####################################################################
+  # CONSTANT VSL: Calculate the cost per premature mortality (old way)################
+  #####################################################################
+  # 
+  # ct_health <- ct_incidence_ca_poll %>%
+  #   mutate(
+  #     mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
+  #     mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop
+  #   )
+  # 
+  # ct_mort_cost <- ct_health %>%
+  #   mutate(VSL_2019 = vsl_2019) %>%
+  #   left_join(growth_rates, by = c("year" = "year")) %>%
+  #   mutate(
+  #     VSL = future_WTP(
+  #       income_elasticity_mort,
+  #       (cum_growth - 1),
+  #       VSL_2019
+  #     ),
+  #     cost_2019 = mortality_delta * VSL_2019,
+  #     cost = mortality_delta * VSL
+  #   ) %>%
+  #   group_by(year) %>%
+  #   mutate(
+  #     cost_2019_PV = cost_2019 / ((1 + discount_rate)^(year - 2019)),
+  #     cost_PV = cost / ((1 + discount_rate)^(year - 2019))
+  #   )
+  
+  ##########################################################################
+  
+  return(ct_mort_cost)
+}
+
+# calculate_census_tract_mortality = function(health_income,
+calculate_census_tract_mortality_constant_vsl <- function(beta,
+                                                          se,
+                                                          vsl_2015,
+                                                          vsl_2019,
+                                                          income_elasticity_mort,
+                                                          discount_rate,
+                                                          health_weighted,
+                                                          ct_inc_45,
+                                                          growth_cap_rates,
+                                                          dt_age_vsl) {
+  
+  ####################### SELECT BELOW CHUNK OF CODE FOR AGE OR NOT AGE BASED VSL ########################################
+  ####################### SAME FINAL VARIALBE: cost_PV ####################################
+  
+  # # for monetary mortality impact - growth in income for use in WTP function
+  # growth_rates <- copy(growth_cap_rates) %>%
+  #   filter(year > 2019) %>%
+  #   mutate(cum_growth = cumprod(1 + growth_2035)) %>%
+  #   select(-growth_2035)%>%
+  #   drop_na(year)
+  # 
+  # # Function to grow WTP
+  # future_WTP <- function(elasticity, growth_rate, WTP) {
+  #   return(elasticity * growth_rate * WTP + WTP)
+  # }
+  
+  #### VSL age cross-walk
+  vsl_cross_walk <- dt_age_vsl %>%
+    filter(age_min > 29)%>%
+    select(-year)%>%
+    fuzzyjoin::fuzzy_left_join(
+      ct_inc_45 %>%
+        select(start_age, end_age) %>%
+        distinct()%>%
+        filter(start_age > 29),
+      by = c("age_min" = "start_age",
+             "age_max" = "end_age"),
+      match_fun = list(`>=`, `<=`))%>%
+    group_by(start_age)%>%
+    summarise(end_age = first(end_age),
+              age_VSL_2019 = mean(age_VSL_2019))%>%
+    drop_na(start_age)%>%
+    ungroup()
+  
+  
+  ########### Add VSL 2019 by age group
+  
+  ct_inc_45_temp <- copy(ct_inc_45) %>%
+    select(GEO_ID:end_age, year, pop, incidence_2015) %>%
+    filter(start_age > 29)%>%
+    left_join(vsl_cross_walk, by = c("start_age", "end_age"))%>%
+    mutate(age_VSL_2019 = ifelse(start_age>64, 
+                                 dt_age_vsl %>% filter(age_min>61) %>% select(age_VSL_2019) %>% pull(),
+                                 age_VSL_2019))
+  
+  ########### Grow VSL 
+  
+  # for monetary mortality impact - growth in income for use in WTP function
+  growth_rates <- copy(growth_cap_rates) %>%
+    filter(year > 2019) %>%
+    mutate(cum_growth = cumprod(1 + growth_2035)) %>%
+    select(-growth_2035)%>%
+    drop_na(year)
+  
+  # Function to grow WTP
+  future_WTP <- function(elasticity, growth_rate, WTP) {
+    return(elasticity * growth_rate * WTP + WTP)
+  }
+  
+  # Merge growth factors 
+  ct_inc_45_temp <- ct_inc_45_temp%>%
+    mutate(VSL_2019 = vsl_2019) %>%
+    left_join(growth_rates, by = c("year" = "year")) %>%
+    mutate(
+      VSL = future_WTP(
+        income_elasticity_mort,
+        (cum_growth - 1),
+        VSL_2019
+      ),
+      age_VSL = future_WTP(
+        income_elasticity_mort,
+        (cum_growth - 1),
+        age_VSL_2019
+      ))
+  
+  ########### Aggregate at census tract and year level 
+  
+  ct_inc_pop_45_weighted <- ct_inc_45_temp %>%
+    group_by(GEO_ID, year) %>%
+    mutate(
+      ct_pop = sum(pop, na.rm = T),
+      share = pop / ct_pop,
+      weighted_incidence = sum(share * incidence_2015, na.rm = T),
+      weighted_monetized_incidence = sum(share * incidence_2015 * VSL, na.rm = T),
+      weighted_monetized_age_incidence = sum(share * incidence_2015 * age_VSL, na.rm = T),
+      weighted_monetized_age_incidence_2019 = sum(share * incidence_2015 * age_VSL_2019, na.rm = T)) %>%
+    summarize(
+      weighted_incidence = unique(weighted_incidence),
+      weighted_monetized_incidence = unique(weighted_monetized_incidence),
+      weighted_monetized_age_incidence = unique(weighted_monetized_age_incidence),
+      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence),
+      pop = unique(ct_pop)
+    ) %>%
+    ungroup() %>%
+    mutate(GEO_ID = str_remove(GEO_ID, "US"))
+  
+  #  Delta of pollution change ######################################
+  
+  # refining pm25 BAU
+  refining_BAU <- subset(health_weighted, (scen_id == "BAU historic production")) %>%
+    # refining_BAU<-subset(health_income,(scen_id=="BAU historic production"))%>%
+    rename(bau_total_pm25 = total_pm25) # %>%
+  # mutate(census_tract = paste0("0",census_tract))
+  
+  # refining pm25 difference
+  deltas_refining <- health_weighted %>%
+    # deltas_refining<- health_income%>%
+    # mutate(census_tract = paste0("0",census_tract))%>%
+    # left_join(refining_BAU %>% select(-scen_id,-demand_scenario,-refining_scenario,-population:-median_hh_income),by=c("census_tract", "year"))%>%
+    left_join(refining_BAU %>% select(-scen_id, -demand_scenario, -refining_scenario, -ces4_score, -disadvantaged), by = c("census_tract", "year")) %>%
+    mutate(delta_total_pm25 = total_pm25 - bau_total_pm25) %>%
+    select(census_tract, scen_id:year, total_pm25:delta_total_pm25)
+  
+  ## Merge demographic data to pollution scenarios
+  
+  ct_incidence_ca_poll <- deltas_refining %>%
+    right_join(ct_inc_pop_45_weighted, by = c("census_tract" = "GEO_ID", "year" = "year")) %>%
+    drop_na(scen_id) # CURRENTLY DROPPING ALL THE MISMATCHED 2010/2022 GEOIDs
+  
+  # #####################################################################
+  # # AGE-BASED VSL: Monetized mortality for adults (>=29 years old) by age-based VSL
+  # #######################################################################
+  # 
+  # ct_mort_cost <- ct_incidence_ca_poll %>%
+  #   mutate(
+  #     mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
+  #     mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop,
+  #     benefit_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_incidence * pop,
+  #     benefit_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_incidence * pop,
+  #     benefit_age_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
+  #     benefit_age_delta_2019 = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop,
+  #     benefit_age_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence * pop
+  #   )%>%
+  #   group_by(year) %>%
+  #   mutate(
+  #     cost_2019_PV = benefit_age_delta_2019 / ((1 + discount_rate)^(year - 2019)),
+  #     cost_PV = benefit_age_delta / ((1 + discount_rate)^(year - 2019))
+  #   )%>%
+  #   ungroup()
+  # 
+  #####################################################################
+  # CONSTANT VSL: Calculate the cost per premature mortality (old way)################
+  #####################################################################
+
+  ct_health <- ct_incidence_ca_poll %>%
+    mutate(
+      mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
+      mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop
+    )
+
+  ct_mort_cost <- ct_health %>%
+    mutate(VSL_2019 = vsl_2019) %>%
+    left_join(growth_rates, by = c("year" = "year")) %>%
+    mutate(
+      VSL = future_WTP(
+        income_elasticity_mort,
+        (cum_growth - 1),
+        VSL_2019
+      ),
+      cost_2019 = mortality_delta * VSL_2019,
+      cost = mortality_delta * VSL
+    ) %>%
+    group_by(year) %>%
+    mutate(
+      cost_2019_PV = cost_2019 / ((1 + discount_rate)^(year - 2019)),
+      cost_PV = cost / ((1 + discount_rate)^(year - 2019))
+    )
 
   ##########################################################################
   

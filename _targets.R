@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "vincent"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(name = list_paths, c(
@@ -370,6 +370,15 @@ list(
     county_dac,
     med_house_income,
     dt_ef, #cluster-level emission factors
+    dt_refcap,
+    renewables_info_altair
+  )),
+  tar_target(name = refining_health_income_ref, command = calculate_census_tract_emissions_ref(
+    refining_sites_cons_ghg_2019_2045,
+    srm_weighted_pm25,
+    county_dac,
+    med_house_income,
+    dt_ef,
     dt_ef_ref, #refinery-level emission factors
     dt_refcap,
     renewables_info_altair
@@ -377,6 +386,11 @@ list(
   tar_target(name = health_weighted, command = calculate_weighted_census_tract_emissions(
     ct_xwalk,
     refining_health_income,
+    raw_dac
+  )),
+  tar_target(name = health_weighted_ref, command = calculate_weighted_census_tract_emissions(
+    ct_xwalk,
+    refining_health_income = refining_health_income_ref,
     raw_dac
   )),
   tar_target(name = refinery_pm25_srm, command = create_srm_xwalk(
@@ -400,6 +414,30 @@ list(
     ca_crs
   )),
   tar_target(name = refining_mortality, command = calculate_census_tract_mortality(
+    beta,
+    se,
+    vsl_2015,
+    vsl_2019,
+    income_elasticity_mort,
+    discount_rate,
+    health_weighted,
+    ct_inc_45,
+    growth_cap_rates,
+    dt_age_vsl
+  )),
+  tar_target(name = refining_mortality_ref, command = calculate_census_tract_mortality(
+    beta,
+    se,
+    vsl_2015,
+    vsl_2019,
+    income_elasticity_mort,
+    discount_rate,
+    health_weighted_ref,
+    ct_inc_45,
+    growth_cap_rates,
+    dt_age_vsl
+  )),
+  tar_target(name = refining_mortality_constant_vsl, command = calculate_census_tract_mortality_constant_vsl(
     beta,
     se,
     vsl_2015,
@@ -507,6 +545,20 @@ list(
   tar_target(name = npv_plot, command = plot_npv_health_labor(
     main_path,
     refining_mortality,
+    state_ghg_output,
+    dt_ghg_2019,
+    annual_labor
+  )),
+  tar_target(name = npv_plot_ref, command = plot_npv_health_labor_ref(
+    main_path,
+    refining_mortality = refining_mortality_ref,
+    state_ghg_output,
+    dt_ghg_2019,
+    annual_labor
+  )),
+  tar_target(name = npv_plot_constant_vsl, command = plot_npv_health_labor_constant_vsl(
+    main_path,
+    refining_mortality = refining_mortality_constant_vsl,
     state_ghg_output,
     dt_ghg_2019,
     annual_labor
@@ -819,27 +871,47 @@ list(
   # save outputs
   tar_target(
     name = save_ct_xwalk,
-    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2024/health", "ct_xwalk_2019_2020.csv"),
+    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2025/health", "ct_xwalk_2019_2020.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income,
-    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2024/health", "refining_health_income_2023.csv"),
+    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2025/health", "refining_health_income_2023.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income_ref,
+    command = simple_fwrite(refining_health_income_ref, main_path, "outputs/refining-2025/health", "refining_health_income_ref_2023.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income_2000,
-    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2024/health", "refining_health_census_tract.csv"),
+    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2025/health", "refining_health_census_tract.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income_ref_2000,
+    command = simple_fwrite(health_weighted_ref, main_path, "outputs/refining-2025/health", "refining_health_census_tract_ref.csv"),
     format = "file"
   ),
   tar_target(
     name = save_mortality,
-    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2024/health", "refining_mortality_2023.csv"),
+    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2025/health", "refining_mortality_2023.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_mortality_ref,
+    command = simple_fwrite(refining_mortality_ref, main_path, "outputs/refining-2025/health", "refining_mortality_2023_ref.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_mortality_constant_vsl,
+    command = simple_fwrite(refining_mortality_constant_vsl, main_path, "outputs/refining-2025/health", "refining_mortality_2023_constant_vsl.csv"),
     format = "file"
   ),
   tar_target(
     name = save_state_mort_levels,
-    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2024/health", "refining_state_mortality.csv"),
+    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2025/health", "refining_state_mortality.csv"),
     format = "file"
   ),
 
@@ -877,6 +949,30 @@ list(
       width = 10,
       height = 5,
       dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_ref,
+    command = simple_ggsave(npv_plot_ref,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2025-health-revisions",
+                            "state_npv_fig_ref",
+                            width = 10,
+                            height = 5,
+                            dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_constant_vsl,
+    command = simple_ggsave(npv_plot_constant_vsl,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2025-health-revisions",
+                            "state_npv_fig_constant_vsl",
+                            width = 10,
+                            height = 5,
+                            dpi = 600
     ),
     format = "file"
   ),
