@@ -836,7 +836,8 @@ calculate_census_tract_mortality <- function(beta,
       benefit_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_incidence * pop,
       benefit_age_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
       benefit_age_delta_2019 = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop,
-      benefit_age_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence * pop
+      benefit_age_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
+      benefit_age_level_2019 = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop
     )%>%
     group_by(year) %>%
     mutate(
@@ -1154,10 +1155,10 @@ calculate_county_health <- function( # health_weighted,
   
   mort_df <- mort_df[, .(
     census_tract, scen_id, demand_scenario, refining_scenario,
-    year, mortality_level, VSL_2019
+    year, benefit_age_level_2019
   )]
   
-  mort_df[, mort_val_2019 := mortality_level * VSL_2019]
+  mort_df[, mort_val_2019 := benefit_age_level_2019]
   mort_df[, mort_val_2019_PV := mort_val_2019 / ((1 + discount_rate)^(year - 2019))]
   
   ## merge with pop ratios
