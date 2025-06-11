@@ -518,7 +518,8 @@ combine_refinery_prod_cons <- function(
   ref_crude_res_regjd,
   ref_renew_gjd,
   dt_ghgfac,
-  ghg_year = NULL
+  ghg_year = NULL,
+  use_refinery_factor = TRUE
 ) {
   ref_cons_prod <- merge(
     ref_crude_gjd,
@@ -574,16 +575,28 @@ combine_refinery_prod_cons <- function(
   ref_cons_prod[, site_id := as.character(site_id)]
   dt_ghgfac_sub[, site_id := as.character(site_id)]
 
-  # Merge refinery-level emissions factor by site_id and year
+  # Choose which emission factor to use
+  ef_col <- if (
+    use_refinery_factor && "refinery_kgco2e_bbl" %in% colnames(dt_ghgfac_sub)
+  ) {
+    "refinery_kgco2e_bbl"
+  } else {
+    "region_kgco2e_bbl"
+  }
+
+  # Merge refinery-level or region-level emissions factor by site_id and year
   ref_cons_prod_ghg <- merge(
     ref_cons_prod,
-    dt_ghgfac_sub[, .(site_id, region_kgco2e_bbl)],
+    dt_ghgfac_sub[, .(site_id, region_kgco2e_bbl, refinery_kgco2e_bbl)],
     by = c("site_id"),
     all.x = TRUE
   )
 
+  # Set the emission factor column to use
+  ref_cons_prod_ghg[, emission_factor := get(ef_col)]
+
   ref_cons_prod_ghg[,
-    total_co2e_kg := total_crude_consumption_bbl * region_kgco2e_bbl
+    total_co2e_kg := total_crude_consumption_bbl * emission_factor
   ]
 
   ref_cons_prod_ghg
