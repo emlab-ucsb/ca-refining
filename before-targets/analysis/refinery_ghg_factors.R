@@ -4,7 +4,7 @@
 
 # inputs --------
 
-proj_path <- "/Volumes/GoogleDrive/Shared\ drives/emlab/projects/current-projects/calepa-cn"
+proj_path <- "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
 fw_file <- "fuel_watch_data.csv"
 ghg_file <- "refinery_ghg_emissions.csv"
 cap_file <- "refinery_loc_cap_manual.csv"
@@ -25,30 +25,45 @@ library(openxlsx)
 
 # import crude consumption data
 cons_dt <- fread(
-  file.path(proj_path, "data/stocks-flows/processed", fw_file),
+  file.path(
+    proj_path,
+    "data-staged-for-deletion/stocks-flows/processed",
+    fw_file
+  ),
   header = T
 )
 
 # import ghg emissions data
 ghg_dt <- fread(
-  file.path(proj_path, "outputs/stocks-flows", ghg_file),
+  file.path(proj_path, "outputs-staged-for-deletion/stocks-flows", ghg_file),
   header = T
 )
 
 # import mrr data
 l_files <- list.files(
-  file.path(proj_path, "data/stocks-flows/processed/ghg_mrr"),
+  file.path(
+    proj_path,
+    "data-staged-for-deletion/stocks-flows/processed/ghg_mrr"
+  ),
   pattern = ".csv"
 )
 l_mrr <- lapply(
-  file.path(proj_path, "data/stocks-flows/processed/ghg_mrr", l_files),
+  file.path(
+    proj_path,
+    "data-staged-for-deletion/stocks-flows/processed/ghg_mrr",
+    l_files
+  ),
   fread
 )
 mrr_dt <- rbindlist(l_mrr, fill = TRUE, use.names = TRUE)
 
 # import refinery capacity data
 cap_dt <- fread(
-  file.path(proj_path, "data/stocks-flows/processed", cap_file),
+  file.path(
+    proj_path,
+    "data-staged-for-deletion/stocks-flows/processed",
+    cap_file
+  ),
   header = T
 )
 setnames(cap_dt, "cluster", "region")
@@ -56,7 +71,7 @@ setnames(cap_dt, "cluster", "region")
 # read in list of hydrogen facilities
 hydrogen_dt <- as.data.table(read.xlsx(file.path(
   proj_path,
-  "data/stocks-flows/raw",
+  "data-staged-for-deletion/stocks-flows/raw",
   hydrogen_file
 )))
 
@@ -106,7 +121,8 @@ hyd_ghg_loc <- hyd_ghg[
 
 # add column for adjusted co2 for hydrogen facilities -----
 
-hyd_ghg_loc[,
+hyd_ghg_loc[
+  ,
   adj_total_co2e := fifelse(
     report_yr >= 2011,
     co2e_nb_ch4_n2o + co2_bf,
