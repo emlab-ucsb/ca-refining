@@ -1107,7 +1107,7 @@ list(
   # individual refinery ghg emissions
   tar_target(
     name = indiv_ghg,
-    command = gather_refinery_ghg(ref_cons_prod, indiv_cons)
+    command = gather_refinery_ghg(ref_cons_prod, indiv_cons, TRUE)
   ),
   tar_target(
     name = indiv_ghg_output,
