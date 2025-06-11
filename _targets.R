@@ -1059,7 +1059,8 @@ list(
       ref_crude_res_regjd,
       ref_renew_gjd,
       dt_ghgfac,
-      2018
+      2018,
+      TRUE
     )
   ),
 
