@@ -1168,7 +1168,7 @@ calculate_county_health <- function( # health_weighted,
   )
   
   ## multiply but pct
-  mort_df[, mortality_level_dem := mortality_level * pct]
+  mort_df[, mortality_level_dem := mort_val_2019 * pct]
   mort_df[, mortality_pv_dem := mort_val_2019_PV * pct]
   mort_df <- mort_df[, .(
     census_tract, scen_id, demand_scenario, refining_scenario, year, demo_group, demo_cat,
