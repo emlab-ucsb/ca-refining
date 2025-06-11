@@ -461,7 +461,6 @@ list(
     ),
     format = "file"
   ),
-
   # read in raw data files
   tar_target(
     name = raw_its_bau,
@@ -654,6 +653,63 @@ list(
   ),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
+  # GHG factor calculation targets
+  tar_target(
+    name = cons_region,
+    command = calculate_region_crude_consumption(dt_fw)
+  ),
+  tar_target(
+    name = cap_dt_filtered,
+    command = filter_refinery_capacity(dt_refcap)
+  ),
+  tar_target(
+    name = hyd_ref,
+    command = filter_hydrogen_facilities(dt_hydrogen_facilities)
+  ),
+  tar_target(
+    name = hyd_ghg,
+    command = extract_hydrogen_ghg(dt_mrr, hyd_ref)
+  ),
+  tar_target(
+    name = hyd_ghg_loc,
+    command = match_hydrogen_with_refineries(hyd_ghg, cap_dt_filtered)
+  ),
+  tar_target(
+    name = ref_loc,
+    command = match_refinery_emissions_to_region(
+      cap_dt_filtered,
+      dt_ghg_emissions
+    )
+  ),
+  tar_target(
+    name = combined_ghg,
+    command = combine_hydrogen_and_refinery_emissions(hyd_ghg_loc, ref_loc)
+  ),
+  tar_target(
+    name = ghg_region,
+    command = aggregate_emissions_by_region(combined_ghg)
+  ),
+  tar_target(
+    name = emfac_region,
+    command = calculate_region_emission_factors(cons_region, ghg_region)
+  ),
+  tar_target(
+    name = cap_prop,
+    command = calculate_capacity_proportions(cap_dt_filtered)
+  ),
+  tar_target(
+    name = cons_ref,
+    command = calculate_refinery_consumption(cap_prop, cons_region)
+  ),
+  tar_target(
+    name = emfac_ref,
+    command = calculate_refinery_emission_factors(
+      cons_ref,
+      dt_ghg_emissions,
+      emfac_region
+    )
+  ),
+
   # create processed data
   tar_target(
     name = dt_its,
@@ -715,6 +771,13 @@ list(
       ".csv"
     )
   ),
+  tar_target(
+    name = dt_ghg_emissions,
+    command = simple_fread(file.path(
+      main_path,
+      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
+    ))
+  ),
 
   # set remaining file paths
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
@@ -732,14 +795,6 @@ list(
     command = file.path(
       main_path,
       "data-staged-for-deletion/stocks-flows/processed/fuel_watch_data.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = file_ghgfac,
-    command = file.path(
-      main_path,
-      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"
     ),
     format = "file"
   ),
@@ -775,12 +830,11 @@ list(
     ),
     format = "file"
   ),
-
   # read in processed data files
   # tar_target(name = dt_its, command = simple_fread(file_its)),
   # tar_target(name = dt_jet, command = simple_fread(file_jet)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
-  tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),
+  tar_target(name = dt_ghgfac, command = emfac_ref),
   tar_target(name = dt_ces, command = read_census_data(file_processed_ces3)),
   tar_target(name = dt_site_2019, command = simple_fread(file_site_2019)),
   tar_target(name = dt_county_2019, command = simple_fread(file_county_2019)),
@@ -1004,7 +1058,8 @@ list(
       ref_crude_gjd,
       ref_crude_res_regjd,
       ref_renew_gjd,
-      dt_ghgfac
+      dt_ghgfac,
+      2018
     )
   ),
 
