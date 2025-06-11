@@ -103,6 +103,7 @@ list(
   tar_target(name = kern_perc, command = 0.9375),
   # tar_target(name = a, command = 4),
   # tar_target(name = ccs_capture_rate, command = 0.474),
+  tar_target(name = refinery_level_ghg, command = TRUE),
 
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
@@ -1060,7 +1061,7 @@ list(
       ref_renew_gjd,
       dt_ghgfac,
       2018,
-      TRUE
+      refinery_level_ghg
     )
   ),
 
@@ -1107,7 +1108,7 @@ list(
   # individual refinery ghg emissions
   tar_target(
     name = indiv_ghg,
-    command = gather_refinery_ghg(ref_cons_prod, indiv_cons, TRUE)
+    command = gather_refinery_ghg(ref_cons_prod, indiv_cons, refinery_level_ghg)
   ),
   tar_target(
     name = indiv_ghg_output,
