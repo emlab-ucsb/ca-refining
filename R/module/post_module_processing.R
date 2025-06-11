@@ -500,13 +500,25 @@ divide_residual_gjd_renewable_refineries <- function(
 }
 
 
+# #' @import data.table
+# utils::globalVariables(c(
+#   "site_id",
+#   "traditional_crude_consumption_bbl",
+#   "residual_renewable_crude_consumption_bbl",
+#   "main_renewable_crude_consumption_bbl",
+#   "total_crude_consumption_bbl",
+#   "total_co2e_kg",
+#   "region_kgco2e_bbl",
+#   "year",
+#   ".SD"
+# ))
 # combine all refinery-level production and consumption -------
-
 combine_refinery_prod_cons <- function(
   ref_crude_gjd,
   ref_crude_res_regjd,
   ref_renew_gjd,
-  dt_ghgfac
+  dt_ghgfac,
+  ghg_year = NULL
 ) {
   ref_cons_prod <- merge(
     ref_crude_gjd,
@@ -520,7 +532,7 @@ combine_refinery_prod_cons <- function(
       "region",
       "year"
     ),
-    all = T
+    all = TRUE
   )
   ref_cons_prod[, site_id := as.character(site_id)]
 
@@ -536,7 +548,7 @@ combine_refinery_prod_cons <- function(
       "region",
       "year"
     ),
-    all = T
+    all = TRUE
   )
 
   fix_columns <- colnames(ref_cons_prod)[8:19]
@@ -545,31 +557,37 @@ combine_refinery_prod_cons <- function(
     .SDcols = fix_columns
   ]
 
+  # Calculate total crude consumption
   ref_cons_prod[,
     total_crude_consumption_bbl := traditional_crude_consumption_bbl +
       residual_renewable_crude_consumption_bbl +
       main_renewable_crude_consumption_bbl
   ]
 
-  # # split regional crude consumption to refinery level --------
-  #
-  #   cols = 'total_crude_demand_bbl'
-  #   agg_crude_consumption_indiv[, (cols) := lapply(.SD, function(x) x*capacity_ratio), .SDcols = cols]
-  #   setcolorder(agg_crude_consumption_indiv, c('demand_scenario', 'refining_scenario', 'region', 'year', 'site_id', 'refinery_name', 'location',
-  #                                              'total_crude_demand_bbl', 'capacity_ratio'))
-  #
-  # add ghg emissions factor to refinery crude consumption ---------
+  # Filter dt_ghgfac for the specified year if provided
+  dt_ghgfac_sub <- data.table::copy(dt_ghgfac)
+  if (!is.null(ghg_year)) {
+    dt_ghgfac_sub <- dt_ghgfac_sub[year == ghg_year]
+  }
 
-  ref_cons_prod <- ref_cons_prod[
-    dt_ghgfac[, .(region, region_kgco2e_bbl)],
-    on = "region"
-  ]
-  ref_cons_prod[,
+  # Ensure site_id is character
+  ref_cons_prod[, site_id := as.character(site_id)]
+  dt_ghgfac_sub[, site_id := as.character(site_id)]
+
+  # Merge refinery-level emissions factor by site_id and year
+  ref_cons_prod_ghg <- merge(
+    ref_cons_prod,
+    dt_ghgfac_sub[, .(site_id, region_kgco2e_bbl)],
+    by = c("site_id"),
+    all.x = TRUE
+  )
+
+  ref_cons_prod_ghg[,
     total_co2e_kg := total_crude_consumption_bbl * region_kgco2e_bbl
   ]
-  ref_cons_prod
-}
 
+  ref_cons_prod_ghg
+}
 
 # refinery-level: fuel production -----------
 
