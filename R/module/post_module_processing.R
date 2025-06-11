@@ -1027,9 +1027,12 @@ gather_refinery_crude_consumption_output_bge <- function(indiv_cons) {
 
 # refinery-level: emissions -----------
 
-gather_refinery_ghg <- function(ref_cons_prod, indiv_cons) {
-  # get unique set of emissions factors (note: i think this is redundant now without innovation scenarios and ccs adoption)
-
+gather_refinery_ghg <- function(
+  ref_cons_prod,
+  indiv_cons,
+  use_refinery_factor = TRUE
+) {
+  # get unique set of emissions factors
   res <- ref_cons_prod[, .(
     demand_scenario,
     refining_scenario,
@@ -1038,11 +1041,11 @@ gather_refinery_ghg <- function(ref_cons_prod, indiv_cons) {
     refinery_name,
     location,
     region,
-    region_kgco2e_bbl
+    region_kgco2e_bbl,
+    refinery_kgco2e_bbl
   )]
 
   # merge with consumption data to get refinery-emissions
-
   indiv_ghg <- indiv_cons[
     res,
     on = .(
@@ -1056,12 +1059,19 @@ gather_refinery_ghg <- function(ref_cons_prod, indiv_cons) {
     )
   ]
 
-  # calculate emissions
+  # choose which emission factor to use
+  ef_col <- if (
+    use_refinery_factor && "refinery_kgco2e_bbl" %in% colnames(indiv_ghg)
+  ) {
+    "refinery_kgco2e_bbl"
+  } else {
+    "region_kgco2e_bbl"
+  }
 
-  indiv_ghg[, co2e_kg := consumption_bbl * region_kgco2e_bbl]
+  # calculate emissions
+  indiv_ghg[, co2e_kg := consumption_bbl * get(ef_col)]
 
   # assign clusters
-
   indiv_ghg[region == "South", cluster := "South"]
   indiv_ghg[
     region == "North" & location == "Bakersfield",
@@ -1073,7 +1083,6 @@ gather_refinery_ghg <- function(ref_cons_prod, indiv_cons) {
   ]
 
   # set factor level order
-
   indiv_ghg[,
     source := factor(
       source,
