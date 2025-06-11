@@ -500,18 +500,18 @@ divide_residual_gjd_renewable_refineries <- function(
 }
 
 
-# #' @import data.table
-# utils::globalVariables(c(
-#   "site_id",
-#   "traditional_crude_consumption_bbl",
-#   "residual_renewable_crude_consumption_bbl",
-#   "main_renewable_crude_consumption_bbl",
-#   "total_crude_consumption_bbl",
-#   "total_co2e_kg",
-#   "region_kgco2e_bbl",
-#   "year",
-#   ".SD"
-# ))
+#' @import data.table
+utils::globalVariables(c(
+  "site_id",
+  "traditional_crude_consumption_bbl",
+  "residual_renewable_crude_consumption_bbl",
+  "main_renewable_crude_consumption_bbl",
+  "total_crude_consumption_bbl",
+  "total_co2e_kg",
+  "region_kgco2e_bbl",
+  "year",
+  ".SD"
+))
 # combine all refinery-level production and consumption -------
 combine_refinery_prod_cons <- function(
   ref_crude_gjd,
