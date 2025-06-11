@@ -788,14 +788,20 @@ calculate_census_tract_mortality <- function(beta,
       ct_pop = sum(pop, na.rm = T),
       share = pop / ct_pop,
       weighted_incidence = sum(share * incidence_2015, na.rm = T),
+      ## growth VSL, not age based
       weighted_monetized_incidence = sum(share * incidence_2015 * VSL, na.rm = T),
+      ## growth VSL, age-based
       weighted_monetized_age_incidence = sum(share * incidence_2015 * age_VSL, na.rm = T),
+      ## 2019 VSL, age-based (main text)
       weighted_monetized_age_incidence_2019 = sum(share * incidence_2015 * age_VSL_2019, na.rm = T)) %>%
     summarize(
       weighted_incidence = unique(weighted_incidence),
+      ## growth VSL, not age based
       weighted_monetized_incidence = unique(weighted_monetized_incidence),
+      ## growth VSL, age-based
       weighted_monetized_age_incidence = unique(weighted_monetized_age_incidence),
-      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence),
+      ## 2019 VSL, age-based (main text)
+      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence_2019),
       pop = unique(ct_pop)
     ) %>%
     ungroup() %>%
@@ -832,11 +838,14 @@ calculate_census_tract_mortality <- function(beta,
     mutate(
       mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
       mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop,
+      ## growth VSL, not age based
       benefit_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_incidence * pop,
       benefit_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_incidence * pop,
-      benefit_age_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
-      benefit_age_delta_2019 = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop,
+      ## growth VSL, age-based
       benefit_age_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
+      benefit_age_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
+      ## 2019 VSL, age-based (main text)
+      benefit_age_delta_2019 = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop,
       benefit_age_level_2019 = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop
     )%>%
     group_by(year) %>%
@@ -985,7 +994,7 @@ calculate_census_tract_mortality_constant_vsl <- function(beta,
       weighted_incidence = unique(weighted_incidence),
       weighted_monetized_incidence = unique(weighted_monetized_incidence),
       weighted_monetized_age_incidence = unique(weighted_monetized_age_incidence),
-      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence),
+      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence_2019),
       pop = unique(ct_pop)
     ) %>%
     ungroup() %>%
