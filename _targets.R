@@ -47,13 +47,13 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(name = list_paths, c(
     "tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
     "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
-    "vincent" = "G://Shared drives/emlab/projects/current-projects/calepa-cn",
+    "vincent" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
     "meas" = "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
   )),
 
@@ -90,17 +90,11 @@ list(
   tar_target(name = beta, command = 0.00582), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = se, command = 0.0009628), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = vsl_2015, command = 8705114.25462459),
-  tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906 / 100), # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  #tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906 / 100), # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
+  tar_target(name = vsl_2019, command = 14512127), # see VSL_9719 in age_VSL.R
   tar_target(name = income_elasticity_mort, command = 0.4),
   tar_target(name = discount_rate, command = 0.03),
   tar_target(name = buff_sites, command = c(97, 119, 164, 202, 209, 226, 271, 279, 332, 342, 343, 800, 3422, 34222, 99999)),
-
-  # # emission factors
-  # tar_target(name = ef_nh3, command = 0.00056),
-  # tar_target(name = ef_nox, command = 0.01495),
-  # tar_target(name = ef_pm25, command = 0.00402),
-  # tar_target(name = ef_sox, command = 0.00851),
-  # tar_target(name = ef_voc, command = 0.01247),
 
   ## CPI values
   # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
@@ -132,9 +126,11 @@ list(
   tar_target(name = file_raw_income_house, command = file.path(main_path, "data-staged-for-deletion/Census/ca-median-house-income.csv"), format = "file"), # remove from workflow
   tar_target(name = file_raw_income_county, command = file.path(main_path, "data-staged-for-deletion/Census/ca-median-house-income-county.csv"), format = "file"), # remove from workflow
   tar_target(name = file_inmap_re, command = file.path(main_path, "data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining")), # these were created upstream
-  tar_target(name = file_dt_ef, command = file.path(main_path, "data-staged-for-deletion/health/processed/ref_emission_factor.csv"), format = "file"),
+  tar_target(name = file_dt_ef, command = file.path(main_path, "data-staged-for-deletion/health/processed/ref_emission_factor.csv"), format = "file"), #cluster-level emission factors
+  tar_target(name = file_dt_ef_ref, command = file.path(main_path, "data-staged-for-deletion/health/processed/refinery_emission_factor.csv"), format = "file"), #refinery-level emission factors
+  tar_target(name = file_dt_age_vsl, command = file.path(main_path, "data-staged-for-deletion/health/processed/age_based_VSL_2019.csv"), format = "file"), 
   tar_target(name = file_dt_ct_inc_pop, command = file.path(main_path, "data-staged-for-deletion/health/processed/ct_inc_45_2020.csv"), format = "file"),
-  tar_target(name = file_dt_growth_rate, command = file.path(main_path, "data-staged-for-deletion/benmap/processed/growth_rates.csv"), format = "file"),
+  tar_target(name = file_dt_growth_cap_rate, command = file.path(main_path, "data-staged-for-deletion/benmap/processed/growth_per_cap.csv"), format = "file"),
   tar_target(name = file_dt_health_income, command = file.path(main_path, "outputs-staged-for-deletion/refining-2023/health/refining_health_income_2023.csv"), format = "file"),
   tar_target(name = file_raw_ct_2019, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"), format = "file"),
   tar_target(name = file_raw_ct_2020, command = file.path(main_path, "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"), format = "file"),
@@ -173,9 +169,11 @@ list(
   tar_target(name = raw_dac, command = read_raw_dac_data(file_raw_dac, input_sheet = "SB535 tract list (2022)", input_cols = c(1, 2, 7, 11))),
   tar_target(name = raw_income_house, command = read_census_data(file_raw_income_house)),
   tar_target(name = raw_income_county, command = read_census_data(file_raw_income_county)),
-  tar_target(name = dt_ef, command = fread_data(file_dt_ef)),
+  tar_target(name = dt_ef, command = fread_data(file_dt_ef)), #cluster-level emission factors
+  tar_target(name = dt_ef_ref, command = fread_data(file_dt_ef_ref)), #refinery-level emission factors
+  tar_target(name = dt_age_vsl, command = fread_data(file_dt_age_vsl)),
   tar_target(name = ct_inc_45, command = fread_data(file_dt_ct_inc_pop)),
-  tar_target(name = growth_rates, command = fread_data(file_dt_growth_rate)),
+  tar_target(name = growth_cap_rates, command = fread_data(file_dt_growth_cap_rate)),
   tar_target(name = health_income, command = fread_data(file_dt_health_income)),
   tar_target(name = raw_ct_2019, command = read_ct_2019_data(file_raw_ct_2019, ca_crs)),
   tar_target(name = raw_ct_2020, command = read_ct_2020_data(file_raw_ct_2020, ca_crs)),
@@ -214,7 +212,6 @@ list(
   tar_target(name = file_fw, command = file.path(main_path, "data-staged-for-deletion/stocks-flows/processed/fuel_watch_data.csv"), format = "file"),
   tar_target(name = file_ghgfac, command = file.path(main_path, "outputs-staged-for-deletion/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"), format = "file"),
   tar_target(name = file_processed_ces3, command = file.path(main_path, "data-staged-for-deletion/health/processed/ces3_data.csv"), format = "file"),
-  # tar_target(name = file_growth_rates, command = file.path(main_path, "data/benmap/processed/growth_rates.csv"), format = "file"),
   tar_target(name = file_site_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/site_refining_outputs_2019.csv"), format = "file"),
   tar_target(name = file_county_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/county_refining_outputs_2019.csv"), format = "file"),
   tar_target(name = file_ghg_2019, command = file.path(main_path, "model-development/scenario-plot-staged-for-deletion/refinery-outputs/refining_emissions_state_2019_revised.csv"), format = "file"),
@@ -229,8 +226,6 @@ list(
   tar_target(name = dt_county_2019, command = simple_fread(file_county_2019)),
   tar_target(name = dt_ghg_2019, command = read_ghg_2019_data(file_ghg_2019)),
   # tar_target(name = dt_fpm, command = simple_fread(file_fpm)),
-
-  # tar_target(name = dt_growth_rates, command = read_census_data(file_growth_rates)),
 
   # prep for module
   tar_target(name = prod_refined_week_wide, command = calculate_weekly_refined_products(dt_fw)),
@@ -374,13 +369,28 @@ list(
     srm_weighted_pm25,
     county_dac,
     med_house_income,
+    dt_ef, #cluster-level emission factors
+    dt_refcap,
+    renewables_info_altair
+  )),
+  tar_target(name = refining_health_income_ref, command = calculate_census_tract_emissions_ref(
+    refining_sites_cons_ghg_2019_2045,
+    srm_weighted_pm25,
+    county_dac,
+    med_house_income,
     dt_ef,
+    dt_ef_ref, #refinery-level emission factors
     dt_refcap,
     renewables_info_altair
   )),
   tar_target(name = health_weighted, command = calculate_weighted_census_tract_emissions(
     ct_xwalk,
     refining_health_income,
+    raw_dac
+  )),
+  tar_target(name = health_weighted_ref, command = calculate_weighted_census_tract_emissions(
+    ct_xwalk,
+    refining_health_income = refining_health_income_ref,
     raw_dac
   )),
   tar_target(name = refinery_pm25_srm, command = create_srm_xwalk(
@@ -412,7 +422,32 @@ list(
     discount_rate,
     health_weighted,
     ct_inc_45,
-    growth_rates
+    growth_cap_rates,
+    dt_age_vsl
+  )),
+  tar_target(name = refining_mortality_ref, command = calculate_census_tract_mortality(
+    beta,
+    se,
+    vsl_2015,
+    vsl_2019,
+    income_elasticity_mort,
+    discount_rate,
+    health_weighted_ref,
+    ct_inc_45,
+    growth_cap_rates,
+    dt_age_vsl
+  )),
+  tar_target(name = refining_mortality_constant_vsl, command = calculate_census_tract_mortality_constant_vsl(
+    beta,
+    se,
+    vsl_2015,
+    vsl_2019,
+    income_elasticity_mort,
+    discount_rate,
+    health_weighted,
+    ct_inc_45,
+    growth_cap_rates,
+    dt_age_vsl
   )),
   tar_target(name = ref_mort_level, command = calculate_mort_level(refining_mortality)),
   tar_target(name = pop_ratios, command = calc_pop_ratios(
@@ -510,6 +545,27 @@ list(
   tar_target(name = npv_plot, command = plot_npv_health_labor(
     main_path,
     refining_mortality,
+    state_ghg_output,
+    dt_ghg_2019,
+    annual_labor
+  )),
+  tar_target(name = npv_plot_ref, command = plot_npv_health_labor_ref(
+    main_path,
+    refining_mortality = refining_mortality_ref,
+    state_ghg_output,
+    dt_ghg_2019,
+    annual_labor
+  )),
+  tar_target(name = npv_plot_constant_vsl, command = plot_npv_health_labor_constant_vsl(
+    main_path,
+    refining_mortality = refining_mortality_constant_vsl,
+    state_ghg_output,
+    dt_ghg_2019,
+    annual_labor
+  )),
+  tar_target(name = npv_plot_growing_vsl, command = plot_npv_health_labor_growing_vsl(
+    main_path,
+    refining_mortality = refining_mortality_constant_vsl,
     state_ghg_output,
     dt_ghg_2019,
     annual_labor
@@ -646,18 +702,18 @@ list(
   #            format = "file"),
   #
   # # save figures
-  tar_target(
-    name = save_fig_demand_ghg,
-    command = simple_ggsave(fig_demand_ghg,
-      main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
-      "combined_its_and_production",
-      width = 25,
-      height = 13,
-      dpi = 600
-    ),
-    format = "file"
-  ),
+  # tar_target(
+  #   name = save_fig_demand_ghg,
+  #   command = simple_ggsave(fig_demand_ghg,
+  #     main_path,
+  #     "outputs/academic-out/refining/figures/2025-health-revisions",
+  #     "combined_its_and_production",
+  #     width = 25,
+  #     height = 13,
+  #     dpi = 600
+  #   ),
+  #   format = "file"
+  # ),
   # tar_target(name = save_npv_fig,
   #            command = simple_ggsave(npv_plot,
   #                                    main_path,
@@ -822,27 +878,47 @@ list(
   # save outputs
   tar_target(
     name = save_ct_xwalk,
-    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2024/health", "ct_xwalk_2019_2020.csv"),
+    command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2025/health", "ct_xwalk_2019_2020.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income,
-    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2024/health", "refining_health_income_2023.csv"),
+    command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2025/health", "refining_health_income_2023.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income_ref,
+    command = simple_fwrite(refining_health_income_ref, main_path, "outputs/refining-2025/health", "refining_health_income_ref_2023.csv"),
     format = "file"
   ),
   tar_target(
     name = save_health_income_2000,
-    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2024/health", "refining_health_census_tract.csv"),
+    command = simple_fwrite(health_weighted, main_path, "outputs/refining-2025/health", "refining_health_census_tract.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income_ref_2000,
+    command = simple_fwrite(health_weighted_ref, main_path, "outputs/refining-2025/health", "refining_health_census_tract_ref.csv"),
     format = "file"
   ),
   tar_target(
     name = save_mortality,
-    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2024/health", "refining_mortality_2023.csv"),
+    command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2025/health", "refining_mortality_2023.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_mortality_ref,
+    command = simple_fwrite(refining_mortality_ref, main_path, "outputs/refining-2025/health", "refining_mortality_2023_ref.csv"),
+    format = "file"
+  ),
+  tar_target(
+    name = save_mortality_constant_vsl,
+    command = simple_fwrite(refining_mortality_constant_vsl, main_path, "outputs/refining-2025/health", "refining_mortality_2023_constant_vsl.csv"),
     format = "file"
   ),
   tar_target(
     name = save_state_mort_levels,
-    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2024/health", "refining_state_mortality.csv"),
+    command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2025/health", "refining_state_mortality.csv"),
     format = "file"
   ),
 
@@ -875,7 +951,7 @@ list(
     name = save_npv_fig,
     command = simple_ggsave(npv_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig",
       width = 10,
       height = 5,
@@ -884,10 +960,46 @@ list(
     format = "file"
   ),
   tar_target(
+    name = save_npv_fig_ref,
+    command = simple_ggsave(npv_plot_ref,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2025-health-revisions",
+                            "state_npv_fig_ref",
+                            width = 10,
+                            height = 5,
+                            dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_constant_vsl,
+    command = simple_ggsave(npv_plot_constant_vsl,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2025-health-revisions",
+                            "state_npv_fig_constant_vsl",
+                            width = 10,
+                            height = 5,
+                            dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_growing_vsl,
+    command = simple_ggsave(npv_plot_growing_vsl,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2025-health-revisions",
+                            "state_npv_fig_growing_vsl",
+                            width = 10,
+                            height = 5,
+                            dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
     name = save_npv_labor_fig,
     command = simple_ggsave(npv_labor_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_labor_fig",
       width = 10,
       height = 5,
@@ -899,7 +1011,7 @@ list(
     name = save_levels_fig,
     command = simple_ggsave(health_levels_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_levels_fig",
       width = 12,
       height = 8,
@@ -911,7 +1023,7 @@ list(
     name = save_levels_pmil_fig,
     command = simple_ggsave(health_levels_pmil_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_levels_pmil_fig",
       width = 12,
       height = 8,
@@ -923,7 +1035,7 @@ list(
     name = save_levels_pm25_fig,
     command = simple_ggsave(health_levels_plot_pm25,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_levels_pm25_fig",
       width = 12,
       height = 8,
@@ -935,7 +1047,7 @@ list(
     name = save_l_levels_fig,
     command = simple_ggsave(labor_levels_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_levels_fig",
       width = 12,
       height = 8,
@@ -947,7 +1059,7 @@ list(
     name = save_l_levels_pmil_fig,
     command = simple_ggsave(labor_levels_plot_pmil,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_levels_pmil_fig",
       width = 12,
       height = 8,
@@ -959,7 +1071,7 @@ list(
     name = save_gaps_fig,
     command = simple_ggsave(health_gaps_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_gaps_fig",
       width = 12,
       height = 8,
@@ -971,7 +1083,7 @@ list(
     name = save_gaps_pmil_fig,
     command = simple_ggsave(health_gaps_pmil_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_gaps_pmil_fig",
       width = 12,
       height = 8,
@@ -983,7 +1095,7 @@ list(
     name = save_gaps_pm25_fig,
     command = simple_ggsave(health_gaps_plot_pm25,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_gaps_pm25_fig",
       width = 12,
       height = 8,
@@ -995,7 +1107,7 @@ list(
     name = save_labor_gaps_fig,
     command = simple_ggsave(labor_gaps_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_gaps_fig",
       width = 12,
       height = 8,
@@ -1007,7 +1119,7 @@ list(
     name = save_labor_gaps_fig_pmil,
     command = simple_ggsave(labor_gaps_plot_pmil,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_gaps_pmil_fig",
       width = 12,
       height = 8,
@@ -1019,7 +1131,7 @@ list(
     name = save_demo_npv_fig,
     command = simple_ggsave(demographic_npv_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "demographic_npv_fig",
       width = 11,
       height = 12,
@@ -1031,7 +1143,7 @@ list(
     name = save_demo_share_fig,
     command = simple_ggsave(demographic_npv_shares_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "demographic_npv_shares_fig",
       width = 12,
       height = 12,
@@ -1043,7 +1155,7 @@ list(
     name = save_demo_npv_pc_fig,
     command = simple_ggsave(demographic_npv_plot_pc,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "demographic_npv_pc_fig",
       width = 11,
       height = 12,
@@ -1055,7 +1167,7 @@ list(
     name = save_health_labor_gaps_plot,
     command = simple_ggsave(health_labor_gaps_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "health_labor_gaps_plot",
       width = 14,
       height = 6,
@@ -1067,7 +1179,7 @@ list(
     name = save_health_labor_gaps_pmil_plot,
     command = simple_ggsave(health_labor_gaps_pmil_plot,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "health_labor_gaps_pmil_plot",
       width = 18,
       height = 6,
@@ -1079,7 +1191,7 @@ list(
     name = save_fig_refinery_capacity,
     command = simple_ggsave(fig_refinery_capacity,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "refinery_capacity",
       width = 16,
       height = 12,
@@ -1091,7 +1203,7 @@ list(
     name = save_fig_refinery_count,
     command = simple_ggsave(fig_refinery_count,
       main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      "outputs/academic-out/refining/figures/2025-health-revisions",
       "refinery_count",
       width = 16,
       height = 12,
