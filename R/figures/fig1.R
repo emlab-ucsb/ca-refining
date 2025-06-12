@@ -2,6 +2,7 @@
 # ## september 9, 2024
 
 create_figure_1 <- function(main_path,
+                            save_path,
                             ca_crs,
                             dt_refcap,
                             refin_locs,

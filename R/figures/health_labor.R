@@ -6,6 +6,7 @@
 
 ## NPV figure
 plot_npv_labor_oilpx <- function(main_path,
+                                 save_path,
                                  state_ghg_output,
                                  dt_ghg_2019,
                                  annual_labor) {
@@ -262,6 +263,7 @@ plot_npv_labor_oilpx <- function(main_path,
 
 ## NPV figure
 plot_npv_health_labor <- function(main_path,
+                                  save_path,
                                   refining_mortality,
                                   state_ghg_output,
                                   dt_ghg_2019,
@@ -910,6 +912,7 @@ plot_npv_health_labor <- function(main_path,
 
 ## NPV figure
 plot_npv_health_labor_ref <- function(main_path,
+                                      save_path,
                                       refining_mortality,
                                       state_ghg_output,
                                       dt_ghg_2019,
@@ -1413,6 +1416,7 @@ plot_npv_health_labor_ref <- function(main_path,
 
 ## NPV figure
 plot_npv_health_labor_constant_vsl <- function(main_path,
+                                               save_path,
                                                refining_mortality,
                                                state_ghg_output,
                                                dt_ghg_2019,
@@ -1933,10 +1937,11 @@ plot_npv_health_labor_constant_vsl <- function(main_path,
 
 ## NPV figure
 plot_npv_health_labor_growing_vsl <- function(main_path,
-                                               refining_mortality,
-                                               state_ghg_output,
-                                               dt_ghg_2019,
-                                               annual_labor) {
+                                              save_path,
+                                              refining_mortality,
+                                              state_ghg_output,
+                                              dt_ghg_2019,
+                                              annual_labor) {
   npv_df <- refining_mortality %>% as.data.table()
   
   ## state level
@@ -2946,6 +2951,7 @@ plot_npv_health_labor_growing_vsl <- function(main_path,
 
 
 calc_county_pm25 <- function(main_path,
+                             save_path,
                              health_weighted,
                              raw_counties,
                              raw_ct_2020_all,
@@ -2999,6 +3005,7 @@ calc_county_pm25 <- function(main_path,
 
 
 plot_health_levels <- function(main_path,
+                               save_path,
                                health_grp) {
   fig2_df <- copy(health_grp)
 
@@ -3243,6 +3250,7 @@ plot_health_levels <- function(main_path,
 
 
 plot_health_levels_pc <- function(main_path,
+                                  save_path,
                                   health_grp,
                                   refining_mortality,
                                   pop_ratios) {
@@ -3514,6 +3522,7 @@ plot_health_levels_pc <- function(main_path,
 
 
 plot_health_levels_pm25 <- function(main_path,
+                                    save_path,
                                     health_grp) {
   fig2_df <- copy(health_grp)
 
@@ -3760,6 +3769,7 @@ plot_health_levels_pm25 <- function(main_path,
 
 
 plot_health_levels_gaps <- function(main_path,
+                                    save_path,
                                     health_grp) {
   gaps_df <- copy(health_grp)
 
@@ -4009,6 +4019,7 @@ plot_health_levels_gaps <- function(main_path,
 
 
 plot_health_levels_gaps_pmil <- function(main_path,
+                                         save_path,
                                          health_grp,
                                          refining_mortality,
                                          pop_ratios) {
@@ -4292,6 +4303,7 @@ plot_health_levels_gaps_pmil <- function(main_path,
 ## plot health pm2.5 gaps
 
 plot_health_levels_gaps_pm25 <- function(main_path,
+                                         save_path,
                                          health_grp) {
   gaps_df <- copy(health_grp)
 
@@ -4544,6 +4556,7 @@ plot_health_levels_gaps_pm25 <- function(main_path,
 ###########################################################################
 
 plot_labor_levels <- function(main_path,
+                              save_path,
                               ref_labor_demog_yr,
                               refining_mortality,
                               pop_ratios) {
@@ -4862,6 +4875,7 @@ plot_labor_levels <- function(main_path,
 
 
 plot_labor_levels_pmil <- function(main_path,
+                                   save_path,
                                    ref_labor_demog_yr,
                                    refining_mortality,
                                    pop_ratios) {
@@ -5194,6 +5208,7 @@ plot_labor_levels_pmil <- function(main_path,
 
 
 plot_labor_levels_gaps <- function(main_path,
+                                   save_path,
                                    ref_labor_demog_yr,
                                    refining_mortality,
                                    pop_ratios) {
@@ -5482,6 +5497,7 @@ plot_labor_levels_gaps <- function(main_path,
 
 
 plot_labor_levels_gaps_pmil <- function(main_path,
+                                        save_path,
                                         ref_labor_demog_yr,
                                         refining_mortality,
                                         pop_ratios) {
@@ -5773,6 +5789,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
 ############################################################################
 
 plot_hl_levels_df <- function(main_path,
+                              save_path,
                               ref_mortality_demog,
                               ref_labor_demog,
                               state_ghg_output,
@@ -6286,7 +6303,8 @@ plot_hl_levels <- function(demographic_npv_df) {
 plot_hl_levels_pc <- function(demographic_npv_df,
                               refining_mortality,
                               pop_ratios,
-                              main_path) {
+                              main_path,
+                              save_path) {
   ## copy npv results
   plot_df_long <- copy(demographic_npv_df)
 
@@ -6874,6 +6892,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
 ## ----------------------------------------------------------------------------
 
 plot_hl_shares <- function(main_path,
+                           save_path,
                            demographic_npv_df,
                            state_pop_ratios) {
   plot_df_long <- copy(demographic_npv_df)
@@ -7592,6 +7611,7 @@ plot_hl_shares <- function(main_path,
 }
 
 create_health_labor_table <- function(main_path,
+                                      save_path,
                                       demographic_npv_df,
                                       ref_labor_demog,
                                       pop_ratios,

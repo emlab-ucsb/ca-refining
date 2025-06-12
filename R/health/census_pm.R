@@ -1072,7 +1072,8 @@ calculate_mort_level <- function(refining_mortality) {
 ## health mortality by demographic group
 calculate_mort_x_demg <- function(refining_mortality,
                                   pop_ratios,
-                                  main_path) {
+                                  main_path,
+                                  save_path) {
   refining_mort_df <- copy(refining_mortality)
   setDT(refining_mort_df)
 
@@ -1111,6 +1112,7 @@ calculate_mort_x_demg <- function(refining_mortality,
 
 
 calc_cumul_av_mort <- function(main_path,
+                               save_path,
                                health_grp) {
   dt <- copy(health_grp)
   dt <- dt[, .(
@@ -1133,6 +1135,7 @@ calc_cumul_av_mort <- function(main_path,
 ## calculate county health outputs
 calculate_county_health <- function( # health_weighted,
                                     main_path,
+                                    save_path,
                                     pop_ratios,
                                     refining_mortality,
                                     raw_ct_2020_all,
