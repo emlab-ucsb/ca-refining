@@ -984,7 +984,7 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_npv_fig_constant_vsl,
+    name = save_npv_fig_growing_vsl,
     command = simple_ggsave(npv_plot_growing_vsl,
                             main_path,
                             "outputs/academic-out/refining/figures/2025-health-revisions",
