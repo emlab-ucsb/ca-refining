@@ -514,7 +514,7 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
 
 
   ## save df
-  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  fwrite(labor_pct_long, file.path(main_path, save_path, "fig-csv-files", "labor_high_low_annual_outputs.csv"))
   # fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files", "labor_high_low_annual_outputs.csv"))
 
 
@@ -641,7 +641,7 @@ calc_county_level_outputs <- function(main_path,
 
 
   ## save df
-  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/", "labor_county_outputs.csv"))
+  fwrite(labor_county_out_df, file.path(main_path, save_path, "fig-csv-files", "labor_county_outputs.csv"))
   # fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files", "labor_county_outputs.csv"))
 
 
