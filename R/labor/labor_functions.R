@@ -153,7 +153,7 @@ calc_labor_outputs <- function(main_path,
     select(demand_scenario, refining_scenario, oil_price_scenario, destination, year, total_production_bbl, total_revenue, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
 
   ## save for review
-  write_csv(review_df, file.path(main_path, save_papth, "fig-csv-files", "labor_result_for_review.csv"))
+  write_csv(review_df, file.path(main_path, save_path, "fig-csv-files", "labor_result_for_review.csv"))
   # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
 
   ## calc discounted low
