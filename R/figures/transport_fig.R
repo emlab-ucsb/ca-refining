@@ -15,6 +15,7 @@
 
 
 create_srm_xwalk <- function(main_path,
+                             save_path,
                              srm_weighted_pm25,
                              ct_xwalk,
                              raw_counties,
@@ -92,6 +93,7 @@ create_srm_xwalk <- function(main_path,
 }
 
 create_srm_ct <- function(main_path,
+                          save_path,
                           refinery_pm25_srm) {
   pm25_srm <- copy(refinery_pm25_srm)
 
@@ -108,6 +110,7 @@ create_srm_ct <- function(main_path,
 }
 
 create_pulse_fig <- function(main_path,
+                             save_path,
                              refinery_pm25_srm,
                              ct_pm25_srm,
                              raw_counties,

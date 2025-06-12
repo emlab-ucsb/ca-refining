@@ -413,6 +413,7 @@ list(
   )),
   tar_target(name = refinery_pm25_srm, command = create_srm_xwalk(
     main_path,
+    save_path,
     srm_weighted_pm25,
     ct_xwalk,
     raw_counties,
@@ -420,10 +421,12 @@ list(
   )),
   tar_target(name = ct_pm25_srm, command = create_srm_ct(
     main_path,
+    save_path,
     refinery_pm25_srm
   )),
   tar_target(name = pulse_fig, command = create_pulse_fig(
     main_path,
+    save_path,
     refinery_pm25_srm,
     ct_pm25_srm,
     raw_counties,
@@ -490,6 +493,7 @@ list(
 
   tar_target(name = cumul_av_mort, command = calc_cumul_av_mort(
     main_path,
+    save_path,
     health_grp
   )),
   tar_target(name = county_pop_ratios, command = calc_pop_ratios_county(
@@ -506,10 +510,12 @@ list(
   tar_target(name = ref_mortality_demog, command = calculate_mort_x_demg(
     refining_mortality,
     pop_ratios,
-    main_path
+    main_path,
+    save_path
   )),
   tar_target(name = annual_labor, command = calc_labor_outputs(
     main_path,
+    save_path,
     proc_labor_dest_df,
     indiv_prod_output,
     dt_refcap,
@@ -522,6 +528,7 @@ list(
   )),
   tar_target(name = annual_labor_x_impact, command = calc_labor_outputs_x_impact(
     main_path,
+    save_path,
     proc_labor_dest_df,
     indiv_prod_output,
     dt_refcap,
@@ -541,6 +548,7 @@ list(
   )),
   tar_target(name = county_labor_outputs, command = calc_county_level_outputs(
     main_path,
+    save_path,
     ref_labor_demog_yr,
     refining_mortality,
     ca_regions,
@@ -548,6 +556,7 @@ list(
   )),
   tar_target(name = annual_labor_jobs_comp, command = calculate_annual_labor_x_demg_hl(
     main_path,
+    save_path,
     ref_labor_demog_yr,
     refining_mortality,
     pop_ratios
@@ -555,6 +564,7 @@ list(
   tar_target(name = ref_labor_demog, command = calculate_labor_x_demg(ref_labor_demog_yr)),
   tar_target(name = county_pm25_2019, command = calc_county_pm25(
     main_path,
+    save_path,
     health_weighted,
     raw_counties,
     raw_ct_2020_all,
@@ -562,6 +572,7 @@ list(
   )),
   tar_target(name = npv_plot, command = plot_npv_health_labor(
     main_path,
+    save_path,
     refining_mortality,
     state_ghg_output,
     dt_ghg_2019,
@@ -569,6 +580,7 @@ list(
   )),
   tar_target(name = npv_plot_ref, command = plot_npv_health_labor_ref(
     main_path,
+    save_path,
     refining_mortality = refining_mortality_ref,
     state_ghg_output,
     dt_ghg_2019,
@@ -576,6 +588,7 @@ list(
   )),
   tar_target(name = npv_plot_constant_vsl, command = plot_npv_health_labor_constant_vsl(
     main_path,
+    save_path,
     refining_mortality = refining_mortality_constant_vsl,
     state_ghg_output,
     dt_ghg_2019,
@@ -583,6 +596,7 @@ list(
   )),
   tar_target(name = npv_plot_growing_vsl, command = plot_npv_health_labor_growing_vsl(
     main_path,
+    save_path,
     refining_mortality = refining_mortality_constant_vsl,
     state_ghg_output,
     dt_ghg_2019,
@@ -590,64 +604,76 @@ list(
   )),
   tar_target(name = npv_labor_plot, command = plot_npv_labor_oilpx(
     main_path,
+    save_path,
     state_ghg_output,
     dt_ghg_2019,
     annual_labor
   )),
   tar_target(name = health_levels_plot, command = plot_health_levels(
     main_path,
+    save_path,
     health_grp
   )),
   tar_target(name = health_levels_pmil_plot, command = plot_health_levels_pc(
     main_path,
+    save_path,
     health_grp,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = health_levels_plot_pm25, command = plot_health_levels_pm25(
     main_path,
+    save_path,
     health_grp
   )),
   tar_target(name = labor_levels_plot, command = plot_labor_levels(
     main_path,
+    save_path,
     ref_labor_demog_yr,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = labor_levels_plot_pmil, command = plot_labor_levels_pmil(
     main_path,
+    save_path,
     ref_labor_demog_yr,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = health_gaps_plot, command = plot_health_levels_gaps(
     main_path,
+    save_path,
     health_grp
   )),
   tar_target(name = health_gaps_pmil_plot, command = plot_health_levels_gaps_pmil(
     main_path,
+    save_path,
     health_grp,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = health_gaps_plot_pm25, command = plot_health_levels_gaps_pm25(
     main_path,
+    save_path,
     health_grp
   )),
   tar_target(name = labor_gaps_plot, command = plot_labor_levels_gaps(
     main_path,
+    save_path,
     ref_labor_demog_yr,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = labor_gaps_plot_pmil, command = plot_labor_levels_gaps_pmil(
     main_path,
+    save_path,
     ref_labor_demog_yr,
     refining_mortality,
     pop_ratios
   )),
   tar_target(name = demographic_npv_df, command = plot_hl_levels_df(
     main_path,
+    save_path,
     ref_mortality_demog,
     ref_labor_demog,
     state_ghg_output,
@@ -664,6 +690,7 @@ list(
   tar_target(name = health_county_df, command = calculate_county_health(
     # health_weighted,
     main_path,
+    save_path,
     pop_ratios,
     refining_mortality,
     raw_ct_2020_all,
@@ -673,6 +700,7 @@ list(
   tar_target(name = demographic_npv_plot, command = plot_hl_levels(demographic_npv_df)),
   tar_target(name = demographic_npv_shares_plot, command = plot_hl_shares(
     main_path,
+    save_path,
     demographic_npv_df,
     state_pop_ratios
   )),
@@ -680,7 +708,8 @@ list(
     demographic_npv_df,
     refining_mortality,
     pop_ratios,
-    main_path
+    main_path,
+    save_path
   )),
   tar_target(name = health_labor_gaps_plot, command = fig4_hl(
     health_grp,
@@ -696,6 +725,7 @@ list(
   )),
   tar_target(name = state_level_results, command = create_health_labor_table(
     main_path,
+    save_path,
     demographic_npv_df,
     ref_labor_demog,
     pop_ratios,
