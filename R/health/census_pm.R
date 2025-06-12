@@ -1095,7 +1095,7 @@ calculate_mort_x_demg <- function(refining_mortality,
     filter(grp_pop == 0 & pop > 0)
 
   ## save missing pop
-  fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "ct_missing_pop.csv"))
+  fwrite(missing_pop, file.path(main_path, save_path, "fig-csv-files", "ct_missing_pop.csv"))
   # fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "ct_missing_pop.csv"))
 
 
@@ -1121,7 +1121,7 @@ calc_cumul_av_mort <- function(main_path,
   ]
 
   ## save cumulative
-  fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  fwrite(dt, file.path(main_path, save_path, "fig-csv-files", "cumulative_avoided_mortality.csv"))
   # fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "cumulative_avoided_mortality.csv"))
 
 
@@ -1200,7 +1200,7 @@ calculate_county_health <- function( # health_weighted,
   ]
   
   
-  fwrite(mort_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "cumulative_health_x_county.csv"))
+  fwrite(mort_df, file.path(main_path, save_path, "fig-csv-files", "cumulative_health_x_county.csv"))
 
   ## return
   return(mort_df)

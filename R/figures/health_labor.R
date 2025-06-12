@@ -164,7 +164,7 @@ plot_npv_labor_oilpx <- function(main_path,
   plot_df_labor$oil_px_label <- factor(plot_df_labor$oil_px_label, levels = c("Low", "Reference", "High"))
 
   ## save figure inputs
-  fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_npv_fig_inputs_labor_all_oilpx.csv"))
+  fwrite(plot_df_labor, file.path(main_path, save_path, "fig-csv-files", "state_npv_fig_inputs_labor_all_oilpx.csv"))
   # fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
 
 
@@ -451,7 +451,7 @@ plot_npv_health_labor <- function(main_path,
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  fwrite(plot_df_health, file.path(main_path, save_path, "fig-csv-files", "state_npv_fig_inputs_health.csv"))
   # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
 
 
@@ -495,7 +495,7 @@ plot_npv_health_labor <- function(main_path,
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
+  fwrite(plot_df_labor, file.path(main_path, save_path, "fig-csv-files", "state_npv_fig_inputs_labor.csv"))
   # fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
 
 
@@ -684,7 +684,7 @@ plot_npv_health_labor <- function(main_path,
     plot = low_legend,
     device = "pdf",
     filename = "fig3_low_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -741,7 +741,7 @@ plot_npv_health_labor <- function(main_path,
     plot = high_legend,
     device = "pdf",
     filename = "fig3_high_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -1099,7 +1099,7 @@ plot_npv_health_labor_ref <- function(main_path,
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
   
   ## save figure inputs
-  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_npv_fig_inputs_health_ref.csv"))
+  fwrite(plot_df_health, file.path(main_path, save_path, "fig-csv-files", "state_npv_fig_inputs_health_ref.csv"))
   # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
   
   
@@ -1602,7 +1602,7 @@ plot_npv_health_labor_constant_vsl <- function(main_path,
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
   
   ## save figure inputs
-  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_npv_fig_inputs_health_constant_vsl.csv"))
+  fwrite(plot_df_health, file.path(main_path, save_path, "fig-csv-files", "state_npv_fig_inputs_health_constant_vsl.csv"))
   # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
   
   
@@ -1830,7 +1830,7 @@ plot_npv_health_labor_constant_vsl <- function(main_path,
     plot = low_legend,
     device = "pdf",
     filename = "fig3_low_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
   
@@ -1887,7 +1887,7 @@ plot_npv_health_labor_constant_vsl <- function(main_path,
     plot = high_legend,
     device = "pdf",
     filename = "fig3_high_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
   
@@ -2122,7 +2122,7 @@ plot_npv_health_labor_growing_vsl <- function(main_path,
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
   
   ## save figure inputs
-  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_npv_fig_inputs_health_growing_vsl.csv"))
+  fwrite(plot_df_health, file.path(main_path, save_path, "fig-csv-files", "state_npv_fig_inputs_health_growing_vsl.csv"))
   # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
   
   
@@ -2350,7 +2350,7 @@ plot_npv_health_labor_growing_vsl <- function(main_path,
     plot = low_legend,
     device = "pdf",
     filename = "fig3_low_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
   
@@ -2407,7 +2407,7 @@ plot_npv_health_labor_growing_vsl <- function(main_path,
     plot = high_legend,
     device = "pdf",
     filename = "fig3_high_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
   
@@ -2506,7 +2506,7 @@ plot_npv_health_labor_growing_vsl <- function(main_path,
 #                                  by = .(census_tract, scenario, scen_id)]
 #
 #   # ## save figure inputs
-#   # fwrite(health_map_npv_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "ct_health_npv_fig_inputs.csv"))
+#   # fwrite(health_map_npv_df, file.path(main_path, save_path, "fig-csv-files", "ct_health_npv_fig_inputs.csv"))
 #
 #
 #   ## health
@@ -2536,7 +2536,7 @@ plot_npv_health_labor_growing_vsl <- function(main_path,
 #     arrange(-npv_health_av_mort_pc)
 #
 #   # ## save figure inputs
-#   # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "county_health_npv_fig_inputs.csv"))
+#   # fwrite(health_county_df, file.path(main_path, save_path, "fig-csv-files", "county_health_npv_fig_inputs.csv"))
 #
 #
 #   ## for plotting health
@@ -2614,7 +2614,7 @@ plot_npv_health_labor_growing_vsl <- function(main_path,
 #
 #
 #   ## save county-level inputs
-#   fwrite(county_map_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "county_health_labor_npv_npv_pc.csv"))
+#   fwrite(county_map_df, file.path(main_path, save_path, "fig-csv-files", "county_health_labor_npv_npv_pc.csv"))
 #
 #   # ## make the maps
 #   # ##----------------------------------------------------------------------------
@@ -2990,7 +2990,7 @@ calc_county_pm25 <- function(main_path,
     ungroup() %>%
     arrange(-avg_pm25_popw)
 
-  fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  fwrite(health_county_df, file.path(main_path, save_path, "fig-csv-files", "avg_pm25_county_2019.csv"))
   # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv"))
 
 
@@ -3041,7 +3041,7 @@ plot_health_levels <- function(main_path,
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_fig_inputs.csv"))
   # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv"))
 
 
@@ -3312,7 +3312,7 @@ plot_health_levels_pc <- function(main_path,
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
+  fwrite(mort_pc_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_pmil_fig_inputs.csv"))
   # fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
 
 
@@ -3553,7 +3553,7 @@ plot_health_levels_pm25 <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  fwrite(fig2_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_pm25_inputs.csv"))
   # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv"))
 
 
@@ -3811,7 +3811,7 @@ plot_health_levels_gaps <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_fig_gaps_inputs.csv"))
   # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
 
 
@@ -4091,7 +4091,7 @@ plot_health_levels_gaps_pmil <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_fig_gaps_pmil_inputs.csv"))
   # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
 
 
@@ -4343,7 +4343,7 @@ plot_health_levels_gaps_pm25 <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
+  fwrite(gaps_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_fig_gaps_pm25_inputs.csv"))
   # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
 
 
@@ -4655,7 +4655,7 @@ plot_labor_levels <- function(main_path,
   #
 
   ## save figure inputs
-  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
+  fwrite(fig2_l_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_labor_fig_inputs.csv"))
   # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
 
 
@@ -4981,7 +4981,7 @@ plot_labor_levels_pmil <- function(main_path,
   #
 
   ## save figure inputs
-  fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
+  fwrite(fig2_l_df, file.path(main_path, save_path, "fig-csv-files", "state_levels_labor_pmil_fig_inputs.csv"))
   # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
 
 
@@ -5294,7 +5294,7 @@ plot_labor_levels_gaps <- function(main_path,
 
 
   ## save figure inputs
-  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
+  fwrite(l_gaps_df, file.path(main_path, save_path, "fig-csv-files", "state_labor_levels_fig_gaps_inputs.csv"))
   # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
 
 
@@ -5581,7 +5581,7 @@ plot_labor_levels_gaps_pmil <- function(main_path,
   l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
 
   ## save figure inputs
-  fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
+  fwrite(l_gaps_df, file.path(main_path, save_path, "fig-csv-files", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
   # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
 
 
@@ -5932,7 +5932,7 @@ plot_hl_levels_df <- function(main_path,
   ))
 
   ## save figure inputs
-  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
+  fwrite(plot_df_long, file.path(main_path, save_path, "fig-csv-files", "state_disaggregated_npv_fig_inputs.csv"))
   # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
 
 
@@ -6319,7 +6319,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
   plot_df_long[, value := value / pop_2020]
 
   ## save figure inputs
-  fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  fwrite(plot_df_long, file.path(main_path, save_path, "fig-csv-files", "state_disaggregated_npv_pc_fig_inputs.csv"))
   # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
 
 
@@ -6934,7 +6934,7 @@ plot_hl_shares <- function(main_path,
   share_df[, demo_grp_metric := paste0(title, "_", metric)]
 
   ## save figure inputs
-  fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+  fwrite(share_df, file.path(main_path, save_path, "fig-csv-files", "state_disaggreated_npv_share_fig_inputs.csv"))
   # fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
 
 
@@ -7356,7 +7356,7 @@ plot_hl_shares <- function(main_path,
     plot = health_dac_legend,
     device = "pdf",
     filename = "health_dac_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -7365,7 +7365,7 @@ plot_hl_shares <- function(main_path,
     plot = health_poverty_legend,
     device = "pdf",
     filename = "health_poverty_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -7374,7 +7374,7 @@ plot_hl_shares <- function(main_path,
     plot = health_race_legend,
     device = "pdf",
     filename = "health_race_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -7400,7 +7400,7 @@ plot_hl_shares <- function(main_path,
     plot = labor_dac_legend,
     device = "pdf",
     filename = "labor_dac_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -7409,7 +7409,7 @@ plot_hl_shares <- function(main_path,
     plot = labor_poverty_legend,
     device = "pdf",
     filename = "labor_poverty_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -7418,7 +7418,7 @@ plot_hl_shares <- function(main_path,
     plot = labor_race_legend,
     device = "pdf",
     filename = "labor_race_legend.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -7427,7 +7427,7 @@ plot_hl_shares <- function(main_path,
     plot = legend_a_h,
     device = "pdf",
     filename = "labor_race_legend_no_re-emp.pdf",
-    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    path = file.path(main_path, save_path, "legends"),
     dpi = 600
   )
 
@@ -7685,7 +7685,7 @@ create_health_labor_table <- function(main_path,
   result_output <- rbind(npv_out, emp_out, avoid_m_out_total)
 
   ## save figure inputs
-  fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_health_labor_ouputs.csv"))
+  fwrite(result_output, file.path(main_path, save_path, "fig-csv-files", "state_health_labor_ouputs.csv"))
   # fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_health_labor_ouputs.csv"))
 
 

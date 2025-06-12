@@ -315,11 +315,7 @@ create_figure_1 <- function(main_path,
   ## create a folder for fig 1
   fig_1_folder <- file.path(
     main_path,
-    "outputs",
-    "academic-out",
-    "refining",
-    "figures",
-    "2024-08-update",
+    save_path,
     "fig1"
   )
 
