@@ -1927,6 +1927,527 @@ plot_npv_health_labor_constant_vsl <- function(main_path,
 
 
 
+## -----------------------------------------------------------------------------
+## NPV figure: growing VSL, age-based vsl, cluser EFs
+## -----------------------------------------------------------------------------
+
+## NPV figure
+plot_npv_health_labor_growing_vsl <- function(main_path,
+                                               refining_mortality,
+                                               state_ghg_output,
+                                               dt_ghg_2019,
+                                               annual_labor) {
+  npv_df <- refining_mortality %>% as.data.table()
+  
+  ## state level
+  state_npv_df <- npv_df[, .(
+    sum_cost_2019_pv = sum(cost_2019_PV), ## constant VSL
+    sum_cost_pv = sum(cost_PV)
+  ), ## changing VSL
+  by = .(scen_id, demand_scenario, refining_scenario)
+  ]
+  
+  ## add column
+  state_npv_df[, sum_cost_2019_pv_b := sum_cost_2019_pv / 1e9]
+  state_npv_df[, sum_cost_pv_b := sum_cost_pv / 1e9]
+  
+  
+  ## add ghg emission reduction
+  ## 2019 ghg
+  ghg_2019_val <- dt_ghg_2019$mtco2e[1]
+  
+  ## 2045 vs 2019 ghg
+  ghg_2045 <- state_ghg_output[year == 2045 & source == "total"]
+  setnames(ghg_2045, "value", "ghg_kg")
+  ghg_2045[, ghg_2045 := (ghg_kg / 1000) / 1e6]
+  ghg_2045[, ghg_2019 := ghg_2019_val]
+  ghg_2045[, perc_diff := (ghg_2045 - ghg_2019) / ghg_2019]
+  
+  perc_diff_df <- ghg_2045[, .(demand_scenario, refining_scenario, ghg_2045, ghg_2019, perc_diff)]
+  
+  ## summarize by scenario, filter for total
+  state_ghg_df <- state_ghg_output[source == "total", .(total_ghg = sum(value)),
+                                   by = .(demand_scenario, refining_scenario)
+  ]
+  
+  state_ghg_df[, total_ghg_mmt := (total_ghg / 1000) / 1e6]
+  
+  ## reference
+  ref_df <- state_ghg_df[demand_scenario == "BAU" & refining_scenario == "historic production", .(total_ghg_mmt)]
+  setnames(ref_df, "total_ghg_mmt", "ref_ghg_mmt")
+  ref_value <- ref_df$ref_ghg_mmt[1]
+  
+  ## merge with summarized df
+  state_ghg_df[, ref_ghg := ref_value]
+  state_ghg_df[, avoided_ghg := (total_ghg_mmt - ref_value) * -1]
+  
+  ## merge with health
+  health_ghg_df <- merge(state_npv_df, state_ghg_df[, .(demand_scenario, refining_scenario, total_ghg_mmt, ref_ghg, avoided_ghg)],
+                         by = c("demand_scenario", "refining_scenario"),
+                         all.x = T
+  )
+  
+  ## summarize labor for state
+  state_labor <- annual_labor[, .(
+    sum_total_emp = sum(total_emp),
+    sum_total_comp_pv_h = sum(total_comp_PV_h),
+    sum_total_comp_pv_l = sum(total_comp_PV_l)
+  ),
+  by = .(demand_scenario, refining_scenario, oil_price_scenario)
+  ]
+  
+  state_labor <- state_labor[oil_price_scenario == "reference case", ]
+  
+  ## ref labor
+  ref_labor <- state_labor[demand_scenario == "BAU" & refining_scenario == "historic production"]
+  setnames(ref_labor, c("sum_total_emp", "sum_total_comp_pv_h", "sum_total_comp_pv_l"), c("ref_total_emp", "ref_total_comp_pv_h", "ref_total_comp_pv_l"))
+  
+  ## add values to labor
+  state_labor[, `:=`(
+    ref_total_emp = ref_labor$ref_total_emp[1],
+    ref_total_comp_pv_h = ref_labor$ref_total_comp_pv_h[1],
+    ref_total_comp_pv_l = ref_labor$ref_total_comp_pv_l[1]
+  )]
+  
+  state_labor[, forgone_wages_bil_h := (sum_total_comp_pv_h - ref_total_comp_pv_h) / 1e9]
+  state_labor[, forgone_wages_bil_l := (sum_total_comp_pv_l - ref_total_comp_pv_l) / 1e9]
+  
+  ## merge with health and ghg
+  health_labor_ghg_df <- merge(health_ghg_df, state_labor[, .(
+    demand_scenario, refining_scenario,
+    oil_price_scenario, sum_total_comp_pv_h, ref_total_comp_pv_h, forgone_wages_bil_h,
+    sum_total_comp_pv_l, ref_total_comp_pv_l, forgone_wages_bil_l
+  )],
+  by = c("demand_scenario", "refining_scenario"),
+  all.x = T
+  )
+  
+  ## add ghg perc reduction
+  health_labor_ghg_df <- merge(health_labor_ghg_df, perc_diff_df,
+                               by = c("demand_scenario", "refining_scenario"),
+                               all.x = T
+  )
+  
+  ## prepare to plot
+  plot_df <- health_labor_ghg_df[, .(
+    scen_id, demand_scenario, refining_scenario, oil_price_scenario, sum_cost_pv_b,
+    sum_cost_2019_pv_b, forgone_wages_bil_h, forgone_wages_bil_l, avoided_ghg, perc_diff
+  )]
+  
+  setnames(plot_df, "perc_diff", "ghg_perc_diff")
+  
+  ## add values / avoided ghgs
+  plot_df[, avoided_health_cost := sum_cost_2019_pv_b * -1]
+  plot_df[, avoided_health_cost_annual_vsl := sum_cost_pv_b * -1]
+  plot_df[, sum_cost_2019_pv_b := NULL]
+  plot_df[, sum_cost_pv_b := NULL]
+  
+  plot_df[, `:=`(
+    avoided_health_cost_ghg = avoided_health_cost / avoided_ghg,
+    avoided_health_cost_ghg_vsl2 = avoided_health_cost_annual_vsl / avoided_ghg,
+    forgone_wages_bil_h_ghg = forgone_wages_bil_h / avoided_ghg,
+    forgone_wages_bil_l_ghg = forgone_wages_bil_l / avoided_ghg
+  )]
+  
+  plot_df_health <- plot_df %>%
+    select(
+      scen_id, demand_scenario, refining_scenario, ghg_perc_diff, avoided_health_cost, avoided_health_cost_annual_vsl,
+      avoided_health_cost_ghg, avoided_health_cost_ghg_vsl2
+    ) %>%
+    pivot_longer(avoided_health_cost:avoided_health_cost_ghg_vsl2, names_to = "metric", values_to = "value")
+  
+  ## add column for vsl
+  plot_df_health <- plot_df_health %>%
+    mutate(
+      segment = "health",
+      unit_desc = ifelse(metric == "avoided_health_cost", "USD billion (2019 VSL)",
+                         ifelse(metric == "avoided_health_cost_annual_vsl", "USD billion (annual VSL)",
+                                ifelse(metric == "avoided_health_cost_ghg", "USD billion per GHG (2019 VSL)", "USD billion per GHG (annual VSL)")
+                         )
+      ),
+      metric = ifelse(metric %in% c("avoided_health_cost", "avoided_health_cost_annual_vsl"), "avoided_health_cost", "avoided_health_cost_ghg")
+    )
+  
+  
+  plot_df_labor <- plot_df %>%
+    select(scen_id, demand_scenario, refining_scenario, oil_price_scenario, ghg_perc_diff, forgone_wages_bil_h, forgone_wages_bil_l, forgone_wages_bil_h_ghg, forgone_wages_bil_l_ghg) %>%
+    pivot_longer(forgone_wages_bil_h:forgone_wages_bil_l_ghg, names_to = "metric", values_to = "value") %>%
+    mutate(
+      segment = "labor",
+      unit_desc = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_l"), "USD billion", "USD billion per GHG"),
+      estimate = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_h_ghg"), "high", "low"),
+      metric = ifelse(metric %in% c("forgone_wages_bil_h", "forgone_wages_bil_l"), "forgone_wages_bil", "forgone_wages_bil_ghg")
+    ) %>%
+    select(scen_id, demand_scenario, refining_scenario, ghg_perc_diff, segment, metric, unit_desc, estimate, value) %>%
+    pivot_wider(names_from = estimate, values_from = value)
+  
+  # plot_df_long <- rbind(plot_df_health, plot_df_labor)
+  
+  ## prepare health for plotting ------------------------------
+  plot_df_health <- plot_df_health %>%
+    mutate(title = ifelse(metric == "avoided_health_cost", "Health: avoided mortality", "Health: avoided mortality per avoided GHG"))
+  
+  plot_df_health$title <- factor(plot_df_health$title, levels = c("Health: avoided mortality", "Health: avoided mortality per avoided GHG"))
+  
+  ## rename
+  setDT(plot_df_health)
+  plot_df_health[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  plot_df_health[, scenario := gsub("LC1.", "Low ", scenario)]
+  # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
+  # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
+  # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
+  
+  ## refactor
+  plot_df_health$scenario <- factor(plot_df_health$scenario, levels = c(
+    "BAU demand - historic production",
+    "BAU demand - historic exports",
+    "BAU demand - low exports",
+    "Low demand - historic exports",
+    "Low demand - low exports",
+    "Low demand - historic production"
+  ))
+  
+  ## convert value of scaled outputs (by ghg) to millions, add unit column
+  plot_df_health[, value := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), value * 1000, value)]
+  plot_df_health[, metric := fifelse(metric == "forgone_wages_bil_ghg", "forgone_wages_ghg", metric)]
+  plot_df_health[, unit := fifelse(
+    metric %in% c("avoided_health_cost_ghg", "forgone_wages_ghg"),
+    "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+    "NPV (2019 USD billion)"
+  )]
+  
+  ## change historic to historical
+  plot_df_health[, scen_id := str_replace(scen_id, "historic", "historical")]
+  plot_df_health[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
+  
+  ## save figure inputs
+  fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/fig-csv-files/", "state_npv_fig_inputs_health_growing_vsl.csv"))
+  # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  
+  
+  ## prepare labor ----------------------
+  plot_df_labor <- plot_df_labor %>%
+    mutate(title = ifelse(metric == "forgone_wages_bil", "Labor: forgone wages", "Labor: forgone wages per avoided GHG"))
+  
+  plot_df_labor$title <- factor(plot_df_labor$title, levels = c("Labor: forgone wages", "Labor: forgone wages per avoided GHG"))
+  
+  ## rename
+  setDT(plot_df_labor)
+  plot_df_labor[, scenario := paste0(demand_scenario, " demand - ", refining_scenario)]
+  plot_df_labor[, scenario := gsub("LC1.", "Low ", scenario)]
+  # plot_df_long[, scenario := gsub('BAU', 'Reference', scenario)]
+  # plot_df_long[, short_scen := gsub('BAU', 'Reference', short_scen)]
+  # plot_df_long[, short_scen := gsub('Low C.', 'Low carbon', short_scen)]
+  
+  ## refactor
+  plot_df_labor$scenario <- factor(plot_df_labor$scenario, levels = c(
+    "BAU demand - historic production",
+    "BAU demand - historic exports",
+    "BAU demand - low exports",
+    "Low demand - historic exports",
+    "Low demand - low exports",
+    "Low demand - historic production"
+  ))
+  
+  ## convert value of scaled outputs (by ghg) to millions, add unit column
+  plot_df_labor[, high := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), high * 1000, high)]
+  plot_df_labor[, low := fifelse(metric %in% c("avoided_health_cost_ghg", "forgone_wages_bil_ghg"), low * 1000, low)]
+  plot_df_labor[, metric := fifelse(metric == "forgone_wages_bil_ghg", "forgone_wages_ghg", metric)]
+  plot_df_labor[, unit := fifelse(
+    metric %in% c("avoided_health_cost_ghg", "forgone_wages_ghg"),
+    "NPV per avoided GHG MtCO2e\n(2019 USD million / MtCO2e)",
+    "NPV (2019 USD billion)"
+  )]
+  
+  ## change historic to historical
+  plot_df_labor[, scen_id := str_replace(scen_id, "historic", "historical")]
+  plot_df_labor[, refining_scenario := str_replace(refining_scenario, "historic", "historical")]
+  plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
+  
+  ## scenarios for filtering
+  remove_scen <- c("LC1 historical production", "BAU historical production")
+  bau_scen <- "BAU historical production"
+  
+  ## make the plot
+  ## ---------------------------------------------------
+  
+  ## color for refining scenario
+  refin_colors <- c(
+    "LC1 low exports" = "#729b79",
+    "LC1 historical exports" = "#2F4858",
+    "BAU low exports" = "#F6AE2D",
+    "BAU historical exports" = "#F26419"
+  )
+  
+  refin_labs <- c(
+    "LC1 low exports" = "Low demand, low exports",
+    "LC1 historical exports" = "Low demand, historical exports",
+    "BAU low exports" = "BAU demand, low exports",
+    "BAU historical exports" = "BAU demand, historical exports"
+  )
+  
+  
+  ## refactor
+  # plot_df_health$scen_id <- factor(plot_df_health$scen_id, levels = c('LC1 low exports',
+  #                                                                     'LC1 historical production',
+  #                                                                     'BAU demand\nlow exports',
+  #                                                                     'Low demand\nhistorical exports',
+  #                                                                     'Low demand\nlow exports',
+  #                                                                     'Low demand\nhistorical production'))
+  #
+  
+  ## figs - make each separately
+  ## -------------------------------------------------------------------
+  
+  hist_prod <- as.data.table(plot_df_health %>% filter(
+    scen_id == bau_scen,
+    unit == "NPV (2019 USD billion)",
+    unit_desc == "USD billion (annual VSL)"
+  ))
+  
+  fig_bxm_a <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", linewidth = 0.5) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    geom_point(
+      data = plot_df_health %>% filter(
+        !scen_id %in% remove_scen,
+        title == "Health: avoided mortality",
+        unit == "NPV (2019 USD billion)",
+        unit_desc == "USD billion (annual VSL)",
+        !refining_scenario == "historical production"
+      ), aes(x = ghg_perc_diff * -100, y = value, color = scen_id),
+      shape = 16, size = 3, alpha = 0.9
+    ) +
+    labs(
+      color = NULL,
+      title = "Health: avoided mortality",
+      y = "NPV (2019 USD billion)",
+      x = "GHG emissions reduction (%, 2045 vs 2019)"
+    ) +
+    ylim(0, 50) +
+    xlim(0, 80) +
+    scale_color_manual(
+      values = refin_colors,
+      labels = refin_labs
+    ) +
+    theme_line +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = 10),
+      plot.title = element_text(hjust = 0.5, size = 12),
+      axis.title.y = element_text(size = 12),
+      axis.title.x = element_text(size = 11),
+      axis.ticks.length.y = unit(0.1, "cm"),
+      axis.ticks.length.x = unit(0.1, "cm"),
+      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+      axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
+    ) +
+    guides(color = guide_legend(nrow = 2))
+  
+  # ## make separete df for labor high and low for plotting
+  # plot_df_labor_pts <- plot_df_labor %>%
+  #   filter(!scen_id %in% remove_scen,
+  #          title == "Labor: forgone wages",
+  #          unit == "NPV (2019 USD billion)",
+  #          refining_scenario != "historical production") %>%
+  #   select(scen_id, demand_scenario, refining_scenario, scenario, ghg_perc_diff, high, low) %>%
+  #   pivot_longer(high:low, names_to = "estimate", values_to =  "npv_2019_usd_billion")
+  #
+  fig_bxm_b <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historical production",
+    #                                                metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), linewidth = 0.5, alpha = 0.8) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      refining_scenario != "historical production",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      refining_scenario != "historical production",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.9) +
+    labs(
+      color = NULL,
+      title = "Labor: forgone wages",
+      y = NULL,
+      x = "GHG emissions reduction (%, 2045 vs 2019)"
+    ) +
+    ylim(-50, 0) +
+    xlim(0, 80) +
+    scale_color_manual(
+      values = refin_colors,
+      labels = refin_labs
+    ) +
+    theme_line +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = 10),
+      plot.title = element_text(hjust = 0.5, size = 12),
+      axis.title.y = element_text(size = 12),
+      axis.title.x = element_text(size = 11),
+      axis.ticks.length.y = unit(0.1, "cm"),
+      axis.ticks.length.x = unit(0.1, "cm"),
+      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+      axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
+    ) +
+    guides(color = guide_legend(nrow = 2))
+  
+  
+  ## legends
+  low_legend_fig <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historic production"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), size = 0.5, alpha = 0.8) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      refining_scenario != "historic production",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 1) +
+    # geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                            refining_scenario != "historic production",
+    #                                            metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.8) +
+    labs(
+      color = "with re-emp:",
+      title = "Labor: forgone wages",
+      y = NULL,
+      x = "GHG emissions reduction (%, 2045 vs 2019)"
+    ) +
+    ylim(-50, 0) +
+    xlim(0, 80) +
+    scale_color_manual(
+      values = refin_colors,
+      labels = refin_labs
+    ) +
+    theme_line +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = 10),
+      legend.title = element_text(size = 10),
+      plot.title = element_text(hjust = 0.5, size = 12),
+      axis.title.y = element_text(size = 12),
+      axis.title.x = element_text(size = 11),
+      axis.ticks.length.y = unit(0.1, "cm"),
+      axis.ticks.length.x = unit(0.1, "cm"),
+      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+      axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
+    ) +
+    guides(color = guide_legend(nrow = 1))
+  
+  
+  low_legend <- get_legend(
+    low_legend_fig
+  )
+  
+  ## save legends
+  ggsave(
+    plot = low_legend,
+    device = "pdf",
+    filename = "fig3_low_legend.pdf",
+    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    dpi = 600
+  )
+  
+  
+  ## legends
+  high_legend_fig <- ggplot() +
+    geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
+    geom_vline(xintercept = hist_prod[title == "Health: avoided mortality", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_vline(xintercept = hist_prod[title == "Labor: forgone wages", ghg_perc_diff * -100], color = "darkgray", lty = 2) +
+    # geom_linerange(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                                refining_scenario != "historic production"), aes(x = ghg_perc_diff * -100, ymin = high, ymax = low, color = scen_id), size = 0.5, alpha = 0.8) +
+    # geom_point(data = plot_df_labor %>% filter(!scen_id %in% remove_scen,
+    #                                            refining_scenario != "historic production",
+    #                                            metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 1) +
+    geom_point(data = plot_df_labor %>% filter(
+      !scen_id %in% remove_scen,
+      refining_scenario != "historic production",
+      metric == "forgone_wages_bil"
+    ), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.8) +
+    labs(
+      color = "no re-emp:",
+      title = "Labor: forgone wages",
+      y = NULL,
+      x = "GHG emissions reduction (%, 2045 vs 2019)"
+    ) +
+    ylim(-50, 0) +
+    xlim(0, 80) +
+    scale_color_manual(
+      values = refin_colors,
+      labels = refin_labs
+    ) +
+    theme_line +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = 10),
+      legend.title = element_text(size = 10),
+      plot.title = element_text(hjust = 0.5, size = 12),
+      axis.title.y = element_text(size = 12),
+      axis.title.x = element_text(size = 11),
+      axis.ticks.length.y = unit(0.1, "cm"),
+      axis.ticks.length.x = unit(0.1, "cm"),
+      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, size = 11),
+      axis.text.y = element_text(vjust = 0.5, hjust = 0.5, size = 11)
+    ) +
+    guides(color = guide_legend(nrow = 1))
+  
+  
+  high_legend <- get_legend(
+    high_legend_fig
+  )
+  
+  ## save legends
+  ggsave(
+    plot = high_legend,
+    device = "pdf",
+    filename = "fig3_high_legend.pdf",
+    path = file.path(main_path, "outputs/academic-out/refining/figures/2025-health-revisions/legends/"),
+    dpi = 600
+  )
+  
+  
+  ## combine figure
+  ## ---------------------------------
+  
+  ## shared x axis
+  xaxis_lab <- ggdraw() + draw_label("GHG emissions reduction (%, 2045 vs 2019)", size = 12)
+  
+  fig3_plot_grid_ab <- plot_grid(
+    fig_bxm_a,
+    fig_bxm_b,
+    align = "vh",
+    labels = c("A", "B"),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    hjust = -1,
+    nrow = 1,
+    rel_widths = c(1, 1)
+  )
+  
+  fig3_plot_grid2 <- plot_grid(
+    fig3_plot_grid_ab,
+    xaxis_lab,
+    align = "v",
+    # labels = c("(A)", "(B)", "(C)", ""),
+    # # labels = 'AUTO',
+    # label_size = 10,
+    # hjust = -1,
+    ncol = 1,
+    rel_heights = c(0.95, 0.05)
+    # rel_widths = c(1, 1),
+  )
+}
+
+
+
+
+
 
 # ## compute county-level outputs for low demand low export scenario
 # ## ---------------------------------------------------------------------

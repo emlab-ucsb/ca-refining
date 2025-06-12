@@ -563,6 +563,13 @@ list(
     dt_ghg_2019,
     annual_labor
   )),
+  tar_target(name = npv_plot_growing_vsl, command = plot_npv_health_labor_growing_vsl(
+    main_path,
+    refining_mortality = refining_mortality_constant_vsl,
+    state_ghg_output,
+    dt_ghg_2019,
+    annual_labor
+  )),
   tar_target(name = npv_labor_plot, command = plot_npv_labor_oilpx(
     main_path,
     state_ghg_output,
@@ -970,6 +977,18 @@ list(
                             main_path,
                             "outputs/academic-out/refining/figures/2025-health-revisions",
                             "state_npv_fig_constant_vsl",
+                            width = 10,
+                            height = 5,
+                            dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_constant_vsl,
+    command = simple_ggsave(npv_plot_growing_vsl,
+                            main_path,
+                            "outputs/academic-out/refining/figures/2025-health-revisions",
+                            "state_npv_fig_growing_vsl",
                             width = 10,
                             height = 5,
                             dpi = 600
