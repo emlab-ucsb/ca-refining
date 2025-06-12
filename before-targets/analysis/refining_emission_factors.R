@@ -65,6 +65,25 @@ nei_2014 <- nei_2014_raw %>%
   filter(eis_facility_site_id %notin% c("15859711", "4789411", "10296811", "2534511")) %>%
   rename("eis_facility_id" = "eis_facility_site_id", "site_name" = "facility_site_name", "county" = "county_name", "pollutant_code" = "pollutant_cd")
 
+## 2011 NEI
+
+nei_2011_raw <- fread(paste0(wd, "/raw/NEI/2011neiv2_facility.csv", sep = "")) %>%
+  clean_names()
+
+nei_2011 <- nei_2011_raw %>%
+  filter(st_usps_cd %in% "CA") %>%
+  mutate(
+    naics6 = str_sub(naics_cd, 1, 6),
+    reporting_year = 2011
+  ) %>%
+  filter(naics6 %in% c("324110")) %>%
+  filter(pollutant_cd %in% c("NOX", "SO2", "NH3", "PM25-PRI", "VOC")) %>%
+  select(eis_facility_site_id, reporting_year, naics6, facility_site_name, county_name, total_emissions, pollutant_cd) %>%
+  distinct() %>%
+  #filter(eis_facility_site_id %notin% c("15859711", "4789411", "10296811", "2534511")) %>%
+  rename("eis_facility_id" = "eis_facility_site_id", "site_name" = "facility_site_name", "county" = "county_name", "pollutant_code" = "pollutant_cd")
+
+
 # Load refining-level data
 
 ref_analysis <- fread("H:/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/stocks-flows/processed/refinery_loc_cap_manual.csv") %>%
