@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
@@ -1871,12 +1871,6 @@ list(
   # save outputs
   tar_target(
     name = save_ct_xwalk,
-    command = simple_fwrite(
-      ct_xwalk,
-      main_path,
-      "outputs/refining-2025/health",
-      "ct_xwalk_2019_2020.csv"
-    ),
     command = simple_fwrite(
       ct_xwalk,
       main_path,
