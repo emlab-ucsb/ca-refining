@@ -1,19 +1,27 @@
 get_ces_county <- function(raw_ces) {
   dt <- raw_ces[, c("Census Tract", "California County")]
-  setnames(dt, c("Census Tract", "California County"), c("census_tract", "county"))
+  setnames(
+    dt,
+    c("Census Tract", "California County"),
+    c("census_tract", "county")
+  )
   dt[, census_tract := paste0("0", census_tract, sep = "")]
   dt
 }
 
 get_county_dac <- function(dt_ces, ces_county) {
-  processed_ces <- dt_ces[, .(census_tract, population, CES3_score, disadvantaged)]
+  processed_ces <- dt_ces[, .(
+    census_tract,
+    population,
+    CES3_score,
+    disadvantaged
+  )]
   processed_ces[, census_tract := paste0("0", census_tract, sep = "")]
 
   ces3_county <- merge(processed_ces, ces_county, by = c("census_tract"))
 
   return(ces3_county)
 }
-
 
 
 # get_county_dac_share <- function(dt_ces, ces_county){
@@ -71,7 +79,6 @@ get_median_county_income <- function(raw_income_county) {
 #
 # }
 
-
 # get_refinery_site_ids <- function(dt_refcap) {
 #
 #   dt = dt_refcap[, .(site_id, county)]
@@ -80,28 +87,40 @@ get_median_county_income <- function(raw_income_county) {
 # }
 
 get_site_level_refining_cons <- function(indiv_cons_output) {
-  dt <- indiv_cons_output[type == "consumption" &
-    fuel == "crude" &
-    source == "total" &
-    boundary == "complete", .(demand_scenario, refining_scenario, site_id, year, fuel, type, value)]
+  dt <- indiv_cons_output[
+    type == "consumption" &
+      fuel == "crude" &
+      source == "total" &
+      boundary == "complete",
+    .(demand_scenario, refining_scenario, site_id, year, fuel, type, value)
+  ]
 
   dt
 }
 
 get_site_level_refining_ghg <- function(indiv_ghg_output) {
-  dt <- indiv_ghg_output[type == "ghg" &
-    source == "total" &
-    boundary == "complete", .(demand_scenario, refining_scenario, site_id, year, fuel, type, value)]
+  dt <- indiv_ghg_output[
+    type == "ghg" &
+      source == "total" &
+      boundary == "complete",
+    .(demand_scenario, refining_scenario, site_id, year, fuel, type, value)
+  ]
 
   dt
 }
 
-combine_refining_site_cons_ghg <- function(refining_site_consumption, refining_site_ghg) {
+combine_refining_site_cons_ghg <- function(
+  refining_site_consumption,
+  refining_site_ghg
+) {
   rbindlist(list(refining_site_consumption, refining_site_ghg), use.names = T)
 }
 
 create_all_sites_scenarios_df <- function(refining_site_output) {
-  all_scens <- unique(refining_site_output[, .(demand_scenario, refining_scenario)])
+  all_scens <- unique(refining_site_output[, .(
+    demand_scenario,
+    refining_scenario
+  )])
   all_scens[, scen_id := paste(demand_scenario, refining_scenario)]
 
   all_sites <- unique(refining_site_output[, .(site_id)])
@@ -114,12 +133,17 @@ create_all_sites_scenarios_df <- function(refining_site_output) {
 
   setDT(skeleton_scens_sites_years)
 
-  df_sites_scens <- merge(skeleton_scens_sites_years, all_scens,
+  df_sites_scens <- merge(
+    skeleton_scens_sites_years,
+    all_scens,
     by = c("scen_id"),
     all.x = T
   )
 
-  setcolorder(df_sites_scens, c("scen_id", "demand_scenario", "refining_scenario", "site_id", "year"))
+  setcolorder(
+    df_sites_scens,
+    c("scen_id", "demand_scenario", "refining_scenario", "site_id", "year")
+  )
 
   df_sites_scens
 }
@@ -145,21 +169,31 @@ create_all_sites_scenarios_df <- function(refining_site_output) {
 #
 # }
 
-organize_consumption_ghg_outputs <- function(refining_sites_scenarios,
-                                             dt_site_2019,
-                                             refining_site_output,
-                                             indiv_cons_output) {
+organize_consumption_ghg_outputs <- function(
+  refining_sites_scenarios,
+  dt_site_2019,
+  refining_site_output,
+  indiv_cons_output
+) {
   # get 2019 outputs
   refining_site_scenarios_2019 <- refining_sites_scenarios[year == 2019]
 
-  full_site_2019 <- merge(refining_site_scenarios_2019, dt_site_2019,
+  full_site_2019 <- merge(
+    refining_site_scenarios_2019,
+    dt_site_2019,
     by = c("site_id", "year"),
     all.x = T
   )
 
   full_site_2019 <- full_site_2019[, .(
-    scen_id, demand_scenario, refining_scenario,
-    site_id, type, fuel, year, value_bbls
+    scen_id,
+    demand_scenario,
+    refining_scenario,
+    site_id,
+    type,
+    fuel,
+    year,
+    value_bbls
   )]
 
   setnames(full_site_2019, "value_bbls", "bbls_consumed")
@@ -176,22 +210,32 @@ organize_consumption_ghg_outputs <- function(refining_sites_scenarios,
   dt_scens_types <- crossing(dt_proj, dt_type)
   setDT(dt_scens_types)
 
-  full_site_proj <- merge(dt_scens_types, refining_site_output,
+  full_site_proj <- merge(
+    dt_scens_types,
+    refining_site_output,
     by = c(
-      "demand_scenario", "refining_scenario",
-      "site_id", "year", "type"
+      "demand_scenario",
+      "refining_scenario",
+      "site_id",
+      "year",
+      "type"
     ),
     all.x = T
   )
   full_site_proj[, fuel := NULL]
   full_site_proj[, value := fifelse(is.na(value), 0, value)]
 
-  full_site_proj_wide <- dcast(full_site_proj,
+  full_site_proj_wide <- dcast(
+    full_site_proj,
     scen_id + demand_scenario + refining_scenario + site_id + year ~ type,
     value.var = "value"
   )
 
-  setnames(full_site_proj_wide, c("consumption", "ghg"), c("bbls_consumed", "ghg_kg"))
+  setnames(
+    full_site_proj_wide,
+    c("consumption", "ghg"),
+    c("bbls_consumed", "ghg_kg")
+  )
 
   # bind 2019 to projected
   full_site_out <- rbind(full_site_2019, full_site_proj_wide, use.names = T)
@@ -200,7 +244,9 @@ organize_consumption_ghg_outputs <- function(refining_sites_scenarios,
   # refinery names
   refinery_names <- unique(indiv_cons_output[, .(site_id, refinery_name)])
 
-  full_site_out_names <- merge(full_site_out, refinery_names,
+  full_site_out_names <- merge(
+    full_site_out,
+    refinery_names,
     by = "site_id",
     all.x = T
   )
@@ -208,11 +254,16 @@ organize_consumption_ghg_outputs <- function(refining_sites_scenarios,
   setcolorder(
     full_site_out_names,
     c(
-      "scen_id", "demand_scenario", "refining_scenario",
-      "site_id", "refinery_name", "year", "bbls_consumed", "ghg_kg"
+      "scen_id",
+      "demand_scenario",
+      "refining_scenario",
+      "site_id",
+      "refinery_name",
+      "year",
+      "bbls_consumed",
+      "ghg_kg"
     )
   )
-
 
   full_site_out_names
 }
@@ -222,8 +273,16 @@ process_weighted_pm25 <- function(dt_inmap_re) {
   dt <- copy(dt_inmap_re)
   setnames(dt, "totalpm25_aw", "weighted_totalpm25")
 
-  dt_wide <- dcast(dt, GEOID + site ~ pollutant, value.var = "weighted_totalpm25")
-  setnames(dt_wide, c("nh3", "nox", "pm25", "sox", "voc"), paste0("weighted_totalpm25_", c("nh3", "nox", "pm25", "sox", "voc")))
+  dt_wide <- dcast(
+    dt,
+    GEOID + site ~ pollutant,
+    value.var = "weighted_totalpm25"
+  )
+  setnames(
+    dt_wide,
+    c("nh3", "nox", "pm25", "sox", "voc"),
+    paste0("weighted_totalpm25_", c("nh3", "nox", "pm25", "sox", "voc"))
+  )
   setnames(dt_wide, "site", "site_id")
 
   dt_wide <- unique(dt_wide)
@@ -232,8 +291,7 @@ process_weighted_pm25 <- function(dt_inmap_re) {
 }
 
 
-create_ct_xwalk <- function(raw_ct_2019,
-                            raw_ct_2020) {
+create_ct_xwalk <- function(raw_ct_2019, raw_ct_2020) {
   ct_xwalk_df <- raw_ct_2020 %>%
     rename(GEOID_2020 = GEOID) %>%
     mutate(GEOID_2020_area = st_area(.)) %>%
@@ -246,19 +304,27 @@ create_ct_xwalk <- function(raw_ct_2019,
     mutate(rel_intersect = intersect_area / sum_intersect_area) %>%
     rename(GEOID_2019 = GEOID) %>%
     mutate(rel_intersect = units::drop_units(rel_intersect)) %>%
-    select(GEOID_2020, GEOID_2020_area, GEOID_2019, intersect_area, sum_intersect_area, rel_intersect) %>%
+    select(
+      GEOID_2020,
+      GEOID_2020_area,
+      GEOID_2019,
+      intersect_area,
+      sum_intersect_area,
+      rel_intersect
+    ) %>%
     st_drop_geometry()
 }
 
 
-calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
-                                             srm_weighted_pm25,
-                                             county_dac,
-                                             med_house_income,
-                                             dt_ef,
-                                             dt_refcap,
-                                             renewables_info_altair) {
-  
+calculate_census_tract_emissions <- function(
+  refining_sites_cons_ghg_2019_2045,
+  srm_weighted_pm25,
+  county_dac,
+  med_house_income,
+  dt_ef,
+  dt_refcap,
+  renewables_info_altair
+) {
   refining <- copy(refining_sites_cons_ghg_2019_2045)
 
   cluster_cw <- dt_refcap %>%
@@ -267,12 +333,19 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
     bind_rows(renewables_info_altair %>% dplyr::select(site_id, region)) %>%
     distinct()
 
-  refining <- merge(refining, cluster_cw, by = "site_id", all.x = T, allow.cartesian = T, no.dups = T)
+  refining <- merge(
+    refining,
+    cluster_cw,
+    by = "site_id",
+    all.x = T,
+    allow.cartesian = T,
+    no.dups = T
+  )
 
   refining[, site_id := ifelse(site_id == "t-800", "800", site_id)]
   refining[, site_id := ifelse(site_id == "342-2", "34222", site_id)]
   refining[, site_id := as.numeric(site_id)]
-  
+
   dt_ef_wide <- copy(dt_ef) %>%
     mutate(ton_bbl = kg_bbl / 1000) %>%
     dplyr::select(-kg_bbl) %>%
@@ -280,7 +353,15 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
 
   # Cluster-level emission factors -----------------------------------------
 
-  refining <- merge(refining, dt_ef_wide, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
+  refining <- merge(
+    refining,
+    dt_ef_wide,
+    by.x = "region",
+    by.y = "cluster",
+    all.x = T,
+    allow.cartesian = T,
+    no.dups = T
+  )
 
   refining <- refining %>%
     mutate(
@@ -291,13 +372,20 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
       voc = bbls_consumed * VOC
     ) %>%
     dplyr::select(-NH3:-VOC)
-  
+
   # -------------------------------------------------------------------
 
   srm_weighted_census <- copy(srm_weighted_pm25)
 
   print("joining refining outputs with PM2.5 data...")
-  ref_health <- merge(refining, srm_weighted_census, by = "site_id", all.y = T, allow.cartesian = T, no.dups = T)
+  ref_health <- merge(
+    refining,
+    srm_weighted_census,
+    by = "site_id",
+    all.y = T,
+    allow.cartesian = T,
+    no.dups = T
+  )
 
   ref_health[, `:=`(
     tot_nh3 = weighted_totalpm25_nh3 * nh3,
@@ -313,11 +401,12 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
   ## http://www.diversitydatakids.org/sites/default/files/2020-02/ddk_coi2.0_technical_documentation_20200212.pdf)
   ref_health[, GEOID := ifelse(GEOID == "06037137000", "06037930401", GEOID)]
 
-  ref_health_agg <- ref_health[, .(
-    total_pm25 = sum(total_pm25, na.rm = T),
-    prim_pm25 = sum(prim_pm25, na.rm = T)
-  ),
-  by = .(GEOID, year, scen_id, demand_scenario, refining_scenario)
+  ref_health_agg <- ref_health[,
+    .(
+      total_pm25 = sum(total_pm25, na.rm = T),
+      prim_pm25 = sum(prim_pm25, na.rm = T)
+    ),
+    by = .(GEOID, year, scen_id, demand_scenario, refining_scenario)
   ]
 
   setnames(ref_health_agg, "GEOID", "census_tract")
@@ -328,29 +417,44 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
   # county_dac[, census_tract := as.character(census_tract)]
 
   ## add ces score, income, and dac
-  health_ces <- merge(ref_health_agg,
+  health_ces <- merge(
+    ref_health_agg,
     county_dac[, .(census_tract, population, CES3_score, disadvantaged)],
     by = c("census_tract"),
     all.x = T
   )
 
   ## add income
-  health_income <- merge(health_ces, med_house_income,
+  health_income <- merge(
+    health_ces,
+    med_house_income,
     by = c("census_tract"),
     all.x = T
   )
 
   ## set order
-  setorder(health_income, "demand_scenario", "refining_scenario", "census_tract", "year")
+  setorder(
+    health_income,
+    "demand_scenario",
+    "refining_scenario",
+    "census_tract",
+    "year"
+  )
 
   ## set column order
   setcolorder(
     health_income,
     c(
-      "scen_id", "demand_scenario", "refining_scenario",
-      "census_tract", "year",
-      "population", "disadvantaged", "CES3_score",
-      "median_hh_income", "total_pm25"
+      "scen_id",
+      "demand_scenario",
+      "refining_scenario",
+      "census_tract",
+      "year",
+      "population",
+      "disadvantaged",
+      "CES3_score",
+      "median_hh_income",
+      "total_pm25"
     )
   )
 
@@ -359,53 +463,78 @@ calculate_census_tract_emissions <- function(refining_sites_cons_ghg_2019_2045,
   return(health_income)
 }
 
-calculate_census_tract_emissions_ref <- function(refining_sites_cons_ghg_2019_2045,
-                                             srm_weighted_pm25,
-                                             county_dac,
-                                             med_house_income,
-                                             dt_ef,
-                                             dt_ef_ref,
-                                             dt_refcap,
-                                             renewables_info_altair) {
-  
+calculate_census_tract_emissions_ref <- function(
+  refining_sites_cons_ghg_2019_2045,
+  srm_weighted_pm25,
+  county_dac,
+  med_house_income,
+  dt_ef,
+  dt_ef_ref,
+  dt_refcap,
+  renewables_info_altair
+) {
   refining <- copy(refining_sites_cons_ghg_2019_2045)
-  
+
   cluster_cw <- dt_refcap %>%
     dplyr::select(site_id, region) %>%
     mutate(site_id = as.character(site_id)) %>%
     bind_rows(renewables_info_altair %>% dplyr::select(site_id, region)) %>%
     distinct()
-  
-  refining <- merge(refining, cluster_cw, by = "site_id", all.x = T, allow.cartesian = T, no.dups = T)
-  
+
+  refining <- merge(
+    refining,
+    cluster_cw,
+    by = "site_id",
+    all.x = T,
+    allow.cartesian = T,
+    no.dups = T
+  )
+
   refining[, site_id := ifelse(site_id == "t-800", "800", site_id)]
   refining[, site_id := ifelse(site_id == "342-2", "34222", site_id)]
   refining[, site_id := as.numeric(site_id)]
-  
+
   dt_ef_wide <- copy(dt_ef) %>%
     mutate(ton_bbl = kg_bbl / 1000) %>%
     dplyr::select(-kg_bbl) %>%
     spread(pollutant_code, ton_bbl)
-  
-  
+
   # Refinery-level emission factors -----------------------------------------
-  
+
   dt_ef_ref_wide <- copy(dt_ef_ref) %>%
     mutate(ton_bbl = kg_bbl / 1000) %>%
     dplyr::select(-kg_bbl) %>%
     spread(pollutant_code, ton_bbl) %>% #0 for NH3 for facility 271 (San Joaquin Refining Company Inc., Bakersfield Refinery)
-    mutate(NH3 = replace_na(NH3,0)) # didnt report any for NEI 2011, 2014 and 2017
+    mutate(NH3 = replace_na(NH3, 0)) # didnt report any for NEI 2011, 2014 and 2017
 
-  refining <- merge(refining, dt_ef_ref_wide, by.x = "site_id", by.y = "id1", all.x = T, allow.cartesian = T, no.dups = T)
-  refining <- merge(refining, dt_ef_wide, by.x = "region", by.y = "cluster", all.x = T, allow.cartesian = T, no.dups = T)
+  refining <- merge(
+    refining,
+    dt_ef_ref_wide,
+    by.x = "site_id",
+    by.y = "id1",
+    all.x = T,
+    allow.cartesian = T,
+    no.dups = T
+  )
+  refining <- merge(
+    refining,
+    dt_ef_wide,
+    by.x = "region",
+    by.y = "cluster",
+    all.x = T,
+    allow.cartesian = T,
+    no.dups = T
+  )
 
   #Assign cluster-specific EF for renewable fuel refineries
-  refining <- refining%>%
-    mutate(NH3 = coalesce(NH3.x,NH3.y),
-           NOX = coalesce(NOX.x,NOX.y),
-           `PM25-PRI` = coalesce(`PM25-PRI.x`,`PM25-PRI.y`),
-           SO2 = coalesce(SO2.x,SO2.y),
-           VOC = coalesce(VOC.x,VOC.y))
+  refining <- refining %>%
+    mutate(
+      NH3 = coalesce(NH3.x, NH3.y),
+      NOX = coalesce(NOX.x, NOX.y),
+      `PM25-PRI` = coalesce(`PM25-PRI.x`, `PM25-PRI.y`),
+      SO2 = coalesce(SO2.x, SO2.y),
+      VOC = coalesce(VOC.x, VOC.y)
+    )
 
   refining <- refining %>%
     mutate(
@@ -417,14 +546,20 @@ calculate_census_tract_emissions_ref <- function(refining_sites_cons_ghg_2019_20
     ) %>%
     dplyr::select(-NH3.x:-VOC)
 
-  
   # -------------------------------------------------------------------
-  
+
   srm_weighted_census <- copy(srm_weighted_pm25)
-  
+
   print("joining refining outputs with PM2.5 data...")
-  ref_health <- merge(refining, srm_weighted_census, by = "site_id", all.y = T, allow.cartesian = T, no.dups = T)
-  
+  ref_health <- merge(
+    refining,
+    srm_weighted_census,
+    by = "site_id",
+    all.y = T,
+    allow.cartesian = T,
+    no.dups = T
+  )
+
   ref_health[, `:=`(
     tot_nh3 = weighted_totalpm25_nh3 * nh3,
     tot_nox = weighted_totalpm25_nox * nox,
@@ -434,61 +569,79 @@ calculate_census_tract_emissions_ref <- function(refining_sites_cons_ghg_2019_20
   )]
   ref_health[, total_pm25 := tot_nh3 + tot_nox + tot_pm25 + tot_sox + tot_voc]
   ref_health[, prim_pm25 := tot_pm25]
-  
+
   ## Adjust mismatch of census tract ids between inmap and benmap (census ID changed in 2012
   ## http://www.diversitydatakids.org/sites/default/files/2020-02/ddk_coi2.0_technical_documentation_20200212.pdf)
   ref_health[, GEOID := ifelse(GEOID == "06037137000", "06037930401", GEOID)]
-  
-  ref_health_agg <- ref_health[, .(
-    total_pm25 = sum(total_pm25, na.rm = T),
-    prim_pm25 = sum(prim_pm25, na.rm = T)
-  ),
-  by = .(GEOID, year, scen_id, demand_scenario, refining_scenario)
+
+  ref_health_agg <- ref_health[,
+    .(
+      total_pm25 = sum(total_pm25, na.rm = T),
+      prim_pm25 = sum(prim_pm25, na.rm = T)
+    ),
+    by = .(GEOID, year, scen_id, demand_scenario, refining_scenario)
   ]
-  
+
   setnames(ref_health_agg, "GEOID", "census_tract")
   setorder(ref_health_agg, "census_tract", "year")
-  
+
   ## convert all census tracts to character
   # ref_health_agg[, census_tract := as.character(census_tract)]
   # county_dac[, census_tract := as.character(census_tract)]
-  
+
   ## add ces score, income, and dac
-  health_ces <- merge(ref_health_agg,
-                      county_dac[, .(census_tract, population, CES3_score, disadvantaged)],
-                      by = c("census_tract"),
-                      all.x = T
+  health_ces <- merge(
+    ref_health_agg,
+    county_dac[, .(census_tract, population, CES3_score, disadvantaged)],
+    by = c("census_tract"),
+    all.x = T
   )
-  
+
   ## add income
-  health_income <- merge(health_ces, med_house_income,
-                         by = c("census_tract"),
-                         all.x = T
+  health_income <- merge(
+    health_ces,
+    med_house_income,
+    by = c("census_tract"),
+    all.x = T
   )
-  
+
   ## set order
-  setorder(health_income, "demand_scenario", "refining_scenario", "census_tract", "year")
-  
+  setorder(
+    health_income,
+    "demand_scenario",
+    "refining_scenario",
+    "census_tract",
+    "year"
+  )
+
   ## set column order
   setcolorder(
     health_income,
     c(
-      "scen_id", "demand_scenario", "refining_scenario",
-      "census_tract", "year",
-      "population", "disadvantaged", "CES3_score",
-      "median_hh_income", "total_pm25"
+      "scen_id",
+      "demand_scenario",
+      "refining_scenario",
+      "census_tract",
+      "year",
+      "population",
+      "disadvantaged",
+      "CES3_score",
+      "median_hh_income",
+      "total_pm25"
     )
   )
-  
+
   health_income[, prim_pm25 := NULL]
-  
+
   return(health_income)
 }
 
 
-calculate_weighted_census_tract_emissions <- function(ct_xwalk,
-                                                      refining_health_income,
-                                                      raw_dac) {
+calculate_weighted_census_tract_emissions <- function(
+  ct_xwalk,
+  refining_health_income,
+  raw_dac
+) {
   ## select dac columns
   dac_dt <- raw_dac[, .(census_tract, ces4_score, disadvantaged)]
 
@@ -500,14 +653,19 @@ calculate_weighted_census_tract_emissions <- function(ct_xwalk,
   setnames(refining_health_income, "census_tract", "GEOID_2019")
 
   ## merge
-  health_weighted <- merge(refining_health_income, ct_xwalk,
+  health_weighted <- merge(
+    refining_health_income,
+    ct_xwalk,
     by = c("GEOID_2019"),
     all = TRUE,
     allow.cartesian = TRUE
   )
 
   ## calculate pm2.5 for 2020 census tract, weight by rel_intersection
-  health_weighted <- health_weighted[, .(weighted_total_pm25 = weighted.mean(total_pm25, rel_intersect, na.rm = T)),
+  health_weighted <- health_weighted[,
+    .(
+      weighted_total_pm25 = weighted.mean(total_pm25, rel_intersect, na.rm = T)
+    ),
     by = .(scen_id, demand_scenario, refining_scenario, GEOID_2020, year)
   ]
 
@@ -523,22 +681,28 @@ calculate_weighted_census_tract_emissions <- function(ct_xwalk,
   )
 
   ## merge with dac
-  health_weighted <- merge(health_weighted, dac_dt,
+  health_weighted <- merge(
+    health_weighted,
+    dac_dt,
     by = c("census_tract"),
     all.x = TRUE
   )
 
   ## fill in disadvantaged
-  health_weighted[, disadvantaged := fifelse(is.na(disadvantaged), "No", disadvantaged)]
+  health_weighted[,
+    disadvantaged := fifelse(is.na(disadvantaged), "No", disadvantaged)
+  ]
 
   return(health_weighted)
 }
 
 
 ## calculate race disparities and DAC/non DAC
-calculate_race_disp <- function(health_weighted,
-                                pop_ratios,
-                                refining_mortality) {
+calculate_race_disp <- function(
+  health_weighted,
+  pop_ratios,
+  refining_mortality
+) {
   ## census pop
   census_pop <- refining_mortality %>%
     ungroup() %>%
@@ -549,12 +713,16 @@ calculate_race_disp <- function(health_weighted,
     as.data.table()
 
   ## merge with health output
-  merged_data <- merge(health_weighted, pop_ratios,
+  merged_data <- merge(
+    health_weighted,
+    pop_ratios,
     all.x = TRUE,
     allow.cartesian = TRUE
   )
 
-  merged_data <- merge(merged_data, census_pop,
+  merged_data <- merge(
+    merged_data,
+    census_pop,
     all.x = T,
     by = c("census_tract")
   )
@@ -571,11 +739,20 @@ calculate_race_disp <- function(health_weighted,
   merged_data <- merged_data[total_pop != 0]
 
   ## perform the collapse operation
-  collapsed_data <- merged_data[, .(
-    sum_num = sum(num),
-    sum_den = sum(pop)
-  ),
-  by = .(scen_id, demand_scenario, refining_scenario, year, demo_cat, demo_group, title)
+  collapsed_data <- merged_data[,
+    .(
+      sum_num = sum(num),
+      sum_den = sum(pop)
+    ),
+    by = .(
+      scen_id,
+      demand_scenario,
+      refining_scenario,
+      year,
+      demo_cat,
+      demo_group,
+      title
+    )
   ]
 
   ## calculate other variables
@@ -588,12 +765,19 @@ calculate_race_disp <- function(health_weighted,
   setDT(mort_df)
 
   mort_df <- mort_df[, .(
-    census_tract, scen_id, demand_scenario, refining_scenario,
-    year, mortality_level, mortality_delta
+    census_tract,
+    scen_id,
+    demand_scenario,
+    refining_scenario,
+    year,
+    mortality_level,
+    mortality_delta
   )]
 
   ## merge with pop ratios
-  mort_df <- merge(mort_df, pop_ratios,
+  mort_df <- merge(
+    mort_df,
+    pop_ratios,
     by = c("census_tract"),
     allow.cartesian = T
   )
@@ -602,30 +786,50 @@ calculate_race_disp <- function(health_weighted,
   mort_df[, mortality_level_dem := mortality_level * pct]
   mort_df[, mortality_delta_dem := mortality_delta * pct]
   mort_df <- mort_df[, .(
-    census_tract, scen_id, demand_scenario, refining_scenario, year, demo_group, demo_cat,
-    title, mortality_level_dem, mortality_delta_dem
+    census_tract,
+    scen_id,
+    demand_scenario,
+    refining_scenario,
+    year,
+    demo_group,
+    demo_cat,
+    title,
+    mortality_level_dem,
+    mortality_delta_dem
   )]
 
   ## summarise
-  mort_df <- mort_df[, .(
-    mortality_level_dem = sum(mortality_level_dem),
-    mortality_delta_dem = sum(mortality_delta_dem)
-  ),
-  by = .(scen_id, demand_scenario, refining_scenario, year, demo_cat, demo_group, title)
+  mort_df <- mort_df[,
+    .(
+      mortality_level_dem = sum(mortality_level_dem),
+      mortality_delta_dem = sum(mortality_delta_dem)
+    ),
+    by = .(
+      scen_id,
+      demand_scenario,
+      refining_scenario,
+      year,
+      demo_cat,
+      demo_group,
+      title
+    )
   ]
 
   ## merge
-  health_indicators <- merge(collapsed_data, mort_df,
+  health_indicators <- merge(
+    collapsed_data,
+    mort_df,
     by = c(
-      "scen_id", "demand_scenario", "refining_scenario",
-      "year", "demo_group", "demo_cat", "title"
+      "scen_id",
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "demo_group",
+      "demo_cat",
+      "title"
     ),
     allow.cartesian = T
   )
-
-
-
-
 
   ## return
   return(health_indicators)
@@ -685,57 +889,55 @@ calculate_race_disp <- function(health_weighted,
 #
 # }
 
-
-
 # calculate_census_tract_mortality = function(health_income,
-calculate_census_tract_mortality <- function(beta,
-                                             se,
-                                             vsl_2015,
-                                             vsl_2019,
-                                             income_elasticity_mort,
-                                             discount_rate,
-                                             health_weighted,
-                                             ct_inc_45,
-                                             growth_cap_rates,
-                                             dt_age_vsl) {
-  
+calculate_census_tract_mortality <- function(
+  beta,
+  se,
+  vsl_2015,
+  vsl_2019,
+  income_elasticity_mort,
+  discount_rate,
+  health_weighted,
+  ct_inc_45,
+  growth_cap_rates,
+  dt_age_vsl
+) {
   ####################### SELECT BELOW CHUNK OF CODE FOR AGE OR NOT AGE BASED VSL ########################################
   ####################### SAME FINAL VARIALBE: 2019 VSL ####################################
-  
+
   # for monetary mortality impact - growth in income for use in WTP function
   growth_rates <- growth_cap_rates %>%
     filter(year > 2019) %>%
     mutate(cum_growth = cumprod(1 + growth_2035)) %>%
-    select(-growth_2035)%>%
+    select(-growth_2035) %>%
     drop_na(year)
-  
-  
+
   # Function to grow WTP
   future_WTP <- function(elasticity, growth_rate, WTP) {
     return(elasticity * growth_rate * WTP + WTP)
   }
-  
+
   #### VSL age cross-walk
   ## ---------------------------------------------------------------------
-  
+
   ## separate and expand the final row that reprsents multiple ages
   dt_age_vsl_sep <- dt_age_vsl |>
     select(age_min, age_max, age_VSL_2019) |>
     filter(age_min != age_max) |>
     rowwise() |>
-  do(data.frame(
-    age_min = seq(.$age_min, .$age_max),
-    age_max = seq(.$age_min, .$age_max),
-    age_VSL_2019 = .$age_VSL_2019
-  ))
-    
+    do(data.frame(
+      age_min = seq(.$age_min, .$age_max),
+      age_max = seq(.$age_min, .$age_max),
+      age_VSL_2019 = .$age_VSL_2019
+    ))
+
   # Keep the rows where age_min == age_max, combine
   dt_age_vsl_expanded <- dt_age_vsl |>
     select(age_min, age_max, age_VSL_2019) |>
     filter(age_min == age_max) |>
     rbind(dt_age_vsl_sep) |>
     arrange(age_min)
-  
+
   ## create crosswalk with ct_inc_45 groups
   vsl_cross_walk <- dt_age_vsl_expanded %>%
     filter(age_min > 29) %>%
@@ -744,27 +946,24 @@ calculate_census_tract_mortality <- function(beta,
         select(start_age, end_age) %>%
         distinct() %>%
         filter(start_age > 29),
-      by = c("age_min" = "start_age",
-             "age_max" = "end_age"),
-      match_fun = list(`>=`, `<=`)) %>%
+      by = c("age_min" = "start_age", "age_max" = "end_age"),
+      match_fun = list(`>=`, `<=`)
+    ) %>%
     group_by(start_age) %>%
-    summarise(end_age = first(end_age),
-              age_VSL_2019 = mean(age_VSL_2019)) %>%
+    summarise(end_age = first(end_age), age_VSL_2019 = mean(age_VSL_2019)) %>%
     drop_na(start_age) %>%
     ungroup()
-  
-  
+
   ########### Add VSL 2019 by age group
   ct_inc_45_temp <- ct_inc_45 %>%
     select(GEO_ID:end_age, year, pop, incidence_2015) %>%
     filter(start_age > 29) %>%
-    left_join(vsl_cross_walk, by = c("start_age", "end_age")) 
-  
-  
-  ########### Grow VSL 
+    left_join(vsl_cross_walk, by = c("start_age", "end_age"))
+
+  ########### Grow VSL
   ## ------------------------------------------------------------
-  
-  # Merge growth factors 
+
+  # Merge growth factors
   ct_inc_45_temp <- ct_inc_45_temp %>%
     mutate(VSL_2019 = vsl_2019) %>%
     left_join(growth_rates, by = c("year" = "year")) %>%
@@ -778,10 +977,11 @@ calculate_census_tract_mortality <- function(beta,
         income_elasticity_mort,
         (cum_growth - 1),
         age_VSL_2019
-      ))
-  
-  ########### Aggregate at census tract and year level 
-  
+      )
+    )
+
+  ########### Aggregate at census tract and year level
+
   ct_inc_pop_45_weighted <- ct_inc_45_temp %>%
     group_by(GEO_ID, year) %>%
     mutate(
@@ -789,82 +989,129 @@ calculate_census_tract_mortality <- function(beta,
       share = pop / ct_pop,
       weighted_incidence = sum(share * incidence_2015, na.rm = T),
       ## growth VSL, not age based
-      weighted_monetized_incidence = sum(share * incidence_2015 * VSL, na.rm = T),
+      weighted_monetized_incidence = sum(
+        share * incidence_2015 * VSL,
+        na.rm = T
+      ),
       ## growth VSL, age-based
-      weighted_monetized_age_incidence = sum(share * incidence_2015 * age_VSL, na.rm = T),
+      weighted_monetized_age_incidence = sum(
+        share * incidence_2015 * age_VSL,
+        na.rm = T
+      ),
       ## 2019 VSL, age-based (main text)
-      weighted_monetized_age_incidence_2019 = sum(share * incidence_2015 * age_VSL_2019, na.rm = T)) %>%
+      weighted_monetized_age_incidence_2019 = sum(
+        share * incidence_2015 * age_VSL_2019,
+        na.rm = T
+      )
+    ) %>%
     summarize(
       weighted_incidence = unique(weighted_incidence),
       ## growth VSL, not age based
       weighted_monetized_incidence = unique(weighted_monetized_incidence),
       ## growth VSL, age-based
-      weighted_monetized_age_incidence = unique(weighted_monetized_age_incidence),
+      weighted_monetized_age_incidence = unique(
+        weighted_monetized_age_incidence
+      ),
       ## 2019 VSL, age-based (main text)
-      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence_2019),
+      weighted_monetized_age_incidence_2019 = unique(
+        weighted_monetized_age_incidence_2019
+      ),
       pop = unique(ct_pop)
     ) %>%
     ungroup() %>%
     mutate(GEO_ID = str_remove(GEO_ID, "US"))
-  
+
   #  Delta of pollution change ######################################
-  
+
   # refining pm25 BAU
-  refining_BAU <- subset(health_weighted, (scen_id == "BAU historic production")) %>%
+  refining_BAU <- subset(
+    health_weighted,
+    (scen_id == "BAU historic production")
+  ) %>%
     # refining_BAU<-subset(health_income,(scen_id=="BAU historic production"))%>%
     rename(bau_total_pm25 = total_pm25) # %>%
   # mutate(census_tract = paste0("0",census_tract))
-  
+
   # refining pm25 difference
   deltas_refining <- health_weighted %>%
     # deltas_refining<- health_income%>%
     # mutate(census_tract = paste0("0",census_tract))%>%
     # left_join(refining_BAU %>% select(-scen_id,-demand_scenario,-refining_scenario,-population:-median_hh_income),by=c("census_tract", "year"))%>%
-    left_join(refining_BAU %>% select(-scen_id, -demand_scenario, -refining_scenario, -ces4_score, -disadvantaged), by = c("census_tract", "year")) %>%
+    left_join(
+      refining_BAU %>%
+        select(
+          -scen_id,
+          -demand_scenario,
+          -refining_scenario,
+          -ces4_score,
+          -disadvantaged
+        ),
+      by = c("census_tract", "year")
+    ) %>%
     mutate(delta_total_pm25 = total_pm25 - bau_total_pm25) %>%
     select(census_tract, scen_id:year, total_pm25:delta_total_pm25)
-  
+
   ## Merge demographic data to pollution scenarios
-  
+
   ct_incidence_ca_poll <- deltas_refining %>%
-    right_join(ct_inc_pop_45_weighted, by = c("census_tract" = "GEO_ID", "year" = "year")) %>%
+    right_join(
+      ct_inc_pop_45_weighted,
+      by = c("census_tract" = "GEO_ID", "year" = "year")
+    ) %>%
     drop_na(scen_id) # CURRENTLY DROPPING ALL THE MISMATCHED 2010/2022 GEOIDs
-  
+
   #####################################################################
   # AGE-BASED VSL: Monetized mortality for adults (>=29 years old) by age-based VSL
   #######################################################################
-  
+
   ct_mort_cost <- ct_incidence_ca_poll %>%
     mutate(
-      mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
-      mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop,
+      mortality_delta = ((exp(beta * delta_total_pm25) - 1)) *
+        weighted_incidence *
+        pop,
+      mortality_level = ((exp(beta * total_pm25) - 1)) *
+        weighted_incidence *
+        pop,
       ## growth VSL, not age based
-      benefit_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_incidence * pop,
-      benefit_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_incidence * pop,
+      benefit_delta = ((exp(beta * delta_total_pm25) - 1)) *
+        weighted_monetized_incidence *
+        pop,
+      benefit_level = ((exp(beta * total_pm25) - 1)) *
+        weighted_monetized_incidence *
+        pop,
       ## growth VSL, age-based
-      benefit_age_level = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
-      benefit_age_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence * pop,
+      benefit_age_level = ((exp(beta * total_pm25) - 1)) *
+        weighted_monetized_age_incidence *
+        pop,
+      benefit_age_delta = ((exp(beta * delta_total_pm25) - 1)) *
+        weighted_monetized_age_incidence *
+        pop,
       ## 2019 VSL, age-based (main text)
-      benefit_age_delta_2019 = ((exp(beta * delta_total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop,
-      benefit_age_level_2019 = ((exp(beta * total_pm25) - 1)) * weighted_monetized_age_incidence_2019 * pop
-    )%>%
+      benefit_age_delta_2019 = ((exp(beta * delta_total_pm25) - 1)) *
+        weighted_monetized_age_incidence_2019 *
+        pop,
+      benefit_age_level_2019 = ((exp(beta * total_pm25) - 1)) *
+        weighted_monetized_age_incidence_2019 *
+        pop
+    ) %>%
     group_by(year) %>%
     mutate(
-      cost_2019_PV = benefit_age_delta_2019 / ((1 + discount_rate)^(year - 2019)),
+      cost_2019_PV = benefit_age_delta_2019 /
+        ((1 + discount_rate)^(year - 2019)),
       cost_PV = benefit_age_delta / ((1 + discount_rate)^(year - 2019))
-    )%>%
+    ) %>%
     ungroup()
-  
+
   #####################################################################
   # CONSTANT VSL: Calculate the cost per premature mortality (old way)################
   #####################################################################
-  # 
+  #
   # ct_health <- ct_incidence_ca_poll %>%
   #   mutate(
   #     mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
   #     mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop
   #   )
-  # 
+  #
   # ct_mort_cost <- ct_health %>%
   #   mutate(VSL_2019 = vsl_2019) %>%
   #   left_join(growth_rates, by = c("year" = "year")) %>%
@@ -884,40 +1131,39 @@ calculate_census_tract_mortality <- function(beta,
   #   )
 
   ##########################################################################
-  
+
   return(ct_mort_cost)
 }
 
 
-
 # calculate_census_tract_mortality = function(health_income,
-calculate_census_tract_mortality_constant_vsl <- function(beta,
-                                                          se,
-                                                          vsl_2015,
-                                                          vsl_2019,
-                                                          income_elasticity_mort,
-                                                          discount_rate,
-                                                          health_weighted,
-                                                          ct_inc_45,
-                                                          growth_cap_rates,
-                                                          dt_age_vsl) {
-  
+calculate_census_tract_mortality_constant_vsl <- function(
+  beta,
+  se,
+  vsl_2015,
+  vsl_2019,
+  income_elasticity_mort,
+  discount_rate,
+  health_weighted,
+  ct_inc_45,
+  growth_cap_rates,
+  dt_age_vsl
+) {
   ####################### SELECT BELOW CHUNK OF CODE FOR AGE OR NOT AGE BASED VSL ########################################
   ####################### SAME FINAL VARIALBE: cost_PV ####################################
-  
+
   # for monetary mortality impact - growth in income for use in WTP function
   growth_rates <- copy(growth_cap_rates) %>%
     filter(year > 2019) %>%
     mutate(cum_growth = cumprod(1 + growth_2035)) %>%
-    select(-growth_2035)%>%
+    select(-growth_2035) %>%
     drop_na(year)
 
   # Function to grow WTP
   future_WTP <- function(elasticity, growth_rate, WTP) {
     return(elasticity * growth_rate * WTP + WTP)
   }
-  
- 
+
   ## separate and expand the final row that reprsents multiple ages
   dt_age_vsl_sep <- dt_age_vsl |>
     select(age_min, age_max, age_VSL_2019) |>
@@ -928,14 +1174,14 @@ calculate_census_tract_mortality_constant_vsl <- function(beta,
       age_max = seq(.$age_min, .$age_max),
       age_VSL_2019 = .$age_VSL_2019
     ))
-  
+
   # Keep the rows where age_min == age_max, combine
   dt_age_vsl_expanded <- dt_age_vsl |>
     select(age_min, age_max, age_VSL_2019) |>
     filter(age_min == age_max) |>
     rbind(dt_age_vsl_sep) |>
     arrange(age_min)
-  
+
   ## create crosswalk with ct_inc_45 groups
   vsl_cross_walk <- dt_age_vsl_expanded %>%
     filter(age_min > 29) %>%
@@ -944,27 +1190,25 @@ calculate_census_tract_mortality_constant_vsl <- function(beta,
         select(start_age, end_age) %>%
         distinct() %>%
         filter(start_age > 29),
-      by = c("age_min" = "start_age",
-             "age_max" = "end_age"),
-      match_fun = list(`>=`, `<=`)) %>%
+      by = c("age_min" = "start_age", "age_max" = "end_age"),
+      match_fun = list(`>=`, `<=`)
+    ) %>%
     group_by(start_age) %>%
-    summarise(end_age = first(end_age),
-              age_VSL_2019 = mean(age_VSL_2019)) %>%
+    summarise(end_age = first(end_age), age_VSL_2019 = mean(age_VSL_2019)) %>%
     drop_na(start_age) %>%
     ungroup()
-  
-  
+
   ########### Add VSL 2019 by age group
-  
+
   ct_inc_45_temp <- copy(ct_inc_45) %>%
     select(GEO_ID:end_age, year, pop, incidence_2015) %>%
-    filter(start_age > 29)%>%
+    filter(start_age > 29) %>%
     left_join(vsl_cross_walk, by = c("start_age", "end_age"))
-  
-  ########### Grow VSL 
-  
-  # Merge growth factors 
-  ct_inc_45_temp <- ct_inc_45_temp%>%
+
+  ########### Grow VSL
+
+  # Merge growth factors
+  ct_inc_45_temp <- ct_inc_45_temp %>%
     mutate(VSL_2019 = vsl_2019) %>%
     left_join(growth_rates, by = c("year" = "year")) %>%
     mutate(
@@ -977,61 +1221,95 @@ calculate_census_tract_mortality_constant_vsl <- function(beta,
         income_elasticity_mort,
         (cum_growth - 1),
         age_VSL_2019
-      ))
-  
-  ########### Aggregate at census tract and year level 
-  
+      )
+    )
+
+  ########### Aggregate at census tract and year level
+
   ct_inc_pop_45_weighted <- ct_inc_45_temp %>%
     group_by(GEO_ID, year) %>%
     mutate(
       ct_pop = sum(pop, na.rm = T),
       share = pop / ct_pop,
       weighted_incidence = sum(share * incidence_2015, na.rm = T),
-      weighted_monetized_incidence = sum(share * incidence_2015 * VSL, na.rm = T),
-      weighted_monetized_age_incidence = sum(share * incidence_2015 * age_VSL, na.rm = T),
-      weighted_monetized_age_incidence_2019 = sum(share * incidence_2015 * age_VSL_2019, na.rm = T)) %>%
+      weighted_monetized_incidence = sum(
+        share * incidence_2015 * VSL,
+        na.rm = T
+      ),
+      weighted_monetized_age_incidence = sum(
+        share * incidence_2015 * age_VSL,
+        na.rm = T
+      ),
+      weighted_monetized_age_incidence_2019 = sum(
+        share * incidence_2015 * age_VSL_2019,
+        na.rm = T
+      )
+    ) %>%
     summarize(
       weighted_incidence = unique(weighted_incidence),
       weighted_monetized_incidence = unique(weighted_monetized_incidence),
-      weighted_monetized_age_incidence = unique(weighted_monetized_age_incidence),
-      weighted_monetized_age_incidence_2019 = unique(weighted_monetized_age_incidence_2019),
+      weighted_monetized_age_incidence = unique(
+        weighted_monetized_age_incidence
+      ),
+      weighted_monetized_age_incidence_2019 = unique(
+        weighted_monetized_age_incidence_2019
+      ),
       pop = unique(ct_pop)
     ) %>%
     ungroup() %>%
     mutate(GEO_ID = str_remove(GEO_ID, "US"))
-  
+
   #  Delta of pollution change ######################################
-  
+
   # refining pm25 BAU
-  refining_BAU <- subset(health_weighted, (scen_id == "BAU historic production")) %>%
+  refining_BAU <- subset(
+    health_weighted,
+    (scen_id == "BAU historic production")
+  ) %>%
     # refining_BAU<-subset(health_income,(scen_id=="BAU historic production"))%>%
     rename(bau_total_pm25 = total_pm25) # %>%
   # mutate(census_tract = paste0("0",census_tract))
-  
+
   # refining pm25 difference
   deltas_refining <- health_weighted %>%
     # deltas_refining<- health_income%>%
     # mutate(census_tract = paste0("0",census_tract))%>%
     # left_join(refining_BAU %>% select(-scen_id,-demand_scenario,-refining_scenario,-population:-median_hh_income),by=c("census_tract", "year"))%>%
-    left_join(refining_BAU %>% select(-scen_id, -demand_scenario, -refining_scenario, -ces4_score, -disadvantaged), by = c("census_tract", "year")) %>%
+    left_join(
+      refining_BAU %>%
+        select(
+          -scen_id,
+          -demand_scenario,
+          -refining_scenario,
+          -ces4_score,
+          -disadvantaged
+        ),
+      by = c("census_tract", "year")
+    ) %>%
     mutate(delta_total_pm25 = total_pm25 - bau_total_pm25) %>%
     select(census_tract, scen_id:year, total_pm25:delta_total_pm25)
-  
+
   ## Merge demographic data to pollution scenarios
-  
+
   ct_incidence_ca_poll <- deltas_refining %>%
-    right_join(ct_inc_pop_45_weighted, by = c("census_tract" = "GEO_ID", "year" = "year")) %>%
+    right_join(
+      ct_inc_pop_45_weighted,
+      by = c("census_tract" = "GEO_ID", "year" = "year")
+    ) %>%
     drop_na(scen_id) # CURRENTLY DROPPING ALL THE MISMATCHED 2010/2022 GEOIDs
-  
-  
+
   #####################################################################
   # CONSTANT VSL: Calculate the cost per premature mortality (old way)################
   #####################################################################
 
   ct_health <- ct_incidence_ca_poll %>%
     mutate(
-      mortality_delta = ((exp(beta * delta_total_pm25) - 1)) * weighted_incidence * pop,
-      mortality_level = ((exp(beta * total_pm25) - 1)) * weighted_incidence * pop
+      mortality_delta = ((exp(beta * delta_total_pm25) - 1)) *
+        weighted_incidence *
+        pop,
+      mortality_level = ((exp(beta * total_pm25) - 1)) *
+        weighted_incidence *
+        pop
     )
 
   ct_mort_cost <- ct_health %>%
@@ -1053,7 +1331,7 @@ calculate_census_tract_mortality_constant_vsl <- function(beta,
     )
 
   ##########################################################################
-  
+
   return(ct_mort_cost)
 }
 
@@ -1061,7 +1339,8 @@ calculate_census_tract_mortality_constant_vsl <- function(beta,
 calculate_mort_level <- function(refining_mortality) {
   mort_df <- as.data.table(refining_mortality)
 
-  mort_df <- mort_df[, .(cumul_mort_level = sum(mortality_level)),
+  mort_df <- mort_df[,
+    .(cumul_mort_level = sum(mortality_level)),
     by = .(scen_id, demand_scenario, refining_scenario)
   ]
 
@@ -1070,15 +1349,19 @@ calculate_mort_level <- function(refining_mortality) {
 
 
 ## health mortality by demographic group
-calculate_mort_x_demg <- function(refining_mortality,
-                                  pop_ratios,
-                                  main_path,
-                                  save_path) {
+calculate_mort_x_demg <- function(
+  refining_mortality,
+  pop_ratios,
+  main_path,
+  save_path
+) {
   refining_mort_df <- copy(refining_mortality)
   setDT(refining_mort_df)
 
   ## merge with health output
-  refining_mort_df <- merge(refining_mort_df, pop_ratios,
+  refining_mort_df <- merge(
+    refining_mort_df,
+    pop_ratios,
     all.x = TRUE,
     allow.cartesian = T
   )
@@ -1096,114 +1379,152 @@ calculate_mort_x_demg <- function(refining_mortality,
     filter(grp_pop == 0 & pop > 0)
 
   ## save missing pop
-  fwrite(missing_pop, file.path(main_path, save_path, "fig-csv-files", "ct_missing_pop.csv"))
+  fwrite(
+    missing_pop,
+    file.path(save_path, "fig-csv-files", "ct_missing_pop.csv")
+  )
   # fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "ct_missing_pop.csv"))
-
-
 
   ## multiply health impacts by pct
   refining_mort_df[, demo_cost_2019_PV := cost_2019_PV * pct]
   refining_mort_df[, demo_cost_PV := cost_PV * pct]
-
 
   ## return
   return(refining_mort_df)
 }
 
 
-calc_cumul_av_mort <- function(main_path,
-                               save_path,
-                               health_grp) {
+calc_cumul_av_mort <- function(main_path, save_path, health_grp) {
   dt <- copy(health_grp)
-  dt <- dt[, .(
-    cumul_mort_level = sum(mortality_level_dem),
-    cumul_mort_delta = sum(mortality_delta_dem)
-  ),
-  by = .(scen_id, demand_scenario, refining_scenario, demo_group, demo_cat, title)
+  dt <- dt[,
+    .(
+      cumul_mort_level = sum(mortality_level_dem),
+      cumul_mort_delta = sum(mortality_delta_dem)
+    ),
+    by = .(
+      scen_id,
+      demand_scenario,
+      refining_scenario,
+      demo_group,
+      demo_cat,
+      title
+    )
   ]
 
   ## save cumulative
-  fwrite(dt, file.path(main_path, save_path, "fig-csv-files", "cumulative_avoided_mortality.csv"))
+  fwrite(
+    dt,
+    file.path(
+      save_path,
+      "fig-csv-files",
+      "cumulative_avoided_mortality.csv"
+    )
+  )
   # fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "cumulative_avoided_mortality.csv"))
-
-
 
   return(dt)
 }
 
 
 ## calculate county health outputs
-calculate_county_health <- function( # health_weighted,
-                                    main_path,
-                                    save_path,
-                                    pop_ratios,
-                                    refining_mortality,
-                                    raw_ct_2020_all,
-                                    raw_counties,
-                                    discount_rate) {
-  
-  
+calculate_county_health <- function(
+  # health_weighted,
+  main_path,
+  save_path,
+  pop_ratios,
+  refining_mortality,
+  raw_ct_2020_all,
+  raw_counties,
+  discount_rate
+) {
   ## get county x census tracts
   ct_county_df <- raw_ct_2020_all %>%
     filter(STATEFP == "06") %>%
     select(GEOID, COUNTYFP) %>%
     st_drop_geometry()
-  
+
   county_df <- raw_counties %>%
     select(COUNTYFP, NAME) %>%
     st_drop_geometry() %>%
     unique()
-  
+
   ct_county_df <- ct_county_df %>%
     left_join(county_df) %>%
     rename(census_tract = GEOID)
 
-  
   ## cumulative mortality and usd by county
   ## ---------------------------------------------------------------------------
-  
+
   mort_df <- copy(refining_mortality)
   setDT(mort_df)
-  
+
   mort_df <- mort_df[, .(
-    census_tract, scen_id, demand_scenario, refining_scenario,
-    year, benefit_age_level_2019
+    census_tract,
+    scen_id,
+    demand_scenario,
+    refining_scenario,
+    year,
+    benefit_age_level_2019
   )]
-  
+
   mort_df[, mort_val_2019 := benefit_age_level_2019]
-  mort_df[, mort_val_2019_PV := mort_val_2019 / ((1 + discount_rate)^(year - 2019))]
-  
+  mort_df[,
+    mort_val_2019_PV := mort_val_2019 / ((1 + discount_rate)^(year - 2019))
+  ]
+
   ## merge with pop ratios
-  mort_df <- merge(mort_df, pop_ratios,
-                   by = c("census_tract"),
-                   allow.cartesian = T
+  mort_df <- merge(
+    mort_df,
+    pop_ratios,
+    by = c("census_tract"),
+    allow.cartesian = T
   )
-  
+
   ## multiply but pct
   mort_df[, mortality_level_dem := mort_val_2019 * pct]
   mort_df[, mortality_pv_dem := mort_val_2019_PV * pct]
   mort_df <- mort_df[, .(
-    census_tract, scen_id, demand_scenario, refining_scenario, year, demo_group, demo_cat,
-    title, mortality_level_dem, mortality_pv_dem
+    census_tract,
+    scen_id,
+    demand_scenario,
+    refining_scenario,
+    year,
+    demo_group,
+    demo_cat,
+    title,
+    mortality_level_dem,
+    mortality_pv_dem
   )]
-  
-  ## merge with census tracts
-  mort_df <- merge(mort_df, ct_county_df,
-                   by = "census_tract",
-                   all.x = T
-  )
-  
 
-   ## summarise
-  mort_df <- mort_df[, .(
-    mortality_level_dem = sum(mortality_level_dem),
-    mortality_pv_dem = sum(mortality_pv_dem)
-  ),
-  by = .(scen_id, demand_scenario, refining_scenario, COUNTYFP, NAME, demo_cat, demo_group, title)
+  ## merge with census tracts
+  mort_df <- merge(mort_df, ct_county_df, by = "census_tract", all.x = T)
+
+  ## summarise
+  mort_df <- mort_df[,
+    .(
+      mortality_level_dem = sum(mortality_level_dem),
+      mortality_pv_dem = sum(mortality_pv_dem)
+    ),
+    by = .(
+      scen_id,
+      demand_scenario,
+      refining_scenario,
+      COUNTYFP,
+      NAME,
+      demo_cat,
+      demo_group,
+      title
+    )
   ]
-  
-  
-  fwrite(mort_df, file.path(main_path, save_path, "fig-csv-files", "cumulative_health_x_county.csv"))
+
+  fwrite(
+    mort_df,
+    file.path(
+      save_path,
+      "fig-csv-files",
+      "cumulative_health_x_county.csv"
+    )
+  )
 
   ## return
   return(mort_df)

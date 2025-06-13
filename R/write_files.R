@@ -1,75 +1,131 @@
+create_save_folders <- function(main_path, save_path_name) {
+  # Create the main outputs directory structure
+  main_outputs_dir <- file.path(main_path, save_path_name)
 
+  if (!dir.exists(main_outputs_dir)) {
+    dir.create(main_outputs_dir, recursive = TRUE, showWarnings = FALSE)
+    print(paste("Created directory:", main_outputs_dir))
+  }
 
-create_save_folders <- function(main_path,
-                                save_path_name) {
-  
-  # Specify the path to the folder
-  folder_path <- file.path(main_path, save_path_name)
-  csv_folder_path <- file.path(folder_path, "fig-csv-files")
-  legend_path <- file.path(folder_path, "legends")
-  pulse_path <- file.path(folder_path, "pulse-figs")
-  
-  # Check if the directory exists
-  if (!dir.exists(folder_path)) {
-    # If it doesn't exist, create it
-    dir.create(folder_path)
-    print(paste("Folder created:", folder_path))
-  } else {
-    print(paste("Folder already exists:", folder_path))
+  # Create subdirectories
+  subdirs <- c("figures", "health", "labor", "data")
+
+  for (subdir in subdirs) {
+    subdir_path <- file.path(main_outputs_dir, subdir)
+    if (!dir.exists(subdir_path)) {
+      dir.create(subdir_path, recursive = TRUE, showWarnings = FALSE)
+      print(paste("Created directory:", subdir_path))
+    }
   }
-  
-  # Check if the directory exists
-  if (!dir.exists(csv_folder_path)) {
-    # If it doesn't exist, create it
-    dir.create(csv_folder_path)
-    print(paste("Folder created:", csv_folder_path))
-  } else {
-    print(paste("Folder already exists:", csv_folder_path))
+
+  # Create figure subdirectories
+  fig_subdirs <- c("fig-csv-files", "legends", "pulse-figs")
+  for (fig_subdir in fig_subdirs) {
+    fig_subdir_path <- file.path(main_outputs_dir, fig_subdir)
+    if (!dir.exists(fig_subdir_path)) {
+      dir.create(fig_subdir_path, recursive = TRUE, showWarnings = FALSE)
+      print(paste("Created directory:", fig_subdir_path))
+    }
   }
-  
-  # Check if the directory exists
-  if (!dir.exists(legend_path)) {
-    # If it doesn't exist, create it
-    dir.create(legend_path)
-    print(paste("Folder created:", legend_path))
-  } else {
-    print(paste("Folder already exists:", legend_path))
-  }
-  
-  # Check if the directory exists
-  if (!dir.exists(pulse_path)) {
-    # If it doesn't exist, create it
-    dir.create(pulse_path)
-    print(paste("Folder created:", pulse_path))
-  } else {
-    print(paste("Folder already exists:", pulse_path))
-  }
-  
-  return(folder_path)
-  
+
+  return(main_outputs_dir)
 }
-
 
 simple_fwrite <- function(x, main_path, sub_path, name) {
   fwrite(x, file.path(main_path, sub_path, name), row.names = F)
 }
 
-simple_ggsave <- function(x, main_path, sub_path, file_name, width, height, dpi) {
-  fig_path <- file.path(main_path, sub_path, file_name)
+simple_ggsave <- function(
+  x,
+  main_path,
+  sub_path,
+  file_name,
+  width,
+  height,
+  dpi
+) {
+  ggsave(
+    x,
+    file.path(main_path, sub_path, file_name),
+    width = width,
+    height = height,
+    dpi = dpi
+  )
+}
 
-  ggsave(x,
+# New repository-based functions
+create_save_folders_repo <- function(save_path, iteration) {
+  # Create the main outputs directory structure in repository
+  main_outputs_dir <- file.path("outputs", iteration)
+
+  if (!dir.exists(main_outputs_dir)) {
+    dir.create(main_outputs_dir, recursive = TRUE, showWarnings = FALSE)
+    print(paste("Created directory:", main_outputs_dir))
+  }
+
+  # Create subdirectories
+  subdirs <- c("figures", "health", "labor", "data")
+
+  for (subdir in subdirs) {
+    subdir_path <- file.path(main_outputs_dir, subdir)
+    if (!dir.exists(subdir_path)) {
+      dir.create(subdir_path, recursive = TRUE, showWarnings = FALSE)
+      print(paste("Created directory:", subdir_path))
+    }
+  }
+
+  # Create figure subdirectories
+  fig_subdirs <- c("fig-csv-files", "legends", "pulse-figs")
+  for (fig_subdir in fig_subdirs) {
+    fig_subdir_path <- file.path(save_path, fig_subdir)
+    if (!dir.exists(fig_subdir_path)) {
+      dir.create(fig_subdir_path, recursive = TRUE, showWarnings = FALSE)
+      print(paste("Created directory:", fig_subdir_path))
+    }
+  }
+
+  return(save_path)
+}
+
+simple_fwrite_repo <- function(x, save_subpath, filename) {
+  # Create directory if it doesn't exist
+  if (!dir.exists(save_subpath)) {
+    dir.create(save_subpath, recursive = TRUE, showWarnings = FALSE)
+  }
+
+  fwrite(x, file.path(save_subpath, filename), row.names = FALSE)
+  return(file.path(save_subpath, filename))
+}
+
+simple_ggsave_repo <- function(
+  plot_obj,
+  save_path,
+  file_name,
+  width,
+  height,
+  dpi
+) {
+  # Create directory if it doesn't exist
+  if (!dir.exists(save_path)) {
+    dir.create(save_path, recursive = TRUE, showWarnings = FALSE)
+  }
+
+  fig_path <- file.path(save_path, file_name)
+
+  ggsave(
+    plot_obj,
     filename = paste0(fig_path, ".png"),
     width = width,
     height = height,
     dpi = dpi
   )
 
-  ggsave(x,
+  ggsave(
+    plot_obj,
     filename = paste0(fig_path, ".pdf"),
     width = width,
     height = height
   )
 
-  # embed_fonts(paste0(fig_path, ".pdf"),
-  #             outfile = paste0(fig_path, ".pdf"))
+  return(paste0(fig_path, ".pdf"))
 }

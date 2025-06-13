@@ -68,6 +68,7 @@ list(
 
   # set run
   tar_target(name = run_type, "revision-main"),
+  tar_target(name = iteration, "2025-revision"),
 
   # list save paths
   tar_target(
@@ -75,24 +76,22 @@ list(
     c(
       "revision-main" = file.path(
         "outputs",
-        "academic-out",
-        "refining",
-        "figures",
-        "2025-revision-main"
+        iteration,
+        "figures"
       )
     )
   ),
 
-  # set main path
+  # set save path (relative to repository)
   tar_target(
     name = save_path,
     command = list_save_paths[run_type]
   ),
 
-  # create folders
+  # create folders in repository
   tar_target(
     name = save_folders,
-    command = create_save_folders(main_path, save_path)
+    command = create_save_folders_repo(save_path, iteration)
   ),
 
   # module settings
@@ -1741,11 +1740,93 @@ list(
   #
   # # save figures
   tar_target(
+    name = save_ct_xwalk,
+    command = simple_fwrite_repo(
+      ct_xwalk,
+      file.path("outputs", iteration, "health"),
+      "ct_xwalk_2019_2020.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income,
+    command = simple_fwrite_repo(
+      refining_health_income,
+      file.path("outputs", iteration, "health"),
+      "refining_health_income_2023.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income_ref,
+    command = simple_fwrite_repo(
+      refining_health_income_ref,
+      file.path("outputs", iteration, "health"),
+      "refining_health_income_ref_2023.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income_2000,
+    command = simple_fwrite_repo(
+      health_weighted,
+      file.path("outputs", iteration, "health"),
+      "refining_health_census_tract.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_income_ref_2000,
+    command = simple_fwrite_repo(
+      health_weighted_ref,
+      file.path("outputs", iteration, "health"),
+      "refining_health_census_tract_ref.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_mortality,
+    command = simple_fwrite_repo(
+      refining_mortality,
+      file.path("outputs", iteration, "health"),
+      "refining_mortality_2023.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_mortality_ref,
+    command = simple_fwrite_repo(
+      refining_mortality_ref,
+      file.path("outputs", iteration, "health"),
+      "refining_mortality_2023_ref.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_mortality_constant_vsl,
+    command = simple_fwrite_repo(
+      refining_mortality_constant_vsl,
+      file.path("outputs", iteration, "health"),
+      "refining_mortality_2023_constant_vsl.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_state_mort_levels,
+    command = simple_fwrite_repo(
+      ref_mort_level,
+      file.path("outputs", iteration, "health"),
+      "refining_state_mortality.csv"
+    ),
+    format = "file"
+  ),
+
+  # save figures
+  tar_target(
     name = save_fig_demand_ghg,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       fig_demand_ghg,
-      main_path,
-      "outputs/academic-out/refining/figures/2024-08-update",
+      save_path,
       "combined_its_and_production",
       width = 25,
       height = 13,
@@ -1753,288 +1834,10 @@ list(
     ),
     format = "file"
   ),
-  # tar_target(name = save_npv_fig,
-  #            command = simple_ggsave(npv_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_npv_fig",
-  #                                    width = 10,
-  #                                    height = 5,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_levels_fig,
-  #            command = simple_ggsave(health_levels_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_levels_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_levels_pmil_fig,
-  #            command = simple_ggsave(health_levels_pmil_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_levels_pmil_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_levels_pm25_fig,
-  #            command = simple_ggsave(health_levels_plot_pm25,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_levels_pm25_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_l_levels_fig,
-  #            command = simple_ggsave(labor_levels_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_labor_levels_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_l_levels_pmil_fig,
-  #            command = simple_ggsave(labor_levels_plot_pmil,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_labor_levels_pmil_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_gaps_fig,
-  #            command = simple_ggsave(health_gaps_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_gaps_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_gaps_pmil_fig,
-  #            command = simple_ggsave(health_gaps_pmil_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_gaps_pmil_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_gaps_pm25_fig,
-  #            command = simple_ggsave(health_gaps_plot_pm25,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_gaps_pm25_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_labor_gaps_fig,
-  #            command = simple_ggsave(labor_gaps_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_labor_gaps_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_labor_gaps_fig_pmil,
-  #            command = simple_ggsave(labor_gaps_plot_pmil,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "state_labor_gaps_pmil_fig",
-  #                                    width = 12,
-  #                                    height = 8,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_demo_npv_fig,
-  #            command = simple_ggsave(demographic_npv_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "demographic_npv_fig",
-  #                                    width = 11,
-  #                                    height = 12,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_demo_share_fig,
-  #            command = simple_ggsave(demographic_npv_shares_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "demographic_npv_shares_fig",
-  #                                    width = 11,
-  #                                    height = 12,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_demo_npv_pc_fig,
-  #            command = simple_ggsave(demographic_npv_plot_pc,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "demographic_npv_pc_fig",
-  #                                    width = 11,
-  #                                    height = 12,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_health_labor_gaps_plot,
-  #            command = simple_ggsave(health_labor_gaps_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "health_labor_gaps_plot",
-  #                                    width = 12,
-  #                                    height = 6,
-  #                                    dpi = 600),
-  #            format = "file"),
-  #
-  # tar_target(name = save_health_labor_gaps_pmil_plot,
-  #            command = simple_ggsave(health_labor_gaps_pmil_plot,
-  #                                    main_path,
-  #                                    "outputs/academic-out/refining/figures/2024-08-beta-adj",
-  #                                    "health_labor_gaps_pmil_plot",
-  #                                    width = 18,
-  #                                    height = 6,
-  #                                    dpi = 600),
-  #            format = "file")
-
-  # save outputs
-  tar_target(
-    name = save_ct_xwalk,
-    command = simple_fwrite(
-      ct_xwalk,
-      main_path,
-      "outputs/refining-2025/health",
-      "ct_xwalk_2019_2020.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_health_income,
-    command = simple_fwrite(
-      refining_health_income,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_health_income_2023.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_health_income_ref,
-    command = simple_fwrite(
-      refining_health_income_ref,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_health_income_ref_2023.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_health_income_2000,
-    command = simple_fwrite(
-      health_weighted,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_health_census_tract.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_health_income_ref_2000,
-    command = simple_fwrite(
-      health_weighted_ref,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_health_census_tract_ref.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_mortality,
-    command = simple_fwrite(
-      refining_mortality,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_mortality_2023.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_mortality_ref,
-    command = simple_fwrite(
-      refining_mortality_ref,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_mortality_2023_ref.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_mortality_constant_vsl,
-    command = simple_fwrite(
-      refining_mortality_constant_vsl,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_mortality_2023_constant_vsl.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = save_state_mort_levels,
-    command = simple_fwrite(
-      ref_mort_level,
-      main_path,
-      "outputs/refining-2025/health",
-      "refining_state_mortality.csv"
-    ),
-    format = "file"
-  ),
-
-  # save figures
-  # tar_target(
-  #   name = save_fig_demand,
-  #   command = simple_ggsave(fig_demand,
-  #     main_path,
-  #     "outputs/academic-out/refining/figures/", folder_name,
-  #     "its_demand_and_production_2023",
-  #     width = 6.5,
-  #     height = 8,
-  #     dpi = 600
-  #   ),
-  #   format = "file"
-  # ),
-  # tar_target(
-  #   name = save_fig_refined_production_ghg,
-  #   command = simple_ggsave(fig_refined_production_ghg,
-  #     main_path,
-  #     "outputs/academic-out/refining/figures/", folder_name,
-  #     "state_GJD_and_reGJD_production_and_ghg_emissions",
-  #     width = 20,
-  #     height = 12,
-  #     dpi = 600
-  #   ),
-  #   format = "file"
-  # ),
   tar_target(
     name = save_npv_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot,
-      main_path,
       save_path,
       "state_npv_fig",
       width = 10,
@@ -2045,11 +1848,9 @@ list(
   ),
   tar_target(
     name = save_npv_fig_ref,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot_ref,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig_ref",
       width = 10,
       height = 5,
@@ -2059,11 +1860,9 @@ list(
   ),
   tar_target(
     name = save_npv_fig_constant_vsl,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot_constant_vsl,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig_constant_vsl",
       width = 10,
       height = 5,
@@ -2073,11 +1872,9 @@ list(
   ),
   tar_target(
     name = save_npv_fig_growing_vsl,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot_growing_vsl,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig_growing_vsl",
       width = 10,
       height = 5,
@@ -2087,11 +1884,9 @@ list(
   ),
   tar_target(
     name = save_npv_labor_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_labor_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_labor_fig",
       width = 10,
       height = 5,
@@ -2101,11 +1896,9 @@ list(
   ),
   tar_target(
     name = save_levels_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_levels_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_levels_fig",
       width = 12,
       height = 8,
@@ -2115,11 +1908,9 @@ list(
   ),
   tar_target(
     name = save_levels_pmil_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_levels_pmil_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_levels_pmil_fig",
       width = 12,
       height = 8,
@@ -2129,11 +1920,9 @@ list(
   ),
   tar_target(
     name = save_levels_pm25_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_levels_plot_pm25,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_levels_pm25_fig",
       width = 12,
       height = 8,
@@ -2143,11 +1932,9 @@ list(
   ),
   tar_target(
     name = save_l_levels_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       labor_levels_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_levels_fig",
       width = 12,
       height = 8,
@@ -2157,11 +1944,9 @@ list(
   ),
   tar_target(
     name = save_l_levels_pmil_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       labor_levels_plot_pmil,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_levels_pmil_fig",
       width = 12,
       height = 8,
@@ -2171,11 +1956,9 @@ list(
   ),
   tar_target(
     name = save_gaps_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_gaps_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_gaps_fig",
       width = 12,
       height = 8,
@@ -2185,11 +1968,9 @@ list(
   ),
   tar_target(
     name = save_gaps_pmil_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_gaps_pmil_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_gaps_pmil_fig",
       width = 12,
       height = 8,
@@ -2199,11 +1980,9 @@ list(
   ),
   tar_target(
     name = save_gaps_pm25_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_gaps_plot_pm25,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_gaps_pm25_fig",
       width = 12,
       height = 8,
@@ -2213,11 +1992,9 @@ list(
   ),
   tar_target(
     name = save_labor_gaps_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       labor_gaps_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_gaps_fig",
       width = 12,
       height = 8,
@@ -2227,11 +2004,9 @@ list(
   ),
   tar_target(
     name = save_labor_gaps_fig_pmil,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       labor_gaps_plot_pmil,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_labor_gaps_pmil_fig",
       width = 12,
       height = 8,
@@ -2241,11 +2016,9 @@ list(
   ),
   tar_target(
     name = save_demo_npv_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       demographic_npv_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "demographic_npv_fig",
       width = 11,
       height = 12,
@@ -2255,11 +2028,9 @@ list(
   ),
   tar_target(
     name = save_demo_share_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       demographic_npv_shares_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "demographic_npv_shares_fig",
       width = 12,
       height = 12,
@@ -2269,11 +2040,9 @@ list(
   ),
   tar_target(
     name = save_demo_npv_pc_fig,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       demographic_npv_plot_pc,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "demographic_npv_pc_fig",
       width = 11,
       height = 12,
@@ -2283,11 +2052,9 @@ list(
   ),
   tar_target(
     name = save_health_labor_gaps_plot,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_labor_gaps_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "health_labor_gaps_plot",
       width = 14,
       height = 6,
@@ -2297,11 +2064,9 @@ list(
   ),
   tar_target(
     name = save_health_labor_gaps_pmil_plot,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       health_labor_gaps_pmil_plot,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "health_labor_gaps_pmil_plot",
       width = 18,
       height = 6,
@@ -2311,11 +2076,9 @@ list(
   ),
   tar_target(
     name = save_fig_refinery_capacity,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       fig_refinery_capacity,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "refinery_capacity",
       width = 16,
       height = 12,
@@ -2325,11 +2088,9 @@ list(
   ),
   tar_target(
     name = save_fig_refinery_count,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       fig_refinery_count,
-      main_path,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "refinery_count",
       width = 16,
       height = 12,
