@@ -446,14 +446,14 @@ list(
     ),
     format = "file"
   ),
-  # tar_target(
-  #   name = file_ghg_emissions,
-  #   command = file.path(
-  #     main_path,
-  #     "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
-  #   ),
-  #   format = "file"
-  # ),
+  tar_target(
+    name = file_ghg_emissions,
+    command = file.path(
+      main_path,
+      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
+    ),
+    format = "file"
+  ),
   tar_target(
     name = file_hydrogen_facilities,
     command = file.path(
@@ -774,10 +774,7 @@ list(
   ),
   tar_target(
     name = dt_ghg_emissions,
-    command = simple_fread(file.path(
-      main_path,
-      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
-    ))
+    command = simple_fread(file_ghg_emissions)
   ),
 
   # set remaining file paths
