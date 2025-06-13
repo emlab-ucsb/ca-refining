@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
@@ -67,7 +67,7 @@ list(
   ),
 
   # set run
-  tar_target(name = run_type, "revision-main"),
+  tar_target(name = run_type, "labor-take-2"),
 
   # list save paths
   tar_target(
@@ -79,6 +79,13 @@ list(
         "refining",
         "figures",
         "2025-revision-main"
+      ),
+      "labor-take-2" = file.path(
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "2025-labor-take-2"
       )
     )
   ),
@@ -1275,6 +1282,7 @@ list(
   ),
   tar_target(
     name = refining_mortality_constant_vsl,
+    ## non age-based VSL
     command = calculate_census_tract_mortality_constant_vsl(
       beta,
       se,
@@ -1398,6 +1406,7 @@ list(
     ref_labor_demog_yr,
     command = calculate_labor_x_demg_annual(
       main_path,
+      save_path,
       annual_direct_labor,
       pop_ratios
     )
@@ -1464,29 +1473,29 @@ list(
       refining_mortality = refining_mortality_ref,
       state_ghg_output,
       dt_ghg_2019,
-      annual_labor
+      annual_all_impacts_labor
     )
   ),
   tar_target(
-    name = npv_plot_constant_vsl,
-    command = plot_npv_health_labor_constant_vsl(
+    name = npv_plot_annual_vsl,
+    command = plot_npv_health_labor_annual_vsl(
+      main_path,
+      save_path,
+      refining_mortality = refining_mortality,
+      state_ghg_output,
+      dt_ghg_2019,
+      annual_all_impacts_labor
+    )
+  ),
+  tar_target(
+    name = npv_plot_non_age_vsl,
+    command = plot_npv_health_labor_non_age_vsl(
       main_path,
       save_path,
       refining_mortality = refining_mortality_constant_vsl,
       state_ghg_output,
       dt_ghg_2019,
-      annual_labor
-    )
-  ),
-  tar_target(
-    name = npv_plot_growing_vsl,
-    command = plot_npv_health_labor_growing_vsl(
-      main_path,
-      save_path,
-      refining_mortality = refining_mortality_constant_vsl,
-      state_ghg_output,
-      dt_ghg_2019,
-      annual_labor
+      annual_all_impacts_labor
     )
   ),
   tar_target(
@@ -1625,7 +1634,9 @@ list(
   ),
   tar_target(
     name = demographic_npv_plot,
-    command = plot_hl_levels(main_path, demographic_npv_df)
+    command = plot_hl_levels(main_path, 
+                             save_path,
+                             demographic_npv_df)
   ),
   tar_target(
     name = demographic_npv_shares_plot,
@@ -1650,6 +1661,7 @@ list(
     name = health_labor_gaps_plot,
     command = fig4_hl(
       main_path,
+      save_path,
       health_grp,
       ref_labor_demog_yr,
       refining_mortality,
@@ -1660,6 +1672,7 @@ list(
     name = health_labor_gaps_pmil_plot,
     command = fig4_hl_pmil(
       main_path,
+      save_path,
       health_grp,
       ref_labor_demog_yr,
       refining_mortality,
@@ -2013,13 +2026,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_npv_fig_constant_vsl,
+    name = save_npv_fig_annual_vsl,
     command = simple_ggsave(
-      npv_plot_constant_vsl,
+      npv_plot_annual_vsl,
       main_path,
       save_path,
       # "outputs/academic-out/refining/figures/2025-health-revisions",
-      "state_npv_fig_constant_vsl",
+      "state_npv_fig_annual_vsl",
       width = 10,
       height = 5,
       dpi = 600
@@ -2027,13 +2040,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_npv_fig_growing_vsl,
+    name = save_npv_fig_non_age_vsl,
     command = simple_ggsave(
-      npv_plot_growing_vsl,
+      npv_plot_non_age_vsl,
       main_path,
       save_path,
       # "outputs/academic-out/refining/figures/2025-health-revisions",
-      "state_npv_fig_growing_vsl",
+      "state_npv_fig_non_age_vsl",
       width = 10,
       height = 5,
       dpi = 600
