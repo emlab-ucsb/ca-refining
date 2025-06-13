@@ -56,3 +56,6 @@ _targets/
 *.qpj*
 *.sbn*
 *.sbx*
+
+# other file types to not track
+*.atx
