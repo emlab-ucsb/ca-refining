@@ -35,6 +35,7 @@ create_prod_px_spread <- function(proc_oil_px_df) {
 
 
 calc_labor_outputs <- function(main_path,
+                               save_path,
                                indiv_prod_output,
                                dt_refcap,
                                product_px,
@@ -324,6 +325,7 @@ calc_state_direct_impacts <- function(annual_direct_labor) {
 
 
 calc_labor_all_impacts_outputs <- function(main_path,
+                                           save_path,
                                            state_annual_direct_impacts,
                                            indiv_prod_output,
                                            dt_refcap,
@@ -742,6 +744,7 @@ calc_labor_all_impacts_outputs <- function(main_path,
 ## labor results grouped by demographic
 
 calculate_labor_x_demg_annual <- function(main_path,
+                                          save_path,
                                           annual_direct_labor,
                                           pop_ratios) {
   
@@ -821,7 +824,7 @@ calculate_labor_x_demg_annual <- function(main_path,
                                                    sum_demo_comp_pv_l)]
   
   ## save for review
-  write_csv(state_demo_labor_out, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/state_labor_direct_impacts_demo_annual.csv"))
+  write_csv(state_demo_labor_out, file.path(main_path, save_path, "fig-csv-files", "state_labor_direct_impacts_demo_annual.csv"))
   
   
   return(state_demo_labor_out)
@@ -893,6 +896,7 @@ calculate_labor_x_demg <- function(ref_labor_demog_yr) {
 
 ## function for creating labor output df
 calculate_annual_labor_x_demg_hl <- function(main_path,
+                                             save_path,
                                              ref_labor_demog_yr,
                                              refining_mortality,
                                              pop_ratios) {
@@ -1001,7 +1005,7 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
   
   
   ## save df
-  fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "labor_high_low_annual_outputs.csv"))
+  fwrite(labor_pct_long, file.path(main_path, save_path, "fig-csv-files", "labor_high_low_annual_outputs.csv"))
   # fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files", "labor_high_low_annual_outputs.csv"))
   
   
@@ -1009,6 +1013,7 @@ calculate_annual_labor_x_demg_hl <- function(main_path,
 }
 
 calc_county_level_outputs <- function(main_path,
+                                      save_path,
                                       annual_direct_labor,
                                       refining_mortality,
                                       raw_pop_income_2021,
@@ -1166,7 +1171,7 @@ calc_county_level_outputs <- function(main_path,
   
   
   ## save df
-  fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/", "labor_county_outputs.csv"))
+  fwrite(labor_county_out_df, file.path(main_path, save_path, "fig-csv-files", "labor_county_outputs.csv"))
   # fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files", "labor_county_outputs.csv"))
   
   
