@@ -56,7 +56,7 @@ list(
       "tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
       "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
       "vincent" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
-      "meas" = "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
+      "meas" = "data"
     )
   ),
 
@@ -68,7 +68,7 @@ list(
 
   # set run
   tar_target(name = run_type, "revision-main"),
-  tar_target(name = iteration, "2025-revision"),
+  tar_target(name = iteration, "test"),
 
   # list save paths
   tar_target(
