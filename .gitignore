@@ -43,3 +43,16 @@ _targets/
 
 # .DS_Store
 .DS_Store
+
+# data
+# /data/
+
+# shapefiles (and all related files to .shp files)
+*.shp*
+*.shx*
+*.dbf*
+*.prj*
+*.cpg*
+*.qpj*
+*.sbn*
+*.sbx*
