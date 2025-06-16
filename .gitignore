@@ -59,3 +59,6 @@ _targets/
 
 # other file types to not track
 *.atx
+
+# labor files
+/data/data-staged-for-deletion/labor/*
