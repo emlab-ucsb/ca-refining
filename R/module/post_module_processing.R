@@ -45,19 +45,34 @@ create_altair_ts <- function(dt_altair, dem_scens, ref_scens) {
 }
 
 
-combine_renewables_outputs_with_altair <- function(altair_ref, res_renew_ref_reg) {
+combine_renewables_outputs_with_altair <- function(
+  altair_ref,
+  res_renew_ref_reg
+) {
   cp_res_renew_ref_reg <- copy(res_renew_ref_reg)
   # cp_res_renew_ref_reg[, capacity_ratio := NULL]
-  res_renew_ref_reg_altair <- rbindlist(list(cp_res_renew_ref_reg, altair_ref), use.names = T)
+  res_renew_ref_reg_altair <- rbindlist(
+    list(cp_res_renew_ref_reg, altair_ref),
+    use.names = T
+  )
   setorder(res_renew_ref_reg, demand_scenario, refining_scenario, year)
   res_renew_ref_reg_altair
 }
 
 combine_renewables_info_with_altair <- function(altair_ref, renewables_info) {
-  renewables_info_altair <- rbindlist(list(
-    unique(altair_ref[, .(site_id, refinery_name, location, region, cluster)]),
-    renewables_info
-  ), use.names = T)
+  renewables_info_altair <- rbindlist(
+    list(
+      unique(altair_ref[, .(
+        site_id,
+        refinery_name,
+        location,
+        region,
+        cluster
+      )]),
+      renewables_info
+    ),
+    use.names = T
+  )
 
   renewables_info_altair
 }
@@ -68,48 +83,107 @@ combine_renewables_info_with_altair <- function(altair_ref, renewables_info) {
 calculate_crude_capacity_ratio <- function(res_crude_ref_reg) {
   res_crude_ref_reg_capacity <- copy(res_crude_ref_reg)
   res_crude_ref_reg_capacity[, barrels_per_year := barrels_per_day * 365]
-  res_crude_ref_reg_capacity[, capacity_ratio := barrels_per_year / sum(barrels_per_year), by = .(demand_scenario, refining_scenario, year, region)]
+  res_crude_ref_reg_capacity[,
+    capacity_ratio := barrels_per_year / sum(barrels_per_year),
+    by = .(demand_scenario, refining_scenario, year, region)
+  ]
   res_crude_ref_reg_capacity
 }
 
 calculate_renewable_capacity_ratio <- function(res_renew_ref_reg_altair) {
   res_renew_ref_reg_capacity <- copy(res_renew_ref_reg_altair)
-  res_renew_ref_reg_capacity[, capacity_ratio := barrels_per_year / sum(barrels_per_year), by = .(demand_scenario, refining_scenario, year)]
+  res_renew_ref_reg_capacity[,
+    capacity_ratio := barrels_per_year / sum(barrels_per_year),
+    by = .(demand_scenario, refining_scenario, year)
+  ]
   res_renew_ref_reg_capacity
 }
 
 
-
-
-
 # divide GJD demand within crude refineries -------
 
-divide_gjd_demand_crude_refineries <- function(res_equiv_demand, res_crude_ref_reg_capacity, crude_refined_region,
-                                               ei_crude, ei_gasoline, ei_diesel, ei_jet) {
+divide_gjd_demand_crude_refineries <- function(
+  res_equiv_demand,
+  res_crude_ref_reg_capacity,
+  crude_refined_region,
+  ei_crude,
+  ei_gasoline,
+  ei_diesel,
+  ei_jet
+) {
   # get "traditional" GJD production (regular GJD demand and exports)
-  ref_crude_gjd <- res_equiv_demand[, .(demand_scenario, refining_scenario, fuel_equiv, year, region, consumption_bge, consumption_bbl, export_bge, export_bbl)]
-  ref_crude_gjd[, traditional_production_bge := consumption_bge + abs(export_bge)]
-  ref_crude_gjd[, traditional_production_bbl := consumption_bbl + abs(export_bbl)]
+  ref_crude_gjd <- res_equiv_demand[, .(
+    demand_scenario,
+    refining_scenario,
+    fuel_equiv,
+    year,
+    region,
+    consumption_bge,
+    consumption_bbl,
+    export_bge,
+    export_bbl
+  )]
+  ref_crude_gjd[,
+    traditional_production_bge := consumption_bge + abs(export_bge)
+  ]
+  ref_crude_gjd[,
+    traditional_production_bbl := consumption_bbl + abs(export_bbl)
+  ]
 
   # merge demand with operating crude refineries
-  ref_crude_gjd <- merge(ref_crude_gjd[, .(demand_scenario, refining_scenario, region, fuel_equiv, year, traditional_production_bbl)],
-    res_crude_ref_reg_capacity[, .(demand_scenario, refining_scenario, region, year, site_id, refinery_name, location, capacity_ratio)],
+  ref_crude_gjd <- merge(
+    ref_crude_gjd[, .(
+      demand_scenario,
+      refining_scenario,
+      region,
+      fuel_equiv,
+      year,
+      traditional_production_bbl
+    )],
+    res_crude_ref_reg_capacity[, .(
+      demand_scenario,
+      refining_scenario,
+      region,
+      year,
+      site_id,
+      refinery_name,
+      location,
+      capacity_ratio
+    )],
     by = c("demand_scenario", "refining_scenario", "region", "year"),
     allow.cartesian = T
   )
 
   # split regional demand to indiv refineries
-  ref_crude_gjd[, traditional_production_bbl := traditional_production_bbl * capacity_ratio]
+  ref_crude_gjd[,
+    traditional_production_bbl := traditional_production_bbl * capacity_ratio
+  ]
 
   # melt bbl data to wide format
-  ref_crude_gjd <- dcast(ref_crude_gjd,
-    demand_scenario + refining_scenario + region + site_id + refinery_name + location + year ~ fuel_equiv,
+  ref_crude_gjd <- dcast(
+    ref_crude_gjd,
+    demand_scenario +
+      refining_scenario +
+      region +
+      site_id +
+      refinery_name +
+      location +
+      year ~
+      fuel_equiv,
     value.var = "traditional_production_bbl"
   )
 
   # use heat intensity equation to solve for refinery-level crude consumption
-  ref_crude_gjd <- ref_crude_gjd[crude_refined_region[, .(region, coef)], on = .(region)]
-  ref_crude_gjd[, traditional_crude_consumption_bbl := ((gasoline * ei_gasoline) + (diesel * ei_diesel) + (jet * ei_jet)) / (ei_crude - coef)]
+  ref_crude_gjd <- ref_crude_gjd[
+    crude_refined_region[, .(region, coef)],
+    on = .(region)
+  ]
+  ref_crude_gjd[,
+    traditional_crude_consumption_bbl := ((gasoline * ei_gasoline) +
+      (diesel * ei_diesel) +
+      (jet * ei_jet)) /
+      (ei_crude - coef)
+  ]
 
   # reorganize data table
   setnames(ref_crude_gjd, "gasoline", "gasoline_production_bbl")
@@ -117,8 +191,17 @@ divide_gjd_demand_crude_refineries <- function(res_equiv_demand, res_crude_ref_r
   setnames(ref_crude_gjd, "jet", "jet_production_bbl")
 
   ref_crude_gjd <- ref_crude_gjd[, .(
-    demand_scenario, refining_scenario, site_id, refinery_name, location, region, year,
-    gasoline_production_bbl, diesel_production_bbl, jet_production_bbl, traditional_crude_consumption_bbl
+    demand_scenario,
+    refining_scenario,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    year,
+    gasoline_production_bbl,
+    diesel_production_bbl,
+    jet_production_bbl,
+    traditional_crude_consumption_bbl
   )]
 
   ref_crude_gjd
@@ -127,38 +210,102 @@ divide_gjd_demand_crude_refineries <- function(res_equiv_demand, res_crude_ref_r
 
 # divide residual reGJD demand within crude refineries --------
 
-divide_residual_gjd_crude_refineries <- function(res_equiv_demand, res_crude_ref_reg_capacity, crude_refined_region,
-                                                 ei_crude, ei_gasoline, ei_diesel, ei_jet, dem_scens, ref_scens, ave_kern_rediesel) {
+divide_residual_gjd_crude_refineries <- function(
+  res_equiv_demand,
+  res_crude_ref_reg_capacity,
+  crude_refined_region,
+  ei_crude,
+  ei_gasoline,
+  ei_diesel,
+  ei_jet,
+  dem_scens,
+  ref_scens,
+  ave_kern_rediesel
+) {
   # get residual reGJD demand
-  ref_crude_res_regjd <- res_equiv_demand[, .(demand_scenario, refining_scenario, fuel_equiv, year, region, residual_consumption_bge, residual_consumption_bbl)]
-  setnames(ref_crude_res_regjd, "residual_consumption_bge", "residual_production_bge")
-  setnames(ref_crude_res_regjd, "residual_consumption_bbl", "residual_production_bbl")
+  ref_crude_res_regjd <- res_equiv_demand[, .(
+    demand_scenario,
+    refining_scenario,
+    fuel_equiv,
+    year,
+    region,
+    residual_consumption_bge,
+    residual_consumption_bbl
+  )]
+  setnames(
+    ref_crude_res_regjd,
+    "residual_consumption_bge",
+    "residual_production_bge"
+  )
+  setnames(
+    ref_crude_res_regjd,
+    "residual_consumption_bbl",
+    "residual_production_bbl"
+  )
 
   # create unique list of scenarios and years
 
-  un_scens <- CJ(demand_scenario = dem_scens, refining_scenario = ref_scens, year = 2020:2045)
+  un_scens <- CJ(
+    demand_scenario = dem_scens,
+    refining_scenario = ref_scens,
+    year = 2020:2045
+  )
 
   # merge to decide if Kern Oil is operating in each unique scenario-year combo
 
-  un_scens <- res_crude_ref_reg_capacity[refinery_name %like% "Kern Oil"][un_scens, on = .(demand_scenario, refining_scenario, year)]
+  un_scens <- res_crude_ref_reg_capacity[refinery_name %like% "Kern Oil"][
+    un_scens,
+    on = .(demand_scenario, refining_scenario, year)
+  ]
   un_scens[, kern_oil_operating := ifelse(is.na(refinery_name), "no", "yes")]
-  un_scens <- un_scens[, .(demand_scenario, refining_scenario, year, kern_oil_operating)]
+  un_scens <- un_scens[, .(
+    demand_scenario,
+    refining_scenario,
+    year,
+    kern_oil_operating
+  )]
 
   # merge demand with operating crude refineries
-  ref_crude_res_regjd <- merge(ref_crude_res_regjd[, .(demand_scenario, refining_scenario, region, fuel_equiv, year, residual_production_bbl)],
-    res_crude_ref_reg_capacity[, .(demand_scenario, refining_scenario, region, year, site_id, refinery_name, location, capacity_ratio)],
+  ref_crude_res_regjd <- merge(
+    ref_crude_res_regjd[, .(
+      demand_scenario,
+      refining_scenario,
+      region,
+      fuel_equiv,
+      year,
+      residual_production_bbl
+    )],
+    res_crude_ref_reg_capacity[, .(
+      demand_scenario,
+      refining_scenario,
+      region,
+      year,
+      site_id,
+      refinery_name,
+      location,
+      capacity_ratio
+    )],
     by = c("demand_scenario", "refining_scenario", "region", "year"),
     allow.cartesian = T
   )
 
   # merge with indicator of kern oil operating
-  ref_crude_res_regjd <- ref_crude_res_regjd[un_scens, on = .(demand_scenario, refining_scenario, year)]
+  ref_crude_res_regjd <- ref_crude_res_regjd[
+    un_scens,
+    on = .(demand_scenario, refining_scenario, year)
+  ]
 
   # for South region, split evenly amongst refineries using capacity ratio
-  ref_crude_res_regjd[region == "South", residual_production_bbl_2 := residual_production_bbl * capacity_ratio]
+  ref_crude_res_regjd[
+    region == "South",
+    residual_production_bbl_2 := residual_production_bbl * capacity_ratio
+  ]
 
   # for renewable gasoline and renewable jet, split evenly using capacity ratios also
-  ref_crude_res_regjd[region == "North" & fuel_equiv %in% c("gasoline", "jet"), residual_production_bbl_2 := residual_production_bbl * capacity_ratio]
+  ref_crude_res_regjd[
+    region == "North" & fuel_equiv %in% c("gasoline", "jet"),
+    residual_production_bbl_2 := residual_production_bbl * capacity_ratio
+  ]
 
   # for the renewable diesel production in the North region:
   # - if Kern Oil is operating, then give Kern Oil its historic production values and split the rest evenly amongst the other refineries
@@ -166,16 +313,17 @@ divide_residual_gjd_crude_refineries <- function(res_equiv_demand, res_crude_ref
 
   ref_crude_res_regjd[
     region == "North" & fuel_equiv == "diesel",
-    residual_production_bbl_2 := ifelse(kern_oil_operating == "yes",
-      ifelse(residual_production_bbl > ave_kern_rediesel[, consumption_bbl],
-        ifelse(refinery_name %like% "Kern Oil",
+    residual_production_bbl_2 := ifelse(
+      kern_oil_operating == "yes",
+      ifelse(
+        residual_production_bbl > ave_kern_rediesel[, consumption_bbl],
+        ifelse(
+          refinery_name %like% "Kern Oil",
           ave_kern_rediesel[, consumption_bbl],
-          (residual_production_bbl - ave_kern_rediesel[, consumption_bbl]) * capacity_ratio
+          (residual_production_bbl - ave_kern_rediesel[, consumption_bbl]) *
+            capacity_ratio
         ),
-        ifelse(refinery_name %like% "Kern Oil",
-          residual_production_bbl,
-          0
-        )
+        ifelse(refinery_name %like% "Kern Oil", residual_production_bbl, 0)
       ),
       residual_production_bbl * capacity_ratio
     )
@@ -183,47 +331,117 @@ divide_residual_gjd_crude_refineries <- function(res_equiv_demand, res_crude_ref
 
   # rename
   ref_crude_res_regjd[, residual_production_bbl := NULL]
-  setnames(ref_crude_res_regjd, "residual_production_bbl_2", "residual_production_bbl")
+  setnames(
+    ref_crude_res_regjd,
+    "residual_production_bbl_2",
+    "residual_production_bbl"
+  )
 
   # melt bbl data to wide format
-  ref_crude_res_regjd <- dcast(ref_crude_res_regjd,
-    demand_scenario + refining_scenario + region + site_id + refinery_name + location + year ~ fuel_equiv,
+  ref_crude_res_regjd <- dcast(
+    ref_crude_res_regjd,
+    demand_scenario +
+      refining_scenario +
+      region +
+      site_id +
+      refinery_name +
+      location +
+      year ~
+      fuel_equiv,
     value.var = "residual_production_bbl"
   )
 
   # use heat intensity equation to solve for refinery-level crude consumption
-  ref_crude_res_regjd <- ref_crude_res_regjd[crude_refined_region[, .(region, coef)], on = .(region)]
-  ref_crude_res_regjd[, residual_renewable_crude_consumption_bbl := ((gasoline * ei_gasoline) + (diesel * ei_diesel) + (jet * ei_jet)) / (ei_crude - coef)]
+  ref_crude_res_regjd <- ref_crude_res_regjd[
+    crude_refined_region[, .(region, coef)],
+    on = .(region)
+  ]
+  ref_crude_res_regjd[,
+    residual_renewable_crude_consumption_bbl := ((gasoline * ei_gasoline) +
+      (diesel * ei_diesel) +
+      (jet * ei_jet)) /
+      (ei_crude - coef)
+  ]
 
   # reorganize data table
-  setnames(ref_crude_res_regjd, "gasoline", "residual_renewable_gasoline_production_bbl")
-  setnames(ref_crude_res_regjd, "diesel", "residual_renewable_diesel_production_bbl")
+  setnames(
+    ref_crude_res_regjd,
+    "gasoline",
+    "residual_renewable_gasoline_production_bbl"
+  )
+  setnames(
+    ref_crude_res_regjd,
+    "diesel",
+    "residual_renewable_diesel_production_bbl"
+  )
   setnames(ref_crude_res_regjd, "jet", "residual_renewable_jet_production_bbl")
 
   ref_crude_res_regjd <- ref_crude_res_regjd[, .(
-    demand_scenario, refining_scenario, site_id, refinery_name, location, region, year,
-    residual_renewable_gasoline_production_bbl, residual_renewable_diesel_production_bbl,
-    residual_renewable_jet_production_bbl, residual_renewable_crude_consumption_bbl
+    demand_scenario,
+    refining_scenario,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    year,
+    residual_renewable_gasoline_production_bbl,
+    residual_renewable_diesel_production_bbl,
+    residual_renewable_jet_production_bbl,
+    residual_renewable_crude_consumption_bbl
   )]
 
   ref_crude_res_regjd
 }
 
 
-
-
 # divide reGJD demand between renewable refineries ------
 
-divide_residual_gjd_renewable_refineries <- function(res_renew_demand, res_renew_ref_reg_capacity, renewables_info_altair, crude_refined_tot,
-                                                     ei_crude, ei_gasoline, ei_diesel, ei_jet) {
+divide_residual_gjd_renewable_refineries <- function(
+  res_renew_demand,
+  res_renew_ref_reg_capacity,
+  renewables_info_altair,
+  crude_refined_tot,
+  ei_crude,
+  ei_gasoline,
+  ei_diesel,
+  ei_jet
+) {
   # get residual reGJD demand
-  ref_renew_gjd <- res_renew_demand[, .(demand_scenario, refining_scenario, fuel_equiv, year, renewable_refinery_consumption_bge, renewable_refinery_consumption_bbl)]
-  setnames(ref_renew_gjd, "renewable_refinery_consumption_bge", "renewable_production_bge")
-  setnames(ref_renew_gjd, "renewable_refinery_consumption_bbl", "renewable_production_bbl")
+  ref_renew_gjd <- res_renew_demand[, .(
+    demand_scenario,
+    refining_scenario,
+    fuel_equiv,
+    year,
+    renewable_refinery_consumption_bge,
+    renewable_refinery_consumption_bbl
+  )]
+  setnames(
+    ref_renew_gjd,
+    "renewable_refinery_consumption_bge",
+    "renewable_production_bge"
+  )
+  setnames(
+    ref_renew_gjd,
+    "renewable_refinery_consumption_bbl",
+    "renewable_production_bbl"
+  )
 
   # merge demand with operating renewable refineries
-  ref_renew_gjd <- merge(ref_renew_gjd[, .(demand_scenario, refining_scenario, fuel_equiv, year, renewable_production_bbl)],
-    res_renew_ref_reg_capacity[, .(demand_scenario, refining_scenario, year, refinery_name, capacity_ratio)],
+  ref_renew_gjd <- merge(
+    ref_renew_gjd[, .(
+      demand_scenario,
+      refining_scenario,
+      fuel_equiv,
+      year,
+      renewable_production_bbl
+    )],
+    res_renew_ref_reg_capacity[, .(
+      demand_scenario,
+      refining_scenario,
+      year,
+      refinery_name,
+      capacity_ratio
+    )],
     by = c("demand_scenario", "refining_scenario", "year"),
     allow.cartesian = T
   )
@@ -232,17 +450,32 @@ divide_residual_gjd_renewable_refineries <- function(res_renew_demand, res_renew
   ref_renew_gjd <- ref_renew_gjd[renewables_info_altair, on = "refinery_name"]
 
   # split regional demand to indiv refineries
-  ref_renew_gjd[, renewable_production_bbl := renewable_production_bbl * capacity_ratio]
+  ref_renew_gjd[,
+    renewable_production_bbl := renewable_production_bbl * capacity_ratio
+  ]
 
   # melt bbl data to wide format
-  ref_renew_gjd <- dcast(ref_renew_gjd,
-    demand_scenario + refining_scenario + region + site_id + refinery_name + location + year ~ fuel_equiv,
+  ref_renew_gjd <- dcast(
+    ref_renew_gjd,
+    demand_scenario +
+      refining_scenario +
+      region +
+      site_id +
+      refinery_name +
+      location +
+      year ~
+      fuel_equiv,
     value.var = "renewable_production_bbl"
   )
 
   # use heat intensity equation to solve for refinery-level crude consumption
   ref_renew_gjd[, coef := crude_refined_tot[, coef]]
-  ref_renew_gjd[, main_renewable_crude_consumption_bbl := ((gasoline * ei_gasoline) + (diesel * ei_diesel) + (jet * ei_jet)) / (ei_crude - coef)]
+  ref_renew_gjd[,
+    main_renewable_crude_consumption_bbl := ((gasoline * ei_gasoline) +
+      (diesel * ei_diesel) +
+      (jet * ei_jet)) /
+      (ei_crude - coef)
+  ]
 
   # reorganize data table
   setnames(ref_renew_gjd, "gasoline", "main_renewable_gasoline_production_bbl")
@@ -250,69 +483,165 @@ divide_residual_gjd_renewable_refineries <- function(res_renew_demand, res_renew
   setnames(ref_renew_gjd, "jet", "main_renewable_jet_production_bbl")
 
   ref_renew_gjd <- ref_renew_gjd[, .(
-    demand_scenario, refining_scenario, site_id, refinery_name, location, region, year,
-    main_renewable_gasoline_production_bbl, main_renewable_diesel_production_bbl,
-    main_renewable_jet_production_bbl, main_renewable_crude_consumption_bbl
+    demand_scenario,
+    refining_scenario,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    year,
+    main_renewable_gasoline_production_bbl,
+    main_renewable_diesel_production_bbl,
+    main_renewable_jet_production_bbl,
+    main_renewable_crude_consumption_bbl
   )]
 
   ref_renew_gjd
 }
 
 
-
+#' @import data.table
+utils::globalVariables(c(
+  "site_id",
+  "traditional_crude_consumption_bbl",
+  "residual_renewable_crude_consumption_bbl",
+  "main_renewable_crude_consumption_bbl",
+  "total_crude_consumption_bbl",
+  "total_co2e_kg",
+  "region_kgco2e_bbl",
+  "year",
+  ".SD"
+))
 # combine all refinery-level production and consumption -------
-
-combine_refinery_prod_cons <- function(ref_crude_gjd, ref_crude_res_regjd, ref_renew_gjd, dt_ghgfac) {
-  ref_cons_prod <- merge(ref_crude_gjd,
+combine_refinery_prod_cons <- function(
+  ref_crude_gjd,
+  ref_crude_res_regjd,
+  ref_renew_gjd,
+  dt_ghgfac,
+  ghg_year = NULL,
+  use_refinery_factor = TRUE
+) {
+  ref_cons_prod <- merge(
+    ref_crude_gjd,
     ref_crude_res_regjd,
-    by = c("demand_scenario", "refining_scenario", "site_id", "refinery_name", "location", "region", "year"),
-    all = T
+    by = c(
+      "demand_scenario",
+      "refining_scenario",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "year"
+    ),
+    all = TRUE
   )
   ref_cons_prod[, site_id := as.character(site_id)]
 
-  ref_cons_prod <- merge(ref_cons_prod,
+  ref_cons_prod <- merge(
+    ref_cons_prod,
     ref_renew_gjd,
-    by = c("demand_scenario", "refining_scenario", "site_id", "refinery_name", "location", "region", "year"),
-    all = T
+    by = c(
+      "demand_scenario",
+      "refining_scenario",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "year"
+    ),
+    all = TRUE
   )
 
   fix_columns <- colnames(ref_cons_prod)[8:19]
-  ref_cons_prod[, (fix_columns) := lapply(.SD, function(x) ifelse(is.na(x), 0, x)), .SDcols = fix_columns]
+  ref_cons_prod[,
+    (fix_columns) := lapply(.SD, function(x) ifelse(is.na(x), 0, x)),
+    .SDcols = fix_columns
+  ]
 
-  ref_cons_prod[, total_crude_consumption_bbl := traditional_crude_consumption_bbl + residual_renewable_crude_consumption_bbl + main_renewable_crude_consumption_bbl]
+  # Calculate total crude consumption
+  ref_cons_prod[,
+    total_crude_consumption_bbl := traditional_crude_consumption_bbl +
+      residual_renewable_crude_consumption_bbl +
+      main_renewable_crude_consumption_bbl
+  ]
 
-  # # split regional crude consumption to refinery level --------
-  #
-  #   cols = 'total_crude_demand_bbl'
-  #   agg_crude_consumption_indiv[, (cols) := lapply(.SD, function(x) x*capacity_ratio), .SDcols = cols]
-  #   setcolorder(agg_crude_consumption_indiv, c('demand_scenario', 'refining_scenario', 'region', 'year', 'site_id', 'refinery_name', 'location',
-  #                                              'total_crude_demand_bbl', 'capacity_ratio'))
-  #
-  # add ghg emissions factor to refinery crude consumption ---------
+  # Filter dt_ghgfac for the specified year if provided
+  dt_ghgfac_sub <- data.table::copy(dt_ghgfac)
+  if (!is.null(ghg_year)) {
+    dt_ghgfac_sub <- dt_ghgfac_sub[year == ghg_year]
+  }
 
-  ref_cons_prod <- ref_cons_prod[dt_ghgfac[, .(region, region_kgco2e_bbl)], on = "region"]
-  ref_cons_prod[, total_co2e_kg := total_crude_consumption_bbl * region_kgco2e_bbl]
-  ref_cons_prod
+  # Ensure site_id is character
+  ref_cons_prod[, site_id := as.character(site_id)]
+  dt_ghgfac_sub[, site_id := as.character(site_id)]
+
+  # Choose which emission factor to use
+  ef_col <- if (
+    use_refinery_factor && "refinery_kgco2e_bbl" %in% colnames(dt_ghgfac_sub)
+  ) {
+    "refinery_kgco2e_bbl"
+  } else {
+    "region_kgco2e_bbl"
+  }
+
+  # Merge refinery-level or region-level emissions factor by site_id and year
+  ref_cons_prod_ghg <- merge(
+    ref_cons_prod,
+    dt_ghgfac_sub[, .(site_id, region_kgco2e_bbl, refinery_kgco2e_bbl)],
+    by = c("site_id"),
+    all.x = TRUE
+  )
+
+  # Set the emission factor column to use
+  ref_cons_prod_ghg[, emission_factor := get(ef_col)]
+
+  ref_cons_prod_ghg[,
+    total_co2e_kg := total_crude_consumption_bbl * emission_factor
+  ]
+
+  ref_cons_prod_ghg
 }
-
 
 # refinery-level: fuel production -----------
 
-gather_refinery_production <- function(ref_cons_prod, ei_crude, ei_gasoline, ei_diesel, ei_jet) {
+gather_refinery_production <- function(
+  ref_cons_prod,
+  ei_crude,
+  ei_gasoline,
+  ei_diesel,
+  ei_jet
+) {
   # get RJD production at the refinery level
 
   indiv_prod_1 <- ref_cons_prod[, .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region,
-    gasoline_production_bbl, diesel_production_bbl, jet_production_bbl
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    gasoline_production_bbl,
+    diesel_production_bbl,
+    jet_production_bbl
   )]
 
-  indiv_prod_1 <- melt(indiv_prod_1,
+  indiv_prod_1 <- melt(
+    indiv_prod_1,
     id.vars = c(
-      "demand_scenario", "refining_scenario", "year",
-      "site_id", "refinery_name", "location", "region"
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region"
     ),
-    measure.vars = c("gasoline_production_bbl", "diesel_production_bbl", "jet_production_bbl"),
+    measure.vars = c(
+      "gasoline_production_bbl",
+      "diesel_production_bbl",
+      "jet_production_bbl"
+    ),
     variable.name = "fuel",
     value.name = "production_bbl"
   )
@@ -321,20 +650,37 @@ gather_refinery_production <- function(ref_cons_prod, ei_crude, ei_gasoline, ei_
   # get reGJD production at the refinery level
 
   indiv_prod_2 <- ref_cons_prod[, .(
-    demand_scenario, refining_scenario,
-    site_id, refinery_name, location, region, year,
-    residual_renewable_gasoline_production_bbl, residual_renewable_diesel_production_bbl,
-    residual_renewable_jet_production_bbl, main_renewable_gasoline_production_bbl, main_renewable_diesel_production_bbl,
+    demand_scenario,
+    refining_scenario,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    year,
+    residual_renewable_gasoline_production_bbl,
+    residual_renewable_diesel_production_bbl,
+    residual_renewable_jet_production_bbl,
+    main_renewable_gasoline_production_bbl,
+    main_renewable_diesel_production_bbl,
     main_renewable_jet_production_bbl
   )]
-  indiv_prod_2 <- melt(indiv_prod_2,
+  indiv_prod_2 <- melt(
+    indiv_prod_2,
     id.vars = c(
-      "demand_scenario", "refining_scenario",
-      "site_id", "refinery_name", "location", "region", "year"
+      "demand_scenario",
+      "refining_scenario",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "year"
     ),
     measure.vars = c(
-      "residual_renewable_gasoline_production_bbl", "residual_renewable_diesel_production_bbl",
-      "residual_renewable_jet_production_bbl", "main_renewable_gasoline_production_bbl", "main_renewable_diesel_production_bbl",
+      "residual_renewable_gasoline_production_bbl",
+      "residual_renewable_diesel_production_bbl",
+      "residual_renewable_jet_production_bbl",
+      "main_renewable_gasoline_production_bbl",
+      "main_renewable_diesel_production_bbl",
       "main_renewable_jet_production_bbl"
     ),
     variable.name = "fuel",
@@ -346,28 +692,65 @@ gather_refinery_production <- function(ref_cons_prod, ei_crude, ei_gasoline, ei_
 
   # aggregate residual and main reGJD together
 
-  indiv_prod_2 <- indiv_prod_2[, .(production_bbl = sum(production_bbl, na.rm = T)),
+  indiv_prod_2 <- indiv_prod_2[,
+    .(production_bbl = sum(production_bbl, na.rm = T)),
     by = .(
-      demand_scenario, refining_scenario, year,
-      site_id, refinery_name, location, region, fuel
+      demand_scenario,
+      refining_scenario,
+      year,
+      site_id,
+      refinery_name,
+      location,
+      region,
+      fuel
     )
   ]
 
   # combine results and calculate gasoline equivalent
 
-  indiv_prod <- rbindlist(list(indiv_prod_1, indiv_prod_2), use.names = T, fill = T)
+  indiv_prod <- rbindlist(
+    list(indiv_prod_1, indiv_prod_2),
+    use.names = T,
+    fill = T
+  )
   indiv_prod[fuel %like% "gasoline", production_bge := production_bbl]
-  indiv_prod[fuel %like% "diesel", production_bge := production_bbl * (ei_diesel / ei_gasoline)]
-  indiv_prod[fuel %like% "jet" | fuel %like% "aviation", production_bge := production_bbl * (ei_jet / ei_gasoline)]
+  indiv_prod[
+    fuel %like% "diesel",
+    production_bge := production_bbl * (ei_diesel / ei_gasoline)
+  ]
+  indiv_prod[
+    fuel %like% "jet" | fuel %like% "aviation",
+    production_bge := production_bbl * (ei_jet / ei_gasoline)
+  ]
 
   # assign clusters
   indiv_prod[region == "South", cluster := "South"]
-  indiv_prod[region == "North" & location == "Bakersfield", cluster := "Bakersfield"]
-  indiv_prod[region == "North" & (!location == "Bakersfield"), cluster := "Bay Area"]
+  indiv_prod[
+    region == "North" & location == "Bakersfield",
+    cluster := "Bakersfield"
+  ]
+  indiv_prod[
+    region == "North" & (!location == "Bakersfield"),
+    cluster := "Bay Area"
+  ]
 
   # set factor level order
-  indiv_prod[, fuel := factor(fuel, levels = c("gasoline", "drop-in gasoline", "diesel", "renewable diesel", "jet", "sustainable aviation fuel"))]
-  indiv_prod[, cluster := factor(cluster, levels = c("Bay Area", "Bakersfield", "South"))]
+  indiv_prod[,
+    fuel := factor(
+      fuel,
+      levels = c(
+        "gasoline",
+        "drop-in gasoline",
+        "diesel",
+        "renewable diesel",
+        "jet",
+        "sustainable aviation fuel"
+      )
+    )
+  ]
+  indiv_prod[,
+    cluster := factor(cluster, levels = c("Bay Area", "Bakersfield", "South"))
+  ]
 
   setorder(indiv_prod, demand_scenario, refining_scenario, year, site_id, fuel)
 
@@ -379,18 +762,41 @@ gather_refinery_production <- function(ref_cons_prod, ei_crude, ei_gasoline, ei_
 
 gather_refinery_production_output <- function(indiv_prod) {
   indiv_prod_output <- indiv_prod[, .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region, cluster, fuel, production_bbl
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    cluster,
+    fuel,
+    production_bbl
   )]
   indiv_prod_output[, type := "production"]
   indiv_prod_output[, units := "bbl"]
   indiv_prod_output[, source := "total"]
   indiv_prod_output[, boundary := "complete"]
   setnames(indiv_prod_output, "production_bbl", "value")
-  setcolorder(indiv_prod_output, c(
-    "demand_scenario", "refining_scenario", "year",
-    "site_id", "refinery_name", "location", "region", "cluster", "fuel", "source", "boundary", "type", "units", "value"
-  ))
+  setcolorder(
+    indiv_prod_output,
+    c(
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "cluster",
+      "fuel",
+      "source",
+      "boundary",
+      "type",
+      "units",
+      "value"
+    )
+  )
 
   indiv_prod_output
 }
@@ -399,18 +805,41 @@ gather_refinery_production_output <- function(indiv_prod) {
 
 gather_refinery_production_output_bge <- function(indiv_prod) {
   indiv_prod_output_bge <- indiv_prod[, .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region, cluster, fuel, production_bge
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    cluster,
+    fuel,
+    production_bge
   )]
   indiv_prod_output_bge[, type := "production"]
   indiv_prod_output_bge[, units := "bge"]
   indiv_prod_output_bge[, source := "total"]
   indiv_prod_output_bge[, boundary := "complete"]
   setnames(indiv_prod_output_bge, "production_bge", "value")
-  setcolorder(indiv_prod_output_bge, c(
-    "demand_scenario", "refining_scenario", "year",
-    "site_id", "refinery_name", "location", "region", "cluster", "fuel", "source", "boundary", "type", "units", "value"
-  ))
+  setcolorder(
+    indiv_prod_output_bge,
+    c(
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "cluster",
+      "fuel",
+      "source",
+      "boundary",
+      "type",
+      "units",
+      "value"
+    )
+  )
 
   indiv_prod_output_bge
 }
@@ -418,23 +847,44 @@ gather_refinery_production_output_bge <- function(indiv_prod) {
 
 # refinery-level: crude consumption -----------
 
-gather_refinery_crude_consumption <- function(ref_cons_prod, ei_crude, ei_gasoline, ei_diesel, ei_jet) {
+gather_refinery_crude_consumption <- function(
+  ref_cons_prod,
+  ei_crude,
+  ei_gasoline,
+  ei_diesel,
+  ei_jet
+) {
   # get refinery-level consumption
 
   indiv_cons <- ref_cons_prod[, .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region,
-    traditional_crude_consumption_bbl, residual_renewable_crude_consumption_bbl, main_renewable_crude_consumption_bbl,
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    traditional_crude_consumption_bbl,
+    residual_renewable_crude_consumption_bbl,
+    main_renewable_crude_consumption_bbl,
     total_crude_consumption_bbl
   )]
 
-  indiv_cons <- melt(indiv_cons,
+  indiv_cons <- melt(
+    indiv_cons,
     id.vars = c(
-      "demand_scenario", "refining_scenario", "year",
-      "site_id", "refinery_name", "location", "region"
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region"
     ),
     measure.vars = c(
-      "traditional_crude_consumption_bbl", "residual_renewable_crude_consumption_bbl", "main_renewable_crude_consumption_bbl",
+      "traditional_crude_consumption_bbl",
+      "residual_renewable_crude_consumption_bbl",
+      "main_renewable_crude_consumption_bbl",
       "total_crude_consumption_bbl"
     ),
     variable.name = "fuel",
@@ -448,18 +898,42 @@ gather_refinery_crude_consumption <- function(ref_cons_prod, ei_crude, ei_gasoli
   # assign clusters
 
   indiv_cons[region == "South", cluster := "South"]
-  indiv_cons[region == "North" & location == "Bakersfield", cluster := "Bakersfield"]
-  indiv_cons[region == "North" & (!location == "Bakersfield"), cluster := "Bay Area"]
+  indiv_cons[
+    region == "North" & location == "Bakersfield",
+    cluster := "Bakersfield"
+  ]
+  indiv_cons[
+    region == "North" & (!location == "Bakersfield"),
+    cluster := "Bay Area"
+  ]
 
   # set factor level order
 
-  indiv_cons[, source := factor(source, levels = c("traditional", "residual renewable", "main renewable", "total"))]
-  indiv_cons[, cluster := factor(cluster, levels = c("Bay Area", "Bakersfield", "South"))]
+  indiv_cons[,
+    source := factor(
+      source,
+      levels = c("traditional", "residual renewable", "main renewable", "total")
+    )
+  ]
+  indiv_cons[,
+    cluster := factor(cluster, levels = c("Bay Area", "Bakersfield", "South"))
+  ]
 
-  setorder(indiv_cons, demand_scenario, refining_scenario, year, site_id, fuel, source)
+  setorder(
+    indiv_cons,
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    fuel,
+    source
+  )
 
   # calculate gasoline equivalent
-  indiv_cons[fuel %like% "crude", consumption_bge := consumption_bbl * (ei_crude / ei_gasoline)]
+  indiv_cons[
+    fuel %like% "crude",
+    consumption_bge := consumption_bbl * (ei_crude / ei_gasoline)
+  ]
 
   indiv_cons
 }
@@ -468,17 +942,41 @@ gather_refinery_crude_consumption <- function(ref_cons_prod, ei_crude, ei_gasoli
 
 gather_refinery_crude_consumption_output <- function(indiv_cons) {
   indiv_cons_output <- indiv_cons[, .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region, cluster, fuel, source, consumption_bbl
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    cluster,
+    fuel,
+    source,
+    consumption_bbl
   )]
   indiv_cons_output[, type := "consumption"]
   indiv_cons_output[, units := "bbl"]
   indiv_cons_output[, boundary := "complete"]
   setnames(indiv_cons_output, "consumption_bbl", "value")
-  setcolorder(indiv_cons_output, c(
-    "demand_scenario", "refining_scenario", "year",
-    "site_id", "refinery_name", "location", "region", "cluster", "fuel", "source", "boundary", "type", "units", "value"
-  ))
+  setcolorder(
+    indiv_cons_output,
+    c(
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "cluster",
+      "fuel",
+      "source",
+      "boundary",
+      "type",
+      "units",
+      "value"
+    )
+  )
 
   indiv_cons_output
 }
@@ -487,54 +985,113 @@ gather_refinery_crude_consumption_output <- function(indiv_cons) {
 
 gather_refinery_crude_consumption_output_bge <- function(indiv_cons) {
   indiv_cons_output_bge <- indiv_cons[, .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region, cluster, fuel, source, consumption_bge
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    cluster,
+    fuel,
+    source,
+    consumption_bge
   )]
   indiv_cons_output_bge[, type := "consumption"]
   indiv_cons_output_bge[, units := "bge"]
   indiv_cons_output_bge[, boundary := "complete"]
   setnames(indiv_cons_output_bge, "consumption_bge", "value")
-  setcolorder(indiv_cons_output_bge, c(
-    "demand_scenario", "refining_scenario", "year",
-    "site_id", "refinery_name", "location", "region", "cluster", "fuel", "source", "boundary", "type", "units", "value"
-  ))
+  setcolorder(
+    indiv_cons_output_bge,
+    c(
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "cluster",
+      "fuel",
+      "source",
+      "boundary",
+      "type",
+      "units",
+      "value"
+    )
+  )
 
   indiv_cons_output_bge
 }
 
 
-
 # refinery-level: emissions -----------
 
-gather_refinery_ghg <- function(ref_cons_prod, indiv_cons) {
-  # get unique set of emissions factors (note: i think this is redundant now without innovation scenarios and ccs adoption)
-
+gather_refinery_ghg <- function(
+  ref_cons_prod,
+  indiv_cons,
+  use_refinery_factor = TRUE
+) {
+  # get unique set of emissions factors
   res <- ref_cons_prod[, .(
-    demand_scenario, refining_scenario, year, site_id,
-    refinery_name, location, region, region_kgco2e_bbl
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    region_kgco2e_bbl,
+    refinery_kgco2e_bbl
   )]
 
   # merge with consumption data to get refinery-emissions
+  indiv_ghg <- indiv_cons[
+    res,
+    on = .(
+      demand_scenario,
+      refining_scenario,
+      year,
+      site_id,
+      refinery_name,
+      location,
+      region
+    )
+  ]
 
-  indiv_ghg <- indiv_cons[res, on = .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region
-  )]
+  # choose which emission factor to use
+  ef_col <- if (
+    use_refinery_factor && "refinery_kgco2e_bbl" %in% colnames(indiv_ghg)
+  ) {
+    "refinery_kgco2e_bbl"
+  } else {
+    "region_kgco2e_bbl"
+  }
 
   # calculate emissions
-
-  indiv_ghg[, co2e_kg := consumption_bbl * region_kgco2e_bbl]
+  indiv_ghg[, co2e_kg := consumption_bbl * get(ef_col)]
 
   # assign clusters
-
   indiv_ghg[region == "South", cluster := "South"]
-  indiv_ghg[region == "North" & location == "Bakersfield", cluster := "Bakersfield"]
-  indiv_ghg[region == "North" & (!location == "Bakersfield"), cluster := "Bay Area"]
+  indiv_ghg[
+    region == "North" & location == "Bakersfield",
+    cluster := "Bakersfield"
+  ]
+  indiv_ghg[
+    region == "North" & (!location == "Bakersfield"),
+    cluster := "Bay Area"
+  ]
 
   # set factor level order
-
-  indiv_ghg[, source := factor(source, levels = c("traditional", "residual renewable", "main renewable", "total"))]
-  indiv_ghg[, cluster := factor(cluster, levels = c("Bay Area", "Bakersfield", "South"))]
+  indiv_ghg[,
+    source := factor(
+      source,
+      levels = c("traditional", "residual renewable", "main renewable", "total")
+    )
+  ]
+  indiv_ghg[,
+    cluster := factor(cluster, levels = c("Bay Area", "Bakersfield", "South"))
+  ]
 
   setorder(indiv_ghg, demand_scenario, refining_scenario, year, site_id, source)
 
@@ -545,19 +1102,41 @@ gather_refinery_ghg <- function(ref_cons_prod, indiv_cons) {
 
 gather_refinery_ghg_output <- function(indiv_ghg) {
   indiv_ghg_output <- indiv_ghg[, .(
-    demand_scenario, refining_scenario, year,
-    site_id, refinery_name, location, region,
-    cluster, fuel, source, co2e_kg
+    demand_scenario,
+    refining_scenario,
+    year,
+    site_id,
+    refinery_name,
+    location,
+    region,
+    cluster,
+    fuel,
+    source,
+    co2e_kg
   )]
   indiv_ghg_output[, type := "ghg"]
   indiv_ghg_output[, units := "kg"]
   indiv_ghg_output[, boundary := "complete"]
   setnames(indiv_ghg_output, "co2e_kg", "value")
-  setcolorder(indiv_ghg_output, c(
-    "demand_scenario", "refining_scenario", "year",
-    "site_id", "refinery_name", "location", "region",
-    "cluster", "fuel", "source", "boundary", "type", "units", "value"
-  ))
+  setcolorder(
+    indiv_ghg_output,
+    c(
+      "demand_scenario",
+      "refining_scenario",
+      "year",
+      "site_id",
+      "refinery_name",
+      "location",
+      "region",
+      "cluster",
+      "fuel",
+      "source",
+      "boundary",
+      "type",
+      "units",
+      "value"
+    )
+  )
 
   indiv_ghg_output
 }
@@ -566,10 +1145,18 @@ gather_refinery_ghg_output <- function(indiv_ghg) {
 # cluster-level: fuel production, crude consumption, ghg emissions ----------
 
 gather_cluster_prod_output <- function(indiv_prod_output) {
-  clus_prod_output <- indiv_prod_output[, .(value = sum(value, na.rm = T)),
+  clus_prod_output <- indiv_prod_output[,
+    .(value = sum(value, na.rm = T)),
     by = .(
-      demand_scenario, refining_scenario, cluster,
-      year, fuel, source, boundary, type, units
+      demand_scenario,
+      refining_scenario,
+      cluster,
+      year,
+      fuel,
+      source,
+      boundary,
+      type,
+      units
     )
   ]
 
@@ -577,10 +1164,18 @@ gather_cluster_prod_output <- function(indiv_prod_output) {
 }
 
 gather_cluster_cons_output <- function(indiv_cons_output) {
-  clus_cons_output <- indiv_cons_output[, .(value = sum(value, na.rm = T)),
+  clus_cons_output <- indiv_cons_output[,
+    .(value = sum(value, na.rm = T)),
     by = .(
-      demand_scenario, refining_scenario, cluster,
-      year, fuel, source, boundary, type, units
+      demand_scenario,
+      refining_scenario,
+      cluster,
+      year,
+      fuel,
+      source,
+      boundary,
+      type,
+      units
     )
   ]
 
@@ -588,10 +1183,18 @@ gather_cluster_cons_output <- function(indiv_cons_output) {
 }
 
 gather_cluster_cons_output <- function(indiv_ghg_output) {
-  clus_ghg_output <- indiv_ghg_output[, .(value = sum(value, na.rm = T)),
+  clus_ghg_output <- indiv_ghg_output[,
+    .(value = sum(value, na.rm = T)),
     by = .(
-      demand_scenario, refining_scenario, cluster,
-      year, fuel, source, boundary, type, units
+      demand_scenario,
+      refining_scenario,
+      cluster,
+      year,
+      fuel,
+      source,
+      boundary,
+      type,
+      units
     )
   ]
   clus_ghg_output
@@ -601,20 +1204,34 @@ gather_cluster_cons_output <- function(indiv_ghg_output) {
 # state-level: fuel production, crude consumption, ghg emissions ----------
 
 gather_state_prod_output <- function(indiv_prod_output) {
-  state_prod_output <- indiv_prod_output[, .(value = sum(value, na.rm = T)),
+  state_prod_output <- indiv_prod_output[,
+    .(value = sum(value, na.rm = T)),
     by = .(
-      demand_scenario, refining_scenario,
-      year, fuel, source, boundary, type, units
+      demand_scenario,
+      refining_scenario,
+      year,
+      fuel,
+      source,
+      boundary,
+      type,
+      units
     )
   ]
   state_prod_output
 }
 
 gather_state_cons_output <- function(indiv_cons_output) {
-  state_cons_output <- indiv_cons_output[, .(value = sum(value, na.rm = T)),
+  state_cons_output <- indiv_cons_output[,
+    .(value = sum(value, na.rm = T)),
     by = .(
-      demand_scenario, refining_scenario,
-      year, fuel, source, boundary, type, units
+      demand_scenario,
+      refining_scenario,
+      year,
+      fuel,
+      source,
+      boundary,
+      type,
+      units
     )
   ]
   state_cons_output
@@ -628,8 +1245,6 @@ gather_state_cons_output <- function(indiv_cons_output) {
 #   state_ghg_output
 #
 # }
-
-
 
 # # get state-level fuel exports ------
 #
@@ -823,79 +1438,159 @@ gather_state_cons_output <- function(indiv_cons_output) {
 #
 # }
 
-
-
 # GJD production at all refineries -- state level (area plot) --------
 
 # get historic demand of GJD
 
-combine_state_gjd_demand_and_exports <- function(crude_refined_week, refined_movements_annual, dt_rediesel,
-                                                 res_equiv_demand, res_renew_demand,
-                                                 dem_scens, ref_scens, ei_crude, ei_gasoline, ei_diesel, ei_jet) {
-  agg_hist_tot <- melt(crude_refined_week,
+combine_state_gjd_demand_and_exports <- function(
+  crude_refined_week,
+  refined_movements_annual,
+  dt_rediesel,
+  res_equiv_demand,
+  res_renew_demand,
+  dem_scens,
+  ref_scens,
+  ei_crude,
+  ei_gasoline,
+  ei_diesel,
+  ei_jet
+) {
+  agg_hist_tot <- melt(
+    crude_refined_week,
     id.vars = c("year"),
     measure.vars = c("crude_gge", "gasoline_gge", "diesel_gge", "jet_gge"),
     value.name = "consumption_gge",
     variable.name = "fuel"
   )
   agg_hist_tot[, fuel := gsub("_gge", "", fuel)]
-  agg_hist_tot <- agg_hist_tot[year < 2020, .(consumption_gge = sum(consumption_gge, na.rm = T)), by = .(year, fuel)]
+  agg_hist_tot <- agg_hist_tot[
+    year < 2020,
+    .(consumption_gge = sum(consumption_gge, na.rm = T)),
+    by = .(year, fuel)
+  ]
   agg_hist_tot[, consumption_bge := consumption_gge / 42]
 
-  agg_hist_exp <- refined_movements_annual[, .(consumption_bbl = sum(abs(net_export_bbl), na.rm = T)), by = .(year, fuel)]
+  agg_hist_exp <- refined_movements_annual[,
+    .(consumption_bbl = sum(abs(net_export_bbl), na.rm = T)),
+    by = .(year, fuel)
+  ]
   agg_hist_exp[fuel == "gasoline", consumption_gge := consumption_bbl * 42]
-  agg_hist_exp[fuel == "diesel", consumption_gge := consumption_bbl * 42 * (ei_diesel / ei_gasoline)]
-  agg_hist_exp[fuel == "jet", consumption_gge := consumption_bbl * 42 * (ei_jet / ei_gasoline)]
+  agg_hist_exp[
+    fuel == "diesel",
+    consumption_gge := consumption_bbl * 42 * (ei_diesel / ei_gasoline)
+  ]
+  agg_hist_exp[
+    fuel == "jet",
+    consumption_gge := consumption_bbl * 42 * (ei_jet / ei_gasoline)
+  ]
   agg_hist_exp[, export_bge := consumption_gge / 42]
 
-  agg_hist_tot <- merge(agg_hist_tot,
+  agg_hist_tot <- merge(
+    agg_hist_tot,
     agg_hist_exp[, .(year, fuel, export_bge)],
     by = c("year", "fuel")
   )
   agg_hist_tot[, consumption_bge_new := consumption_bge - export_bge]
   agg_hist_tot[, consumption_gge_new := consumption_bge_new * 42]
 
-  agg_hist_tot <- agg_hist_tot[, .(year, fuel, consumption_gge_new, consumption_bge_new)]
+  agg_hist_tot <- agg_hist_tot[, .(
+    year,
+    fuel,
+    consumption_gge_new,
+    consumption_bge_new
+  )]
   setnames(agg_hist_tot, "consumption_gge_new", "consumption_gge")
   setnames(agg_hist_tot, "consumption_bge_new", "consumption_bge")
 
   # aggregate exports
-  agg_hist_exp <- agg_hist_exp[, .(consumption_gge = sum(consumption_gge, na.rm = T)), by = .(year)]
+  agg_hist_exp <- agg_hist_exp[,
+    .(consumption_gge = sum(consumption_gge, na.rm = T)),
+    by = .(year)
+  ]
   agg_hist_exp[, fuel := "exports"]
   agg_hist_exp[, consumption_bge := consumption_gge / 42]
 
   # get historic demand of renewable diesel
-  agg_hist_rediesel <- dt_rediesel[, .(consumption_gal = sum(consumption_gal, na.rm = T)), by = .(year, fuel)]
-  agg_hist_rediesel[, consumption_gge := consumption_gal * (ei_diesel / ei_gasoline)]
+  agg_hist_rediesel <- dt_rediesel[,
+    .(consumption_gal = sum(consumption_gal, na.rm = T)),
+    by = .(year, fuel)
+  ]
+  agg_hist_rediesel[,
+    consumption_gge := consumption_gal * (ei_diesel / ei_gasoline)
+  ]
   agg_hist_rediesel[, consumption_bge := consumption_gge / 42]
-  agg_hist_rediesel <- agg_hist_rediesel[, .(year, fuel, consumption_gge, consumption_bge)]
+  agg_hist_rediesel <- agg_hist_rediesel[, .(
+    year,
+    fuel,
+    consumption_gge,
+    consumption_bge
+  )]
 
   # combine RE diesel with GJD
-  agg_hist_tot <- rbindlist(list(agg_hist_tot, agg_hist_rediesel), use.names = T, fill = T)
+  agg_hist_tot <- rbindlist(
+    list(agg_hist_tot, agg_hist_rediesel),
+    use.names = T,
+    fill = T
+  )
 
   # create full data table of historic fuel demand for all scenarios
   agg_hist_tot_full <- CJ(
-    demand_scenario = dem_scens, refining_scenario = ref_scens, year = 2014:2019,
-    fuel = c("gasoline", "drop-in gasoline", "diesel", "renewable diesel", "jet", "sustainable aviation fuel")
+    demand_scenario = dem_scens,
+    refining_scenario = ref_scens,
+    year = 2014:2019,
+    fuel = c(
+      "gasoline",
+      "drop-in gasoline",
+      "diesel",
+      "renewable diesel",
+      "jet",
+      "sustainable aviation fuel"
+    )
   )
-  agg_hist_tot_full <- agg_hist_tot[agg_hist_tot_full, on = .(year, fuel), allow.cartesian = T]
-  agg_hist_tot_full <- agg_hist_tot_full[!fuel == "crude", .(demand_scenario, refining_scenario, year, fuel, consumption_bge)]
-  agg_hist_tot_full[fuel %in% c("drop-in gasoline", "sustainable aviation fuel"), consumption_bge := 0]
+  agg_hist_tot_full <- agg_hist_tot[
+    agg_hist_tot_full,
+    on = .(year, fuel),
+    allow.cartesian = T
+  ]
+  agg_hist_tot_full <- agg_hist_tot_full[
+    !fuel == "crude",
+    .(demand_scenario, refining_scenario, year, fuel, consumption_bge)
+  ]
+  agg_hist_tot_full[
+    fuel %in% c("drop-in gasoline", "sustainable aviation fuel"),
+    consumption_bge := 0
+  ]
   setorder(agg_hist_tot_full, demand_scenario, refining_scenario, year, fuel)
 
-  agg_hist_exp_full <- CJ(demand_scenario = dem_scens, refining_scenario = ref_scens, year = 2007:2019)
-  agg_hist_exp_full <- agg_hist_exp_full[agg_hist_exp, on = "year", allow.cartesian = T]
-  agg_hist_exp_full <- agg_hist_exp_full[, .(demand_scenario, refining_scenario, year, fuel, consumption_bge)]
+  agg_hist_exp_full <- CJ(
+    demand_scenario = dem_scens,
+    refining_scenario = ref_scens,
+    year = 2007:2019
+  )
+  agg_hist_exp_full <- agg_hist_exp_full[
+    agg_hist_exp,
+    on = "year",
+    allow.cartesian = T
+  ]
+  agg_hist_exp_full <- agg_hist_exp_full[, .(
+    demand_scenario,
+    refining_scenario,
+    year,
+    fuel,
+    consumption_bge
+  )]
   setorder(agg_hist_exp_full, demand_scenario, refining_scenario, year, fuel)
 
   # get in-state GJD demand
-  tot_petro_demand <- res_equiv_demand[, .(consumption_bge = sum(consumption_bge, na.rm = T)),
+  tot_petro_demand <- res_equiv_demand[,
+    .(consumption_bge = sum(consumption_bge, na.rm = T)),
     by = .(demand_scenario, refining_scenario, year, fuel_equiv)
   ]
   setnames(tot_petro_demand, "fuel_equiv", "fuel")
 
   # get in-state reGJD demand at crude refineries
-  tot_renew_demand_crude <- res_equiv_demand[, .(consumption_bge = sum(residual_consumption_bge, na.rm = T)),
+  tot_renew_demand_crude <- res_equiv_demand[,
+    .(consumption_bge = sum(residual_consumption_bge, na.rm = T)),
     by = .(demand_scenario, refining_scenario, year, fuel_equiv)
   ]
   setnames(tot_renew_demand_crude, "fuel_equiv", "fuel")
@@ -905,7 +1600,8 @@ combine_state_gjd_demand_and_exports <- function(crude_refined_week, refined_mov
 
   # get in-state reGJD demand at renewables refineries
 
-  tot_renew_demand_ren <- res_renew_demand[, .(consumption_bge = sum(renewable_refinery_consumption_bge, na.rm = T)),
+  tot_renew_demand_ren <- res_renew_demand[,
+    .(consumption_bge = sum(renewable_refinery_consumption_bge, na.rm = T)),
     by = .(demand_scenario, refining_scenario, year, fuel_equiv)
   ]
   setnames(tot_renew_demand_ren, "fuel_equiv", "fuel")
@@ -915,31 +1611,69 @@ combine_state_gjd_demand_and_exports <- function(crude_refined_week, refined_mov
 
   # combine all reGJD demand
 
-  tot_renew_demand <- rbindlist(list(tot_renew_demand_crude, tot_renew_demand_ren))
-  tot_renew_demand <- tot_renew_demand[, .(consumption_bge = sum(consumption_bge, na.rm = T)),
+  tot_renew_demand <- rbindlist(list(
+    tot_renew_demand_crude,
+    tot_renew_demand_ren
+  ))
+  tot_renew_demand <- tot_renew_demand[,
+    .(consumption_bge = sum(consumption_bge, na.rm = T)),
     by = .(demand_scenario, refining_scenario, year, fuel)
   ]
 
   # get exports
-  tot_exports <- res_equiv_demand[, .(demand_scenario, refining_scenario, region, year, fuel_equiv, export_bge)]
+  tot_exports <- res_equiv_demand[, .(
+    demand_scenario,
+    refining_scenario,
+    region,
+    year,
+    fuel_equiv,
+    export_bge
+  )]
   tot_exports[, export_bge := abs(export_bge)]
-  tot_exports <- tot_exports[, .(consumption_bge = sum(abs(export_bge), na.rm = T)),
+  tot_exports <- tot_exports[,
+    .(consumption_bge = sum(abs(export_bge), na.rm = T)),
     by = .(demand_scenario, refining_scenario, fuel_equiv, year)
   ]
   setnames(tot_exports, "fuel_equiv", "fuel")
   tot_exports[, fuel := "exports"]
-  tot_exports <- tot_exports[, .(consumption_bge = sum(consumption_bge, na.rm = T)), by = .(demand_scenario, refining_scenario, year, fuel)]
+  tot_exports <- tot_exports[,
+    .(consumption_bge = sum(consumption_bge, na.rm = T)),
+    by = .(demand_scenario, refining_scenario, year, fuel)
+  ]
 
   # combine together
-  tot_fuel_demand_exports <- rbindlist(list(
-    agg_hist_tot_full,
-    agg_hist_exp_full,
-    tot_petro_demand,
-    tot_renew_demand,
-    tot_exports
-  ), use.names = T, fill = T)
-  setorder(tot_fuel_demand_exports, demand_scenario, refining_scenario, year, fuel)
-  tot_fuel_demand_exports[, fuel := factor(fuel, levels = rev(c("gasoline", "drop-in gasoline", "diesel", "renewable diesel", "jet", "sustainable aviation fuel", "exports")))]
+  tot_fuel_demand_exports <- rbindlist(
+    list(
+      agg_hist_tot_full,
+      agg_hist_exp_full,
+      tot_petro_demand,
+      tot_renew_demand,
+      tot_exports
+    ),
+    use.names = T,
+    fill = T
+  )
+  setorder(
+    tot_fuel_demand_exports,
+    demand_scenario,
+    refining_scenario,
+    year,
+    fuel
+  )
+  tot_fuel_demand_exports[,
+    fuel := factor(
+      fuel,
+      levels = rev(c(
+        "gasoline",
+        "drop-in gasoline",
+        "diesel",
+        "renewable diesel",
+        "jet",
+        "sustainable aviation fuel",
+        "exports"
+      ))
+    )
+  ]
 
   tot_fuel_demand_exports
 }
