@@ -281,6 +281,9 @@ create_pulse_fig <- function(
   disp_win2_wgs84 <- st_sfc(
     st_point(c(-122.5, 33)),
     st_point(c(-117, 39)),
+  disp_win2_wgs84 <- st_sfc(
+    st_point(c(-122.5, 33)),
+    st_point(c(-117, 39)),
     crs = 4326
   )
 
