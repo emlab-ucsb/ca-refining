@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
@@ -66,13 +66,15 @@ list(
     command = list_paths[user]
   ),
 
-  # set run
-  tar_target(name = run_type, "labor-take-2"),
-
-  # list save paths
+  # Set run type and stop if unknown run type
   tar_target(
-    name = list_save_paths,
-    c(
+    name = run_type,
+    command = "ghg-emfac"
+  ),
+  tar_target(
+    name = save_path,
+    command = switch(
+      run_type,
       "revision-main" = file.path(
         "outputs",
         "academic-out",
@@ -86,14 +88,16 @@ list(
         "refining",
         "figures",
         "2025-labor-take-2"
-      )
+      ),
+      "ghg-emfac" = file.path(
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "ghg-emfac"
+      ),
+      stop("Unknown run_type")
     )
-  ),
-
-  # set main path
-  tar_target(
-    name = save_path,
-    command = list_save_paths[run_type]
   ),
 
   # create folders
@@ -110,6 +114,7 @@ list(
   tar_target(name = kern_perc, command = 0.9375),
   # tar_target(name = a, command = 4),
   # tar_target(name = ccs_capture_rate, command = 0.474),
+  tar_target(name = refinery_level_ghg, command = TRUE),
 
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
@@ -673,7 +678,80 @@ list(
     name = refin_locs_ct,
     command = read_refin_locs_ct(file_refin_locs_ct, refin_locs)
   ),
+  tar_target(
+    name = file_ghg_emissions,
+    command = file.path(
+      main_path,
+      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    file_hydrogen_facilities,
+    command = file.path(
+      main_path,
+      "data-staged-for-deletion/stocks-flows/raw/hydrogen_facilities_list.xlsx"
+    ),
+    format = "file"
+  ),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
+
+  # GHG factor calculation targets
+  tar_target(
+    name = cons_region,
+    command = calculate_region_crude_consumption(dt_fw)
+  ),
+  tar_target(
+    name = cap_dt_filtered,
+    command = filter_refinery_capacity(dt_refcap)
+  ),
+  tar_target(
+    name = hyd_ref,
+    command = filter_hydrogen_facilities(dt_hydrogen_facilities)
+  ),
+  tar_target(
+    name = hyd_ghg,
+    command = extract_hydrogen_ghg(dt_mrr, hyd_ref)
+  ),
+  tar_target(
+    name = hyd_ghg_loc,
+    command = match_hydrogen_with_refineries(hyd_ghg, cap_dt_filtered)
+  ),
+  tar_target(
+    name = ref_loc,
+    command = match_refinery_emissions_to_region(
+      cap_dt_filtered,
+      dt_ghg_emissions
+    )
+  ),
+  tar_target(
+    name = combined_ghg,
+    command = combine_hydrogen_and_refinery_emissions(hyd_ghg_loc, ref_loc)
+  ),
+  tar_target(
+    name = ghg_region,
+    command = aggregate_emissions_by_region(combined_ghg)
+  ),
+  tar_target(
+    name = emfac_region,
+    command = calculate_region_emission_factors(cons_region, ghg_region)
+  ),
+  tar_target(
+    name = cap_prop,
+    command = calculate_capacity_proportions(cap_dt_filtered)
+  ),
+  tar_target(
+    name = cons_ref,
+    command = calculate_refinery_consumption(cap_prop, cons_region)
+  ),
+  tar_target(
+    name = emfac_ref,
+    command = calculate_refinery_emission_factors(
+      cons_ref,
+      dt_ghg_emissions,
+      emfac_region
+    )
+  ),
 
   # create processed data
   tar_target(
@@ -718,6 +796,24 @@ list(
       inmap_path = file_inmap_re
     ))
   ),
+  tar_target(
+    name = dt_hydrogen_facilities,
+    command = simple_read_xlsx(file_hydrogen_facilities),
+  ),
+  tar_target(
+    dt_mrr,
+    command = read_and_bind_csv_files(
+      file.path(
+        main_path,
+        'data-staged-for-deletion/stocks-flows/processed/ghg_mrr'
+      ),
+      ".csv"
+    )
+  ),
+  tar_target(
+    name = dt_ghg_emissions,
+    command = simple_fread(file_ghg_emissions)
+  ),
 
   # set remaining file paths
   # tar_target(name = file_its, command = file.path(main_path, "outputs/fuel-demand/prelim-results/its_demand_bau_and_lc1_2020_2045.csv"), format = "file"),
@@ -735,14 +831,6 @@ list(
     command = file.path(
       main_path,
       "data-staged-for-deletion/stocks-flows/processed/fuel_watch_data.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = file_ghgfac,
-    command = file.path(
-      main_path,
-      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_factor_x_indiv_refinery_revised.csv"
     ),
     format = "file"
   ),
@@ -778,12 +866,11 @@ list(
     ),
     format = "file"
   ),
-
   # read in processed data files
   # tar_target(name = dt_its, command = simple_fread(file_its)),
   # tar_target(name = dt_jet, command = simple_fread(file_jet)),
   tar_target(name = dt_fw, command = simple_fread(file_fw)),
-  tar_target(name = dt_ghgfac, command = read_ref_ghg_data(file_ghgfac, 2018)),
+  tar_target(name = dt_ghgfac, command = emfac_ref),
   tar_target(name = dt_ces, command = read_census_data(file_processed_ces3)),
   tar_target(name = dt_site_2019, command = simple_fread(file_site_2019)),
   tar_target(name = dt_county_2019, command = simple_fread(file_county_2019)),
@@ -1007,7 +1094,9 @@ list(
       ref_crude_gjd,
       ref_crude_res_regjd,
       ref_renew_gjd,
-      dt_ghgfac
+      dt_ghgfac,
+      2018,
+      refinery_level_ghg
     )
   ),
 
@@ -1054,7 +1143,7 @@ list(
   # individual refinery ghg emissions
   tar_target(
     name = indiv_ghg,
-    command = gather_refinery_ghg(ref_cons_prod, indiv_cons)
+    command = gather_refinery_ghg(ref_cons_prod, indiv_cons, refinery_level_ghg)
   ),
   tar_target(
     name = indiv_ghg_output,
@@ -1634,9 +1723,7 @@ list(
   ),
   tar_target(
     name = demographic_npv_plot,
-    command = plot_hl_levels(main_path, 
-                             save_path,
-                             demographic_npv_df)
+    command = plot_hl_levels(main_path, save_path, demographic_npv_df)
   ),
   tar_target(
     name = demographic_npv_shares_plot,
@@ -1709,18 +1796,19 @@ list(
   #            format = "file"),
   #
   # # save figures
-  # tar_target(
-  #   name = save_fig_demand_ghg,
-  #   command = simple_ggsave(fig_demand_ghg,
-  #     main_path,
-  #     "outputs/academic-out/refining/figures/2025-health-revisions",
-  #     "combined_its_and_production",
-  #     width = 25,
-  #     height = 13,
-  #     dpi = 600
-  #   ),
-  #   format = "file"
-  # ),
+  tar_target(
+    name = save_fig_demand_ghg,
+    command = simple_ggsave(
+      fig_demand_ghg,
+      main_path,
+      "outputs/academic-out/refining/figures/2024-08-update",
+      "combined_its_and_production",
+      width = 25,
+      height = 13,
+      dpi = 600
+    ),
+    format = "file"
+  ),
   # tar_target(name = save_npv_fig,
   #            command = simple_ggsave(npv_plot,
   #                                    main_path,
