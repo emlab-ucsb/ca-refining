@@ -59,6 +59,15 @@ list(
       "meas" = "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
     )
   ),
+  tar_target(
+    name = list_paths,
+    c(
+      "tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
+      "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
+      "vincent" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
+      "meas" = "/Users/meas/Library/CloudStorage/GoogleDrive-mmeng@ucsb.edu/.shortcut-targets-by-id/139aDqzs5T2c-DtdKyLw7S5iJ9rqveGaP/calepa-cn"
+    )
+  ),
 
   # set main path
   tar_target(
@@ -67,7 +76,7 @@ list(
   ),
 
   # set run
-  tar_target(name = run_type, "revision-main"),
+  tar_target(name = run_type, "labor-take-2"),
 
   # list save paths
   tar_target(
@@ -79,6 +88,13 @@ list(
         "refining",
         "figures",
         "2025-revision-main"
+      ),
+      "labor-take-2" = file.path(
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "2025-labor-take-2"
       )
     )
   ),
@@ -115,6 +131,7 @@ list(
   # labor analysis parameters
   tar_target(name = alpha_comp, command = 0.2), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
   tar_target(name = alpha_emp, command = 0), # #0-1 representing the share of jobs lost over time when losing a job in refining sector
+  tar_target(name = indirect_induced_mult, command = 0.741), # multiplier for indirect and induced effects
 
   # health analysis parameters
   # tar_target(name = beta, command = 0.00737932), #Coefficient (high)
@@ -146,13 +163,6 @@ list(
       99999
     )
   ),
-
-  # # emission factors
-  # tar_target(name = ef_nh3, command = 0.00056),
-  # tar_target(name = ef_nox, command = 0.01495),
-  # tar_target(name = ef_pm25, command = 0.00402),
-  # tar_target(name = ef_sox, command = 0.00851),
-  # tar_target(name = ef_voc, command = 0.01247),
 
   ## CPI values
   # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
@@ -391,6 +401,22 @@ list(
   # tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
   # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
   tar_target(
+    name = file_direct_multipliers,
+    command = file.path(
+      main_path,
+      "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = file_indirect_state_multipliers,
+    command = file.path(
+      main_path,
+      "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
     name = file_df_labor_dest,
     command = file.path(
       main_path,
@@ -439,6 +465,14 @@ list(
     format = "file"
   ),
   tar_target(
+    name = file_refin_locs_ct,
+    command = file.path(
+      main_path,
+      "data-staged-for-deletion/labor/ncomms-revisions/refinery_cluster_tract.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
     name = file_labor_2019,
     command = file.path(
       main_path,
@@ -446,22 +480,7 @@ list(
     ),
     format = "file"
   ),
-  tar_target(
-    name = file_ghg_emissions,
-    command = file.path(
-      main_path,
-      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = file_hydrogen_facilities,
-    command = file.path(
-      main_path,
-      "data-staged-for-deletion/stocks-flows/raw/hydrogen_facilities_list.xlsx"
-    ),
-    format = "file"
-  ),
+
   # read in raw data files
   tar_target(
     name = raw_its_bau,
@@ -637,6 +656,14 @@ list(
     command = read_labor_inputs(file_df_labor_dest, proc_labor_fte_df)
   ),
   tar_target(
+    name = dt_direct_multipliers,
+    command = read_labor_direct_mult_inputs(file_direct_multipliers)
+  ),
+  tar_target(
+    name = dt_indirect_state_multipliers,
+    command = read_labor_indirect_mult_inputs(file_indirect_state_multipliers)
+  ),
+  tar_target(
     name = proc_oil_px_df,
     command = read_oil_px(
       file_oil_px,
@@ -651,6 +678,10 @@ list(
       file_refin_locs_orig,
       ca_crs
     )
+  ),
+  tar_target(
+    name = refin_locs_ct,
+    command = read_refin_locs_ct(file_refin_locs_ct, refin_locs)
   ),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
@@ -1333,6 +1364,7 @@ list(
   ),
   tar_target(
     name = refining_mortality_constant_vsl,
+    ## non age-based VSL
     command = calculate_census_tract_mortality_constant_vsl(
       beta,
       se,
@@ -1414,11 +1446,10 @@ list(
     )
   ),
   tar_target(
-    name = annual_labor,
+    name = annual_direct_labor,
     command = calc_labor_outputs(
       main_path,
       save_path,
-      proc_labor_dest_df,
       indiv_prod_output,
       dt_refcap,
       product_px,
@@ -1426,15 +1457,21 @@ list(
       cpi2020,
       discount_rate,
       alpha_comp,
-      alpha_emp
+      alpha_emp,
+      refin_locs_ct,
+      dt_direct_multipliers
     )
   ),
   tar_target(
-    name = annual_labor_x_impact,
-    command = calc_labor_outputs_x_impact(
+    name = state_annual_direct_impacts,
+    command = calc_state_direct_impacts(annual_direct_labor)
+  ),
+  tar_target(
+    name = annual_all_impacts_labor,
+    command = calc_labor_all_impacts_outputs(
       main_path,
       save_path,
-      proc_labor_dest_df,
+      state_annual_direct_impacts,
       indiv_prod_output,
       dt_refcap,
       product_px,
@@ -1442,28 +1479,36 @@ list(
       cpi2020,
       discount_rate,
       alpha_comp,
-      alpha_emp
+      alpha_emp,
+      dt_indirect_state_multipliers,
+      indirect_induced_mult
     )
   ),
   tar_target(
-    name = ref_labor_demog_yr,
+    ref_labor_demog_yr,
     command = calculate_labor_x_demg_annual(
-      county_grp_pop_ratios,
-      annual_labor,
-      raw_pop_income_2021,
-      refining_mortality,
-      ca_regions
+      main_path,
+      save_path,
+      annual_direct_labor,
+      pop_ratios
     )
   ),
+  # tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
+  #   county_grp_pop_ratios,
+  #   annual_labor,
+  #   raw_pop_income_2021,
+  #   refining_mortality,
+  #   ca_regions
+  # )),
   tar_target(
     name = county_labor_outputs,
     command = calc_county_level_outputs(
       main_path,
       save_path,
-      ref_labor_demog_yr,
+      annual_direct_labor,
       refining_mortality,
-      ca_regions,
-      raw_pop_income_2021
+      raw_pop_income_2021,
+      pop_ratios
     )
   ),
   tar_target(
@@ -1499,7 +1544,7 @@ list(
       refining_mortality,
       state_ghg_output,
       dt_ghg_2019,
-      annual_labor
+      annual_all_impacts_labor
     )
   ),
   tar_target(
@@ -1510,29 +1555,29 @@ list(
       refining_mortality = refining_mortality_ref,
       state_ghg_output,
       dt_ghg_2019,
-      annual_labor
+      annual_all_impacts_labor
     )
   ),
   tar_target(
-    name = npv_plot_constant_vsl,
-    command = plot_npv_health_labor_constant_vsl(
+    name = npv_plot_annual_vsl,
+    command = plot_npv_health_labor_annual_vsl(
+      main_path,
+      save_path,
+      refining_mortality = refining_mortality,
+      state_ghg_output,
+      dt_ghg_2019,
+      annual_all_impacts_labor
+    )
+  ),
+  tar_target(
+    name = npv_plot_non_age_vsl,
+    command = plot_npv_health_labor_non_age_vsl(
       main_path,
       save_path,
       refining_mortality = refining_mortality_constant_vsl,
       state_ghg_output,
       dt_ghg_2019,
-      annual_labor
-    )
-  ),
-  tar_target(
-    name = npv_plot_growing_vsl,
-    command = plot_npv_health_labor_growing_vsl(
-      main_path,
-      save_path,
-      refining_mortality = refining_mortality_constant_vsl,
-      state_ghg_output,
-      dt_ghg_2019,
-      annual_labor
+      annual_all_impacts_labor
     )
   ),
   tar_target(
@@ -1542,7 +1587,7 @@ list(
       save_path,
       state_ghg_output,
       dt_ghg_2019,
-      annual_labor
+      annual_all_impacts_labor
     )
   ),
   tar_target(
@@ -1671,7 +1716,7 @@ list(
   ),
   tar_target(
     name = demographic_npv_plot,
-    command = plot_hl_levels(demographic_npv_df)
+    command = plot_hl_levels(main_path, save_path, demographic_npv_df)
   ),
   tar_target(
     name = demographic_npv_shares_plot,
@@ -1695,6 +1740,8 @@ list(
   tar_target(
     name = health_labor_gaps_plot,
     command = fig4_hl(
+      main_path,
+      save_path,
       health_grp,
       ref_labor_demog_yr,
       refining_mortality,
@@ -1704,6 +1751,8 @@ list(
   tar_target(
     name = health_labor_gaps_pmil_plot,
     command = fig4_hl_pmil(
+      main_path,
+      save_path,
       health_grp,
       ref_labor_demog_yr,
       refining_mortality,
@@ -2058,13 +2107,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_npv_fig_constant_vsl,
+    name = save_npv_fig_annual_vsl,
     command = simple_ggsave(
-      npv_plot_constant_vsl,
+      npv_plot_annual_vsl,
       main_path,
       save_path,
       # "outputs/academic-out/refining/figures/2025-health-revisions",
-      "state_npv_fig_constant_vsl",
+      "state_npv_fig_annual_vsl",
       width = 10,
       height = 5,
       dpi = 600
@@ -2072,13 +2121,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_npv_fig_growing_vsl,
+    name = save_npv_fig_non_age_vsl,
     command = simple_ggsave(
-      npv_plot_growing_vsl,
+      npv_plot_non_age_vsl,
       main_path,
       save_path,
       # "outputs/academic-out/refining/figures/2025-health-revisions",
-      "state_npv_fig_growing_vsl",
+      "state_npv_fig_non_age_vsl",
       width = 10,
       height = 5,
       dpi = 600

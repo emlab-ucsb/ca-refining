@@ -4,7 +4,6 @@
 ## pulse fig info x refinery
 ## --------------------------------------------------
 
-
 # test <- ggplot() +
 #   geom_sf(data = raw_ct_2020_all %>% filter(STATEFP == "06" & COUNTYFP %in% c("095", "013")), aes(geometry = geometry), fill="#A84268", color= "black") +
 #   # theme_void() +
@@ -13,18 +12,24 @@
 #        x = NULL) +
 #   geom_sf(data = raw_counties %>% filter(STATEFP == "06" & COUNTYFP %in% c("095", "013")), mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0)
 
-
-create_srm_xwalk <- function(main_path,
-                             save_path,
-                             srm_weighted_pm25,
-                             ct_xwalk,
-                             raw_counties,
-                             raw_ct_2020_all) {
+create_srm_xwalk <- function(
+  main_path,
+  save_path,
+  srm_weighted_pm25,
+  ct_xwalk,
+  raw_counties,
+  raw_ct_2020_all
+) {
   srm_pm25_df <- copy(srm_weighted_pm25)
   srm_pm25_df[, GEOID := paste0("0", GEOID)]
 
-  srm_pm25_df[, weighted_total_pm25 := weighted_totalpm25_nh3 + weighted_totalpm25_nox + weighted_totalpm25_pm25 +
-    weighted_totalpm25_sox + weighted_totalpm25_voc]
+  srm_pm25_df[,
+    weighted_total_pm25 := weighted_totalpm25_nh3 +
+      weighted_totalpm25_nox +
+      weighted_totalpm25_pm25 +
+      weighted_totalpm25_sox +
+      weighted_totalpm25_voc
+  ]
 
   ## Adjust mismatch of census tract ids between inmap and benmap (census ID changed in 2012
   ## http://www.diversitydatakids.org/sites/default/files/2020-02/ddk_coi2.0_technical_documentation_20200212.pdf)
@@ -41,14 +46,23 @@ create_srm_xwalk <- function(main_path,
   setnames(srm_pm25_df, "GEOID", "GEOID_2019")
 
   ## merge
-  srm_pm25_df <- merge(srm_pm25_df, ct_xwalk,
+  srm_pm25_df <- merge(
+    srm_pm25_df,
+    ct_xwalk,
     by = c("GEOID_2019"),
     all = TRUE,
     allow.cartesian = TRUE
   )
 
   ## calculate pm2.5 for 2020 census tract, weight by rel_intersection
-  srm_pm25_df <- srm_pm25_df[, .(weighted_total_pm25 = weighted.mean(weighted_total_pm25, rel_intersect, na.rm = T)),
+  srm_pm25_df <- srm_pm25_df[,
+    .(
+      weighted_total_pm25 = weighted.mean(
+        weighted_total_pm25,
+        rel_intersect,
+        na.rm = T
+      )
+    ),
     by = .(site_id, GEOID_2020)
   ]
 
@@ -77,62 +91,77 @@ create_srm_xwalk <- function(main_path,
     select(census_tract, COUNTYFP, NAME)
 
   ## add counties to srm
-  srm_pm25_df <- merge(srm_pm25_df, county_df,
+  srm_pm25_df <- merge(
+    srm_pm25_df,
+    county_df,
     by = c("census_tract"),
     all = TRUE,
     allow.cartesian = TRUE
   )
 
-
   ## save pm2.5 exposure by refinery
-  fwrite(srm_pm25_df, file.path(main_path, save_path, "fig-csv-files", "srm_pm25_refinery_level.csv"))
+  fwrite(
+    srm_pm25_df,
+    file.path(
+      main_path,
+      save_path,
+      "fig-csv-files",
+      "srm_pm25_refinery_level.csv"
+    )
+  )
   # fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv"))
-
 
   return(srm_pm25_df)
 }
 
-create_srm_ct <- function(main_path,
-                          save_path,
-                          refinery_pm25_srm) {
+create_srm_ct <- function(main_path, save_path, refinery_pm25_srm) {
   pm25_srm <- copy(refinery_pm25_srm)
 
-  pm25_srm <- pm25_srm[, .(total_pm25 = sum(total_pm25)),
+  pm25_srm <- pm25_srm[,
+    .(total_pm25 = sum(total_pm25)),
     by = .(census_tract, COUNTYFP, NAME)
   ]
 
   ## save pm2.5 exposure for each ct
-  fwrite(pm25_srm, file.path(main_path, save_path, "fig-csv-files/", "srm_pm25_ct.csv"))
+  fwrite(
+    pm25_srm,
+    file.path(main_path, save_path, "fig-csv-files/", "srm_pm25_ct.csv")
+  )
   # fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv"))
-
 
   return(pm25_srm)
 }
 
-create_pulse_fig <- function(main_path,
-                             save_path,
-                             refinery_pm25_srm,
-                             ct_pm25_srm,
-                             raw_counties,
-                             raw_ct_2020_all,
-                             refin_locs,
-                             ca_crs) {
+create_pulse_fig <- function(
+  main_path,
+  save_path,
+  refinery_pm25_srm,
+  ct_pm25_srm,
+  raw_counties,
+  raw_ct_2020_all,
+  refin_locs,
+  ca_crs
+) {
   ## Refineries plus
   refin_new_locations <- copy(refin_locs)
 
   ## join census tract sp data with ct pm2.5
   ct_pm25_srm_sp <- ct_pm25_srm %>%
-    left_join(raw_ct_2020_all %>%
-      filter(STATEFP == "06") %>%
-      select(census_tract = GEOID, geometry)) %>%
+    left_join(
+      raw_ct_2020_all %>%
+        filter(STATEFP == "06") %>%
+        select(census_tract = GEOID, geometry)
+    ) %>%
     st_as_sf() %>%
     st_transform(ca_crs)
 
   ## join census tract sp data with refinery level pm2.5 srm
   refinery_pm25_srm_sp <- refinery_pm25_srm %>%
-    left_join(raw_ct_2020_all %>%
-      filter(STATEFP == "06") %>%
-      select(census_tract = GEOID, geometry)) %>%
+    left_join(
+      raw_ct_2020_all %>%
+        filter(STATEFP == "06") %>%
+        select(census_tract = GEOID, geometry)
+    ) %>%
     filter(!is.na(site_id)) %>%
     st_as_sf() %>%
     st_transform(ca_crs)
@@ -167,11 +196,18 @@ create_pulse_fig <- function(main_path,
 
     ## figure
     pm25_fig_tmp <- ggplot() +
-      geom_sf(data = srm_tmp %>% filter(COUNTYFP %in% unique(srm_tmp_c$COUNTYFP)), aes(fill = total_pm25, geometry = geometry), color = NA) +
+      geom_sf(
+        data = srm_tmp %>% filter(COUNTYFP %in% unique(srm_tmp_c$COUNTYFP)),
+        aes(fill = total_pm25, geometry = geometry),
+        color = NA
+      ) +
       # theme_void() +
       theme_minimal() +
       scale_fill_gradient(
-        high = "#A84268", low = "#FAFAFA", space = "Lab", na.value = "grey50",
+        high = "#A84268",
+        low = "#FAFAFA",
+        space = "Lab",
+        na.value = "grey50",
         limits = c(min(srm_tmp$total_pm25), max(srm_tmp$total_pm25)),
         breaks = c(0, 0.004)
       ) +
@@ -182,9 +218,19 @@ create_pulse_fig <- function(main_path,
         # title = bold(expression(bold(paste("PM"[2.5], " concentration from ", refin_tmp_name))),
         fill = expression(paste("PM"[2.5], " (", mu, "/", m^3, ")"))
       ) +
-      geom_sf(data = county_tmp, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+      geom_sf(
+        data = county_tmp,
+        mapping = aes(geometry = geometry),
+        lwd = 0.15,
+        alpha = 0
+      ) +
       geom_sf_text(data = county_tmp, aes(label = NAME)) +
-      geom_sf(data = refin_tmp, mapping = aes(geometry = geometry), alpha = 0.9, pch = 16) +
+      geom_sf(
+        data = refin_tmp,
+        mapping = aes(geometry = geometry),
+        alpha = 0.9,
+        pch = 16
+      ) +
       theme(
         # legend.justification defines the edge of the legend that the legend.position coordinates refer to
         legend.justification = c(0, 1),
@@ -197,14 +243,16 @@ create_pulse_fig <- function(main_path,
         plot.margin = margin(0, 2, 0, 8),
         plot.title = element_text(face = "bold", size = 8, hjust = -0.05)
       ) +
-      guides(fill = guide_colourbar(
-        title.position = "top",
-        title.hjust = 0,
-        direction = "horizontal",
-        ticks.colour = "black", frame.colour = "black",
-        order = 1
-      ))
-
+      guides(
+        fill = guide_colourbar(
+          title.position = "top",
+          title.hjust = 0,
+          direction = "horizontal",
+          ticks.colour = "black",
+          frame.colour = "black",
+          order = 1
+        )
+      )
 
     # ggsave(plot = pm25_fig_tmp,
     #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/pulse-figs/pulse_",
@@ -214,7 +262,6 @@ create_pulse_fig <- function(main_path,
     #        # height = 8,
     #        dpi = 300)
 
-
     # NOTE from Meas: the plot save directory is hard coded in this function instead of _targets.R, not always easy to track
     # I've added `create.dir = TRUE` otherwise the function will fail if the directory doesn't exist
     # I also added the usage of `file.path` to make it more robust to whether a path has "/" at the end or not
@@ -222,15 +269,17 @@ create_pulse_fig <- function(main_path,
     # added code to create the directory if it doesn't exist
 
     # check if the folder exists
-    if (!dir.exists(file.path(
-      main_path,
-      "outputs",
-      "academic-out",
-      "refining",
-      "figures",
-      "2024-08-update",
-      "pulse-figs"
-    ))) {
+    if (
+      !dir.exists(file.path(
+        main_path,
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "2024-08-update",
+        "pulse-figs"
+      ))
+    ) {
       # Create the folder if it does not exist
       dir.create(file.path(
         main_path,
@@ -247,7 +296,8 @@ create_pulse_fig <- function(main_path,
       plot = pm25_fig_tmp,
       filename = paste0(
         file.path(main_path, save_path, "pulse-figs", "pulse_"),
-        id_tmp, ".jpeg"
+        id_tmp,
+        ".jpeg"
       ),
       device = "jpeg",
       # width = 6.5,
@@ -259,7 +309,9 @@ create_pulse_fig <- function(main_path,
   ## make fig for all locations
 
   ## crop
-  disp_win2_wgs84 <- st_sfc(st_point(c(-122.5, 33)), st_point(c(-117, 39)),
+  disp_win2_wgs84 <- st_sfc(
+    st_point(c(-122.5, 33)),
+    st_point(c(-117, 39)),
     crs = 4326
   )
 
@@ -273,17 +325,24 @@ create_pulse_fig <- function(main_path,
   xlim <- c(disp_win_df$X[1], disp_win_df$X[2]) # Set limits for zoom panel
   ylim <- c(disp_win_df$Y[1], disp_win_df$Y[2])
 
-
-
-
   ## plot
   pm25_fig_all <- ggplot() +
-    geom_sf(data = ct_pm25_srm_sp, aes(fill = total_pm25, geometry = geometry), color = NA) +
+    geom_sf(
+      data = ct_pm25_srm_sp,
+      aes(fill = total_pm25, geometry = geometry),
+      color = NA
+    ) +
     theme_void() +
     # theme_minimal() +
     scale_fill_gradient(
-      high = "#A84268", low = "#FAFAFA", space = "Lab", na.value = "grey50",
-      limits = c(min(ct_pm25_srm_sp$total_pm25), max(ct_pm25_srm_sp$total_pm25)),
+      high = "#A84268",
+      low = "#FAFAFA",
+      space = "Lab",
+      na.value = "grey50",
+      limits = c(
+        min(ct_pm25_srm_sp$total_pm25),
+        max(ct_pm25_srm_sp$total_pm25)
+      ),
       breaks = c(0.001, 0.02)
     ) +
     labs(
@@ -293,12 +352,25 @@ create_pulse_fig <- function(main_path,
       # title = bold(expression(bold(paste("PM"[2.5], " concentration from ", refin_tmp_name))),
       fill = expression(paste("PM"[2.5], " (", mu, "/", m^3, ")"))
     ) +
-    geom_sf(data = raw_counties, mapping = aes(geometry = geometry), lwd = 0.15, alpha = 0) +
+    geom_sf(
+      data = raw_counties,
+      mapping = aes(geometry = geometry),
+      lwd = 0.15,
+      alpha = 0
+    ) +
     # geom_sf_text(data = raw_counties, aes(label = NAME), size = 3) +
-    geom_sf(data = refin_new_locations, mapping = aes(geometry = geometry), alpha = 0.8, pch = 16, size = 0.5) +
+    geom_sf(
+      data = refin_new_locations,
+      mapping = aes(geometry = geometry),
+      alpha = 0.8,
+      pch = 16,
+      size = 0.5
+    ) +
     coord_sf(
-      xlim = disp_win2_coord[, "X"], ylim = disp_win2_coord[, "Y"],
-      datum = ca_crs, expand = FALSE
+      xlim = disp_win2_coord[, "X"],
+      ylim = disp_win2_coord[, "Y"],
+      datum = ca_crs,
+      expand = FALSE
     ) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
@@ -312,13 +384,16 @@ create_pulse_fig <- function(main_path,
       plot.margin = margin(0, 2, 0, 8),
       plot.title = element_text(face = "bold", size = 12, hjust = -0.05)
     ) +
-    guides(fill = guide_colourbar(
-      title.position = "top",
-      title.hjust = 0,
-      direction = "horizontal",
-      ticks.colour = "black", frame.colour = "black",
-      order = 1
-    ))
+    guides(
+      fill = guide_colourbar(
+        title.position = "top",
+        title.hjust = 0,
+        direction = "horizontal",
+        ticks.colour = "black",
+        frame.colour = "black",
+        order = 1
+      )
+    )
 
   # ggsave(plot = pm25_fig_all,
   #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/pulse-figs/pulse_all_crop.jpeg"),
@@ -332,19 +407,20 @@ create_pulse_fig <- function(main_path,
   # NOTE from Tracey: same error! removed `create.dir = TRUE`
   ggsave(
     plot = pm25_fig_all,
-    filename = file.path(main_path, save_path, "pulse-figs", "pulse_all_crop.jpeg"),
+    filename = file.path(
+      main_path,
+      save_path,
+      "pulse-figs",
+      "pulse_all_crop.jpeg"
+    ),
     device = "jpeg",
     # width = 6.5,
     # height = 8,
     dpi = 300
   )
 
-
   return(pm25_fig_all)
 }
-
-
-
 
 # ## crop
 # ## -----------------------------------
