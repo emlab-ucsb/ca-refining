@@ -66,13 +66,15 @@ list(
     command = list_paths[user]
   ),
 
-  # set run
-  tar_target(name = run_type, "labor-take-2"),
-
-  # list save paths
+  # Set run type and stop if unknown run type
   tar_target(
-    name = list_save_paths,
-    c(
+    name = run_type,
+    command = "ghg-emfac"
+  ),
+  tar_target(
+    name = save_path,
+    command = switch(
+      run_type,
       "revision-main" = file.path(
         "outputs",
         "academic-out",
@@ -86,14 +88,16 @@ list(
         "refining",
         "figures",
         "2025-labor-take-2"
-      )
+      ),
+      "ghg-emfac" = file.path(
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "ghg-emfac"
+      ),
+      stop("Unknown run_type")
     )
-  ),
-
-  # set main path
-  tar_target(
-    name = save_path,
-    command = list_save_paths[run_type]
   ),
 
   # create folders
@@ -674,6 +678,22 @@ list(
     name = refin_locs_ct,
     command = read_refin_locs_ct(file_refin_locs_ct, refin_locs)
   ),
+  tar_target(
+    name = file_ghg_emissions,
+    command = file.path(
+      main_path,
+      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    file_hydrogen_facilities,
+    command = file.path(
+      main_path,
+      "data-staged-for-deletion/stocks-flows/raw/hydrogen_facilities_list.xlsx"
+    ),
+    format = "file"
+  ),
   tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
   # GHG factor calculation targets
@@ -776,10 +796,6 @@ list(
       inmap_path = file_inmap_re
     ))
   ),
-  # tar_target(
-  #   name = dt_ghg_emissions,
-  #   command = simple_fread(file_ghg_emissions),
-  # ),
   tar_target(
     name = dt_hydrogen_facilities,
     command = simple_read_xlsx(file_hydrogen_facilities),
