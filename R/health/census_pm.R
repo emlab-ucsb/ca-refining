@@ -5,11 +5,22 @@ get_ces_county <- function(raw_ces) {
     c("Census Tract", "California County"),
     c("census_tract", "county")
   )
+  setnames(
+    dt,
+    c("Census Tract", "California County"),
+    c("census_tract", "county")
+  )
   dt[, census_tract := paste0("0", census_tract, sep = "")]
   dt
 }
 
 get_county_dac <- function(dt_ces, ces_county) {
+  processed_ces <- dt_ces[, .(
+    census_tract,
+    population,
+    CES3_score,
+    disadvantaged
+  )]
   processed_ces <- dt_ces[, .(
     census_tract,
     population,
