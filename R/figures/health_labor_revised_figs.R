@@ -324,7 +324,7 @@ plot_npv_labor_oilpx <- function(main_path,
   )
   
   
-  ##
+  ## changing prices and bartik
   forgone_wages_all_oil_px_fig <- ggplot() +
     geom_hline(yintercept = 0, color = "darkgray", size = 0.5) +
     geom_vline(xintercept = hist_prod$ghg_perc_diff * -100, color = "darkgray", lty = 2) +
@@ -335,7 +335,7 @@ plot_npv_labor_oilpx <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario == "changing prices",
-      indirect_induced_scenario == "baseline",
+      indirect_induced_scenario != "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
@@ -688,7 +688,9 @@ plot_npv_health_labor <- function(main_path,
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(0, 60) +
+    scale_y_continuous(
+      limits = c(0, 60),
+      breaks = seq(0, 60, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -727,7 +729,7 @@ plot_npv_health_labor <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario == "changing prices",
-      indirect_induced_scenario == "baseline",
+      indirect_induced_scenario != "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
@@ -744,7 +746,9 @@ plot_npv_health_labor <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -791,7 +795,9 @@ plot_npv_health_labor <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -839,7 +845,9 @@ plot_npv_health_labor <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -1496,7 +1504,9 @@ plot_npv_health_labor_ref <- function(main_path,
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(0, 60) +
+    scale_y_continuous(
+      limits = c(0, 60),
+      breaks = seq(0, 60, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -1535,7 +1545,7 @@ plot_npv_health_labor_ref <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario == "changing prices",
-      indirect_induced_scenario == "baseline",
+      indirect_induced_scenario != "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
@@ -1552,7 +1562,9 @@ plot_npv_health_labor_ref <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -1599,7 +1611,9 @@ plot_npv_health_labor_ref <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -1647,7 +1661,9 @@ plot_npv_health_labor_ref <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -1746,7 +1762,9 @@ plot_npv_health_labor_ref <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2181,7 +2199,9 @@ plot_npv_health_labor_annual_vsl <- function(main_path,
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(0, 60) +
+    scale_y_continuous(
+      limits = c(0, 60),
+      breaks = seq(0, 60, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2220,7 +2240,7 @@ plot_npv_health_labor_annual_vsl <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario == "changing prices",
-      indirect_induced_scenario == "baseline",
+      indirect_induced_scenario != "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
@@ -2237,7 +2257,9 @@ plot_npv_health_labor_annual_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2284,7 +2306,9 @@ plot_npv_health_labor_annual_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2332,7 +2356,9 @@ plot_npv_health_labor_annual_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2375,7 +2401,9 @@ plot_npv_health_labor_annual_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2865,7 +2893,9 @@ plot_npv_health_labor_non_age_vsl <- function(main_path,
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(0, 60) +
+    scale_y_continuous(
+      limits = c(0, 60),
+      breaks = seq(0, 60, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2904,7 +2934,7 @@ plot_npv_health_labor_non_age_vsl <- function(main_path,
     geom_point(data = plot_df_labor %>% filter(
       !scen_id %in% remove_scen,
       product_scenario == "changing prices",
-      indirect_induced_scenario == "baseline",
+      indirect_induced_scenario != "baseline",
       refining_scenario != "historical production",
       metric == "forgone_wages_bil"
     ), aes(x = ghg_perc_diff * -100, y = low, color = scen_id), shape = 16, size = 3, alpha = 0.9) +
@@ -2921,7 +2951,9 @@ plot_npv_health_labor_non_age_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2968,7 +3000,9 @@ plot_npv_health_labor_non_age_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -3016,7 +3050,9 @@ plot_npv_health_labor_non_age_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -3059,7 +3095,9 @@ plot_npv_health_labor_non_age_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -3115,7 +3153,9 @@ plot_npv_health_labor_non_age_vsl <- function(main_path,
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    scale_y_continuous(
+      limits = c(-60, 0),
+      breaks = seq(-60, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -6826,16 +6866,18 @@ plot_hl_levels_df <- function(main_path,
   ## pivot longer
   plot_df <- plot_df %>%
     select(scen_id:title, ghg_perc_diff, sum_cost_pv, sum_cost_2019_pv, forgone_wages_h, forgone_wages_l) %>%
-    pivot_longer(sum_cost_pv:forgone_wages_l, names_to = "metric", values_to = "value")
+    pivot_longer(sum_cost_pv:forgone_wages_l, names_to = "metric", values_to = "value") 
   
   ## add column for vsl
   plot_df_health <- plot_df %>%
-    filter(metric %in% c("sum_cost_pv", "sum_cost_2019_pv")) %>%
+    filter(metric %in% c("sum_cost_pv", "sum_cost_2019_pv")) |>
     mutate(
       segment = "health",
       unit_desc = ifelse(metric == "sum_cost_2019_pv", "USD (2019 VSL)", "USD (annual VSL)"),
-      metric_desc = "avoided_health_cost"
-    )
+      metric_desc = "avoided_health_cost",
+      product_scenario = NA
+    ) |>
+    distinct()
   
   plot_df_labor <- plot_df %>%
     filter(metric %in% c("forgone_wages_h", "forgone_wages_l")) %>%
@@ -7453,7 +7495,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(0, 3000)) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7496,7 +7538,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7540,7 +7582,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7626,7 +7668,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       color = NULL
     ) +
     theme_line +
-    scale_y_continuous(label = comma, limits = c(0, 3000)) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme(
       legend.position = "none",
       legend.title = element_blank(),
@@ -7662,7 +7704,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7698,7 +7740,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7776,7 +7818,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       color = NULL
     ) +
     theme_line +
-    scale_y_continuous(label = comma, limits = c(0, 3000)) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme(
       legend.position = "none",
       legend.title = element_blank(),
@@ -7808,7 +7850,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7842,7 +7884,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-3000, 0)) +
+    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
     theme_line +
     theme(
       legend.position = "none",
