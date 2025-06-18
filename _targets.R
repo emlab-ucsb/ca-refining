@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
@@ -69,7 +69,7 @@ list(
   # Set run type and stop if unknown run type
   tar_target(
     name = run_type,
-    command = "ghg-emfac"
+    command = "figure-development"
   ),
   tar_target(
     name = save_path,
@@ -95,6 +95,13 @@ list(
         "refining",
         "figures",
         "ghg-emfac"
+      ),
+      "figure-development" = file.path(
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "figure-development"
       ),
       stop("Unknown run_type")
     )
