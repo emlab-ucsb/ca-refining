@@ -1784,6 +1784,31 @@ list(
       refining_mortality
     )
   ),
+  tar_target(name = figure_1,
+             command = create_figure_1(main_path,
+                                       ca_crs,
+                                       dt_refcap,
+                                       refin_locs,
+                                       dt_renref,
+                                       renewables_info,
+                                       dt_altair,
+                                       refining_site_output,
+                                       refining_sites_cons_ghg_2019_2045,
+                                       raw_counties,
+                                       raw_ct_2020_all,
+                                       raw_ces,
+                                       dt_inmap_re,
+                                       raw_ct_2019,
+                                       health_weighted,
+                                       refining_mortality,
+                                       labor_2019,
+                                       ca_regions,
+                                       raw_pop_income_2021,
+                                       cpi2020,
+                                       cpi2019,
+                                       annual_direct_labor)
+             ),
+  
 
   # # save outputs
   # tar_target(name = save_ct_xwalk,
