@@ -3,6 +3,7 @@
 ## updated version: march 30, 2025 - address reviewer comments
 
 create_figure_1 <- function(main_path,
+                            save_path,
                             ca_crs,
                             dt_refcap,
                             refin_locs,
@@ -352,6 +353,19 @@ create_figure_1 <- function(main_path,
       xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf # Extending the rectangle over the entire plot area
     )
 
+  
+  ## create a folder for fig 1
+  fig_1_folder <- file.path(
+    main_path,
+    save_path,
+    "fig1"
+  )
+  
+  # check if the folder exists
+  if (!dir.exists(fig_1_folder)) {
+    # Create the folder if it does not exist
+    dir.create(fig_1_folder)
+  }
 
   ggsave(ct_health_panel_a,
          filename = file.path(
