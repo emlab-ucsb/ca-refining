@@ -439,7 +439,7 @@ create_figure_1 <- function(main_path,
       fill = expression(paste("PM"[2.5], " (", mu, "g/", m^3, ")")),
       color = NULL,
       shape = NULL,
-      x = NULL,
+      x = "Longitude",
       y = "Latitude"
     ) +
     coord_sf(xlim = disp_win_bay_cluster_coord[, "X"], ylim = disp_win_bay_cluster_coord[, "Y"], expand = FALSE) +
@@ -895,7 +895,7 @@ create_figure_1 <- function(main_path,
       fill = expression(paste("PM"[2.5], " (", mu, "g/", m^3, ")")),
       color = NULL,
       shape = NULL,
-      x = NULL,
+      x = "Longitude",
       y = "Latitude"
     ) +
     coord_sf(xlim = disp_win_la_cluster_coord[, "X"], ylim = disp_win_la_cluster_coord[, "Y"], expand = FALSE) +
@@ -1132,12 +1132,11 @@ create_figure_1 <- function(main_path,
 
   fig1_health_all <- plot_grid(
     fig1_health,
-    xaxis_lab,
     fig1_health_legend,
     ncol = 1,
     hjust = -1,
-    rel_widths = c(1, 1, 1),
-    rel_heights = c(1, 0.1, 0.1))
+    rel_widths = c(1, 1),
+    rel_heights = c(1, 0.1))
 
 
 
@@ -1728,7 +1727,7 @@ create_figure_1 <- function(main_path,
       fill = "Compensation (USD million)",
       color = NULL,
       shape = NULL,
-      x = NULL,
+      x = "Longitude",
       y = "Latitude"
     ) +
     coord_sf(xlim = disp_win_bay_cluster_coord[, "X"], ylim = disp_win_bay_cluster_coord[, "Y"], expand = FALSE) +
@@ -2189,7 +2188,7 @@ create_figure_1 <- function(main_path,
       fill = "Compensation (USD million)",
       color = NULL,
       shape = NULL,
-      x = NULL,
+      x = "Longitude",
       y = "Latitude"
     ) +
     coord_sf(xlim = disp_win_la_cluster_coord[, "X"], ylim = disp_win_la_cluster_coord[, "Y"], expand = FALSE) +
