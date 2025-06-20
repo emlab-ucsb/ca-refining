@@ -7828,8 +7828,7 @@ plot_hl_levels_pc <- function(demographic_npv_df,
     ) +
     theme_line +
     scale_y_continuous(
-      limits = c(2000, 0),
-      breaks = seq(2000, 0, by = 500)) +
+      limits = c(0, 2000)) +
     theme(
       legend.position = "none",
       legend.title = element_blank(),
