@@ -689,8 +689,8 @@ plot_npv_health_labor <- function(main_path,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 60),
-      breaks = seq(0, 60, by = 10)) +
+      limits = c(0, 40),
+      breaks = seq(0, 40, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -846,8 +846,8 @@ plot_npv_health_labor <- function(main_path,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)) +
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -7538,7 +7538,10 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    # scale_y_continuous(label = comma, limits = c(-1000, 0)) +
+    scale_y_continuous(
+      limits = c(-1000, 0),
+      breaks = seq(-1000, 0, by = 500)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7582,7 +7585,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    scale_y_continuous(
+      limits = c(-1000, 0),
+      breaks = seq(-1000, 0, by = 500)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7704,7 +7709,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    scale_y_continuous(
+      limits = c(-1000, 0),
+      breaks = seq(-1000, 0, by = 500)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7740,7 +7747,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    scale_y_continuous(
+      limits = c(-1000, 0),
+      breaks = seq(-1000, 0, by = 500)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7818,7 +7827,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       color = NULL
     ) +
     theme_line +
-    scale_y_continuous(label = comma, limits = c(0, 2000)) +
+    scale_y_continuous(
+      limits = c(-1000, 0),
+      breaks = seq(-1000, 0, by = 500)) +
     theme(
       legend.position = "none",
       legend.title = element_blank(),
@@ -7850,7 +7861,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    scale_y_continuous(
+      limits = c(-1000, 0),
+      breaks = seq(-1000, 0, by = 500)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -7884,7 +7897,9 @@ plot_hl_levels_pc <- function(demographic_npv_df,
       x = NULL,
       color = NULL
     ) +
-    scale_y_continuous(label = comma, limits = c(-2000, 0)) +
+    scale_y_continuous(
+      limits = c(-1000, 0),
+      breaks = seq(-1000, 0, by = 500)) +
     theme_line +
     theme(
       legend.position = "none",
@@ -10864,7 +10879,7 @@ fig4_hl_pmil <- function(main_path,
   
   ## shared y lab
   # yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
-  yaxis_lab <- ggdraw() + draw_label("Labor: FTE employment changes per million people (difference from reference)", size = fig_text_size, angle = 90)
+  yaxis_lab <- ggdraw() + draw_label("Labor: FTE direct employment changes per million people (difference from reference)", size = fig_text_size, angle = 90)
   
  ## 2020 product prices, MAIN TEXT
   l_gaps_plot_grid_2020ppx <- plot_grid(
