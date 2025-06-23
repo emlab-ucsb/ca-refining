@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
@@ -69,7 +69,7 @@ list(
   # Set run type and stop if unknown run type
   tar_target(
     name = run_type,
-    command = "ghg-emfac"
+    command = "figure-development"
   ),
   tar_target(
     name = save_path,
@@ -95,6 +95,13 @@ list(
         "refining",
         "figures",
         "ghg-emfac-cluster"
+      ),
+      "figure-development" = file.path(
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "figure-development"
       ),
       stop("Unknown run_type")
     )
@@ -1777,6 +1784,32 @@ list(
       refining_mortality
     )
   ),
+  tar_target(name = figure_1,
+             command = create_figure_1(main_path,
+                                       save_path,
+                                       ca_crs,
+                                       dt_refcap,
+                                       refin_locs,
+                                       dt_renref,
+                                       renewables_info,
+                                       dt_altair,
+                                       refining_site_output,
+                                       refining_sites_cons_ghg_2019_2045,
+                                       raw_counties,
+                                       raw_ct_2020_all,
+                                       raw_ces,
+                                       dt_inmap_re,
+                                       raw_ct_2019,
+                                       health_weighted,
+                                       refining_mortality,
+                                       labor_2019,
+                                       ca_regions,
+                                       raw_pop_income_2021,
+                                       cpi2020,
+                                       cpi2019,
+                                       annual_direct_labor)
+             ),
+  
 
   # # save outputs
   # tar_target(name = save_ct_xwalk,
