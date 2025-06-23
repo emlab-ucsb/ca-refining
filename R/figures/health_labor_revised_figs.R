@@ -411,9 +411,8 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  simple_ggsave(
+  simple_ggsave_repo(
     forgone_wages_all_oil_px_fig_2020ppx,
-    main_path,
     save_path,
     "state_npv_labor_fig_2020ppx",
     width = 10,
@@ -488,9 +487,8 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  simple_ggsave(
+  simple_ggsave_repo(
     forgone_wages_all_oil_px_fig_2020ppx_bc,
-    main_path,
     save_path,
     "state_npv_labor_fig_2020ppx_bartik",
     width = 10,
@@ -1026,7 +1024,7 @@ plot_npv_health_labor <- function(
   ## save figure inputs
   fwrite(
     plot_df_labor,
-    file.path(main_path, save_path, "state_npv_fig_inputs_labor.csv")
+    file.path(save_path, "fig-csv-files", "state_npv_fig_inputs_labor.csv")
   )
   # fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
 
@@ -1398,11 +1396,17 @@ plot_npv_health_labor <- function(
   )
 
   ## save legends
+  # Create legends directory if it doesn't exist
+  legends_dir <- file.path(save_path, "legends")
+  if (!dir.exists(legends_dir)) {
+    dir.create(legends_dir, recursive = TRUE, showWarnings = FALSE)
+  }
+
   ggsave(
     plot = low_legend,
     device = "pdf",
     filename = "fig3_low_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
@@ -1466,12 +1470,11 @@ plot_npv_health_labor <- function(
     high_legend_fig
   )
 
-  ## save legends
   ggsave(
     plot = high_legend,
     device = "pdf",
     filename = "fig3_high_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
@@ -1617,9 +1620,8 @@ plot_npv_health_labor <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig3_plot_grid_ab_2020ppx,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx",
     width = 10,
@@ -1640,9 +1642,8 @@ plot_npv_health_labor <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig3_plot_grid_ab_2020ppx_bc,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx_bartik",
     width = 10,
@@ -2604,9 +2605,8 @@ plot_npv_health_labor_ref <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig3_plot_grid_ab_2020ppx,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx_ref",
     width = 10,
@@ -2627,9 +2627,8 @@ plot_npv_health_labor_ref <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig3_plot_grid_ab_2020ppx_bc,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx_bartik_ref",
     width = 10,
@@ -3592,9 +3591,8 @@ plot_npv_health_labor_annual_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig3_plot_grid_ab_2020ppx,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx_annual_vsl",
     width = 10,
@@ -3615,9 +3613,8 @@ plot_npv_health_labor_annual_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig3_plot_grid_ab_2020ppx_bc,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx_bartik_annual_vsl",
     width = 10,
@@ -6951,9 +6948,8 @@ plot_labor_levels <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig2_l_plot_grid2_2020ppx,
-    main_path,
     save_path,
     "state_labor_levels_fig_2020ppx",
     width = 12,
@@ -7528,9 +7524,8 @@ plot_labor_levels_pmil <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave(
+  simple_ggsave_repo(
     fig2_l_plot_grid2_2020ppx,
-    main_path,
     save_path,
     "state_labor_levels_pmil_fig_2020ppx",
     width = 12,
@@ -10993,7 +10988,7 @@ plot_hl_shares <- function(
     plot = health_dac_legend,
     device = "pdf",
     filename = "health_dac_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
@@ -11002,7 +10997,7 @@ plot_hl_shares <- function(
     plot = health_poverty_legend,
     device = "pdf",
     filename = "health_poverty_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
@@ -11011,7 +11006,7 @@ plot_hl_shares <- function(
     plot = health_race_legend,
     device = "pdf",
     filename = "health_race_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
@@ -11035,7 +11030,7 @@ plot_hl_shares <- function(
     plot = labor_dac_legend,
     device = "pdf",
     filename = "labor_dac_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
@@ -11044,7 +11039,7 @@ plot_hl_shares <- function(
     plot = labor_poverty_legend,
     device = "pdf",
     filename = "labor_poverty_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
@@ -11053,7 +11048,7 @@ plot_hl_shares <- function(
     plot = labor_race_legend,
     device = "pdf",
     filename = "labor_race_legend.pdf",
-    path = file.path(main_path, save_path, "legends/"),
+    path = legends_dir,
     dpi = 600
   )
 
