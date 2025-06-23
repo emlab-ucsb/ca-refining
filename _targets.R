@@ -94,7 +94,7 @@ list(
         "academic-out",
         "refining",
         "figures",
-        "ghg-emfac"
+        "ghg-emfac-cluster"
       ),
       stop("Unknown run_type")
     )
@@ -114,7 +114,7 @@ list(
   tar_target(name = kern_perc, command = 0.9375),
   # tar_target(name = a, command = 4),
   # tar_target(name = ccs_capture_rate, command = 0.474),
-  tar_target(name = refinery_level_ghg, command = TRUE),
+  tar_target(name = refinery_level_ghg, command = FALSE),
 
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
