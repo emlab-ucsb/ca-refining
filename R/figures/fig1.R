@@ -143,11 +143,7 @@ create_figure_1 <- function(main_path,
 
   ## join with spatial data
   ct_census_tract_pm25_2019_sp <- census_tracts %>%
-    left_join(ct_census_tract_pm25_2019) %>%
-    filter()
-
-
-
+    left_join(ct_census_tract_pm25_2019) 
 
   ## --------------------------------------------------------------------------
   ## create coordinates for cluster zoom-ins
