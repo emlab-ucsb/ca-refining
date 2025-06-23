@@ -331,8 +331,8 @@ create_figure_1 <- function(main_path,
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -457,8 +457,8 @@ create_figure_1 <- function(main_path,
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -571,8 +571,8 @@ create_figure_1 <- function(main_path,
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -1006,11 +1006,49 @@ create_figure_1 <- function(main_path,
         order = 1
       ))
 
-
-  health_legend <- get_legend(
-    health_legend_fig
+  
+  # Convert your plot to a grob object
+  g <- ggplotGrob(health_legend_fig)
+  
+  # Find all legend ("guide-box") grobs
+  legend_grobs <- g$grobs[which(sapply(g$grobs, function(x) x$name) == "guide-box")]
+  
+  # See how many there are
+  length(legend_grobs)
+  
+  # Draw one to inspect
+  grid.newpage()
+  grid.draw(legend_grobs[[1]])  
+  
+  # Save the legend as image
+  png(file.path(
+    fig_1_folder,
+    "figure1-health-legend.png"
+  ))
+  grid.newpage()
+  grid.draw(legend_grobs[[1]])
+  dev.off()
+  
+  pdf(file.path(
+    fig_1_folder,
+    "figure1-health-legend.pdf"
+  ))
+  grid.newpage()
+  grid.draw(legend_grobs[[1]])
+  dev.off()
+  
+  embed_fonts(
+    file.path(
+      fig_1_folder,
+      "figure1-health-legend.pdf"
+    ),
+    outfile = file.path(
+      fig_1_folder,
+      "figure1-health-legend.pdf"
+    )
   )
-
+  
+  
   ## refinery legend
   ## ---------------------------------------------------------------------
 
@@ -1079,11 +1117,47 @@ create_figure_1 <- function(main_path,
       color = "none"
     )
 
-  refinery_legend <- get_legend(
-    refinery_legend_fig
+  # Convert your plot to a grob object
+  gr <- ggplotGrob(refinery_legend_fig)
+  
+  # Find all legend ("guide-box") grobs
+  legend_grobs_r <- gr$grobs[which(sapply(gr$grobs, function(x) x$name) == "guide-box")]
+  
+  # See how many there are
+  length(legend_grobs_r)
+  
+  # Draw one to inspect
+  grid.newpage()
+  grid.draw(legend_grobs_r[[1]])  
+  
+  # Save the legend as image
+  png(file.path(
+    fig_1_folder,
+    "figure1-refining-legend.png"
+  ))
+  grid.newpage()
+  grid.draw(legend_grobs_r[[1]])
+  dev.off()
+  
+  pdf(file.path(
+    fig_1_folder,
+    "figure1-refining-legend.pdf"
+  ))
+  grid.newpage()
+  grid.draw(legend_grobs_r[[1]])
+  dev.off()
+  
+  embed_fonts(
+    file.path(
+      fig_1_folder,
+      "figure1-refining-legend.pdf"
+    ),
+    outfile = file.path(
+      fig_1_folder,
+      "figure1-refining-legend.pdf"
+    )
   )
-
-
+  
   ## plot health together
   ## --------------------------------------------------------------------------
 
@@ -1103,9 +1177,9 @@ create_figure_1 <- function(main_path,
     ct_health_panel_a_total,
     ct_health_panel_c_total,
     align = "vh",
-    # labels = c("A", "B"),
-    nrow = 1,
-    ncol = 2,
+    labels = c("A", "B"),
+    nrow = 2,
+    ncol = 1,
     # # labels = 'AUTO',
     # label_size = 10,
     hjust = -1,
@@ -1115,50 +1189,50 @@ create_figure_1 <- function(main_path,
 
   fig1_health
 
-  fig1_health_legend <- plot_grid(
-    refinery_legend,
-    health_legend,
-    align = "vh",
-    # labels = c("A", "B"),
-    nrow = 1,
-    ncol = 2,
-    # # labels = 'AUTO',
-    # label_size = 10,
-    hjust = -1,
-    rel_widths = c(1, 1),
-    rel_heights = c(1, 1)
-  )
+  # fig1_health_legend <- plot_grid(
+  #   # refinery_legend,
+  #   # health_legend,
+  #   align = "vh",
+  #   # labels = c("A", "B"),
+  #   nrow = 1,
+  #   ncol = 2,
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   rel_widths = c(1, 1),
+  #   rel_heights = c(1, 1)
+  # )
 
 
-  fig1_health_all <- plot_grid(
-    fig1_health,
-    fig1_health_legend,
-    ncol = 1,
-    hjust = -1,
-    rel_widths = c(1, 1),
-    rel_heights = c(1, 0.1))
+  # fig1_health_all <- plot_grid(
+  #   fig1_health,
+  #   # fig1_health_legend,
+  #   ncol = 1,
+  #   hjust = -1,
+  #   rel_widths = c(1, 1),
+  #   rel_heights = c(1, 0.1))
 
 
 
-  ggsave(fig1_health_all,
+  ggsave(fig1_health,
          filename = file.path(
            fig_1_folder,
            "figure1-health.png"
          ),
-         width = 160,
-         height = 80,
+         width = 120,
+         height = 160,
          units = "mm",
          dpi = 300,
          device = "png"
   )
 
-  ggsave(fig1_health_all,
+  ggsave(fig1_health,
          filename = file.path(
            fig_1_folder,
            "figure1-health.pdf"
          ),
-         width = 160,
-         height = 80,
+         width = 120,
+         height = 160,
          units = "mm",
          dpi = 300,
          device = "pdf"
@@ -1745,8 +1819,8 @@ create_figure_1 <- function(main_path,
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2206,8 +2280,8 @@ create_figure_1 <- function(main_path,
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2334,9 +2408,49 @@ create_figure_1 <- function(main_path,
       ))
   
   
-  labor_legend <- get_legend(
-    labor_legend_fig
+  # Convert your plot to a grob object
+  gl <- ggplotGrob(labor_legend_fig)
+  
+  # Find all legend ("guide-box") grobs
+  legend_grobs_l <- gl$grobs[which(sapply(gl$grobs, function(x) x$name) == "guide-box")]
+  
+  # See how many there are
+  length(legend_grobs_l)
+  
+  # Draw one to inspect
+  grid.newpage()
+  grid.draw(legend_grobs_l[[1]])  
+  
+  # Save the legend as image
+  png(file.path(
+    fig_1_folder,
+    "figure1-labor-legend.png"
+  ))
+  grid.newpage()
+  grid.draw(legend_grobs_l[[1]])
+  dev.off()
+  
+  pdf(file.path(
+    fig_1_folder,
+    "figure1-labor-legend.pdf"
+  ))
+  grid.newpage()
+  grid.draw(legend_grobs_l[[1]])
+  dev.off()
+  
+  embed_fonts(
+    file.path(
+      fig_1_folder,
+      "figure1-labor-legend.pdf"
+    ),
+    outfile = file.path(
+      fig_1_folder,
+      "figure1-labor-legend.pdf"
+    )
   )
+  
+  
+  
   
   ## plot labor together
   ## --------------------------------------------------------------------------
@@ -2349,9 +2463,9 @@ create_figure_1 <- function(main_path,
     ct_labor_bay_area_w_reemp,
     ct_labor_la_total,
     align = "vh",
-    # labels = c("A", "B"),
-    nrow = 1,
-    ncol = 2,
+    labels = c("C", "D"),
+    nrow = 2,
+    ncol = 1,
     # # labels = 'AUTO',
     # label_size = 10,
     hjust = -1,
@@ -2361,47 +2475,47 @@ create_figure_1 <- function(main_path,
   
   fig1_labor
   
-  fig1_labor_legend <- plot_grid(
-    refinery_legend,
-    labor_legend,
-    align = "vh",
-    # labels = c("A", "B"),
-    nrow = 1,
-    ncol = 2,
-    # # labels = 'AUTO',
-    # label_size = 10,
-    hjust = -1,
-    rel_widths = c(1, 1),
-    rel_heights = c(1, 1)
-  )
+  # fig1_labor_legend <- plot_grid(
+  #   # refinery_legend,
+  #   # labor_legend,
+  #   align = "vh",
+  #   # labels = c("A", "B"),
+  #   nrow = 1,
+  #   ncol = 2,
+  #   # # labels = 'AUTO',
+  #   # label_size = 10,
+  #   hjust = -1,
+  #   rel_widths = c(1, 1),
+  #   rel_heights = c(1, 1)
+  # )
   
-  fig1_labor_all <- plot_grid(
-    fig1_labor,
-    fig1_labor_legend,
-    ncol = 1,
-    hjust = -1,
-    rel_widths = c(1, 1),
-    rel_heights = c(1, 0.1))
+  # fig1_labor_all <- plot_grid(
+  #   fig1_labor,
+  #   # fig1_labor_legend,
+  #   ncol = 1,
+  #   hjust = -1,
+  #   rel_widths = c(1, 1),
+  #   rel_heights = c(1, 0.1))
   
-  ggsave(fig1_labor_all,
+  ggsave(fig1_labor,
          filename = file.path(
            fig_1_folder,
            "figure1-labor.png"
          ),
-         width = 160,
-         height = 80,
+         width = 120,
+         height = 160,
          units = "mm",
          dpi = 300,
          device = "png"
   )
   
-  ggsave(fig1_labor_all,
+  ggsave(fig1_labor,
          filename = file.path(
            fig_1_folder,
            "figure1-labor.pdf"
          ),
-         width = 160,
-         height = 80,
+         width = 120,
+         height = 160,
          units = "mm",
          dpi = 300,
          device = "pdf"
@@ -2421,9 +2535,9 @@ create_figure_1 <- function(main_path,
 
   ## all four
   fig1_all <- plot_grid(
-    fig1_health_all,
-    fig1_labor_all,
-    ncol = 1,
+    fig1_health,
+    fig1_labor,
+    ncol = 2,
     hjust = -1,
     rel_widths = c(1, 1),
     rel_heights = c(1, 1))
@@ -2433,7 +2547,7 @@ create_figure_1 <- function(main_path,
            fig_1_folder,
            "figure1-total-comp-all.png"
          ),
-         width = 160,
+         width = 240,
          height = 160,
          units = "mm",
          dpi = 600,
@@ -2445,7 +2559,7 @@ create_figure_1 <- function(main_path,
            fig_1_folder,
            "figure1-total-comp-all.pdf"
          ),
-         width = 160,
+         width = 200,
          height = 160,
          units = "mm",
          dpi = 600,
