@@ -102,9 +102,13 @@ create_srm_xwalk <- function(
   ## save pm2.5 exposure by refinery
   # Create directory if it doesn't exist
   if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
-    dir.create(file.path(save_path, "fig-csv-files"), recursive = TRUE, showWarnings = FALSE)
+    dir.create(
+      file.path(save_path, "fig-csv-files"),
+      recursive = TRUE,
+      showWarnings = FALSE
+    )
   }
-  
+
   fwrite(
     srm_pm25_df,
     file.path(save_path, "fig-csv-files", "srm_pm25_refinery_level.csv")
@@ -125,9 +129,13 @@ create_srm_ct <- function(main_path, save_path, refinery_pm25_srm) {
   ## save pm2.5 exposure for each ct
   # Create directory if it doesn't exist
   if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
-    dir.create(file.path(save_path, "fig-csv-files"), recursive = TRUE, showWarnings = FALSE)
+    dir.create(
+      file.path(save_path, "fig-csv-files"),
+      recursive = TRUE,
+      showWarnings = FALSE
+    )
   }
-  
+
   fwrite(
     pm25_srm,
     file.path(save_path, "fig-csv-files", "srm_pm25_ct.csv")
@@ -420,7 +428,6 @@ create_pulse_fig <- function(
 #
 # ## only include census tracts that are in the crop
 # ct_intersect <- st_intersection(ct_map_county, county_crop)
-}
 
 # ## crop
 # ## -----------------------------------

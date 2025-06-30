@@ -1502,7 +1502,7 @@ calc_county_level_outputs <- function(
   ## save df
   fwrite(
     labor_county_out_df,
-    file.path(main_path, save_path, "fig-csv-files", "labor_county_outputs.csv")
+    file.path(save_path, "fig-csv-files", "labor_county_outputs.csv")
   )
   # fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files", "labor_county_outputs.csv"))
 

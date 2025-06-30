@@ -6,7 +6,9 @@ create_save_folders_repo <- function(save_path, iteration) {
     dirs_to_create <- c(
         file.path("outputs", iteration, "health"),
         file.path("outputs", iteration, "figures"),
-        save_path
+        save_path,
+        file.path(save_path, "fig-csv-files"),
+        file.path(save_path, "legends")
     )
 
     for (dir in dirs_to_create) {
@@ -72,6 +74,37 @@ simple_ggsave_repo <- function(
         units = "in"
     )
 
+    message("Saved: ", file_path)
+    return(file_path)
+}
+
+#' Safe file write with directory creation
+#' @param data Data to write
+#' @param main_path Base path for data files
+#' @param save_path Relative save path
+#' @param subfolder Subfolder within save_path
+#' @param filename Filename to save
+safe_fwrite_with_dir <- function(
+    data,
+    main_path,
+    save_path,
+    subfolder,
+    filename
+) {
+    # Create full path - use save_path directly, not main_path/save_path
+    full_dir_path <- file.path(save_path, subfolder)
+
+    # Ensure directory exists
+    if (!dir.exists(full_dir_path)) {
+        dir.create(full_dir_path, recursive = TRUE, showWarnings = FALSE)
+        message("Created directory: ", full_dir_path)
+    }
+
+    # Full file path
+    file_path <- file.path(full_dir_path, filename)
+
+    # Write file
+    data.table::fwrite(data, file_path)
     message("Saved: ", file_path)
     return(file_path)
 }

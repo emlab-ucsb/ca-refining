@@ -1,6 +1,6 @@
 create_save_folders <- function(main_path, save_path_name) {
-  # Create the main outputs directory structure
-  main_outputs_dir <- file.path(main_path, save_path_name)
+  # Save path should already be the full output path, no need to prepend main_path
+  main_outputs_dir <- save_path_name
 
   if (!dir.exists(main_outputs_dir)) {
     dir.create(main_outputs_dir, recursive = TRUE, showWarnings = FALSE)
