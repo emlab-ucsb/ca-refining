@@ -102,17 +102,14 @@ create_srm_xwalk <- function(
   ## save pm2.5 exposure by refinery
   # Create directory if it doesn't exist
   if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
-    dir.create(
-      file.path(save_path, "fig-csv-files"),
-      recursive = TRUE,
-      showWarnings = FALSE
-    )
+    dir.create(file.path(save_path, "fig-csv-files"), recursive = TRUE, showWarnings = FALSE)
   }
-
+  
   fwrite(
     srm_pm25_df,
     file.path(save_path, "fig-csv-files", "srm_pm25_refinery_level.csv")
   )
+  # fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv"))
 
   return(srm_pm25_df)
 }
@@ -128,14 +125,14 @@ create_srm_ct <- function(main_path, save_path, refinery_pm25_srm) {
   ## save pm2.5 exposure for each ct
   # Create directory if it doesn't exist
   if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
-    dir.create(
-      file.path(save_path, "fig-csv-files"),
-      recursive = TRUE,
-      showWarnings = FALSE
-    )
+    dir.create(file.path(save_path, "fig-csv-files"), recursive = TRUE, showWarnings = FALSE)
   }
-
-  fwrite(pm25_srm, file.path(save_path, "fig-csv-files", "srm_pm25_ct.csv"))
+  
+  fwrite(
+    pm25_srm,
+    file.path(save_path, "fig-csv-files", "srm_pm25_ct.csv")
+  )
+  # fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv"))
 
   return(pm25_srm)
 }
@@ -178,6 +175,7 @@ create_pulse_fig <- function(
   site_ids <- unique(refinery_pm25_srm$site_id)
 
   ## for each site id, plot and put relevant county boundaries
+
   for (i in 1:length(site_ids)) {
     id_tmp <- site_ids[i]
 
@@ -261,15 +259,30 @@ create_pulse_fig <- function(
         )
       )
 
-    # Create pulse-figs directory if it doesn't exist
-    pulse_dir <- file.path(save_path, "pulse-figs")
-    if (!dir.exists(pulse_dir)) {
-      dir.create(pulse_dir, recursive = TRUE, showWarnings = FALSE)
+    # ggsave(plot = pm25_fig_tmp,
+    #        filename = paste0(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/pulse-figs/pulse_",
+    #                          id_tmp, ".jpeg"),
+    #        device = "jpeg",
+    #        # width = 6.5,
+    #        # height = 8,
+    #        dpi = 300)
+
+    # NOTE from Meas: the plot save directory is hard coded in this function instead of _targets.R, not always easy to track
+    # I've added `create.dir = TRUE` otherwise the function will fail if the directory doesn't exist
+    # I also added the usage of `file.path` to make it more robust to whether a path has "/" at the end or not
+    # NOTE from tracey: this throws and erorr for me (Error in f(...): unused argument (create.dir = TRUE))
+    # added code to create the directory if it doesn't exist
+
+    # check if the folder exists
+    pulse_figs_dir <- file.path(save_path, "pulse-figs")
+    if (!dir.exists(pulse_figs_dir)) {
+      # Create the folder if it does not exist
+      dir.create(pulse_figs_dir, recursive = TRUE, showWarnings = FALSE)
     }
 
     ggsave(
       plot = pm25_fig_tmp,
-      filename = file.path(pulse_dir, paste0("pulse_", id_tmp, ".jpeg")),
+      filename = file.path(pulse_figs_dir, paste0("pulse_", id_tmp, ".jpeg")),
       device = "jpeg",
       dpi = 300
     )
@@ -278,9 +291,6 @@ create_pulse_fig <- function(
   ## make fig for all locations
 
   ## crop
-  disp_win2_wgs84 <- st_sfc(
-    st_point(c(-122.5, 33)),
-    st_point(c(-117, 39)),
   disp_win2_wgs84 <- st_sfc(
     st_point(c(-122.5, 33)),
     st_point(c(-117, 39)),
@@ -377,16 +387,39 @@ create_pulse_fig <- function(
 
   # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0 and added `create.dir = TRUE`
   # NOTE from Tracey: same error! removed `create.dir = TRUE`
+  # check if the folder exists
+  pulse_figs_dir <- file.path(save_path, "pulse-figs")
+  if (!dir.exists(pulse_figs_dir)) {
+    # Create the folder if it does not exist
+    dir.create(pulse_figs_dir, recursive = TRUE, showWarnings = FALSE)
+  }
+
   ggsave(
     plot = pm25_fig_all,
-    filename = file.path(save_path, "pulse-figs", "pulse_all_crop.jpeg"),
+    filename = file.path(pulse_figs_dir, "pulse_all_crop.jpeg"),
     device = "jpeg",
-    # width = 6.5,
-    # height = 8,
     dpi = 300
   )
 
   return(pm25_fig_all)
+}
+
+# ## crop
+# ## -----------------------------------
+# disp_win_la_wgs84 <- st_sfc(st_point(c(-118.5, 33.6)), st_point(c(-117.8, 34.2)),
+#                             crs = 4326)
+#
+# disp_win_la_trans <- st_transform(disp_win_la_wgs84, crs = ca_crs)
+#
+# disp_win_la_coord <- st_coordinates(disp_win_la_trans)
+#
+# zoom_coord_df <- as.data.frame(disp_win_la_coord)
+#
+# county_crop <- st_crop(CA_counties_noisl, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+# ct_cropped <- st_crop(ct_map_county, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+#
+# ## only include census tracts that are in the crop
+# ct_intersect <- st_intersection(ct_map_county, county_crop)
 }
 
 # ## crop

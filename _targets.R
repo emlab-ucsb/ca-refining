@@ -47,7 +47,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-desktop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
@@ -69,14 +69,14 @@ list(
   # list save paths
   tar_target(
     name = run_type,
-    command = "ghg-emfac"
+    command = "jun30"
   ),
   tar_target(name = iteration, "test"),
 
   # Set run type and stop if unknown run type
   tar_target(
     name = run_type,
-    command = "ghg-emfac"
+    command = "figure-development"
   ),
   tar_target(
     name = save_path,
@@ -98,7 +98,20 @@ list(
         "outputs",
         iteration,
         "figures",
-        "ghg-emfac"
+        "ghg-emfac-cluster"
+      ),
+      "jun30" = file.path(
+        "outputs",
+        iteration,
+        "figures",
+        "jun30-reorg"
+      ),
+      "figure-development" = file.path(
+        "outputs",
+        "academic-out",
+        "refining",
+        "figures",
+        "figure-development"
       ),
       stop("Unknown run_type")
     )
@@ -124,7 +137,7 @@ list(
   tar_target(name = kern_perc, command = 0.9375),
   # tar_target(name = a, command = 4),
   # tar_target(name = ccs_capture_rate, command = 0.474),
-  tar_target(name = refinery_level_ghg, command = TRUE),
+  tar_target(name = refinery_level_ghg, command = FALSE),
 
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
@@ -1785,6 +1798,34 @@ list(
       ref_labor_demog,
       pop_ratios,
       refining_mortality
+    )
+  ),
+  tar_target(
+    name = figure_1,
+    command = create_figure_1(
+      main_path,
+      save_path,
+      ca_crs,
+      dt_refcap,
+      refin_locs,
+      dt_renref,
+      renewables_info,
+      dt_altair,
+      refining_site_output,
+      refining_sites_cons_ghg_2019_2045,
+      raw_counties,
+      raw_ct_2020_all,
+      raw_ces,
+      dt_inmap_re,
+      raw_ct_2019,
+      health_weighted,
+      refining_mortality,
+      labor_2019,
+      ca_regions,
+      raw_pop_income_2021,
+      cpi2020,
+      cpi2019,
+      annual_direct_labor
     )
   ),
 
