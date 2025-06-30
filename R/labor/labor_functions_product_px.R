@@ -1075,7 +1075,6 @@ calculate_labor_x_demg_annual <- function(
   write_csv(
     state_demo_labor_out,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_labor_direct_impacts_demo_annual.csv"
@@ -1322,7 +1321,6 @@ calculate_annual_labor_x_demg_hl <- function(
   fwrite(
     labor_pct_long,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "labor_high_low_annual_outputs.csv"

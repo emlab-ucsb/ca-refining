@@ -37,16 +37,23 @@ simple_fwrite <- function(x, main_path, sub_path, name) {
 
 simple_ggsave <- function(
   x,
-  main_path,
   sub_path,
   file_name,
   width,
   height,
   dpi
 ) {
+  # Create directory if it doesn't exist
+  save_dir <- file.path(sub_path)
+  if (!dir.exists(save_dir)) {
+    dir.create(save_dir, recursive = TRUE, showWarnings = FALSE)
+    message("Created directory: ", save_dir)
+  }
+
+  # Use named parameters to avoid confusion about parameter order
   ggsave(
-    x,
-    file.path(main_path, sub_path, file_name),
+    filename = file.path(save_dir, paste0(file_name, ".png")),
+    plot = x,
     width = width,
     height = height,
     dpi = dpi

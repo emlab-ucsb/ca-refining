@@ -4660,7 +4660,6 @@ plot_npv_health_labor_non_age_vsl <- function(
 
   simple_ggsave(
     fig3_plot_grid_ab_2020ppx,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx_non_age_vsl",
     width = 10,
@@ -4683,7 +4682,6 @@ plot_npv_health_labor_non_age_vsl <- function(
 
   simple_ggsave(
     fig3_plot_grid_ab_2020ppx_bc,
-    main_path,
     save_path,
     "state_npv_fig_2020_ppx_bartik_non_age_vsl",
     width = 10,
@@ -5408,7 +5406,6 @@ plot_health_levels_pm25 <- function(main_path, save_path, health_grp) {
   fwrite(
     fig2_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_levels_pm25_inputs.csv"
@@ -5712,7 +5709,6 @@ plot_health_levels_gaps <- function(main_path, save_path, health_grp) {
   fwrite(
     gaps_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_levels_fig_gaps_inputs.csv"
@@ -6037,7 +6033,6 @@ plot_health_levels_gaps_pmil <- function(
   fwrite(
     gaps_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_levels_fig_gaps_pmil_inputs.csv"
@@ -6328,7 +6323,6 @@ plot_health_levels_gaps_pm25 <- function(main_path, save_path, health_grp) {
   fwrite(
     gaps_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_levels_fig_gaps_pm25_inputs.csv"
@@ -6682,7 +6676,6 @@ plot_labor_levels <- function(
   fwrite(
     fig2_l_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_levels_labor_fig_inputs.csv"
@@ -7229,7 +7222,6 @@ plot_labor_levels_pmil <- function(
   fwrite(
     fig2_l_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_levels_labor_pmil_fig_inputs.csv"
@@ -7785,7 +7777,6 @@ plot_labor_levels_gaps <- function(
   fwrite(
     l_gaps_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_labor_levels_fig_gaps_inputs.csv"
@@ -8100,7 +8091,6 @@ plot_labor_levels_gaps <- function(
 
   simple_ggsave(
     l_gaps_plot_grid2_2020ppx,
-    main_path,
     save_path,
     "state_labor_gaps_fig_2020ppx",
     width = 12,
@@ -8284,7 +8274,6 @@ plot_labor_levels_gaps_pmil <- function(
   fwrite(
     l_gaps_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_labor_levels_fig_gaps_pmil_inputs.csv"
@@ -8615,7 +8604,6 @@ plot_labor_levels_gaps_pmil <- function(
 
   simple_ggsave(
     l_gaps_plot_grid2_2020ppx,
-    main_path,
     save_path,
     "state_labor_gaps_pmil_fig_2020ppx",
     width = 12,
@@ -8958,7 +8946,6 @@ plot_hl_levels_df <- function(
   fwrite(
     plot_df_long,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_disaggregated_npv_fig_inputs.csv"
@@ -9490,7 +9477,6 @@ plot_hl_levels <- function(main_path, save_path, demographic_npv_df) {
 
   simple_ggsave(
     hl_pc_plot_grid_nl_2020ppx,
-    main_path,
     save_path,
     "demographic_npv_fig_2020ppx",
     width = 11,
@@ -9559,7 +9545,6 @@ plot_hl_levels_pc <- function(
   fwrite(
     plot_df_long,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_disaggregated_npv_pc_fig_inputs.csv"
@@ -10253,7 +10238,6 @@ plot_hl_levels_pc <- function(
 
   simple_ggsave(
     hl_pc_plot_grid_nl_2020ppx,
-    main_path,
     save_path,
     "demographic_npv_pc_fig_2020ppx",
     width = 11,
@@ -10374,6 +10358,11 @@ plot_hl_shares <- function(
   demographic_npv_df,
   state_pop_ratios
 ) {
+  fig_csv_dir <- file.path(save_path, "fig-csv-files")
+  legends_dir <- file.path(save_path, "legends")
+  ensure_dir(fig_csv_dir)
+  ensure_dir(legends_dir)
+
   plot_df_long <- copy(demographic_npv_df)
 
   ## calculate shares
@@ -10459,7 +10448,6 @@ plot_hl_shares <- function(
   fwrite(
     share_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_disaggreated_npv_share_fig_inputs.csv"
@@ -11360,7 +11348,6 @@ plot_hl_shares <- function(
 
   simple_ggsave(
     hl_pc_plot_grid_nl_2020ppx,
-    main_path,
     save_path,
     "demographic_npv_shares_fig_2020ppx",
     width = 12,
@@ -11567,7 +11554,6 @@ create_health_labor_table <- function(
   fwrite(
     result_output,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_health_labor_ouputs.csv"
@@ -12523,7 +12509,6 @@ fig4_hl <- function(
 
   simple_ggsave(
     health_labor_plot_2020ppx,
-    main_path,
     save_path,
     "health_labor_gaps_plot_2020ppx",
     width = 14,
@@ -12550,7 +12535,6 @@ fig4_hl <- function(
 
   simple_ggsave(
     health_labor_plot_2020ppx_no_reemp,
-    main_path,
     save_path,
     "health_labor_gaps_plot_2020ppx_no_reemp",
     width = 14,
@@ -13663,7 +13647,6 @@ fig4_hl_pmil <- function(
 
   simple_ggsave(
     health_labor_plot_2020ppx,
-    main_path,
     save_path,
     "health_labor_gaps_pmil_plot_2020ppx",
     width = 18,
@@ -13689,7 +13672,6 @@ fig4_hl_pmil <- function(
 
   simple_ggsave(
     health_labor_plot_2020ppx_no_reemp,
-    main_path,
     save_path,
     "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
     width = 18,
