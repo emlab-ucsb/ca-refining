@@ -1,5 +1,32 @@
 ## health and labor figures
 
+## Helper functions for file operations
+## -----------------------------------------------------------------------------
+
+#' Ensure directory exists before saving file
+#' @param dir Directory to create if it doesn't exist
+ensure_dir <- function(dir) {
+  if (!dir.exists(dir)) {
+    dir.create(dir, recursive = TRUE)
+    message("Created directory: ", dir)
+  }
+}
+
+#' Safe write file with directory creation
+#' @param data Data to write
+#' @param main_path Base path (not used, included for compatibility)
+#' @param save_path Save path
+#' @param subdir Subdirectory name
+#' @param filename Filename
+safe_write_file <- function(data, save_path, subdir, filename) {
+  full_dir <- file.path(save_path, subdir)
+  ensure_dir(full_dir)
+  full_path <- file.path(full_dir, filename)
+  fwrite(data, full_path)
+  message("Saved: ", full_path)
+  return(full_path)
+}
+
 ## labor SI figure
 ## -----------------------------------------------------------------------------
 
@@ -11,6 +38,11 @@ plot_npv_labor_oilpx <- function(
   dt_ghg_2019,
   annual_all_impacts_labor
 ) {
+  # Ensure output directories exist
+  fig_csv_dir <- file.path(save_path, "fig-csv-files")
+  legends_dir <- file.path(save_path, "legends")
+  ensure_dir(fig_csv_dir)
+  ensure_dir(legends_dir)
   ## add ghg emission reduction
   ## 2019 ghg
   ghg_2019_val <- dt_ghg_2019$mtco2e[1]
@@ -299,16 +331,12 @@ plot_npv_labor_oilpx <- function(
   )
 
   ## save figure inputs
-  fwrite(
+  safe_write_file(
     plot_df_labor,
-    file.path(
-      main_path,
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_labor_all_oilpx.csv"
-    )
+    save_path,
+    "fig-csv-files",
+    "state_npv_fig_inputs_labor_all_oilpx.csv"
   )
-  # fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
 
   ## scenarios for filtering
   remove_scen <- c("LC1 historical production", "BAU historical production")
@@ -931,16 +959,12 @@ plot_npv_health_labor <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  safe_write_file(
     plot_df_health,
-    file.path(
-      main_path,
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_health.csv"
-    )
+    save_path,
+    "fig-csv-files",
+    "state_npv_fig_inputs_health.csv"
   )
-  # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
 
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
@@ -1022,11 +1046,12 @@ plot_npv_health_labor <- function(
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  safe_write_file(
     plot_df_labor,
-    file.path(save_path, "fig-csv-files", "state_npv_fig_inputs_labor.csv")
+    save_path,
+    "fig-csv-files",
+    "state_npv_fig_inputs_labor.csv"
   )
-  # fwrite(plot_df_labor, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_labor.csv"))
 
   ## scenarios for filtering
   remove_scen <- c("LC1 historical production", "BAU historical production")
@@ -2061,13 +2086,11 @@ plot_npv_health_labor_ref <- function(
   fwrite(
     plot_df_health,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_npv_fig_inputs_health_ref.csv"
     )
   )
-  # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
 
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
@@ -3061,7 +3084,6 @@ plot_npv_health_labor_annual_vsl <- function(
   fwrite(
     plot_df_health,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_npv_fig_inputs_health_annual_vsl.csv"
@@ -4062,7 +4084,6 @@ plot_npv_health_labor_non_age_vsl <- function(
   fwrite(
     plot_df_health,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_npv_fig_inputs_health_non_age_vsl.csv"
@@ -4747,7 +4768,7 @@ calc_county_pm25 <- function(
 
   fwrite(
     health_county_df,
-    file.path(main_path, save_path, "fig-csv-files", "avg_pm25_county_2019.csv")
+    file.path(save_path, "fig-csv-files", "avg_pm25_county_2019.csv")
   )
   # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv"))
 
@@ -4815,7 +4836,7 @@ plot_health_levels <- function(main_path, save_path, health_grp) {
   ## save figure inputs
   fwrite(
     fig2_df,
-    file.path(main_path, save_path, "state_levels_fig_inputs.csv")
+    file.path(save_path, "state_levels_fig_inputs.csv")
   )
   # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv"))
 
@@ -5118,7 +5139,6 @@ plot_health_levels_pc <- function(
   fwrite(
     mort_pc_df,
     file.path(
-      main_path,
       save_path,
       "fig-csv-files",
       "state_levels_pmil_fig_inputs.csv"

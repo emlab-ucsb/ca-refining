@@ -1,13 +1,52 @@
 get_ces_county <- function(raw_ces) {
-  dt <- raw_ces[, c("Census Tract", "California County")]
-  setnames(
+  # Check what columns actually exist in the data
+  available_cols <- names(raw_ces)
+
+  # Try different possible column names
+  tract_col <- if ("Census Tract" %in% available_cols) {
+    "Census Tract"
+  } else if ("census_tract" %in% available_cols) {
+    "census_tract"
+  } else {
+    # Find column that might contain tract information
+    tract_candidates <- available_cols[grepl(
+      "tract|Tract",
+      available_cols,
+      ignore.case = TRUE
+    )]
+    if (length(tract_candidates) > 0) {
+      tract_candidates[1]
+    } else {
+      stop("No census tract column found")
+    }
+  }
+
+  county_col <- if ("California County" %in% available_cols) {
+    "California County"
+  } else if ("county" %in% available_cols) {
+    "county"
+  } else {
+    # Find column that might contain county information
+    county_candidates <- available_cols[grepl(
+      "county|County",
+      available_cols,
+      ignore.case = TRUE
+    )]
+    if (length(county_candidates) > 0) {
+      county_candidates[1]
+    } else {
+      stop("No county column found")
+    }
+  }
+
+  # Convert to data.table and select columns
+  dt <- data.table::as.data.table(raw_ces)[,
+    c(tract_col, county_col),
+    with = FALSE
+  ]
+  data.table::setnames(
     dt,
-    c("Census Tract", "California County"),
-    c("census_tract", "county")
-  )
-  setnames(
-    dt,
-    c("Census Tract", "California County"),
+    c(tract_col, county_col),
     c("census_tract", "county")
   )
   dt[, census_tract := paste0("0", census_tract, sep = "")]
