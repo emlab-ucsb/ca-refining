@@ -100,7 +100,7 @@ list(
         "outputs",
         iteration,
         "figures",
-        "ghg-emfac-cluster"
+        "jun30"
       ),
       "figure-development" = file.path(
         "outputs",
@@ -1960,7 +1960,6 @@ list(
     name = save_npv_fig_annual_vsl,
     command = simple_ggsave(
       npv_plot_annual_vsl,
-      main_path,
       save_path,
       # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig_annual_vsl",
@@ -1974,7 +1973,6 @@ list(
     name = save_npv_fig_non_age_vsl,
     command = simple_ggsave(
       npv_plot_non_age_vsl,
-      main_path,
       save_path,
       # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig_non_age_vsl",

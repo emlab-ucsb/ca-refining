@@ -2,6 +2,19 @@
 # ## original version: september 9, 2024
 ## updated version: march 30, 2025 - address reviewer comments
 
+#' Helper function to create a proper coord_sf without graticule errors
+#' @param coords Coordinates from st_coordinates()
+#' @param expand Whether to expand the plot area
+#' @return A coord_sf object with proper xlim and ylim
+safe_coord_sf <- function(coords, expand = FALSE) {
+  coord_sf(
+    xlim = c(coords[1, "X"], coords[2, "X"]),
+    ylim = c(coords[1, "Y"], coords[2, "Y"]),
+    expand = expand,
+    datum = NULL # Disable graticules to avoid MULTILINESTRING error
+  )
+}
+
 create_figure_1 <- function(
   main_path,
   save_path,
@@ -837,7 +850,7 @@ create_figure_1 <- function(
       fill = expression(paste("PM"[2.5], " (", mu, "g/", m^3, ")")),
       color = NULL,
       shape = NULL,
-      x = NULL,
+      x = "Longitude",
       y = "Latitude"
     ) +
     coord_sf(
@@ -859,8 +872,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -992,11 +1005,7 @@ create_figure_1 <- function(
       x = NULL,
       y = "Latitude",
     ) +
-    coord_sf(
-      xlim = disp_win_la_cluster_coord[, "X"],
-      ylim = disp_win_la_cluster_coord[, "Y"],
-      expand = FALSE
-    ) +
+    safe_coord_sf(disp_win_la_cluster_coord) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
@@ -1110,10 +1119,7 @@ create_figure_1 <- function(
     ) +
     geom_sf(
       data = refin_capacity |>
-        filter(
-          installation == "Existing capacity" &
-            region == "South"
-        ),
+        filter(installation == "Existing capacity"),
       mapping = aes(
         geometry = geometry,
         size = barrels_per_day / 1000
@@ -1137,11 +1143,7 @@ create_figure_1 <- function(
       x = "Longitude",
       y = "Latitude"
     ) +
-    coord_sf(
-      xlim = disp_win_la_cluster_coord[, "X"],
-      ylim = disp_win_la_cluster_coord[, "Y"],
-      expand = FALSE
-    ) +
+    safe_coord_sf(disp_win_la_cluster_coord) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
@@ -1252,11 +1254,7 @@ create_figure_1 <- function(
       x = "Longitude",
       y = "Latitude"
     ) +
-    coord_sf(
-      xlim = disp_win_la_cluster_coord[, "X"],
-      ylim = disp_win_la_cluster_coord[, "Y"],
-      expand = FALSE
-    ) +
+    safe_coord_sf(disp_win_la_cluster_coord) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
@@ -1374,11 +1372,7 @@ create_figure_1 <- function(
       x = "Longitude",
       y = "Latitude"
     ) +
-    coord_sf(
-      xlim = disp_win_la_cluster_coord[, "X"],
-      ylim = disp_win_la_cluster_coord[, "Y"],
-      expand = FALSE
-    ) +
+    safe_coord_sf(disp_win_la_cluster_coord) +
     theme(
       #legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
@@ -2273,7 +2267,7 @@ create_figure_1 <- function(
     outfile = paste0(fig_1_folder, "/figure1-labor-total-bay-area.pdf")
   )
 
-  ## kern
+  ## figure
   ct_labor_kern_wt <- ggplot() +
     geom_sf(
       data = kern_cluster_ct_cropped_labor |>
@@ -2629,16 +2623,12 @@ create_figure_1 <- function(
       x = NULL,
       y = NULL
     ) +
-    coord_sf(
-      xlim = disp_win_la_cluster_coord[, "X"],
-      ylim = disp_win_la_cluster_coord[, "Y"],
-      expand = FALSE
-    ) +
+    safe_coord_sf(disp_win_la_cluster_coord) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
-      legend.position = c(0.01, 0.2),
+      legend.position.inside = c(0.01, 0.2),
       legend.key.width = unit(0.9, "line"),
       legend.key.height = unit(0.5, "line"),
       legend.title = element_text(size = 10),
@@ -2648,8 +2638,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2772,11 +2762,7 @@ create_figure_1 <- function(
       x = "Longitude",
       y = "Latitude"
     ) +
-    coord_sf(
-      xlim = disp_win_la_cluster_coord[, "X"],
-      ylim = disp_win_la_cluster_coord[, "Y"],
-      expand = FALSE
-    ) +
+    safe_coord_sf(disp_win_la_cluster_coord) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
@@ -2791,8 +2777,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_blank(),
-      axis.title = element_text(size = 9),
-      axis.text = element_text(size = 7),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 8),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2922,11 +2908,7 @@ create_figure_1 <- function(
       x = NULL,
       y = "Latitude"
     ) +
-    coord_sf(
-      xlim = disp_win_la_cluster_coord[, "X"],
-      ylim = disp_win_la_cluster_coord[, "Y"],
-      expand = FALSE
-    ) +
+    safe_coord_sf(disp_win_la_cluster_coord) +
     theme(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
