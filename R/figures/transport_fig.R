@@ -100,14 +100,18 @@ create_srm_xwalk <- function(
   )
 
   ## save pm2.5 exposure by refinery
+  # Create directory if it doesn't exist
+  if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
+    dir.create(
+      file.path(save_path, "fig-csv-files"),
+      recursive = TRUE,
+      showWarnings = FALSE
+    )
+  }
+
   fwrite(
     srm_pm25_df,
-    file.path(
-      main_path,
-      save_path,
-      "fig-csv-files",
-      "srm_pm25_refinery_level.csv"
-    )
+    file.path(save_path, "fig-csv-files", "srm_pm25_refinery_level.csv")
   )
   # fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv"))
 
@@ -123,9 +127,18 @@ create_srm_ct <- function(main_path, save_path, refinery_pm25_srm) {
   ]
 
   ## save pm2.5 exposure for each ct
+  # Create directory if it doesn't exist
+  if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
+    dir.create(
+      file.path(save_path, "fig-csv-files"),
+      recursive = TRUE,
+      showWarnings = FALSE
+    )
+  }
+
   fwrite(
     pm25_srm,
-    file.path(main_path, save_path, "fig-csv-files/", "srm_pm25_ct.csv")
+    file.path(save_path, "fig-csv-files", "srm_pm25_ct.csv")
   )
   # fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv"))
 
@@ -269,39 +282,16 @@ create_pulse_fig <- function(
     # added code to create the directory if it doesn't exist
 
     # check if the folder exists
-    if (
-      !dir.exists(file.path(
-        main_path,
-        "outputs",
-        "academic-out",
-        "refining",
-        "figures",
-        "2024-08-update",
-        "pulse-figs"
-      ))
-    ) {
+    pulse_figs_dir <- file.path(save_path, "pulse-figs")
+    if (!dir.exists(pulse_figs_dir)) {
       # Create the folder if it does not exist
-      dir.create(file.path(
-        main_path,
-        "outputs",
-        "academic-out",
-        "refining",
-        "figures",
-        "2024-08-update",
-        "pulse-figs"
-      ))
+      dir.create(pulse_figs_dir, recursive = TRUE, showWarnings = FALSE)
     }
 
     ggsave(
       plot = pm25_fig_tmp,
-      filename = paste0(
-        file.path(main_path, save_path, "pulse-figs", "pulse_"),
-        id_tmp,
-        ".jpeg"
-      ),
+      filename = file.path(pulse_figs_dir, paste0("pulse_", id_tmp, ".jpeg")),
       device = "jpeg",
-      # width = 6.5,
-      # height = 8,
       dpi = 300
     )
   }
@@ -405,22 +395,39 @@ create_pulse_fig <- function(
 
   # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0 and added `create.dir = TRUE`
   # NOTE from Tracey: same error! removed `create.dir = TRUE`
+  # check if the folder exists
+  pulse_figs_dir <- file.path(save_path, "pulse-figs")
+  if (!dir.exists(pulse_figs_dir)) {
+    # Create the folder if it does not exist
+    dir.create(pulse_figs_dir, recursive = TRUE, showWarnings = FALSE)
+  }
+
   ggsave(
     plot = pm25_fig_all,
-    filename = file.path(
-      main_path,
-      save_path,
-      "pulse-figs",
-      "pulse_all_crop.jpeg"
-    ),
+    filename = file.path(pulse_figs_dir, "pulse_all_crop.jpeg"),
     device = "jpeg",
-    # width = 6.5,
-    # height = 8,
     dpi = 300
   )
 
   return(pm25_fig_all)
 }
+
+# ## crop
+# ## -----------------------------------
+# disp_win_la_wgs84 <- st_sfc(st_point(c(-118.5, 33.6)), st_point(c(-117.8, 34.2)),
+#                             crs = 4326)
+#
+# disp_win_la_trans <- st_transform(disp_win_la_wgs84, crs = ca_crs)
+#
+# disp_win_la_coord <- st_coordinates(disp_win_la_trans)
+#
+# zoom_coord_df <- as.data.frame(disp_win_la_coord)
+#
+# county_crop <- st_crop(CA_counties_noisl, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+# ct_cropped <- st_crop(ct_map_county, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+#
+# ## only include census tracts that are in the crop
+# ct_intersect <- st_intersection(ct_map_county, county_crop)
 
 # ## crop
 # ## -----------------------------------

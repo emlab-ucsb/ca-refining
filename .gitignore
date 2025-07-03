@@ -43,3 +43,22 @@ _targets/
 
 # .DS_Store
 .DS_Store
+
+# data
+# /data/
+
+# shapefiles (and all related files to .shp files)
+*.shp*
+*.shx*
+*.dbf*
+*.prj*
+*.cpg*
+*.qpj*
+*.sbn*
+*.sbx*
+
+# other file types to not track
+*.atx
+
+# labor files
+/data/data-staged-for-deletion/labor/*
