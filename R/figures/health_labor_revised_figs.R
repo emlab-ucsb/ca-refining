@@ -4658,13 +4658,16 @@ plot_npv_health_labor_non_age_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx_non_age_vsl",
+  simple_ggsave_repo(
+    plot = fig3_plot_grid_ab_2020ppx,
+    folder_path = NULL,
+    filename = "state_npv_fig_2020_ppx_non_age_vsl",
     width = 10,
     height = 5,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "extra-figure-3"
   )
 
   ## bartik correction
@@ -4680,13 +4683,16 @@ plot_npv_health_labor_non_age_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik_non_age_vsl",
+  simple_ggsave_repo(
+    plot = fig3_plot_grid_ab_2020ppx_bc,
+    folder_path = NULL,
+    filename = "state_npv_fig_2020_ppx_bartik_non_age_vsl",
     width = 10,
     height = 5,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "extra-figure-3"
   )
 
   fig3_plot_grid_ab <- plot_grid(
@@ -8089,13 +8095,17 @@ plot_labor_levels_gaps <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave(
-    l_gaps_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_gaps_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = l_gaps_plot_grid2_2020ppx,
+    folder_path = NULL,
+    filename = "state_labor_gaps_fig_2020ppx",
     width = 12,
     height = 8,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "labor-figures",
+    extra_subfolder = "labor-figures"
   )
 
   ## original version
@@ -8602,13 +8612,17 @@ plot_labor_levels_gaps_pmil <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave(
-    l_gaps_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_gaps_pmil_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = l_gaps_plot_grid2_2020ppx,
+    folder_path = NULL,
+    filename = "state_labor_gaps_pmil_fig_2020ppx",
     width = 12,
     height = 8,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "labor-figures",
+    extra_subfolder = "labor-figures"
   )
 
   ## original
@@ -9475,13 +9489,17 @@ plot_hl_levels <- function(main_path, save_path, demographic_npv_df) {
     # rel_widths = c(1, 1, 1)
   )
 
-  simple_ggsave(
-    hl_pc_plot_grid_nl_2020ppx,
-    save_path,
-    "demographic_npv_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = hl_pc_plot_grid_nl_2020ppx,
+    folder_path = NULL,
+    filename = "demographic_npv_fig_2020ppx",
     width = 11,
     height = 12,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "health-labor-figures",
+    extra_subfolder = "health-labor-figures"
   )
 
   ## original -- all together now
@@ -10236,13 +10254,16 @@ plot_hl_levels_pc <- function(
     # rel_widths = c(1, 1, 1)
   )
 
-  simple_ggsave(
-    hl_pc_plot_grid_nl_2020ppx,
-    save_path,
-    "demographic_npv_pc_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = hl_pc_plot_grid_nl_2020ppx,
+    folder_path = NULL,
+    filename = "demographic_npv_pc_fig_2020ppx",
     width = 11,
     height = 12,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-5"
   )
 
   ## all together now
@@ -11346,13 +11367,16 @@ plot_hl_shares <- function(
     # rel_widths = c(1, 1, 1)
   )
 
-  simple_ggsave(
-    hl_pc_plot_grid_nl_2020ppx,
-    save_path,
-    "demographic_npv_shares_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = hl_pc_plot_grid_nl_2020ppx,
+    folder_path = NULL,
+    filename = "demographic_npv_shares_fig_2020ppx",
     width = 12,
     height = 12,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figures-si"
   )
 
   ## original
@@ -12507,13 +12531,17 @@ fig4_hl <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx,
-    save_path,
-    "health_labor_gaps_plot_2020ppx",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx,
+    folder_path = NULL,
+    filename = "health_labor_gaps_plot_2020ppx",
     width = 14,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "health-labor-figures",
+    extra_subfolder = "health-labor-figures"
   )
 
   ## SI -- no re-emp
@@ -12533,13 +12561,16 @@ fig4_hl <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx_no_reemp,
-    save_path,
-    "health_labor_gaps_plot_2020ppx_no_reemp",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx_no_reemp,
+    folder_path = NULL,
+    filename = "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
     width = 14,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-4"
   )
 
   health_labor_plot <- plot_grid(
@@ -13645,13 +13676,17 @@ fig4_hl_pmil <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx,
-    save_path,
-    "health_labor_gaps_pmil_plot_2020ppx",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx,
+    folder_path = NULL,
+    filename = "health_labor_gaps_pmil_plot_2020ppx",
     width = 18,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "extra-figure-4",
+    extra_subfolder = "extra-figure-4"
   )
 
   health_labor_plot_2020ppx_no_reemp <- plot_grid(
@@ -13670,13 +13705,16 @@ fig4_hl_pmil <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx_no_reemp,
-    save_path,
-    "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx_no_reemp,
+    folder_path = NULL,
+    filename = "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
     width = 18,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-4"
   )
 
   health_labor_plot <- plot_grid(

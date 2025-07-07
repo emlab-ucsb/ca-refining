@@ -9,6 +9,7 @@ library(readxl)
 library(lubridate)
 library(lspline)
 library(ggplot2)
+library(grDevices)
 library(hrbrthemes)
 library(directlabels)
 library(grid)
@@ -69,18 +70,39 @@ list(
   # list save paths
   tar_target(
     name = run_type,
-    command = "jun30"
+    command = "jul07"
   ),
-  tar_target(name = iteration, "test"),
+  tar_target(name = version, command = "v0.1"),
+  tar_target(name = iteration, "test1"),
 
   # Set run type and stop if unknown run type
   tar_target(
     name = save_path,
+    command = file.path("outputs", version, iteration)
+  ),
+
+  # Create folders for structured output
+  tar_target(
+    name = intermediate_path,
+    command = file.path(save_path, "intermediate")
+  ),
+  tar_target(
+    name = results_path,
+    command = file.path(save_path, "results")
+  ),
+  tar_target(
+    name = tables_path,
+    command = file.path(save_path, "tables")
+  ),
+
+  # Deprecated paths - use for backward compatibility
+  tar_target(
+    name = deprecated_figures_path,
     command = switch(
       run_type,
       "revision-main" = file.path(
-        "outputs",
-        iteration,
+        save_path,
+        "results",
         "figures",
         "2025-revision-main"
       ),
@@ -96,11 +118,11 @@ list(
         "figures",
         "ghg-emfac-cluster"
       ),
-      "jun30" = file.path(
+      "jul07" = file.path(
         "outputs",
         iteration,
         "figures",
-        "jun30"
+        "jul07"
       ),
       "figure-development" = file.path(
         "outputs",
@@ -1819,31 +1841,15 @@ list(
       annual_direct_labor
     )
   ),
-
-  # # save outputs
-  # tar_target(name = save_ct_xwalk,
-  #            command = simple_fwrite(ct_xwalk, main_path, "outputs/refining-2024/health-beta-adj", "ct_xwalk_2019_2020.csv"),
-  #            format = "file"),
-  # tar_target(name = save_health_income,
-  #            command = simple_fwrite(refining_health_income, main_path, "outputs/refining-2024/health-beta-adj", "refining_health_income_2023.csv"),
-  #            format = "file"),
-  # tar_target(name = save_health_income_2000,
-  #            command = simple_fwrite(health_weighted, main_path, "outputs/refining-2024/health-beta-adj", "refining_health_census_tract.csv"),
-  #            format = "file"),
-  # tar_target(name = save_mortality,
-  #            command = simple_fwrite(refining_mortality, main_path, "outputs/refining-2024/health-beta-adj", "refining_mortality_2023.csv"),
-  #            format = "file"),
-  # tar_target(name = save_state_mort_levels,
-  #            command = simple_fwrite(ref_mort_level, main_path, "outputs/refining-2024/health-beta-adj", "refining_state_mortality.csv"),
-  #            format = "file"),
-  #
   # # save figures
   tar_target(
     name = save_ct_xwalk,
     command = simple_fwrite_repo(
-      ct_xwalk,
-      file.path("outputs", iteration, "health"),
-      "ct_xwalk_2019_2020.csv"
+      data = ct_xwalk,
+      folder_path = NULL, # not used when save_path and file_type are provided
+      filename = "ct_xwalk_2019_2020.csv",
+      save_path = save_path,
+      file_type = "health"
     ),
     format = "file"
   ),
@@ -1851,8 +1857,10 @@ list(
     name = save_health_income,
     command = simple_fwrite_repo(
       refining_health_income,
-      file.path("outputs", iteration, "health"),
-      "refining_health_income_2023.csv"
+      NULL,
+      "refining_health_income_2023.csv*", # Note the asterisk for git tracking
+      save_path = save_path,
+      file_type = "health"
     ),
     format = "file"
   ),
@@ -1925,9 +1933,12 @@ list(
     name = save_fig_demand_ghg,
     command = simple_ggsave_repo(
       fig_demand_ghg,
-      save_path,
+      NULL,
       "combined_its_and_production",
       width = 25,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si",
       height = 13,
       dpi = 600
     ),
@@ -1937,9 +1948,12 @@ list(
     name = save_npv_fig,
     command = simple_ggsave_repo(
       npv_plot,
-      save_path,
-      "state_npv_fig",
+      NULL,
+      "state_npv_fig*", # Asterisk for git tracking
       width = 10,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-3",
       height = 5,
       dpi = 600
     ),
@@ -1959,10 +1973,9 @@ list(
   ),
   tar_target(
     name = save_npv_fig_annual_vsl,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot_annual_vsl,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig_annual_vsl",
       width = 10,
       height = 5,
@@ -1972,10 +1985,9 @@ list(
   ),
   tar_target(
     name = save_npv_fig_non_age_vsl,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot_non_age_vsl,
       save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
       "state_npv_fig_non_age_vsl",
       width = 10,
       height = 5,
@@ -2179,9 +2191,12 @@ list(
     name = save_fig_refinery_capacity,
     command = simple_ggsave_repo(
       fig_refinery_capacity,
-      save_path,
+      NULL,
       "refinery_capacity",
       width = 16,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si",
       height = 12,
       dpi = 600
     ),

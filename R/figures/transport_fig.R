@@ -290,7 +290,7 @@ create_pulse_fig <- function(
 
     ggsave(
       plot = pm25_fig_tmp,
-      filename = file.path(pulse_figs_dir, paste0("pulse_", id_tmp, ".jpeg")),
+      filename = file.path(pulse_figs_dir, paste0("pulse_", id_tmp, ".jpg")),
       device = "jpeg",
       dpi = 300
     )
