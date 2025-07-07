@@ -17,11 +17,6 @@ outputs/
 │   │   │       └── state_labor_direct_impacts_demo_annual.csv*
 │   │   ├── results/
 │   │   │   └── figures/
-│   │   │       ├── figure-1*/
-│   │   │       │   ├── figures/
-│   │   │       │   │   └── [files currently in academic-out/refining/figures/figures/scenario/fig1/]
-│   │   │       │   └── tables/
-│   │   │       ├── figure-2*/
 │   │   │       ├── figure-3*/
 │   │   │       │   ├── state_npv_fig_2020_ppx_bartik.pdf
 │   │   │       │   ├── state_npv_fig_2020_ppx_bartik.png
