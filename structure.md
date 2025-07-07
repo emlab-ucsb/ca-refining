@@ -39,7 +39,7 @@ outputs/
 │   │   │       │   ├── demographic_npv_pc_fig_2020ppx.png
 │   │   │       │   ├── state_disaggregated_npv_fig_inputs.csv
 │   │   │       │   └── state_disaggregated_npv_pc_fig_inputs.csv
-│   │   │       ├── figures-si/
+│   │   │       ├── figures-si*/
 │   │   │       │   ├── demographic_npv_shares_fig_2020ppx.pdf
 │   │   │       │   ├── demographic_npv_shares_fig_2020ppx.png
 │   │   │       │   ├── refinery_capacity.pdf
@@ -48,7 +48,7 @@ outputs/
 │   │   │       │   └── refinery_count.png
 │   │   │       └── extra/
 │   │   │           ├── pulse-figs/
-│   │   │           │   ├── [files currently in academic-out/refining/figures/figures/scenario/pulse-figs]
+│   │   │           │   ├── pulse_[id].jpg
 │   │   │           │   ├── srm_pm25_ct.csv
 │   │   │           │   └── srm_pm25_refinery_level.csv
 │   │   │           ├── state-levels-fig/
