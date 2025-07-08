@@ -72,7 +72,7 @@ list(
     name = run_type,
     command = "jul07"
   ),
-  tar_target(name = version, command = "v0.1"),
+  tar_target(name = version, command = "jul08"),
   tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
@@ -2213,6 +2213,242 @@ list(
       height = 12,
       dpi = 600
     ),
+    format = "file"
+  ),
+
+  # ---- Output targets for labor_functions_product_px.R ----
+  # State labor direct impacts by demographic group (intermediate file)
+  tar_target(
+    state_labor_direct_impacts_demo_annual,
+    command = {
+      file_path <- file.path(
+        save_path,
+        "intermediate",
+        "labor",
+        "state_labor_direct_impacts_demo_annual.csv"
+      )
+      simple_fwrite_repo(
+        data = ref_labor_demog_yr,
+        folder_path = file.path(save_path, "intermediate", "labor"),
+        filename = "state_labor_direct_impacts_demo_annual.csv"
+      )
+      return(file_path)
+    },
+    format = "file"
+  ),
+
+  # Labor high/low annual outputs (table)
+  tar_target(
+    labor_high_low_annual_outputs,
+    command = {
+      # labor_pct_long <- calculate_annual_labor_x_demg_hl(
+      #   main_path,
+      #   save_path,
+      #   ref_labor_demog_yr,
+      #   annual_all_impacts_labor
+      # )
+      file_path <- file.path(
+        save_path,
+        "tables",
+        "labor",
+        "labor_high_low_annual_outputs.csv"
+      )
+      simple_fwrite_repo(
+        data = annual_labor_jobs_comp,
+        folder_path = file.path(save_path, "tables", "labor"),
+        filename = "labor_high_low_annual_outputs.csv"
+      )
+      return(file_path)
+    },
+    format = "file"
+  ),
+
+  # Labor county outputs (table)
+  tar_target(
+    labor_county_outputs,
+    command = {
+      file_path <- file.path(
+        save_path,
+        "tables",
+        "labor",
+        "labor_county_outputs.csv"
+      )
+      simple_fwrite_repo(
+        data = county_labor_outputs,
+        folder_path = file.path(save_path, "tables", "labor"),
+        filename = "labor_county_outputs.csv"
+      )
+      return(file_path)
+    },
+    format = "file"
+  ),
+
+  # ---- Output targets for transport_fig.R ----
+  # PM2.5 exposure by refinery (data table)
+  # tar_target(
+  #   srm_pm25_refinery_level_dt,
+  #   command = {
+  #     create_srm_xwalk(
+  #       main_path,
+  #       save_path,
+  #       srm_weighted_pm25,
+  #       ct_xwalk,
+  #       raw_counties,
+  #       raw_ct_2020_all
+  #     )
+  #   }
+  # ),
+
+  # PM2.5 exposure by refinery (file output)
+  tar_target(
+    srm_pm25_refinery_level,
+    command = {
+      # Create the path with extra/pulse-figs subfolder to match structure.md
+      file_path <- file.path(
+        save_path,
+        "tables",
+        "extra",
+        "pulse-figs",
+        "srm_pm25_refinery_level.csv"
+      )
+      # Save to the correct path based on structure.md
+      simple_fwrite_repo(
+        refinery_pm25_srm,
+        folder_path = file.path(save_path, "tables", "extra", "pulse-figs"),
+        filename = "srm_pm25_refinery_level.csv"
+      )
+      return(file_path)
+    },
+    format = "file"
+  ),
+
+  # PM2.5 exposure by census tract (data table)
+  # tar_target(
+  #   srm_pm25_ct_dt,
+  #   command = {
+  #     create_srm_ct(
+  #       main_path,
+  #       save_path,
+  #       refinery_pm25_srm
+  #     )
+  #   }
+  # ),
+
+  # PM2.5 exposure by census tract (file output)
+  tar_target(
+    srm_pm25_ct,
+    command = {
+      # Create the path with extra/pulse-figs subfolder to match structure.md
+      file_path <- file.path(
+        save_path,
+        "tables",
+        "extra",
+        "pulse-figs",
+        "srm_pm25_ct.csv"
+      )
+      # Save to the correct path based on structure.md
+      simple_fwrite_repo(
+        ct_pm25_srm,
+        folder_path = file.path(save_path, "tables", "extra", "pulse-figs"),
+        filename = "srm_pm25_ct.csv"
+      )
+      return(file_path)
+    },
+    format = "file"
+  ),
+
+  # ---- Output targets for census_pm.R ----
+  # Census tracts with missing population (data table)
+  tar_target(
+    ct_missing_pop_dt,
+    command = {
+      # health_grp <- calculate_mort_x_demg(
+      #   refining_mortality,
+      #   pop_ratios,
+      #   main_path,
+      #   save_path
+      # )
+      # Extract the missing_pop dataframe from ref_mortality_demog's processing
+      ref_mortality_demog %>%
+        filter(year == 2020, demo_cat == "Race") %>%
+        select(census_tract, pop, demo_group, pct) %>%
+        unique() %>%
+        mutate(grp_pop = pct * pop) %>%
+        group_by(census_tract, pop) %>%
+        summarise(grp_pop = sum(grp_pop)) %>%
+        ungroup() %>%
+        filter(grp_pop == 0 & pop > 0)
+    }
+  ),
+
+  # Census tracts with missing population (file output)
+  tar_target(
+    ct_missing_pop,
+    command = {
+      file_path <- file.path(save_path, "tables", "other", "ct_missing_pop.csv")
+      simple_fwrite_repo(
+        ct_missing_pop_dt,
+        folder_path = file.path(save_path, "tables", "other"),
+        filename = "ct_missing_pop.csv"
+      )
+      return(file_path)
+    },
+    format = "file"
+  ),
+
+  # Cumulative avoided mortality (file output)
+  tar_target(
+    cumulative_avoided_mortality,
+    command = {
+      file_path <- file.path(
+        save_path,
+        "tables",
+        "health",
+        "cumulative_avoided_mortality.csv"
+      )
+      simple_fwrite_repo(
+        cumul_av_mort,
+        folder_path = file.path(save_path, "tables", "health"),
+        filename = "cumulative_avoided_mortality.csv"
+      )
+      return(file_path)
+    },
+    format = "file"
+  ),
+
+  # Health impacts by county (data table)
+  tar_target(
+    cumulative_health_x_county_dt,
+    command = {
+      calculate_county_health(
+        main_path,
+        save_path,
+        pop_ratios,
+        refining_mortality,
+        raw_ct_2020_all,
+        raw_counties,
+        discount_rate
+      )
+    }
+  ),
+
+  # Health impacts by county (file output)
+  tar_target(
+    cumulative_health_x_county,
+    command = {
+      file_path <- file.path(
+        save_path,
+        "tables",
+        "health",
+        "cumulative_health_x_county.csv"
+      )
+      simple_fwrite_repo(
+        cumulative_health_x_county_dt,
+        folder_path = file.path(save_path, "tables", "health"),
+        filename = "cumulative_health_x_county.csv"
+      )
+      return(file_path)
+    },
     format = "file"
   )
 )
