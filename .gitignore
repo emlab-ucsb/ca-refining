@@ -62,3 +62,6 @@ _targets/
 
 # labor files
 /data/data-staged-for-deletion/labor/*
+
+# exploratory figs
+/before-targets/exploratory/exploratory-figs/*
