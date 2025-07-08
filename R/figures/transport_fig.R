@@ -102,40 +102,41 @@ create_srm_xwalk <- function(
     allow.cartesian = TRUE
   )
 
-  ## save pm2.5 exposure by refinery
-  simple_fwrite_repo(
-    srm_pm25_df,
-    folder_path = NULL,
-    filename = "srm_pm25_refinery_level.csv",
-    save_path = save_path,
-    file_type = "table", # Changed from "figure" to "table" to avoid figure_number requirement
-    figure_number = NULL,
-    extra_subfolder = "pulse-figs"
-  )
-  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv")
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   srm_pm25_df,
+  ##   folder_path = NULL,
+  ##   filename = "srm_pm25_refinery_level.csv",
+  ##   save_path = save_path,
+  ##   file_type = "table",
+  ##   figure_number = NULL,
+  ##   extra_subfolder = "pulse-figs"
+  ## )
 
   return(srm_pm25_df)
 }
 
 create_srm_ct <- function(main_path, save_path, refinery_pm25_srm) {
   pm25_srm <- copy(refinery_pm25_srm)
+  setDT(pm25_srm)
 
   pm25_srm <- pm25_srm[,
     .(total_pm25 = sum(total_pm25)),
     by = .(census_tract, COUNTYFP, NAME)
   ]
 
-  ## save pm2.5 exposure for each ct
-  simple_fwrite_repo(
-    pm25_srm,
-    folder_path = NULL,
-    filename = "srm_pm25_ct.csv",
-    save_path = save_path,
-    file_type = "table", # Changed from "figure" to "table" to avoid figure_number requirement
-    figure_number = NULL,
-    extra_subfolder = "pulse-figs"
-  )
-  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv")
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   pm25_srm,
+  ##   folder_path = NULL,
+  ##   filename = "srm_pm25_ct.csv",
+  ##   save_path = save_path,
+  ##   file_type = "table",
+  ##   figure_number = NULL,
+  ##   extra_subfolder = "pulse-figs"
+  ## )
 
   return(pm25_srm)
 }

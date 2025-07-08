@@ -1106,12 +1106,13 @@ calculate_labor_x_demg_annual <- function(
     sum_demo_comp_pv_l
   )]
 
-  ## save for review
-  simple_fwrite_repo(
-    data = state_demo_labor_out,
-    folder_path = file.path(save_path, "intermediate", "labor"),
-    filename = "state_labor_direct_impacts_demo_annual.csv"
-  )
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   data = state_demo_labor_out,
+  ##   folder_path = file.path(save_path, "intermediate", "labor"),
+  ##   filename = "state_labor_direct_impacts_demo_annual.csv"
+  ## )
 
   return(state_demo_labor_out)
 
@@ -1349,13 +1350,13 @@ calculate_annual_labor_x_demg_hl <- function(
     value
   )]
 
-  ## save df
-  simple_fwrite_repo(
-    data = labor_pct_long,
-    folder_path = file.path(save_path, "tables", "labor"),
-    filename = "labor_high_low_annual_outputs.csv"
-  )
-  # Legacy comment: Previously saved to "fig-csv-files"
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   data = labor_pct_long,
+  ##   folder_path = file.path(save_path, "tables", "labor"),
+  ##   filename = "labor_high_low_annual_outputs.csv"
+  ## )
 
   return(labor_pct_long)
 }
@@ -1526,13 +1527,13 @@ calc_county_level_outputs <- function(
     select(demand_scenario:county_pop, metric_name, estimate, value) %>%
     as.data.table()
 
-  ## save df
-  simple_fwrite_repo(
-    data = labor_county_out_df,
-    folder_path = file.path(save_path, "tables", "labor"),
-    filename = "labor_county_outputs.csv"
-  )
-  # Legacy comment: Previously saved to "fig-csv-files"
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   data = labor_county_out_df,
+  ##   folder_path = file.path(save_path, "tables", "labor"),
+  ##   filename = "labor_county_outputs.csv"
+  ## )
 
   return(labor_county_out_df)
 }
