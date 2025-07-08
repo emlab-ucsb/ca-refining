@@ -2217,7 +2217,6 @@ list(
   ),
 
   # ---- Output targets for labor_functions_product_px.R ----
-  # State labor direct impacts by demographic group (intermediate file)
   tar_target(
     state_labor_direct_impacts_demo_annual,
     command = {
@@ -2241,12 +2240,6 @@ list(
   tar_target(
     labor_high_low_annual_outputs,
     command = {
-      # labor_pct_long <- calculate_annual_labor_x_demg_hl(
-      #   main_path,
-      #   save_path,
-      #   ref_labor_demog_yr,
-      #   annual_all_impacts_labor
-      # )
       file_path <- file.path(
         save_path,
         "tables",
@@ -2283,22 +2276,6 @@ list(
     format = "file"
   ),
 
-  # ---- Output targets for transport_fig.R ----
-  # PM2.5 exposure by refinery (data table)
-  # tar_target(
-  #   srm_pm25_refinery_level_dt,
-  #   command = {
-  #     create_srm_xwalk(
-  #       main_path,
-  #       save_path,
-  #       srm_weighted_pm25,
-  #       ct_xwalk,
-  #       raw_counties,
-  #       raw_ct_2020_all
-  #     )
-  #   }
-  # ),
-
   # PM2.5 exposure by refinery (file output)
   tar_target(
     srm_pm25_refinery_level,
@@ -2321,18 +2298,6 @@ list(
     },
     format = "file"
   ),
-
-  # PM2.5 exposure by census tract (data table)
-  # tar_target(
-  #   srm_pm25_ct_dt,
-  #   command = {
-  #     create_srm_ct(
-  #       main_path,
-  #       save_path,
-  #       refinery_pm25_srm
-  #     )
-  #   }
-  # ),
 
   # PM2.5 exposure by census tract (file output)
   tar_target(
@@ -2362,12 +2327,6 @@ list(
   tar_target(
     ct_missing_pop_dt,
     command = {
-      # health_grp <- calculate_mort_x_demg(
-      #   refining_mortality,
-      #   pop_ratios,
-      #   main_path,
-      #   save_path
-      # )
       # Extract the missing_pop dataframe from ref_mortality_demog's processing
       ref_mortality_demog %>%
         filter(year == 2020, demo_cat == "Race") %>%
