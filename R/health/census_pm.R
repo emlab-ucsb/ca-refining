@@ -1,3 +1,6 @@
+# Import save functions for structure-compliant file saving
+source("R/save_functions.R")
+
 get_ces_county <- function(raw_ces) {
   # Check what columns actually exist in the data
   available_cols <- names(raw_ces)
@@ -1429,11 +1432,16 @@ calculate_mort_x_demg <- function(
     filter(grp_pop == 0 & pop > 0)
 
   ## save missing pop
-  fwrite(
+  simple_fwrite_repo(
     missing_pop,
-    file.path(save_path, "fig-csv-files", "ct_missing_pop.csv")
+    folder_path = NULL,
+    filename = "ct_missing_pop.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "other"
   )
-  # fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "ct_missing_pop.csv"))
+  # Old path, now removed: file.path(save_path, "fig-csv-files", "ct_missing_pop.csv")
 
   ## multiply health impacts by pct
   refining_mort_df[, demo_cost_2019_PV := cost_2019_PV * pct]
@@ -1462,15 +1470,16 @@ calc_cumul_av_mort <- function(main_path, save_path, health_grp) {
   ]
 
   ## save cumulative
-  fwrite(
+  simple_fwrite_repo(
     dt,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "cumulative_avoided_mortality.csv"
-    )
+    folder_path = NULL,
+    filename = "cumulative_avoided_mortality.csv*", # Added asterisk for git tracking
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  # Old path, now removed: file.path(save_path, "fig-csv-files", "cumulative_avoided_mortality.csv")
 
   return(dt)
 }
@@ -1567,13 +1576,14 @@ calculate_county_health <- function(
     )
   ]
 
-  fwrite(
+  simple_fwrite_repo(
     mort_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "cumulative_health_x_county.csv"
-    )
+    folder_path = NULL,
+    filename = "cumulative_health_x_county.csv*", # Added asterisk for git tracking
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
 
   ## return
