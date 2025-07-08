@@ -562,13 +562,32 @@ get_structured_path <- function(
             return(file.path(base_path, "tables", "other"))
         }
     } else if (file_type == "fig-csv") {
-        return(file.path(
-            base_path,
-            "results",
-            "figures",
-            "extra",
-            "fig-csv-files"
-        ))
+        # Store CSV files for figures in the appropriate directory
+        # Since fig-csv-files doesn't exist in structure.md, we'll place these
+        # in the corresponding figure directory or extra directory
+        if (
+            !is.null(figure_number) &&
+                figure_number %in%
+                    c(
+                        "figure-1",
+                        "figure-2",
+                        "figure-3",
+                        "figure-4",
+                        "figure-5"
+                    )
+        ) {
+            return(file.path(base_path, "results", "figures", figure_number))
+        } else if (!is.null(extra_subfolder)) {
+            return(file.path(
+                base_path,
+                "results",
+                "figures",
+                "extra",
+                extra_subfolder
+            ))
+        } else {
+            return(file.path(base_path, "results", "figures", "extra"))
+        }
     } else {
         # Default to saving in the base path
         return(base_path)

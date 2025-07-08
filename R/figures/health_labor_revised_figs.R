@@ -39,8 +39,8 @@ plot_npv_labor_oilpx <- function(
   annual_all_impacts_labor
 ) {
   # Ensure output directories exist
-  fig_csv_dir <- file.path(save_path, "fig-csv-files")
-  legends_dir <- file.path(save_path, "legends")
+  fig_csv_dir <- file.path(save_path, "results", "figures", "extra")
+  legends_dir <- file.path(save_path, "results", "figures", "extra")
   ensure_dir(fig_csv_dir)
   ensure_dir(legends_dir)
   ## add ghg emission reduction
@@ -331,11 +331,14 @@ plot_npv_labor_oilpx <- function(
   )
 
   ## save figure inputs
-  safe_write_file(
+  simple_fwrite_repo(
     plot_df_labor,
-    save_path,
-    "fig-csv-files",
-    "state_npv_fig_inputs_labor_all_oilpx.csv"
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_labor_all_oilpx.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
 
   ## scenarios for filtering
@@ -959,11 +962,14 @@ plot_npv_health_labor <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  safe_write_file(
+  simple_fwrite_repo(
     plot_df_health,
-    save_path,
-    "fig-csv-files",
-    "state_npv_fig_inputs_health.csv"
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
 
   ## prepare labor ----------------------
@@ -1046,11 +1052,14 @@ plot_npv_health_labor <- function(
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  safe_write_file(
+  simple_fwrite_repo(
     plot_df_labor,
-    save_path,
-    "fig-csv-files",
-    "state_npv_fig_inputs_labor.csv"
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_labor.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
 
   ## scenarios for filtering
@@ -2083,13 +2092,13 @@ plot_npv_health_labor_ref <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_health,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_health_ref.csv"
-    )
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health_ref.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL
   )
 
   ## prepare labor ----------------------
@@ -3081,15 +3090,16 @@ plot_npv_health_labor_annual_vsl <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_health,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_health_annual_vsl.csv"
-    )
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health_annual_vsl.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv")
 
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
@@ -4081,15 +4091,16 @@ plot_npv_health_labor_non_age_vsl <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_health,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_health_non_age_vsl.csv"
-    )
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health_non_age_vsl.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health_non_age_vsl.csv")
 
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
@@ -4770,11 +4781,15 @@ calc_county_pm25 <- function(
     ungroup() %>%
     arrange(-avg_pm25_popw)
 
-  fwrite(
+  simple_fwrite_repo(
     health_county_df,
-    file.path(save_path, "fig-csv-files", "avg_pm25_county_2019.csv")
+    folder_path = NULL,
+    filename = "avg_pm25_county_2019.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL
   )
-  # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv")
 
   return(health_county_df)
 }
@@ -4838,11 +4853,16 @@ plot_health_levels <- function(main_path, save_path, health_grp) {
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_df,
-    file.path(save_path, "state_levels_fig_inputs.csv")
+    folder_path = NULL,
+    filename = "state_levels_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv")
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
   #   geom_line(linewidth = 1, alpha = 0.8) +
@@ -5140,15 +5160,16 @@ plot_health_levels_pc <- function(
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     mort_pc_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_pmil_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_pmil_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv")
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
   #   geom_line(linewidth = 1, alpha = 0.8) +
@@ -5409,15 +5430,16 @@ plot_health_levels_pm25 <- function(main_path, save_path, health_grp) {
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_pm25_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_pm25_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv")
 
   ## scenarios for filtering
   # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
@@ -5712,15 +5734,16 @@ plot_health_levels_gaps <- function(main_path, save_path, health_grp) {
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_fig_gaps_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_fig_gaps_inputs.csv*", # Add asterisk for git tracking as specified in structure.md
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv")
 
   ## make figures
   ## ---------------------------------------------------------
@@ -6036,15 +6059,16 @@ plot_health_levels_gaps_pmil <- function(
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_fig_gaps_pmil_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_fig_gaps_pmil_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv")
 
   ## make figures
   ## ---------------------------------------------------------
@@ -6326,15 +6350,16 @@ plot_health_levels_gaps_pm25 <- function(main_path, save_path, health_grp) {
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_fig_gaps_pm25_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_fig_gaps_pm25_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv")
 
   ## make figures
   ## ---------------------------------------------------------
@@ -6679,15 +6704,16 @@ plot_labor_levels <- function(
   #
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_l_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_labor_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_labor_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_fig_inputs.csv")
 
   ## labor figure
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
@@ -7225,15 +7251,16 @@ plot_labor_levels_pmil <- function(
   #
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_l_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_labor_pmil_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_labor_pmil_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv")
 
   ## labor figure
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
@@ -7780,15 +7807,16 @@ plot_labor_levels_gaps <- function(
   )]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     l_gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_labor_levels_fig_gaps_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_labor_levels_fig_gaps_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv")
 
   ## figure a
   fig_title_vec <- c("Black", "Asian", "white", "Hispanic")
@@ -8281,15 +8309,16 @@ plot_labor_levels_gaps_pmil <- function(
   l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     l_gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_labor_levels_fig_gaps_pmil_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_labor_levels_fig_gaps_pmil_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv")
 
   ## figure a
   fig_title_vec <- c("Black", "Asian", "white", "Hispanic")
@@ -8957,15 +8986,16 @@ plot_hl_levels_df <- function(
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_long,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_disaggregated_npv_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_disaggregated_npv_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv")
 
   return(plot_df_long)
 }
@@ -9560,15 +9590,16 @@ plot_hl_levels_pc <- function(
   plot_df_long[, value := value / pop_2020]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_long,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_disaggregated_npv_pc_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_disaggregated_npv_pc_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv")
 
   ## create the figure ---------------------------------------------
   ## ---------------------------------------------------------------
@@ -10379,8 +10410,8 @@ plot_hl_shares <- function(
   demographic_npv_df,
   state_pop_ratios
 ) {
-  fig_csv_dir <- file.path(save_path, "fig-csv-files")
-  legends_dir <- file.path(save_path, "legends")
+  fig_csv_dir <- file.path(save_path, "results", "figures", "figures-si")
+  legends_dir <- file.path(save_path, "results", "figures", "extra")
   ensure_dir(fig_csv_dir)
   ensure_dir(legends_dir)
 
@@ -10466,15 +10497,16 @@ plot_hl_shares <- function(
   share_df[, demo_grp_metric := paste0(title, "_", metric)]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     share_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_disaggreated_npv_share_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_disaggreated_npv_share_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv")
 
   ## create the figure ---------------------------------------------
   ## ---------------------------------------------------------------
@@ -11575,15 +11607,16 @@ create_health_labor_table <- function(
   result_output <- rbind(npv_out, emp_out, avoid_m_out_total)
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     result_output,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_health_labor_ouputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_health_labor_ouputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_health_labor_ouputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_health_labor_ouputs.csv")
 
   return(result_output)
 }

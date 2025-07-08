@@ -73,7 +73,7 @@ list(
     command = "jul07"
   ),
   tar_target(name = version, command = "v0.1"),
-  tar_target(name = iteration, "test1"),
+  tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
   tar_target(
@@ -1352,7 +1352,8 @@ list(
       ct_xwalk,
       raw_counties,
       raw_ct_2020_all
-    )
+    ),
+    error = "continue" # Continue despite errors to allow debugging
   ),
   tar_target(
     name = ct_pm25_srm,

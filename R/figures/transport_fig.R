@@ -1,6 +1,9 @@
 ## february 26, 2024
 ## pm2.5 figure
 
+# Import save functions for structure-compliant file saving
+source("R/save_functions.R")
+
 ## pulse fig info x refinery
 ## --------------------------------------------------
 
@@ -100,20 +103,16 @@ create_srm_xwalk <- function(
   )
 
   ## save pm2.5 exposure by refinery
-  # Create directory if it doesn't exist
-  if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
-    dir.create(
-      file.path(save_path, "fig-csv-files"),
-      recursive = TRUE,
-      showWarnings = FALSE
-    )
-  }
-
-  fwrite(
+  simple_fwrite_repo(
     srm_pm25_df,
-    file.path(save_path, "fig-csv-files", "srm_pm25_refinery_level.csv")
+    folder_path = NULL,
+    filename = "srm_pm25_refinery_level.csv",
+    save_path = save_path,
+    file_type = "table", # Changed from "figure" to "table" to avoid figure_number requirement
+    figure_number = NULL,
+    extra_subfolder = "pulse-figs"
   )
-  # fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv")
 
   return(srm_pm25_df)
 }
@@ -127,20 +126,16 @@ create_srm_ct <- function(main_path, save_path, refinery_pm25_srm) {
   ]
 
   ## save pm2.5 exposure for each ct
-  # Create directory if it doesn't exist
-  if (!dir.exists(file.path(save_path, "fig-csv-files"))) {
-    dir.create(
-      file.path(save_path, "fig-csv-files"),
-      recursive = TRUE,
-      showWarnings = FALSE
-    )
-  }
-
-  fwrite(
+  simple_fwrite_repo(
     pm25_srm,
-    file.path(save_path, "fig-csv-files", "srm_pm25_ct.csv")
+    folder_path = NULL,
+    filename = "srm_pm25_ct.csv",
+    save_path = save_path,
+    file_type = "table", # Changed from "figure" to "table" to avoid figure_number requirement
+    figure_number = NULL,
+    extra_subfolder = "pulse-figs"
   )
-  # fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv")
 
   return(pm25_srm)
 }
@@ -281,17 +276,20 @@ create_pulse_fig <- function(
     # NOTE from tracey: this throws and erorr for me (Error in f(...): unused argument (create.dir = TRUE))
     # added code to create the directory if it doesn't exist
 
-    # check if the folder exists
-    pulse_figs_dir <- file.path(save_path, "pulse-figs")
-    if (!dir.exists(pulse_figs_dir)) {
-      # Create the folder if it does not exist
-      dir.create(pulse_figs_dir, recursive = TRUE, showWarnings = FALSE)
-    }
-
-    ggsave(
+    # Save using simple_ggsave_repo to ensure consistent structure and tracking
+    # Using "extra" as file_type since these are not main figures
+    simple_ggsave_repo(
       plot = pm25_fig_tmp,
-      filename = file.path(pulse_figs_dir, paste0("pulse_", id_tmp, ".jpg")),
-      device = "jpeg",
+      folder_path = file.path(
+        save_path,
+        "results",
+        "figures",
+        "extra",
+        "pulse-figs"
+      ),
+      filename = paste0("pulse_", id_tmp),
+      width = 7,
+      height = 5,
       dpi = 300
     )
   }
@@ -393,19 +391,22 @@ create_pulse_fig <- function(
   #        dpi = 300)
   #
 
-  # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0 and added `create.dir = TRUE`
+  # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0
   # NOTE from Tracey: same error! removed `create.dir = TRUE`
-  # check if the folder exists
-  pulse_figs_dir <- file.path(save_path, "pulse-figs")
-  if (!dir.exists(pulse_figs_dir)) {
-    # Create the folder if it does not exist
-    dir.create(pulse_figs_dir, recursive = TRUE, showWarnings = FALSE)
-  }
-
-  ggsave(
+  # Save using simple_ggsave_repo to ensure consistent structure and tracking
+  # Using direct folder path instead of file_type/figure_number to avoid the error
+  simple_ggsave_repo(
     plot = pm25_fig_all,
-    filename = file.path(pulse_figs_dir, "pulse_all_crop.jpeg"),
-    device = "jpeg",
+    folder_path = file.path(
+      save_path,
+      "results",
+      "figures",
+      "extra",
+      "pulse-figs"
+    ),
+    filename = "pulse_all_crop",
+    width = 7,
+    height = 5,
     dpi = 300
   )
 
