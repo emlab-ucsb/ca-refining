@@ -2220,18 +2220,11 @@ list(
   tar_target(
     state_labor_direct_impacts_demo_annual,
     command = {
-      file_path <- file.path(
-        save_path,
-        "intermediate",
-        "labor",
-        "state_labor_direct_impacts_demo_annual.csv"
-      )
       simple_fwrite_repo(
         data = ref_labor_demog_yr,
         folder_path = file.path(save_path, "intermediate", "labor"),
         filename = "state_labor_direct_impacts_demo_annual.csv"
       )
-      return(file_path)
     },
     format = "file"
   ),
@@ -2240,18 +2233,11 @@ list(
   tar_target(
     labor_high_low_annual_outputs,
     command = {
-      file_path <- file.path(
-        save_path,
-        "tables",
-        "labor",
-        "labor_high_low_annual_outputs.csv"
-      )
       simple_fwrite_repo(
         data = annual_labor_jobs_comp,
         folder_path = file.path(save_path, "tables", "labor"),
         filename = "labor_high_low_annual_outputs.csv"
       )
-      return(file_path)
     },
     format = "file"
   ),
@@ -2260,18 +2246,11 @@ list(
   tar_target(
     labor_county_outputs,
     command = {
-      file_path <- file.path(
-        save_path,
-        "tables",
-        "labor",
-        "labor_county_outputs.csv"
-      )
       simple_fwrite_repo(
         data = county_labor_outputs,
         folder_path = file.path(save_path, "tables", "labor"),
         filename = "labor_county_outputs.csv"
       )
-      return(file_path)
     },
     format = "file"
   ),
@@ -2280,21 +2259,11 @@ list(
   tar_target(
     srm_pm25_refinery_level,
     command = {
-      # Create the path with extra/pulse-figs subfolder to match structure.md
-      file_path <- file.path(
-        save_path,
-        "tables",
-        "extra",
-        "pulse-figs",
-        "srm_pm25_refinery_level.csv"
-      )
-      # Save to the correct path based on structure.md
       simple_fwrite_repo(
         refinery_pm25_srm,
         folder_path = file.path(save_path, "tables", "extra", "pulse-figs"),
         filename = "srm_pm25_refinery_level.csv"
       )
-      return(file_path)
     },
     format = "file"
   ),
@@ -2303,21 +2272,11 @@ list(
   tar_target(
     srm_pm25_ct,
     command = {
-      # Create the path with extra/pulse-figs subfolder to match structure.md
-      file_path <- file.path(
-        save_path,
-        "tables",
-        "extra",
-        "pulse-figs",
-        "srm_pm25_ct.csv"
-      )
-      # Save to the correct path based on structure.md
       simple_fwrite_repo(
         ct_pm25_srm,
         folder_path = file.path(save_path, "tables", "extra", "pulse-figs"),
         filename = "srm_pm25_ct.csv"
       )
-      return(file_path)
     },
     format = "file"
   ),
@@ -2344,13 +2303,11 @@ list(
   tar_target(
     ct_missing_pop,
     command = {
-      file_path <- file.path(save_path, "tables", "other", "ct_missing_pop.csv")
       simple_fwrite_repo(
         ct_missing_pop_dt,
         folder_path = file.path(save_path, "tables", "other"),
         filename = "ct_missing_pop.csv"
       )
-      return(file_path)
     },
     format = "file"
   ),
@@ -2359,18 +2316,11 @@ list(
   tar_target(
     cumulative_avoided_mortality,
     command = {
-      file_path <- file.path(
-        save_path,
-        "tables",
-        "health",
-        "cumulative_avoided_mortality.csv"
-      )
       simple_fwrite_repo(
         cumul_av_mort,
         folder_path = file.path(save_path, "tables", "health"),
         filename = "cumulative_avoided_mortality.csv"
       )
-      return(file_path)
     },
     format = "file"
   ),
@@ -2395,18 +2345,11 @@ list(
   tar_target(
     cumulative_health_x_county,
     command = {
-      file_path <- file.path(
-        save_path,
-        "tables",
-        "health",
-        "cumulative_health_x_county.csv"
-      )
       simple_fwrite_repo(
         cumulative_health_x_county_dt,
         folder_path = file.path(save_path, "tables", "health"),
         filename = "cumulative_health_x_county.csv"
       )
-      return(file_path)
     },
     format = "file"
   )
