@@ -72,7 +72,7 @@ list(
     name = run_type,
     command = "jul07"
   ),
-  tar_target(name = version, command = "jul08"),
+  tar_target(name = version, command = "jul09"),
   tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
@@ -1869,8 +1869,10 @@ list(
     name = save_health_income_ref,
     command = simple_fwrite_repo(
       refining_health_income_ref,
-      file.path("outputs", iteration, "health"),
-      "refining_health_income_ref_2023.csv"
+      NULL,
+      "refining_health_income_ref_2023.csv",
+      save_path = save_path,
+      file_type = "health"
     ),
     format = "file"
   ),
@@ -1878,8 +1880,10 @@ list(
     name = save_health_income_2000,
     command = simple_fwrite_repo(
       health_weighted,
-      file.path("outputs", iteration, "health"),
-      "refining_health_census_tract.csv"
+      NULL,
+      "refining_health_census_tract.csv",
+      save_path = save_path,
+      file_type = "health"
     ),
     format = "file"
   ),
@@ -1887,8 +1891,10 @@ list(
     name = save_health_income_ref_2000,
     command = simple_fwrite_repo(
       health_weighted_ref,
-      file.path("outputs", iteration, "health"),
-      "refining_health_census_tract_ref.csv"
+      NULL,
+      "refining_health_census_tract_ref.csv",
+      save_path = save_path,
+      file_type = "health"
     ),
     format = "file"
   ),
@@ -1896,8 +1902,10 @@ list(
     name = save_mortality,
     command = simple_fwrite_repo(
       refining_mortality,
-      file.path("outputs", iteration, "health"),
-      "refining_mortality_2023.csv"
+      NULL,
+      "refining_mortality_2023.csv",
+      save_path = save_path,
+      file_type = "table"
     ),
     format = "file"
   ),
@@ -1905,8 +1913,10 @@ list(
     name = save_mortality_ref,
     command = simple_fwrite_repo(
       refining_mortality_ref,
-      file.path("outputs", iteration, "health"),
-      "refining_mortality_2023_ref.csv"
+      NULL,
+      "refining_mortality_2023_ref.csv",
+      save_path = save_path,
+      file_type = "table"
     ),
     format = "file"
   ),
@@ -1914,8 +1924,10 @@ list(
     name = save_mortality_constant_vsl,
     command = simple_fwrite_repo(
       refining_mortality_constant_vsl,
-      file.path("outputs", iteration, "health"),
-      "refining_mortality_2023_constant_vsl.csv"
+      NULL,
+      "refining_mortality_2023_constant_vsl.csv",
+      save_path = save_path,
+      file_type = "table"
     ),
     format = "file"
   ),
@@ -1923,8 +1935,10 @@ list(
     name = save_state_mort_levels,
     command = simple_fwrite_repo(
       ref_mort_level,
-      file.path("outputs", iteration, "health"),
-      "refining_state_mortality.csv"
+      NULL,
+      "refining_state_mortality.csv",
+      save_path = save_path,
+      file_type = "table"
     ),
     format = "file"
   ),
@@ -1935,7 +1949,7 @@ list(
     command = simple_ggsave_repo(
       fig_demand_ghg,
       NULL,
-      "combined_its_and_production",
+      "combined_its_and_production*",
       width = 25,
       save_path = save_path,
       file_type = "figure",
@@ -1964,11 +1978,15 @@ list(
     name = save_npv_fig_ref,
     command = simple_ggsave_repo(
       npv_plot_ref,
-      save_path,
+      NULL,
       "state_npv_fig_ref",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
     ),
     format = "file"
   ),
@@ -1976,11 +1994,15 @@ list(
     name = save_npv_fig_annual_vsl,
     command = simple_ggsave_repo(
       npv_plot_annual_vsl,
-      save_path,
+      NULL,
       "state_npv_fig_annual_vsl",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
     ),
     format = "file"
   ),
@@ -1988,11 +2010,15 @@ list(
     name = save_npv_fig_non_age_vsl,
     command = simple_ggsave_repo(
       npv_plot_non_age_vsl,
-      save_path,
+      NULL,
       "state_npv_fig_non_age_vsl",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
     ),
     format = "file"
   ),
@@ -2000,11 +2026,15 @@ list(
     name = save_npv_labor_fig,
     command = simple_ggsave_repo(
       npv_labor_plot,
-      save_path,
+      NULL,
       "state_npv_labor_fig",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2012,11 +2042,15 @@ list(
     name = save_levels_fig,
     command = simple_ggsave_repo(
       health_levels_plot,
-      save_path,
+      NULL,
       "state_levels_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "state-levels-fig"
     ),
     format = "file"
   ),
@@ -2024,11 +2058,15 @@ list(
     name = save_levels_pmil_fig,
     command = simple_ggsave_repo(
       health_levels_pmil_plot,
-      save_path,
+      NULL,
       "state_levels_pmil_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "state-levels-fig"
     ),
     format = "file"
   ),
@@ -2036,11 +2074,15 @@ list(
     name = save_levels_pm25_fig,
     command = simple_ggsave_repo(
       health_levels_plot_pm25,
-      save_path,
+      NULL,
       "state_levels_pm25_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "state-levels-fig"
     ),
     format = "file"
   ),
@@ -2048,11 +2090,15 @@ list(
     name = save_l_levels_fig,
     command = simple_ggsave_repo(
       labor_levels_plot,
-      save_path,
+      NULL,
       "state_labor_levels_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2060,11 +2106,15 @@ list(
     name = save_l_levels_pmil_fig,
     command = simple_ggsave_repo(
       labor_levels_plot_pmil,
-      save_path,
+      NULL,
       "state_labor_levels_pmil_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2072,11 +2122,15 @@ list(
     name = save_gaps_fig,
     command = simple_ggsave_repo(
       health_gaps_plot,
-      save_path,
+      NULL,
       "state_gaps_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-figures"
     ),
     format = "file"
   ),
@@ -2084,11 +2138,15 @@ list(
     name = save_gaps_pmil_fig,
     command = simple_ggsave_repo(
       health_gaps_pmil_plot,
-      save_path,
+      NULL,
       "state_gaps_pmil_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-figures"
     ),
     format = "file"
   ),
@@ -2096,11 +2154,15 @@ list(
     name = save_gaps_pm25_fig,
     command = simple_ggsave_repo(
       health_gaps_plot_pm25,
-      save_path,
+      NULL,
       "state_gaps_pm25_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-figures"
     ),
     format = "file"
   ),
@@ -2108,11 +2170,15 @@ list(
     name = save_labor_gaps_fig,
     command = simple_ggsave_repo(
       labor_gaps_plot,
-      save_path,
+      NULL,
       "state_labor_gaps_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2120,11 +2186,15 @@ list(
     name = save_labor_gaps_fig_pmil,
     command = simple_ggsave_repo(
       labor_gaps_plot_pmil,
-      save_path,
+      NULL,
       "state_labor_gaps_pmil_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2132,11 +2202,15 @@ list(
     name = save_demo_npv_fig,
     command = simple_ggsave_repo(
       demographic_npv_plot,
-      save_path,
+      NULL,
       "demographic_npv_fig",
       width = 11,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-5"
     ),
     format = "file"
   ),
@@ -2144,11 +2218,14 @@ list(
     name = save_demo_share_fig,
     command = simple_ggsave_repo(
       demographic_npv_shares_plot,
-      save_path,
-      "demographic_npv_shares_fig",
+      NULL,
+      "demographic_npv_shares_fig_2020ppx*",
       width = 12,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
     ),
     format = "file"
   ),
@@ -2156,11 +2233,14 @@ list(
     name = save_demo_npv_pc_fig,
     command = simple_ggsave_repo(
       demographic_npv_plot_pc,
-      save_path,
-      "demographic_npv_pc_fig",
+      NULL,
+      "demographic_npv_pc_fig_2020ppx*",
       width = 11,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-5"
     ),
     format = "file"
   ),
@@ -2168,11 +2248,15 @@ list(
     name = save_health_labor_gaps_plot,
     command = simple_ggsave_repo(
       health_labor_gaps_plot,
-      save_path,
+      NULL,
       "health_labor_gaps_plot",
       width = 14,
       height = 6,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-4"
     ),
     format = "file"
   ),
@@ -2180,11 +2264,14 @@ list(
     name = save_health_labor_gaps_pmil_plot,
     command = simple_ggsave_repo(
       health_labor_gaps_pmil_plot,
-      save_path,
-      "health_labor_gaps_pmil_plot",
+      NULL,
+      "health_labor_gaps_pmil_plot_2020ppx_no_reemp*",
       width = 18,
       height = 6,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-4"
     ),
     format = "file"
   ),
@@ -2193,7 +2280,7 @@ list(
     command = simple_ggsave_repo(
       fig_refinery_capacity,
       NULL,
-      "refinery_capacity",
+      "refinery_capacity*",
       width = 16,
       save_path = save_path,
       file_type = "figure",
@@ -2207,11 +2294,14 @@ list(
     name = save_fig_refinery_count,
     command = simple_ggsave_repo(
       fig_refinery_count,
-      save_path,
-      "refinery_count",
+      NULL,
+      "refinery_count*",
       width = 16,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
     ),
     format = "file"
   ),
@@ -2222,8 +2312,10 @@ list(
     command = {
       simple_fwrite_repo(
         data = ref_labor_demog_yr,
-        folder_path = file.path(save_path, "intermediate", "labor"),
-        filename = "state_labor_direct_impacts_demo_annual.csv"
+        folder_path = NULL,
+        filename = "state_labor_direct_impacts_demo_annual.csv*",
+        save_path = save_path,
+        file_type = "labor"
       )
     },
     format = "file"
@@ -2235,8 +2327,10 @@ list(
     command = {
       simple_fwrite_repo(
         data = annual_labor_jobs_comp,
-        folder_path = file.path(save_path, "tables", "labor"),
-        filename = "labor_high_low_annual_outputs.csv"
+        folder_path = NULL,
+        filename = "labor_high_low_annual_outputs.csv*",
+        save_path = save_path,
+        file_type = "table"
       )
     },
     format = "file"
@@ -2248,8 +2342,10 @@ list(
     command = {
       simple_fwrite_repo(
         data = county_labor_outputs,
-        folder_path = file.path(save_path, "tables", "labor"),
-        filename = "labor_county_outputs.csv"
+        folder_path = NULL,
+        filename = "labor_county_outputs.csv*",
+        save_path = save_path,
+        file_type = "table"
       )
     },
     format = "file"
@@ -2261,8 +2357,12 @@ list(
     command = {
       simple_fwrite_repo(
         refinery_pm25_srm,
-        folder_path = file.path(save_path, "tables", "extra", "pulse-figs"),
-        filename = "srm_pm25_refinery_level.csv"
+        folder_path = NULL,
+        filename = "srm_pm25_refinery_level.csv",
+        save_path = save_path,
+        file_type = "figure",
+        figure_number = "extra",
+        extra_subfolder = "pulse-figs"
       )
     },
     format = "file"
@@ -2274,8 +2374,12 @@ list(
     command = {
       simple_fwrite_repo(
         ct_pm25_srm,
-        folder_path = file.path(save_path, "tables", "extra", "pulse-figs"),
-        filename = "srm_pm25_ct.csv"
+        folder_path = NULL,
+        filename = "srm_pm25_ct.csv",
+        save_path = save_path,
+        file_type = "figure",
+        figure_number = "extra",
+        extra_subfolder = "pulse-figs"
       )
     },
     format = "file"
@@ -2305,8 +2409,10 @@ list(
     command = {
       simple_fwrite_repo(
         ct_missing_pop_dt,
-        folder_path = file.path(save_path, "tables", "other"),
-        filename = "ct_missing_pop.csv"
+        folder_path = NULL,
+        filename = "ct_missing_pop.csv",
+        save_path = save_path,
+        file_type = "table"
       )
     },
     format = "file"
@@ -2318,8 +2424,10 @@ list(
     command = {
       simple_fwrite_repo(
         cumul_av_mort,
-        folder_path = file.path(save_path, "tables", "health"),
-        filename = "cumulative_avoided_mortality.csv"
+        folder_path = NULL,
+        filename = "cumulative_avoided_mortality.csv*",
+        save_path = save_path,
+        file_type = "table"
       )
     },
     format = "file"
@@ -2347,8 +2455,10 @@ list(
     command = {
       simple_fwrite_repo(
         cumulative_health_x_county_dt,
-        folder_path = file.path(save_path, "tables", "health"),
-        filename = "cumulative_health_x_county.csv"
+        folder_path = NULL,
+        filename = "cumulative_health_x_county.csv*",
+        save_path = save_path,
+        file_type = "table"
       )
     },
     format = "file"

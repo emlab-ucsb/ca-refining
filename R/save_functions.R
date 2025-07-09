@@ -240,15 +240,35 @@ simple_fwrite_repo <- function(
     figure_number = NULL,
     extra_subfolder = NULL
 ) {
+    # Load output_structure.csv if it exists
+    structure_df <- NULL
+    if (file.exists("output_structure.csv")) {
+        structure_df <- data.table::fread("output_structure.csv")
+    }
+
+    # Check if we have the file in output_structure.csv
+    clean_filename <- gsub("\\*$", "", filename) # Remove any existing asterisk
+    file_info <- NULL
+    if (!is.null(structure_df)) {
+        file_info <- structure_df[structure_df$file_name == clean_filename, ]
+    }
+
     # If save_path and file_type are provided, use the structured path
     if (!is.null(save_path) && !is.null(file_type)) {
         folder_path <- get_structured_path(
             save_path,
             file_type,
-            filename,
+            clean_filename,
             figure_number,
             extra_subfolder
         )
+
+        # Override with output_structure.csv path if found
+        if (!is.null(file_info) && nrow(file_info) > 0) {
+            rel_path <- file_info$relative_path[1]
+            folder_path <- file.path(save_path, rel_path)
+            message("Using path from output_structure.csv: ", folder_path)
+        }
     }
 
     # Create directory if it doesn't exist
@@ -258,12 +278,42 @@ simple_fwrite_repo <- function(
 
     # Check if the filename includes an asterisk for git tracking
     track_in_git <- FALSE
-    clean_filename <- filename
+    clean_filename <- gsub("\\*$", "", filename) # Remove any trailing asterisk
 
+    # Determine if file should be tracked (from asterisk or output_structure.csv)
     if (grepl("\\*$", filename)) {
-        # Remove the asterisk from the filename for the actual file
-        clean_filename <- gsub("\\*$", "", filename)
         track_in_git <- TRUE
+        message(
+            "File ",
+            clean_filename,
+            " will be tracked in git based on * marker"
+        )
+    } else if (!is.null(file_info) && nrow(file_info) > 0) {
+        track_in_git <- file_info$tracked[1] == "YES"
+        if (track_in_git) {
+            message(
+                "File ",
+                clean_filename,
+                " will be tracked in git based on output_structure.csv"
+            )
+        }
+    } else {
+        # Check if we should use filename to determine tracking
+        # This is a fallback approach
+        if (
+            grepl(
+                "fig.*_inputs\\.csv$|health.*income.*\\.csv$|.*direct.*impacts.*\\.csv$|.*avoided.*mortality\\.csv$|.*health.*_x_.*\\.csv$",
+                clean_filename,
+                ignore.case = TRUE
+            )
+        ) {
+            track_in_git <- TRUE
+            message(
+                "File ",
+                clean_filename,
+                " will be tracked in git based on filename pattern"
+            )
+        }
     }
 
     # Full file path
@@ -623,4 +673,73 @@ safe_fwrite_with_dir <- function(
     data.table::fwrite(data, file_path)
     message("Saved: ", file_path)
     return(file_path)
+}
+
+#' Save data frame to repository location using output_structure.csv for path and tracking info
+#' @param data Data frame to save
+#' @param filename Filename for the CSV
+#' @param save_path Base save path (outputs/version/iteration)
+validate_and_save_file <- function(
+    data,
+    filename,
+    save_path
+) {
+    # Load output_structure.csv
+    structure_file <- "output_structure.csv"
+    if (!file.exists(structure_file)) {
+        stop("output_structure.csv file not found")
+    }
+
+    structure_df <- data.table::fread(structure_file)
+
+    # Find the file in the structure
+    file_info <- structure_df[structure_df$file_name == filename, ]
+
+    if (nrow(file_info) == 0) {
+        warning(
+            "File ",
+            filename,
+            " not found in output_structure.csv, using default path"
+        )
+        return(simple_fwrite_repo(data, save_path, filename))
+    }
+
+    # Get the relative path and tracked status
+    rel_path <- file_info$relative_path[1]
+    tracked <- file_info$tracked[1] == "YES"
+
+    # Form the complete folder path
+    folder_path <- file.path(save_path, rel_path)
+
+    # Add asterisk to filename if tracked
+    save_filename <- ifelse(tracked, paste0(filename, "*"), filename)
+
+    # Save the file
+    simple_fwrite_repo(data, folder_path, save_filename)
+
+    return(file.path(folder_path, filename))
+}
+
+#' Check if a file should be tracked in git based on output_structure.csv
+#' @param filename The filename to check
+#' @return TRUE if the file should be tracked, FALSE otherwise
+should_be_tracked <- function(filename) {
+    if (!file.exists("output_structure.csv")) {
+        warning("output_structure.csv not found, using default tracking")
+        return(FALSE)
+    }
+
+    structure_df <- data.table::fread("output_structure.csv")
+    file_info <- structure_df[structure_df$file_name == filename, ]
+
+    if (nrow(file_info) == 0) {
+        warning(
+            "File ",
+            filename,
+            " not found in output_structure.csv, using default tracking"
+        )
+        return(FALSE)
+    }
+
+    return(file_info$tracked[1] == "YES")
 }
