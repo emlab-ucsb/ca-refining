@@ -1964,7 +1964,7 @@ list(
     command = simple_ggsave_repo(
       npv_plot,
       NULL,
-      "state_npv_fig*", # Asterisk for git tracking
+      "state_npv_fig_2020_ppx_bartik*",
       width = 10,
       save_path = save_path,
       file_type = "figure",
@@ -1979,7 +1979,7 @@ list(
     command = simple_ggsave_repo(
       npv_plot_ref,
       NULL,
-      "state_npv_fig_ref",
+      "state_npv_fig_2020_ppx_ref",
       width = 10,
       height = 5,
       dpi = 600,
@@ -1995,7 +1995,7 @@ list(
     command = simple_ggsave_repo(
       npv_plot_annual_vsl,
       NULL,
-      "state_npv_fig_annual_vsl",
+      "state_npv_fig_2020_ppx_annual_vsl",
       width = 10,
       height = 5,
       dpi = 600,
@@ -2027,7 +2027,7 @@ list(
     command = simple_ggsave_repo(
       npv_labor_plot,
       NULL,
-      "state_npv_labor_fig",
+      "state_npv_labor_fig_2020ppx",
       width = 10,
       height = 5,
       dpi = 600,
@@ -2091,7 +2091,7 @@ list(
     command = simple_ggsave_repo(
       labor_levels_plot,
       NULL,
-      "state_labor_levels_fig",
+      "state_labor_levels_fig_2020ppx",
       width = 12,
       height = 8,
       dpi = 600,
@@ -2107,7 +2107,7 @@ list(
     command = simple_ggsave_repo(
       labor_levels_plot_pmil,
       NULL,
-      "state_labor_levels_pmil_fig",
+      "state_labor_levels_pmil_fig_2020ppx",
       width = 12,
       height = 8,
       dpi = 600,
@@ -2461,6 +2461,57 @@ list(
         file_type = "table"
       )
     },
+    format = "file"
+  ),
+
+  # ---- Additional figure targets for 2020ppx variants ----
+  # These targets call the plotting functions and save the outputs with correct paths
+
+
+
+  tar_target(
+    name = save_npv_labor_fig_2020ppx,
+    command = simple_ggsave_repo(
+      plot_npv_labor_oilpx(
+        main_path,
+        save_path,
+        state_ghg_output,
+        dt_ghg_2019,
+        annual_all_impacts_labor
+      ),
+      NULL,
+      "state_npv_labor_fig_2020ppx",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    name = save_npv_labor_fig_2020ppx_bartik,
+    command = simple_ggsave_repo(
+      plot_npv_labor_oilpx(
+        main_path,
+        save_path,
+        state_ghg_output,
+        dt_ghg_2019,
+        annual_all_impacts_labor
+      ),
+      NULL,
+      "state_npv_labor_fig_2020ppx_bartik",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
+    ),
     format = "file"
   )
 )

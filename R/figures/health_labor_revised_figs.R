@@ -442,14 +442,15 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  simple_ggsave_repo(
-    forgone_wages_all_oil_px_fig_2020ppx,
-    save_path,
-    "state_npv_labor_fig_2020ppx",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   forgone_wages_all_oil_px_fig_2020ppx,
+  #   save_path,
+  #   "state_npv_labor_fig_2020ppx",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## 2020 prices and bartik
   forgone_wages_all_oil_px_fig_2020ppx_bc <- ggplot() +
@@ -518,14 +519,15 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  simple_ggsave_repo(
-    forgone_wages_all_oil_px_fig_2020ppx_bc,
-    save_path,
-    "state_npv_labor_fig_2020ppx_bartik",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   forgone_wages_all_oil_px_fig_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_labor_fig_2020ppx_bartik",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## changing prices and bartik
   forgone_wages_all_oil_px_fig <- ggplot() +
@@ -1666,14 +1668,15 @@ plot_npv_health_labor <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## bartik correction
   fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
@@ -1688,14 +1691,15 @@ plot_npv_health_labor <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_bartik",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
@@ -2664,14 +2668,15 @@ plot_npv_health_labor_ref <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx_ref",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_ref",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## bartik correction
   fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
@@ -2686,14 +2691,15 @@ plot_npv_health_labor_ref <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik_ref",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_bartik_ref",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
@@ -3665,14 +3671,15 @@ plot_npv_health_labor_annual_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx_annual_vsl",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_annual_vsl",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## bartik correction
   fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
@@ -3687,14 +3694,15 @@ plot_npv_health_labor_annual_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik_annual_vsl",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_bartik_annual_vsl",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
@@ -7053,14 +7061,15 @@ plot_labor_levels <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig2_l_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_levels_fig_2020ppx",
-    width = 12,
-    height = 8,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig2_l_plot_grid2_2020ppx,
+  #   save_path,
+  #   "state_labor_levels_fig_2020ppx",
+  #   width = 12,
+  #   height = 8,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## changing prod prices
   fig2_l_plot_grid <- plot_grid(
@@ -7629,14 +7638,15 @@ plot_labor_levels_pmil <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig2_l_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_levels_pmil_fig_2020ppx",
-    width = 12,
-    height = 8,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig2_l_plot_grid2_2020ppx,
+  #   save_path,
+  #   "state_labor_levels_pmil_fig_2020ppx",
+  #   width = 12,
+  #   height = 8,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ####
 
