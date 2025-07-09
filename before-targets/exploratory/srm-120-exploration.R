@@ -10,7 +10,7 @@ library(rnaturalearthhires)
 library(tidyverse)
 
 ## user
-user <- "tracey-desktop"
+user <- "vincent"
 
 ## paths
 ## -------------------------------------------
@@ -349,3 +349,33 @@ ggsave(filename = "srm_ratio_120pm25_pm25_no_outliers.png",
        height = 6,
        dpi = 300)
 
+#### importance of NH3
+
+#across sites
+total <- srm_weighted_pm25 %>%
+  #filter(!(site_id %in% "120"))%>%
+  group_by(site_id)%>%
+  mutate(across(starts_with("weighted"), sum))%>%
+  select(-GEOID)%>%
+  ungroup()%>%
+  unique()%>%
+  gather("poll", "total_pm25", -site_id)%>%
+  mutate(poll = toupper(gsub("^.*_", "", poll)))
+
+ef <- fread(paste0(main_path,"/data-staged-for-deletion/health/processed/refinery_emission_factor.csv"), 
+      stringsAsFactors =  F)%>%
+  mutate(ton_bbl = 0.001*kg_bbl)%>%
+  select(-kg_bbl)
+
+poll_importance <- ef %>% 
+  mutate(pollutant_code = ifelse(pollutant_code == "SO2", "SOX", pollutant_code),
+         pollutant_code = ifelse(pollutant_code == "PM25-PRI", "PM25", pollutant_code))%>%
+  left_join(total, by = c("id1"="site_id", "pollutant_code"= "poll"))%>%
+  mutate(total_pm25_bbl = ton_bbl*total_pm25)
+
+poll_importance %>%
+  ggplot(aes(x= as.factor(id1), y = total_pm25_bbl))+
+  geom_point()+
+  facet_wrap(~pollutant_code)+
+  labs(x = "Site ID", y = "Total secondary PM2.5 dispersed per barrel")+
+  theme_classic(16)
