@@ -103,7 +103,7 @@ age_vsl_2019%>%
 #assume $1997 as baseline year (https://www.epa.gov/sites/default/files/2017-09/documents/ee-0568-22.pdf)
 
 growth_9719 <- gdp_growth %>%
-  filter(year>1996)%>%
+  filter(year>1997)%>%
   mutate(cum_growth = cumprod(1 + growth_rate))%>%
   filter(year==2019)%>%
   select(cum_growth) %>% pull()
@@ -111,20 +111,20 @@ growth_9719 <- gdp_growth %>%
 # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
   
 CPI_9719 <- 107.8645906/67.72369
-VSL_9719 = (0.4 * growth_9719 * 5.8 + 5.8)*CPI_9719
+VSL_9719 = (0.4 * growth_9719-1 * 5.8 + 5.8)*CPI_9719
 
 #from CalEPA numbers
 
 #9 million in 2013$ and income
 
 growth_1319 <- gdp_growth %>%
-  filter(year>2012)%>%
+  filter(year>2013)%>%
   mutate(cum_growth = cumprod(1 + growth_rate))%>%
   filter(year==2019)%>%
   select(cum_growth) %>% pull()
 
 CPI_1319 <- 107.8645906/98.28708
-VSL_1319 = (0.4 * growth_1319 * 9 + 9)*CPI_1319
+VSL_1319 = (0.4 * growth_1319-1 * 9 + 9)*CPI_1319
 
 #### BEN MAP GROWTH FACTORS
 
