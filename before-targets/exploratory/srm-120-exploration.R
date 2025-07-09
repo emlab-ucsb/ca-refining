@@ -374,8 +374,12 @@ poll_importance <- ef %>%
   mutate(total_pm25_bbl = ton_bbl*total_pm25)
 
 poll_importance %>%
-  ggplot(aes(x= as.factor(id1), y = total_pm25_bbl))+
+  group_by(id1)%>%
+  mutate(total_site_pm25 = sum(total_pm25_bbl,na.rm = T),
+         share = total_pm25_bbl/total_site_pm25)%>%
+  ungroup()%>%
+  ggplot(aes(x= as.factor(id1), y = share))+
   geom_point()+
   facet_wrap(~pollutant_code)+
-  labs(x = "Site ID", y = "Total secondary PM2.5 dispersed per barrel")+
-  theme_classic(16)
+  labs(x = "Site ID", y = "Share of total dispersed secondary PM2.5 dispersed per site per barrel")+
+  theme_gray(16)
