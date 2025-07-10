@@ -1,3 +1,6 @@
+# Import save functions for structure-compliant file saving
+source("R/save_functions.R")
+
 get_ces_county <- function(raw_ces) {
   # Check what columns actually exist in the data
   available_cols <- names(raw_ces)
@@ -1428,12 +1431,17 @@ calculate_mort_x_demg <- function(
     ungroup() %>%
     filter(grp_pop == 0 & pop > 0)
 
-  ## save missing pop
-  fwrite(
-    missing_pop,
-    file.path(save_path, "fig-csv-files", "ct_missing_pop.csv")
-  )
-  # fwrite(missing_pop, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "ct_missing_pop.csv"))
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   missing_pop,
+  ##   folder_path = NULL,
+  ##   filename = "ct_missing_pop.csv",
+  ##   save_path = save_path,
+  ##   file_type = "table",
+  ##   figure_number = NULL,
+  ##   extra_subfolder = "other"
+  ## )
 
   ## multiply health impacts by pct
   refining_mort_df[, demo_cost_2019_PV := cost_2019_PV * pct]
@@ -1446,6 +1454,7 @@ calculate_mort_x_demg <- function(
 
 calc_cumul_av_mort <- function(main_path, save_path, health_grp) {
   dt <- copy(health_grp)
+  setDT(dt)
   dt <- dt[,
     .(
       cumul_mort_level = sum(mortality_level_dem),
@@ -1461,16 +1470,17 @@ calc_cumul_av_mort <- function(main_path, save_path, health_grp) {
     )
   ]
 
-  ## save cumulative
-  fwrite(
-    dt,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "cumulative_avoided_mortality.csv"
-    )
-  )
-  # fwrite(dt, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "cumulative_avoided_mortality.csv"))
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   dt,
+  ##   folder_path = NULL,
+  ##   filename = "cumulative_avoided_mortality.csv*", # Asterisk indicates it should be git-tracked
+  ##   save_path = save_path,
+  ##   file_type = "table",
+  ##   figure_number = NULL,
+  ##   extra_subfolder = "health"
+  ## )
 
   return(dt)
 }
@@ -1567,14 +1577,17 @@ calculate_county_health <- function(
     )
   ]
 
-  fwrite(
-    mort_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "cumulative_health_x_county.csv"
-    )
-  )
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   mort_df,
+  ##   folder_path = NULL,
+  ##   filename = "cumulative_health_x_county.csv*", # Asterisk indicates it should be git-tracked
+  ##   save_path = save_path,
+  ##   file_type = "table",
+  ##   figure_number = NULL,
+  ##   extra_subfolder = "health"
+  ## )
 
   ## return
   return(mort_df)

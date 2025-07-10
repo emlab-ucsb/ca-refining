@@ -36,11 +36,12 @@ plot_npv_labor_oilpx <- function(
   save_path,
   state_ghg_output,
   dt_ghg_2019,
-  annual_all_impacts_labor
+  annual_all_impacts_labor,
+  variant = "base"
 ) {
   # Ensure output directories exist
-  fig_csv_dir <- file.path(save_path, "fig-csv-files")
-  legends_dir <- file.path(save_path, "legends")
+  fig_csv_dir <- file.path(save_path, "results", "figures", "extra")
+  legends_dir <- file.path(save_path, "results", "figures", "extra")
   ensure_dir(fig_csv_dir)
   ensure_dir(legends_dir)
   ## add ghg emission reduction
@@ -331,11 +332,14 @@ plot_npv_labor_oilpx <- function(
   )
 
   ## save figure inputs
-  safe_write_file(
+  simple_fwrite_repo(
     plot_df_labor,
-    save_path,
-    "fig-csv-files",
-    "state_npv_fig_inputs_labor_all_oilpx.csv"
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_labor_all_oilpx.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
 
   ## scenarios for filtering
@@ -439,14 +443,15 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  simple_ggsave_repo(
-    forgone_wages_all_oil_px_fig_2020ppx,
-    save_path,
-    "state_npv_labor_fig_2020ppx",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   forgone_wages_all_oil_px_fig_2020ppx,
+  #   save_path,
+  #   "state_npv_labor_fig_2020ppx",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## 2020 prices and bartik
   forgone_wages_all_oil_px_fig_2020ppx_bc <- ggplot() +
@@ -515,14 +520,15 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  simple_ggsave_repo(
-    forgone_wages_all_oil_px_fig_2020ppx_bc,
-    save_path,
-    "state_npv_labor_fig_2020ppx_bartik",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   forgone_wages_all_oil_px_fig_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_labor_fig_2020ppx_bartik",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## changing prices and bartik
   forgone_wages_all_oil_px_fig <- ggplot() +
@@ -591,7 +597,14 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  return(forgone_wages_all_oil_px_fig)
+  # Return appropriate plot variant based on variant parameter
+  if (variant == "2020ppx") {
+    return(forgone_wages_all_oil_px_fig_2020ppx)
+  } else if (variant == "bartik") {
+    return(forgone_wages_all_oil_px_fig_2020ppx_bc)
+  } else {
+    return(forgone_wages_all_oil_px_fig)  # base variant (changing prices)
+  }
 }
 
 
@@ -959,11 +972,14 @@ plot_npv_health_labor <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  safe_write_file(
+  simple_fwrite_repo(
     plot_df_health,
-    save_path,
-    "fig-csv-files",
-    "state_npv_fig_inputs_health.csv"
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
 
   ## prepare labor ----------------------
@@ -1046,11 +1062,14 @@ plot_npv_health_labor <- function(
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  safe_write_file(
+  simple_fwrite_repo(
     plot_df_labor,
-    save_path,
-    "fig-csv-files",
-    "state_npv_fig_inputs_labor.csv"
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_labor.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
 
   ## scenarios for filtering
@@ -1657,14 +1676,15 @@ plot_npv_health_labor <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## bartik correction
   fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
@@ -1679,14 +1699,15 @@ plot_npv_health_labor <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_bartik",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
@@ -2083,13 +2104,13 @@ plot_npv_health_labor_ref <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_health,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_health_ref.csv"
-    )
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health_ref.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL
   )
 
   ## prepare labor ----------------------
@@ -2655,14 +2676,15 @@ plot_npv_health_labor_ref <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx_ref",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_ref",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## bartik correction
   fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
@@ -2677,14 +2699,15 @@ plot_npv_health_labor_ref <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik_ref",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_bartik_ref",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
@@ -3081,15 +3104,16 @@ plot_npv_health_labor_annual_vsl <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_health,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_health_annual_vsl.csv"
-    )
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health_annual_vsl.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv")
 
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
@@ -3655,14 +3679,15 @@ plot_npv_health_labor_annual_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx_annual_vsl",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_annual_vsl",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## bartik correction
   fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
@@ -3677,14 +3702,15 @@ plot_npv_health_labor_annual_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik_annual_vsl",
-    width = 10,
-    height = 5,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig3_plot_grid_ab_2020ppx_bc,
+  #   save_path,
+  #   "state_npv_fig_2020_ppx_bartik_annual_vsl",
+  #   width = 10,
+  #   height = 5,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   fig3_plot_grid_ab <- plot_grid(
     fig_bxm_a,
@@ -4081,15 +4107,16 @@ plot_npv_health_labor_non_age_vsl <- function(
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_health,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_npv_fig_inputs_health_non_age_vsl.csv"
-    )
+    folder_path = NULL,
+    filename = "state_npv_fig_inputs_health_non_age_vsl.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(plot_df_health, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_npv_fig_inputs_health_non_age_vsl.csv")
 
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
@@ -4658,13 +4685,16 @@ plot_npv_health_labor_non_age_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
-    fig3_plot_grid_ab_2020ppx,
-    save_path,
-    "state_npv_fig_2020_ppx_non_age_vsl",
+  simple_ggsave_repo(
+    plot = fig3_plot_grid_ab_2020ppx,
+    folder_path = NULL,
+    filename = "state_npv_fig_2020_ppx_non_age_vsl",
     width = 10,
     height = 5,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "extra-figure-3"
   )
 
   ## bartik correction
@@ -4680,13 +4710,16 @@ plot_npv_health_labor_non_age_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave(
-    fig3_plot_grid_ab_2020ppx_bc,
-    save_path,
-    "state_npv_fig_2020_ppx_bartik_non_age_vsl",
+  simple_ggsave_repo(
+    plot = fig3_plot_grid_ab_2020ppx_bc,
+    folder_path = NULL,
+    filename = "state_npv_fig_2020_ppx_bartik_non_age_vsl",
     width = 10,
     height = 5,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "extra-figure-3"
   )
 
   fig3_plot_grid_ab <- plot_grid(
@@ -4764,11 +4797,15 @@ calc_county_pm25 <- function(
     ungroup() %>%
     arrange(-avg_pm25_popw)
 
-  fwrite(
+  simple_fwrite_repo(
     health_county_df,
-    file.path(save_path, "fig-csv-files", "avg_pm25_county_2019.csv")
+    folder_path = NULL,
+    filename = "avg_pm25_county_2019.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL
   )
-  # fwrite(health_county_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv")
 
   return(health_county_df)
 }
@@ -4832,11 +4869,16 @@ plot_health_levels <- function(main_path, save_path, health_grp) {
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_df,
-    file.path(save_path, "state_levels_fig_inputs.csv")
+    folder_path = NULL,
+    filename = "state_levels_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_inputs.csv")
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
   #   geom_line(linewidth = 1, alpha = 0.8) +
@@ -5134,15 +5176,16 @@ plot_health_levels_pc <- function(
   remove_scen <- c("LC1 historical production")
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     mort_pc_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_pmil_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_pmil_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(mort_pc_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pmil_fig_inputs.csv")
 
   # health_level_fig <- ggplot(fig2_df %>% filter(!scen_id %in% remove_scen), aes(x = year, y = num_over_den, color = group)) +
   #   geom_line(linewidth = 1, alpha = 0.8) +
@@ -5403,15 +5446,16 @@ plot_health_levels_pm25 <- function(main_path, save_path, health_grp) {
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_pm25_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_pm25_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(fig2_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_pm25_inputs.csv")
 
   ## scenarios for filtering
   # remove_scen <- c('LC1 historic production', 'BAU low exports', 'LC1 historic exports')
@@ -5706,15 +5750,16 @@ plot_health_levels_gaps <- function(main_path, save_path, health_grp) {
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_fig_gaps_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_fig_gaps_inputs.csv*", # Add asterisk for git tracking as specified in structure.md
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_inputs.csv")
 
   ## make figures
   ## ---------------------------------------------------------
@@ -6030,15 +6075,16 @@ plot_health_levels_gaps_pmil <- function(
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_fig_gaps_pmil_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_fig_gaps_pmil_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv")
 
   ## make figures
   ## ---------------------------------------------------------
@@ -6320,15 +6366,16 @@ plot_health_levels_gaps_pm25 <- function(main_path, save_path, health_grp) {
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_fig_gaps_pm25_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_fig_gaps_pm25_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health"
   )
-  # fwrite(gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pm25_inputs.csv")
 
   ## make figures
   ## ---------------------------------------------------------
@@ -6673,15 +6720,16 @@ plot_labor_levels <- function(
   #
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_l_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_labor_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_labor_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_fig_inputs.csv")
 
   ## labor figure
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
@@ -7021,14 +7069,15 @@ plot_labor_levels <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig2_l_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_levels_fig_2020ppx",
-    width = 12,
-    height = 8,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig2_l_plot_grid2_2020ppx,
+  #   save_path,
+  #   "state_labor_levels_fig_2020ppx",
+  #   width = 12,
+  #   height = 8,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ## changing prod prices
   fig2_l_plot_grid <- plot_grid(
@@ -7219,15 +7268,16 @@ plot_labor_levels_pmil <- function(
   #
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     fig2_l_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_levels_labor_pmil_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_levels_labor_pmil_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(fig2_l_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_labor_pmil_fig_inputs.csv")
 
   ## labor figure
   fig_title_vec <- c("Asian", "Black", "Hispanic", "white")
@@ -7596,14 +7646,15 @@ plot_labor_levels_pmil <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    fig2_l_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_levels_pmil_fig_2020ppx",
-    width = 12,
-    height = 8,
-    dpi = 600
-  )
+  # simple_ggsave_repo(
+  #   fig2_l_plot_grid2_2020ppx,
+  #   save_path,
+  #   "state_labor_levels_pmil_fig_2020ppx",
+  #   width = 12,
+  #   height = 8,
+  #   dpi = 600
+  # )
+  ## NOTE: Figure save moved to _targets.R for correct path handling
 
   ####
 
@@ -7774,15 +7825,16 @@ plot_labor_levels_gaps <- function(
   )]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     l_gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_labor_levels_fig_gaps_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_labor_levels_fig_gaps_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_inputs.csv")
 
   ## figure a
   fig_title_vec <- c("Black", "Asian", "white", "Hispanic")
@@ -8089,13 +8141,17 @@ plot_labor_levels_gaps <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave(
-    l_gaps_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_gaps_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = l_gaps_plot_grid2_2020ppx,
+    folder_path = NULL,
+    filename = "state_labor_gaps_fig_2020ppx",
     width = 12,
     height = 8,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "labor-figures",
+    extra_subfolder = "labor-figures"
   )
 
   ## original version
@@ -8271,15 +8327,16 @@ plot_labor_levels_gaps_pmil <- function(
   l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     l_gaps_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_labor_levels_fig_gaps_pmil_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_labor_levels_fig_gaps_pmil_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "labor"
   )
-  # fwrite(l_gaps_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv")
 
   ## figure a
   fig_title_vec <- c("Black", "Asian", "white", "Hispanic")
@@ -8602,13 +8659,17 @@ plot_labor_levels_gaps_pmil <- function(
     rel_heighs = c(1, 1)
   )
 
-  simple_ggsave(
-    l_gaps_plot_grid2_2020ppx,
-    save_path,
-    "state_labor_gaps_pmil_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = l_gaps_plot_grid2_2020ppx,
+    folder_path = NULL,
+    filename = "state_labor_gaps_pmil_fig_2020ppx",
     width = 12,
     height = 8,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "labor-figures",
+    extra_subfolder = "labor-figures"
   )
 
   ## original
@@ -8943,15 +9004,16 @@ plot_hl_levels_df <- function(
   )
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_long,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_disaggregated_npv_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_disaggregated_npv_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv")
 
   return(plot_df_long)
 }
@@ -9475,13 +9537,17 @@ plot_hl_levels <- function(main_path, save_path, demographic_npv_df) {
     # rel_widths = c(1, 1, 1)
   )
 
-  simple_ggsave(
-    hl_pc_plot_grid_nl_2020ppx,
-    save_path,
-    "demographic_npv_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = hl_pc_plot_grid_nl_2020ppx,
+    folder_path = NULL,
+    filename = "demographic_npv_fig_2020ppx",
     width = 11,
     height = 12,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "health-labor-figures",
+    extra_subfolder = "health-labor-figures"
   )
 
   ## original -- all together now
@@ -9542,15 +9608,16 @@ plot_hl_levels_pc <- function(
   plot_df_long[, value := value / pop_2020]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     plot_df_long,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_disaggregated_npv_pc_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_disaggregated_npv_pc_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(plot_df_long, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv")
 
   ## create the figure ---------------------------------------------
   ## ---------------------------------------------------------------
@@ -10236,13 +10303,16 @@ plot_hl_levels_pc <- function(
     # rel_widths = c(1, 1, 1)
   )
 
-  simple_ggsave(
-    hl_pc_plot_grid_nl_2020ppx,
-    save_path,
-    "demographic_npv_pc_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = hl_pc_plot_grid_nl_2020ppx,
+    folder_path = NULL,
+    filename = "demographic_npv_pc_fig_2020ppx",
     width = 11,
     height = 12,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-5"
   )
 
   ## all together now
@@ -10358,8 +10428,8 @@ plot_hl_shares <- function(
   demographic_npv_df,
   state_pop_ratios
 ) {
-  fig_csv_dir <- file.path(save_path, "fig-csv-files")
-  legends_dir <- file.path(save_path, "legends")
+  fig_csv_dir <- file.path(save_path, "results", "figures", "figures-si")
+  legends_dir <- file.path(save_path, "results", "figures", "extra")
   ensure_dir(fig_csv_dir)
   ensure_dir(legends_dir)
 
@@ -10445,15 +10515,16 @@ plot_hl_shares <- function(
   share_df[, demo_grp_metric := paste0(title, "_", metric)]
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     share_df,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_disaggreated_npv_share_fig_inputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_disaggreated_npv_share_fig_inputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(share_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggreated_npv_share_fig_inputs.csv")
 
   ## create the figure ---------------------------------------------
   ## ---------------------------------------------------------------
@@ -11346,13 +11417,16 @@ plot_hl_shares <- function(
     # rel_widths = c(1, 1, 1)
   )
 
-  simple_ggsave(
-    hl_pc_plot_grid_nl_2020ppx,
-    save_path,
-    "demographic_npv_shares_fig_2020ppx",
+  simple_ggsave_repo(
+    plot = hl_pc_plot_grid_nl_2020ppx,
+    folder_path = NULL,
+    filename = "demographic_npv_shares_fig_2020ppx",
     width = 12,
     height = 12,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figures-si"
   )
 
   ## original
@@ -11551,15 +11625,16 @@ create_health_labor_table <- function(
   result_output <- rbind(npv_out, emp_out, avoid_m_out_total)
 
   ## save figure inputs
-  fwrite(
+  simple_fwrite_repo(
     result_output,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_health_labor_ouputs.csv"
-    )
+    folder_path = NULL,
+    filename = "state_health_labor_ouputs.csv",
+    save_path = save_path,
+    file_type = "table",
+    figure_number = NULL,
+    extra_subfolder = "health-and-labor"
   )
-  # fwrite(result_output, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_health_labor_ouputs.csv"))
+  # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_health_labor_ouputs.csv")
 
   return(result_output)
 }
@@ -12507,13 +12582,17 @@ fig4_hl <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx,
-    save_path,
-    "health_labor_gaps_plot_2020ppx",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx,
+    folder_path = NULL,
+    filename = "health_labor_gaps_plot_2020ppx",
     width = 14,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "health-labor-figures",
+    extra_subfolder = "health-labor-figures"
   )
 
   ## SI -- no re-emp
@@ -12533,13 +12612,16 @@ fig4_hl <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx_no_reemp,
-    save_path,
-    "health_labor_gaps_plot_2020ppx_no_reemp",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx_no_reemp,
+    folder_path = NULL,
+    filename = "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
     width = 14,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-4"
   )
 
   health_labor_plot <- plot_grid(
@@ -13645,13 +13727,17 @@ fig4_hl_pmil <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx,
-    save_path,
-    "health_labor_gaps_pmil_plot_2020ppx",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx,
+    folder_path = NULL,
+    filename = "health_labor_gaps_pmil_plot_2020ppx",
     width = 18,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "extra-figure-4",
+    extra_subfolder = "extra-figure-4"
   )
 
   health_labor_plot_2020ppx_no_reemp <- plot_grid(
@@ -13670,13 +13756,16 @@ fig4_hl_pmil <- function(
     rel_heights = c(1, 1, 1, 1)
   )
 
-  simple_ggsave(
-    health_labor_plot_2020ppx_no_reemp,
-    save_path,
-    "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
+  simple_ggsave_repo(
+    plot = health_labor_plot_2020ppx_no_reemp,
+    folder_path = NULL,
+    filename = "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
     width = 18,
     height = 6,
-    dpi = 600
+    dpi = 600,
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-4"
   )
 
   health_labor_plot <- plot_grid(
