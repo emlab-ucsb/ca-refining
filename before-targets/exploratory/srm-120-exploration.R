@@ -417,7 +417,10 @@ poll_importance %>%
   labs(x = "Site ID", y = "Share of total secondary PM2.5 dispersed per site per ton emitted")+
   theme_gray(16)
 
-#what is site 800?
+#what is site 800? its a renewable fuel
 
 ref_analysis <- fread(paste0(main_path,"/data-staged-for-deletion/stocks-flows/processed/refinery_loc_cap_manual.csv"),
+                      stringsAsFactors = F) 
+
+ref <- fread(paste0(main_path,"/data-staged-for-deletion/stocks-flows/processed/refinery_lat_long.csv"),
                       stringsAsFactors = F) 
