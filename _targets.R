@@ -71,46 +71,13 @@ list(
     name = run_type,
     command = "jun30"
   ),
-  tar_target(name = iteration, "test"),
+  tar_target(name = version, "jul10"),
+  tar_target(name = iteration, "cuf=0.6"),
 
-  # Set run type and stop if unknown run type
+  # Set base output path according to output_structure.csv
   tar_target(
     name = save_path,
-    command = switch(
-      run_type,
-      "revision-main" = file.path(
-        "outputs",
-        iteration,
-        "figures",
-        "2025-revision-main"
-      ),
-      "labor-take-2" = file.path(
-        "outputs",
-        iteration,
-        "figures",
-        "2025-labor-take-2"
-      ),
-      "ghg-emfac" = file.path(
-        "outputs",
-        iteration,
-        "figures",
-        "ghg-emfac-cluster"
-      ),
-      "jun30" = file.path(
-        "outputs",
-        iteration,
-        "figures",
-        "jun30"
-      ),
-      "figure-development" = file.path(
-        "outputs",
-        "academic-out",
-        "refining",
-        "figures",
-        "figure-development"
-      ),
-      stop("Unknown run_type")
-    )
+    command = file.path("outputs", version, iteration)
   ),
 
   # create folders in repository
@@ -1925,11 +1892,14 @@ list(
     name = save_fig_demand_ghg,
     command = simple_ggsave_repo(
       fig_demand_ghg,
-      save_path,
+      NULL,
       "combined_its_and_production",
       width = 25,
       height = 13,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra"
     ),
     format = "file"
   ),
@@ -1937,11 +1907,14 @@ list(
     name = save_npv_fig,
     command = simple_ggsave_repo(
       npv_plot,
-      save_path,
-      "state_npv_fig",
+      NULL,
+      "state_npv_fig_2020_ppx_bartik",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-3"
     ),
     format = "file"
   ),
@@ -1949,37 +1922,47 @@ list(
     name = save_npv_fig_ref,
     command = simple_ggsave_repo(
       npv_plot_ref,
-      save_path,
-      "state_npv_fig_ref",
+      NULL,
+      "state_npv_fig_2020_ppx_ref",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
     ),
     format = "file"
   ),
   tar_target(
     name = save_npv_fig_annual_vsl,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot_annual_vsl,
-      save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
-      "state_npv_fig_annual_vsl",
+      NULL,
+      "state_npv_fig_2020_ppx_annual_vsl",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
     ),
     format = "file"
   ),
   tar_target(
     name = save_npv_fig_non_age_vsl,
-    command = simple_ggsave(
+    command = simple_ggsave_repo(
       npv_plot_non_age_vsl,
-      save_path,
-      # "outputs/academic-out/refining/figures/2025-health-revisions",
-      "state_npv_fig_non_age_vsl",
+      NULL,
+      "state_npv_fig_2020_ppx_non_age_vsl",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
     ),
     format = "file"
   ),
@@ -1987,11 +1970,15 @@ list(
     name = save_npv_labor_fig,
     command = simple_ggsave_repo(
       npv_labor_plot,
-      save_path,
-      "state_npv_labor_fig",
+      NULL,
+      "state_npv_labor_fig_2020ppx",
       width = 10,
       height = 5,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -1999,11 +1986,15 @@ list(
     name = save_levels_fig,
     command = simple_ggsave_repo(
       health_levels_plot,
-      save_path,
+      NULL,
       "state_levels_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "state-levels-fig"
     ),
     format = "file"
   ),
@@ -2011,11 +2002,15 @@ list(
     name = save_levels_pmil_fig,
     command = simple_ggsave_repo(
       health_levels_pmil_plot,
-      save_path,
+      NULL,
       "state_levels_pmil_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "state-levels-fig"
     ),
     format = "file"
   ),
@@ -2023,11 +2018,15 @@ list(
     name = save_levels_pm25_fig,
     command = simple_ggsave_repo(
       health_levels_plot_pm25,
-      save_path,
+      NULL,
       "state_levels_pm25_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "state-levels-fig"
     ),
     format = "file"
   ),
@@ -2035,11 +2034,15 @@ list(
     name = save_l_levels_fig,
     command = simple_ggsave_repo(
       labor_levels_plot,
-      save_path,
-      "state_labor_levels_fig",
+      NULL,
+      "state_labor_levels_fig_2020ppx",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2047,11 +2050,15 @@ list(
     name = save_l_levels_pmil_fig,
     command = simple_ggsave_repo(
       labor_levels_plot_pmil,
-      save_path,
-      "state_labor_levels_pmil_fig",
+      NULL,
+      "state_labor_levels_pmil_fig_2020ppx",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2059,11 +2066,15 @@ list(
     name = save_gaps_fig,
     command = simple_ggsave_repo(
       health_gaps_plot,
-      save_path,
+      NULL,
       "state_gaps_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-figures"
     ),
     format = "file"
   ),
@@ -2071,11 +2082,15 @@ list(
     name = save_gaps_pmil_fig,
     command = simple_ggsave_repo(
       health_gaps_pmil_plot,
-      save_path,
+      NULL,
       "state_gaps_pmil_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-figures"
     ),
     format = "file"
   ),
@@ -2083,11 +2098,15 @@ list(
     name = save_gaps_pm25_fig,
     command = simple_ggsave_repo(
       health_gaps_plot_pm25,
-      save_path,
+      NULL,
       "state_gaps_pm25_fig",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-figures"
     ),
     format = "file"
   ),
@@ -2095,11 +2114,15 @@ list(
     name = save_labor_gaps_fig,
     command = simple_ggsave_repo(
       labor_gaps_plot,
-      save_path,
-      "state_labor_gaps_fig",
+      NULL,
+      "state_labor_gaps_fig_2020ppx",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2107,11 +2130,15 @@ list(
     name = save_labor_gaps_fig_pmil,
     command = simple_ggsave_repo(
       labor_gaps_plot_pmil,
-      save_path,
-      "state_labor_gaps_pmil_fig",
+      NULL,
+      "state_labor_gaps_pmil_fig_2020ppx",
       width = 12,
       height = 8,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
     ),
     format = "file"
   ),
@@ -2119,11 +2146,15 @@ list(
     name = save_demo_npv_fig,
     command = simple_ggsave_repo(
       demographic_npv_plot,
-      save_path,
+      NULL,
       "demographic_npv_fig",
       width = 11,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-5"
     ),
     format = "file"
   ),
@@ -2131,11 +2162,15 @@ list(
     name = save_demo_share_fig,
     command = simple_ggsave_repo(
       demographic_npv_shares_plot,
-      save_path,
+      NULL,
       "demographic_npv_shares_fig",
       width = 12,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-labor-figures"
     ),
     format = "file"
   ),
@@ -2143,11 +2178,15 @@ list(
     name = save_demo_npv_pc_fig,
     command = simple_ggsave_repo(
       demographic_npv_plot_pc,
-      save_path,
+      NULL,
       "demographic_npv_pc_fig",
       width = 11,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-5"
     ),
     format = "file"
   ),
@@ -2155,11 +2194,15 @@ list(
     name = save_health_labor_gaps_plot,
     command = simple_ggsave_repo(
       health_labor_gaps_plot,
-      save_path,
+      NULL,
       "health_labor_gaps_plot",
       width = 14,
       height = 6,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-labor-figures"
     ),
     format = "file"
   ),
@@ -2167,11 +2210,15 @@ list(
     name = save_health_labor_gaps_pmil_plot,
     command = simple_ggsave_repo(
       health_labor_gaps_pmil_plot,
-      save_path,
+      NULL,
       "health_labor_gaps_pmil_plot",
       width = 18,
       height = 6,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-4"
     ),
     format = "file"
   ),
@@ -2179,11 +2226,14 @@ list(
     name = save_fig_refinery_capacity,
     command = simple_ggsave_repo(
       fig_refinery_capacity,
-      save_path,
+      NULL,
       "refinery_capacity",
       width = 16,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
     ),
     format = "file"
   ),
@@ -2191,11 +2241,173 @@ list(
     name = save_fig_refinery_count,
     command = simple_ggsave_repo(
       fig_refinery_count,
-      save_path,
+      NULL,
       "refinery_count",
       width = 16,
       height = 12,
-      dpi = 600
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
+    ),
+    format = "file"
+  ),
+
+  # Additional plot variants for 2020ppx figures
+  tar_target(
+    name = save_npv_labor_fig_2020ppx_bartik,
+    command = simple_ggsave_repo(
+      npv_labor_plot,
+      NULL,
+      "state_npv_labor_fig_2020ppx_bartik",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "labor-figures"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_2020ppx_bartik_ref,
+    command = simple_ggsave_repo(
+      npv_plot_ref,
+      NULL,
+      "state_npv_fig_2020_ppx_bartik_ref",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_2020ppx_bartik_annual_vsl,
+    command = simple_ggsave_repo(
+      npv_plot_annual_vsl,
+      NULL,
+      "state_npv_fig_2020_ppx_bartik_annual_vsl",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_2020ppx_bartik_non_age_vsl,
+    command = simple_ggsave_repo(
+      npv_plot_non_age_vsl,
+      NULL,
+      "state_npv_fig_2020_ppx_bartik_non_age_vsl",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_demographic_npv_fig_2020ppx,
+    command = simple_ggsave_repo(
+      demographic_npv_plot,
+      NULL,
+      "demographic_npv_fig_2020ppx",
+      width = 11,
+      height = 12,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-labor-figures"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_demographic_npv_pc_fig_2020ppx,
+    command = simple_ggsave_repo(
+      demographic_npv_plot_pc,
+      NULL,
+      "demographic_npv_pc_fig_2020ppx",
+      width = 11,
+      height = 12,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-5"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_demographic_npv_shares_fig_2020ppx,
+    command = simple_ggsave_repo(
+      demographic_npv_shares_plot,
+      NULL,
+      "demographic_npv_shares_fig_2020ppx",
+      width = 12,
+      height = 12,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_labor_gaps_plot_2020ppx,
+    command = simple_ggsave_repo(
+      health_labor_gaps_plot,
+      NULL,
+      "health_labor_gaps_plot_2020ppx",
+      width = 14,
+      height = 6,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "health-labor-figures"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_labor_gaps_pmil_plot_2020ppx,
+    command = simple_ggsave_repo(
+      health_labor_gaps_pmil_plot,
+      NULL,
+      "health_labor_gaps_pmil_plot_2020ppx",
+      width = 18,
+      height = 6,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-4"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_health_labor_gaps_pmil_plot_2020ppx_no_reemp,
+    command = simple_ggsave_repo(
+      health_labor_gaps_pmil_plot,
+      NULL,
+      "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
+      width = 18,
+      height = 6,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-4"
     ),
     format = "file"
   )
