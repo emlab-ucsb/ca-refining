@@ -10,7 +10,7 @@ library(rnaturalearthhires)
 library(tidyverse)
 
 ## user
-user <- "vincent"
+user <- "vincent-home"
 
 ## paths
 ## -------------------------------------------
@@ -19,7 +19,8 @@ user <- "vincent"
 list_paths <- c(
     "tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
     "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
-    "vincent" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
+    "vincent-work" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
+    "vincent-home" = "G://Shared drives/emlab/projects/current-projects/calepa-cn",
     "meas" = "data"
   )
 
@@ -362,6 +363,7 @@ total <- srm_weighted_pm25 %>%
   gather("poll", "total_pm25", -site_id)%>%
   mutate(poll = toupper(gsub("^.*_", "", poll)))
 
+#refinery specific EF
 ef <- fread(paste0(main_path,"/data-staged-for-deletion/health/processed/refinery_emission_factor.csv"), 
       stringsAsFactors =  F)%>%
   mutate(ton_bbl = 0.001*kg_bbl)%>%
@@ -370,16 +372,52 @@ ef <- fread(paste0(main_path,"/data-staged-for-deletion/health/processed/refiner
 poll_importance <- ef %>% 
   mutate(pollutant_code = ifelse(pollutant_code == "SO2", "SOX", pollutant_code),
          pollutant_code = ifelse(pollutant_code == "PM25-PRI", "PM25", pollutant_code))%>%
-  left_join(total, by = c("id1"="site_id", "pollutant_code"= "poll"))%>%
+  full_join(total, by = c("id1"="site_id", "pollutant_code"= "poll"))%>%
   mutate(total_pm25_bbl = ton_bbl*total_pm25)
 
+#cluster level EF
+ef_cluster <- fread(paste0(main_path,"/data-staged-for-deletion/health/processed/cluster_emission_factor_v2.csv"), 
+            stringsAsFactors =  F)%>%
+  mutate(ton_bbl = 0.001*kg_bbl)%>%
+  select(-kg_bbl)
+
+site_cluster <- fread(paste0(main_path,"/data-staged-for-deletion/health/raw/ref_match/ref_to_match_eia.csv"), 
+     stringsAsFactors =  F)%>%
+  select(site_id, cluster)
+
+
+poll_importance <- ef_cluster %>% 
+  mutate(pollutant_code = ifelse(pollutant_code == "SO2", "SOX", pollutant_code),
+         pollutant_code = ifelse(pollutant_code == "PM25-PRI", "PM25", pollutant_code))%>%
+  right_join(total %>% left_join(site_cluster, by = c("site_id")) %>% drop_na(cluster), 
+                                by = c("cluster", "pollutant_code"="poll"))%>%
+  mutate(total_pm25_bbl = ton_bbl*total_pm25)
+
+#tot pm25 dispersed per barrel
 poll_importance %>%
-  group_by(id1)%>%
+  group_by(site_id)%>%
   mutate(total_site_pm25 = sum(total_pm25_bbl,na.rm = T),
          share = total_pm25_bbl/total_site_pm25)%>%
   ungroup()%>%
-  ggplot(aes(x= as.factor(id1), y = share))+
+  ggplot(aes(x= as.factor(site_id), y = share))+
   geom_point()+
   facet_wrap(~pollutant_code)+
   labs(x = "Site ID", y = "Share of total dispersed secondary PM2.5 dispersed per site per barrel")+
   theme_gray(16)
+
+#tot pm25 dispersed per ton of precursor
+poll_importance %>%
+  group_by(site_id)%>%
+  mutate(total_site_pm25 = sum(total_pm25,na.rm = T),
+         share = total_pm25/total_site_pm25)%>%
+  ungroup()%>%
+  ggplot(aes(x= as.factor(id1), y = share))+
+  geom_point()+
+  facet_wrap(~pollutant_code)+
+  labs(x = "Site ID", y = "Share of total secondary PM2.5 dispersed per site per ton emitted")+
+  theme_gray(16)
+
+#what is site 800?
+
+ref_analysis <- fread(paste0(main_path,"/data-staged-for-deletion/stocks-flows/processed/refinery_loc_cap_manual.csv"),
+                      stringsAsFactors = F) 
