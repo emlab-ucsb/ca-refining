@@ -36,7 +36,8 @@ plot_npv_labor_oilpx <- function(
   save_path,
   state_ghg_output,
   dt_ghg_2019,
-  annual_all_impacts_labor
+  annual_all_impacts_labor,
+  variant = "base"
 ) {
   # Ensure output directories exist
   fig_csv_dir <- file.path(save_path, "results", "figures", "extra")
@@ -596,7 +597,14 @@ plot_npv_labor_oilpx <- function(
     ) +
     guides(color = guide_legend(nrow = 2))
 
-  return(forgone_wages_all_oil_px_fig)
+  # Return appropriate plot variant based on variant parameter
+  if (variant == "2020ppx") {
+    return(forgone_wages_all_oil_px_fig_2020ppx)
+  } else if (variant == "bartik") {
+    return(forgone_wages_all_oil_px_fig_2020ppx_bc)
+  } else {
+    return(forgone_wages_all_oil_px_fig)  # base variant (changing prices)
+  }
 }
 
 

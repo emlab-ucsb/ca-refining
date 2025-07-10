@@ -72,7 +72,7 @@ list(
     name = run_type,
     command = "jul07"
   ),
-  tar_target(name = version, command = "jul09"),
+  tar_target(name = version, command = "jul10"),
   tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
@@ -1631,7 +1631,8 @@ list(
       save_path,
       state_ghg_output,
       dt_ghg_2019,
-      annual_all_impacts_labor
+      annual_all_impacts_labor,
+      variant = "base"
     )
   ),
   tar_target(
@@ -2464,10 +2465,77 @@ list(
     format = "file"
   ),
 
+  # ---- Missing CSV input file targets from output_structure.csv ----
+  tar_target(
+    name = save_npv_fig_inputs_labor,
+    command = simple_fwrite_repo(
+      data = annual_all_impacts_labor, # Labor data used for NPV calculations
+      folder_path = NULL,
+      filename = "state_npv_fig_inputs_labor.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-3"
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    name = save_labor_levels_fig_gaps_pmil_inputs,
+    command = simple_fwrite_repo(
+      data = ref_labor_demog_yr, # Labor demographic data used for gaps analysis
+      folder_path = NULL,
+      filename = "state_labor_levels_fig_gaps_pmil_inputs.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-4"
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    name = save_levels_fig_gaps_pmil_inputs,
+    command = simple_fwrite_repo(
+      data = health_grp, # Health group data used for gaps analysis
+      folder_path = NULL,
+      filename = "state_levels_fig_gaps_pmil_inputs.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-4"
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    name = save_disaggregated_npv_fig_inputs,
+    command = simple_fwrite_repo(
+      data = demographic_npv_df, # Demographic NPV data
+      folder_path = NULL,
+      filename = "state_disaggregated_npv_fig_inputs.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-5"
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    name = save_disaggregated_npv_pc_fig_inputs,
+    command = simple_fwrite_repo(
+      data = demographic_npv_df, # Demographic NPV per capita data (same source)
+      folder_path = NULL,
+      filename = "state_disaggregated_npv_pc_fig_inputs.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-5"
+    ),
+    format = "file"
+  ),
+
+  # ---- Missing PNG legend file targets from output_structure.csv ----
+  # Note: Legend PNG targets will be added after testing the current changes
+
   # ---- Additional figure targets for 2020ppx variants ----
   # These targets call the plotting functions and save the outputs with correct paths
-
-
 
   tar_target(
     name = save_npv_labor_fig_2020ppx,
@@ -2477,7 +2545,8 @@ list(
         save_path,
         state_ghg_output,
         dt_ghg_2019,
-        annual_all_impacts_labor
+        annual_all_impacts_labor,
+        variant = "2020ppx"
       ),
       NULL,
       "state_npv_labor_fig_2020ppx",
@@ -2500,7 +2569,8 @@ list(
         save_path,
         state_ghg_output,
         dt_ghg_2019,
-        annual_all_impacts_labor
+        annual_all_impacts_labor,
+        variant = "bartik"
       ),
       NULL,
       "state_npv_labor_fig_2020ppx_bartik",
