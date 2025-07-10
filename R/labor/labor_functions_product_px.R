@@ -1,5 +1,14 @@
 ## labor functions multiple prices
 
+## Required libraries and functions
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(readr)
+
+## Source save functions
+source("R/save_functions.R")
+
 ## labor functions
 
 create_prod_px_spread <- function(proc_oil_px_df) {
@@ -275,8 +284,12 @@ calc_labor_outputs <- function(
     )
 
   # ## save for review
-  # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/labor_result_for_review.csv"))
-  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
+  # To save review files according to structure.md:
+  # simple_fwrite_repo(
+  #   data = review_df,
+  #   folder_path = file.path(save_path, "tables", "labor"),
+  #   filename = "labor_result_for_review.csv"
+  # )
 
   ## calc discounted low
   ct_out_refining_direct[,
@@ -368,8 +381,12 @@ calc_labor_outputs <- function(
   #   select(demand_scenario, refining_scenario, oil_price_scenario, destination, year, total_production_bbl, total_revenue, total_comp_usd19_h, prev_comp_usd19h, total_comp_usd19_l, total_emp, total_emp_revised)
   #
   # ## save for review
-  # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-update/fig-csv-files/labor_result_for_review.csv"))
-  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files/labor_result_for_review.csv"))
+  # To save review files according to structure.md:
+  # simple_fwrite_repo(
+  #   data = review_df,
+  #   folder_path = file.path(save_path, "tables", "labor"),
+  #   filename = "labor_result_for_review.csv"
+  # )
   #
   # ## calc discounted low
   # county_out_labor[, total_comp_PV_l := total_comp_usd19_l / ((1 + discount_rate)^(year - 2019))]
@@ -678,7 +695,12 @@ calc_labor_all_impacts_outputs <- function(
     as.data.table()
 
   ## save for review
-  #write_csv(state_out_refining_all_impacts, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/step_8_output_for_review.csv"))
+  # To save step outputs according to structure.md:
+  # simple_fwrite_repo(
+  #   data = state_out_refining_all_impacts,
+  #   folder_path = file.path(save_path, "tables", "labor"),
+  #   filename = "step_8_output_for_review.csv"
+  # )
 
   ## step 9: calc revised statewide indirect and induced impact that is equal to
   ## the indirect and induced impact from step 4 - direct and indirect impact from
@@ -863,7 +885,12 @@ calc_labor_all_impacts_outputs <- function(
   #   as.data.table()
 
   ## save for review
-  #write_csv(state_out_labor_all_impacts, file.path(main_path, "outputs/academic-out/refining/figures/2025-update/fig-csv-files/state_out_labor_all_impacts.csv"))
+  # To save labor outputs according to structure.md:
+  # simple_fwrite_repo(
+  #   data = state_out_labor_all_impacts,
+  #   folder_path = file.path(save_path, "tables", "labor"),
+  #   filename = "state_out_labor_all_impacts.csv"
+  # )
 
   return(state_out_labor_all_impacts)
 
@@ -946,8 +973,12 @@ calc_labor_all_impacts_outputs <- function(
   #   )
   #
   # ## save file
-  # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-update/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
-  # # write_csv(review_df, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files/labor_result_x_impact_type_for_review.csv"))
+  # To save review files according to structure.md:
+  # simple_fwrite_repo(
+  #   data = review_df,
+  #   folder_path = file.path(save_path, "tables", "labor"),
+  #   filename = "labor_result_x_impact_type_for_review.csv"
+  # )
   #
   #
   # ## calc discounted low
@@ -961,8 +992,12 @@ calc_labor_all_impacts_outputs <- function(
   #
   #
   # ## save file
-  # write_csv(county_out_labor, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-update/fig-csv-files/labor_result_x_impact_type.csv"))
-  # # write_csv(county_out_labor, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files/labor_result_x_impact_type.csv"))
+  # To save county outputs according to structure.md:
+  # simple_fwrite_repo(
+  #   data = county_out_labor,
+  #   folder_path = file.path(save_path, "tables", "labor"),
+  #   filename = "labor_result_x_impact_type.csv"
+  # )
   #
   #
   # county_out_labor
@@ -1071,15 +1106,13 @@ calculate_labor_x_demg_annual <- function(
     sum_demo_comp_pv_l
   )]
 
-  ## save for review
-  write_csv(
-    state_demo_labor_out,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "state_labor_direct_impacts_demo_annual.csv"
-    )
-  )
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   data = state_demo_labor_out,
+  ##   folder_path = file.path(save_path, "intermediate", "labor"),
+  ##   filename = "state_labor_direct_impacts_demo_annual.csv"
+  ## )
 
   return(state_demo_labor_out)
 
@@ -1317,16 +1350,13 @@ calculate_annual_labor_x_demg_hl <- function(
     value
   )]
 
-  ## save df
-  fwrite(
-    labor_pct_long,
-    file.path(
-      save_path,
-      "fig-csv-files",
-      "labor_high_low_annual_outputs.csv"
-    )
-  )
-  # fwrite(labor_pct_long, file.path(main_path, "outputs/academic-out/refining/figures/2025-08-beta-adj/fig-csv-files", "labor_high_low_annual_outputs.csv"))
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   data = labor_pct_long,
+  ##   folder_path = file.path(save_path, "tables", "labor"),
+  ##   filename = "labor_high_low_annual_outputs.csv"
+  ## )
 
   return(labor_pct_long)
 }
@@ -1497,12 +1527,13 @@ calc_county_level_outputs <- function(
     select(demand_scenario:county_pop, metric_name, estimate, value) %>%
     as.data.table()
 
-  ## save df
-  fwrite(
-    labor_county_out_df,
-    file.path(save_path, "fig-csv-files", "labor_county_outputs.csv")
-  )
-  # fwrite(labor_county_out_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files", "labor_county_outputs.csv"))
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   data = labor_county_out_df,
+  ##   folder_path = file.path(save_path, "tables", "labor"),
+  ##   filename = "labor_county_outputs.csv"
+  ## )
 
   return(labor_county_out_df)
 }
