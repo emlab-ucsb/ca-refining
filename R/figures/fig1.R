@@ -449,48 +449,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ## create a folder for fig 1
-  fig_1_folder <- file.path(
-    save_path,
-    "fig1"
-  )
-
-  # check if the folder exists
-  if (!dir.exists(fig_1_folder)) {
-    # Create the folder if it does not exist
-    dir.create(fig_1_folder, recursive = TRUE)
-  }
-
-  ggsave(
-    ct_health_panel_a,
-    filename = file.path(
-      fig_1_folder,
-      "figure1a-pop-weighted.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_health_panel_a,
-    filename = file.path(
-      fig_1_folder,
-      "figure1a-pop-weighted.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1a-pop-weighted.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1a-pop-weighted.pdf")
-  )
 
   ## figure
   ct_health_panel_a_total <- ggplot() +
@@ -606,36 +564,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_health_panel_a_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1a-not-weighted.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_health_panel_a_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1a-not-weighted.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1a-not-weighted.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1a-not-weighted.pdf")
-  )
 
   ## figure
   ct_health_panel_b <- ggplot() +
@@ -755,36 +683,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_health_panel_b,
-    filename = file.path(
-      fig_1_folder,
-      "figure1b-pop-weighted.png"
-    ),
-    width = 160,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_health_panel_b,
-    filename = file.path(
-      fig_1_folder,
-      "figure1b-pop-weighted.pdf"
-    ),
-    width = 160,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1b-pop-weighted.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1b-pop-weighted.pdf")
-  )
 
   ## figure
   ct_health_panel_b_total <- ggplot() +
@@ -897,36 +795,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_health_panel_b_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1b-not-weighted.png"
-    ),
-    width = 160,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_health_panel_b_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1b-not-weighted.pdf"
-    ),
-    width = 160,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1b-not-weighted.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1b-not-weighted.pdf")
-  )
 
   ## figure
   ct_health_panel_c <- ggplot() +
@@ -1045,36 +913,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_health_panel_c,
-    filename = file.path(
-      fig_1_folder,
-      "figure1c-pop-weighted.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_health_panel_c,
-    filename = file.path(
-      fig_1_folder,
-      "figure1c-pop-weighted.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1c-pop-weighted.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1c-pop-weighted.pdf")
-  )
 
   ## figure
   ct_health_panel_c_total <- ggplot() +
@@ -1183,36 +1021,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_health_panel_c_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1c-not-weighted.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_health_panel_c_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1c-not-weighted.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1c-not-weighted.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1c-not-weighted.pdf")
-  )
 
   ## pm2.5 legend
   ## ---------------------------------------------------------------------
@@ -1293,33 +1101,6 @@ create_figure_1 <- function(
   grid.newpage()
   grid.draw(legend_grobs[[1]])
 
-  # Save the legend as image
-  png(file.path(
-    fig_1_folder,
-    "figure1-health-legend.png"
-  ))
-  grid.newpage()
-  grid.draw(legend_grobs[[1]])
-  dev.off()
-
-  pdf(file.path(
-    fig_1_folder,
-    "figure1-health-legend.pdf"
-  ))
-  grid.newpage()
-  grid.draw(legend_grobs[[1]])
-  dev.off()
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-health-legend.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-health-legend.pdf"
-    )
-  )
 
   ## refinery legend
   ## ---------------------------------------------------------------------
@@ -1417,33 +1198,6 @@ create_figure_1 <- function(
   grid.newpage()
   grid.draw(legend_grobs_r[[1]])
 
-  # Save the legend as image
-  png(file.path(
-    fig_1_folder,
-    "figure1-refining-legend.png"
-  ))
-  grid.newpage()
-  grid.draw(legend_grobs_r[[1]])
-  dev.off()
-
-  pdf(file.path(
-    fig_1_folder,
-    "figure1-refining-legend.pdf"
-  ))
-  grid.newpage()
-  grid.draw(legend_grobs_r[[1]])
-  dev.off()
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-refining-legend.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-refining-legend.pdf"
-    )
-  )
 
   ## plot health together
   ## --------------------------------------------------------------------------
@@ -1494,42 +1248,6 @@ create_figure_1 <- function(
   #   rel_widths = c(1, 1),
   #   rel_heights = c(1, 0.1))
 
-  ggsave(
-    fig1_health,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-health.png"
-    ),
-    width = 120,
-    height = 160,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    fig1_health,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-health.pdf"
-    ),
-    width = 120,
-    height = 160,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-health.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-health.pdf"
-    )
-  )
 
   ## ---------------------------------------------------------------------------
   ## DAC insets
@@ -1614,42 +1332,6 @@ create_figure_1 <- function(
       )
     )
 
-  ggsave(
-    fig1_north_inset,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-north-inset.png"
-    ),
-    width = 80,
-    height = 110,
-    units = "mm",
-    dpi = 600,
-    device = "png"
-  )
-
-  ggsave(
-    fig1_north_inset,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-north-inset.pdf"
-    ),
-    width = 80,
-    height = 110,
-    units = "mm",
-    dpi = 600,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-north-inset.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-north-inset.pdf"
-    )
-  )
 
   ## map inset, CA with box around zoom area
   fig1_south_inset <- ggplot() +
@@ -1726,42 +1408,6 @@ create_figure_1 <- function(
       )
     )
 
-  ggsave(
-    fig1_south_inset,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-south-inset.png"
-    ),
-    width = 80,
-    height = 110,
-    units = "mm",
-    dpi = 600,
-    device = "png"
-  )
-
-  ggsave(
-    fig1_south_inset,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-south-inset.pdf"
-    ),
-    width = 80,
-    height = 110,
-    units = "mm",
-    dpi = 600,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-south-inset.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-south-inset.pdf"
-    )
-  )
 
   # ## make map
   # fig1_map <- ggplot() +
@@ -1844,42 +1490,6 @@ create_figure_1 <- function(
     fig1_dac_legend
   )
 
-  ggsave(
-    dac_legend,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-dac-legend.png"
-    ),
-    # width = 80,
-    # height = 110,
-    # units = "mm",
-    dpi = 600,
-    device = "png"
-  )
-
-  ggsave(
-    dac_legend,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-dac-legend.pdf"
-    ),
-    # width = 80,
-    # height = 110,
-    # units = "mm",
-    dpi = 600,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-dac-legend.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-dac-legend.pdf"
-    )
-  )
 
   ## labor, 2020, total_comp_usd9_l
   ## ------------------------------------------------------------------------
@@ -2090,36 +1700,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_labor_bay_area_wt_w_reemp,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-pop-wt-bay-area.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_labor_bay_area_wt_w_reemp,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-pop-wt-bay-area.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1-labor-pop-wt-bay-area.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1-labor-pop-wt-bay-area.pdf")
-  )
 
   ## figure
   ct_labor_bay_area_w_reemp <- ggplot() +
@@ -2236,36 +1816,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_labor_bay_area_w_reemp,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-total-bay-area.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_labor_bay_area_w_reemp,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-total-bay-area.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1-labor-total-bay-area.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1-labor-total-bay-area.pdf")
-  )
 
   ## figure
   ct_labor_kern_wt <- ggplot() +
@@ -2379,36 +1929,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_labor_kern_wt,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-pop-wt-kern.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_labor_kern_wt,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-pop-wt-kern.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1-labor-pop-wt-kern.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1-labor-pop-wt-kern.pdf")
-  )
 
   ## figure
   ct_labor_kern_total <- ggplot() +
@@ -2522,36 +2042,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_labor_kern_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-total-kern.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_labor_kern_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-total-kern.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1-labor-total-kern.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1-labor-total-kern.pdf")
-  )
 
   ## los angeles
   ct_labor_la_wt <- ggplot() +
@@ -2663,36 +2153,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_labor_la_wt,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-pop-wt-la.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_labor_la_wt,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-pop-wt-la.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1-labor-pop-wt-la.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1-labor-pop-wt-la.pdf")
-  )
 
   ## figure
   ct_labor_la_total <- ggplot() +
@@ -2802,36 +2262,6 @@ create_figure_1 <- function(
       ymax = Inf # Extending the rectangle over the entire plot area
     )
 
-  ggsave(
-    ct_labor_la_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-total-la.png"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    ct_labor_la_total,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor-total-la.pdf"
-    ),
-    width = 120,
-    height = 120,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    paste0(fig_1_folder, "/figure1-labor-total-la.pdf"),
-    outfile = paste0(fig_1_folder, "/figure1-labor-total-la.pdf")
-  )
 
   ## labor legend
   ## ---------------------------------------------------------------------
@@ -2947,33 +2377,6 @@ create_figure_1 <- function(
   grid.newpage()
   grid.draw(legend_grobs_l[[1]])
 
-  # Save the legend as image
-  png(file.path(
-    fig_1_folder,
-    "figure1-labor-legend.png"
-  ))
-  grid.newpage()
-  grid.draw(legend_grobs_l[[1]])
-  dev.off()
-
-  pdf(file.path(
-    fig_1_folder,
-    "figure1-labor-legend.pdf"
-  ))
-  grid.newpage()
-  grid.draw(legend_grobs_l[[1]])
-  dev.off()
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-labor-legend.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-labor-legend.pdf"
-    )
-  )
 
   ## plot labor together
   ## --------------------------------------------------------------------------
@@ -3018,42 +2421,6 @@ create_figure_1 <- function(
   #   rel_widths = c(1, 1),
   #   rel_heights = c(1, 0.1))
 
-  ggsave(
-    fig1_labor,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor.png"
-    ),
-    width = 120,
-    height = 160,
-    units = "mm",
-    dpi = 300,
-    device = "png"
-  )
-
-  ggsave(
-    fig1_labor,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-labor.pdf"
-    ),
-    width = 120,
-    height = 160,
-    units = "mm",
-    dpi = 300,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-labor.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-labor.pdf"
-    )
-  )
 
   ## all four
   fig1_all <- plot_grid(
@@ -3065,40 +2432,51 @@ create_figure_1 <- function(
     rel_heights = c(1, 1)
   )
 
-  ggsave(
-    fig1_all,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-total-comp-all.png"
+  # Return all plot objects and plot parameters for saving in _targets.R
+  return(list(
+    plots = list(
+      fig1a_pop_weighted = ct_health_panel_a,
+      fig1a_not_weighted = ct_health_panel_a_total,
+      fig1b_pop_weighted = ct_health_panel_b,
+      fig1b_not_weighted = ct_health_panel_b_total,
+      fig1c_pop_weighted = ct_health_panel_c,
+      fig1c_not_weighted = ct_health_panel_c_total,
+      fig1_health = fig1_health,
+      fig1_north_inset = fig1_north_inset,
+      fig1_south_inset = fig1_south_inset,
+      fig1_labor_pop_wt_bay_area = ct_labor_bay_area_wt_w_reemp,
+      fig1_labor_total_bay_area = ct_labor_bay_area_w_reemp,
+      fig1_labor_pop_wt_kern = ct_labor_kern_wt,
+      fig1_labor_total_kern = ct_labor_kern_total,
+      fig1_labor_pop_wt_la = ct_labor_la_wt,
+      fig1_labor_total_la = ct_labor_la_total,
+      fig1_labor = fig1_labor,
+      fig1_total_comp_all = fig1_all
     ),
-    width = 240,
-    height = 160,
-    units = "mm",
-    dpi = 600,
-    device = "png"
-  )
-
-  ggsave(
-    fig1_all,
-    filename = file.path(
-      fig_1_folder,
-      "figure1-total-comp-all.pdf"
+    legends = list(
+      fig1_dac_legend = legend_grobs[[1]],
+      fig1_health_legend = legend_grobs[[1]],
+      fig1_labor_legend = legend_grobs_l[[1]],
+      fig1_refining_legend = legend_grobs_r[[1]]
     ),
-    width = 200,
-    height = 160,
-    units = "mm",
-    dpi = 600,
-    device = "pdf"
-  )
-
-  embed_fonts(
-    file.path(
-      fig_1_folder,
-      "figure1-total-comp-all.pdf"
-    ),
-    outfile = file.path(
-      fig_1_folder,
-      "figure1-total-comp-all.pdf"
+    dimensions = list(
+      fig1a_pop_weighted = list(width = 60, height = 80, units = "mm"),
+      fig1a_not_weighted = list(width = 60, height = 80, units = "mm"),
+      fig1b_pop_weighted = list(width = 60, height = 80, units = "mm"),
+      fig1b_not_weighted = list(width = 60, height = 80, units = "mm"),
+      fig1c_pop_weighted = list(width = 60, height = 80, units = "mm"),
+      fig1c_not_weighted = list(width = 60, height = 80, units = "mm"),
+      fig1_health = list(width = 240, height = 160, units = "mm"),
+      fig1_north_inset = list(width = 45, height = 35, units = "mm"),
+      fig1_south_inset = list(width = 45, height = 35, units = "mm"),
+      fig1_labor_pop_wt_bay_area = list(width = 80, height = 80, units = "mm"),
+      fig1_labor_total_bay_area = list(width = 80, height = 80, units = "mm"),
+      fig1_labor_pop_wt_kern = list(width = 80, height = 80, units = "mm"),
+      fig1_labor_total_kern = list(width = 80, height = 80, units = "mm"),
+      fig1_labor_pop_wt_la = list(width = 80, height = 80, units = "mm"),
+      fig1_labor_total_la = list(width = 80, height = 80, units = "mm"),
+      fig1_labor = list(width = 240, height = 160, units = "mm"),
+      fig1_total_comp_all = list(width = 240, height = 160, units = "mm")
     )
-  )
+  ))
 }
