@@ -236,7 +236,7 @@ allboxplot <- ggplot(srm_ratio_df |> filter(site_id != 120,
 
 ggsave(filename = "srm_ratio_pollutant_pm25.png",
        plot = allboxplot,
-       path = here::here("before-targets", "exploratory", "exploratory-figs"),
+       path = here::here("outputs", "exploratory", "exploratory-figs"),
        width = 8,
        height = 6,
        dpi = 300)
@@ -273,7 +273,7 @@ ratio_fig <- ggplot(srm_ratio_df |> filter(!site_id %in% c(120, 3422),
 
 ggsave(filename = "srm_ratio_nh3_pm25.png",
        plot = ratio_fig,
-       path = here::here("before-targets", "exploratory", "exploratory-figs"),
+       path = here::here("exploratory", "exploratory", "exploratory-figs"),
        width = 8,
        height = 6,
        dpi = 300)
@@ -323,7 +323,7 @@ pm25_ratio_fig <- ggplot(srm_ratio_pm25_df |> filter(!site_id %in% c(120, 3422),
 
 ggsave(filename = "srm_ratio_120pm25_pm25.png",
        plot = pm25_ratio_fig,
-       path = here::here("before-targets", "exploratory", "exploratory-figs"),
+       path = here::here("exploratory", "exploratory", "exploratory-figs"),
        width = 8,
        height = 6,
        dpi = 300)
@@ -345,7 +345,7 @@ pm25_ratio_fig_no <- ggplot(srm_ratio_pm25_df |> filter(!site_id %in% c(120, 342
 
 ggsave(filename = "srm_ratio_120pm25_pm25_no_outliers.png",
        plot = pm25_ratio_fig_no,
-       path = here::here("before-targets", "exploratory", "exploratory-figs"),
+       path = here::here("exploratory", "exploratory", "exploratory-figs"),
        width = 8,
        height = 6,
        dpi = 300)
