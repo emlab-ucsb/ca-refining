@@ -1,6 +1,9 @@
 ## february 26, 2024
 ## pm2.5 figure
 
+# Import save functions for structure-compliant file saving
+source("R/save_functions.R")
+
 ## pulse fig info x refinery
 ## --------------------------------------------------
 
@@ -21,7 +24,7 @@ create_srm_xwalk <- function(
   raw_ct_2020_all
 ) {
   srm_pm25_df <- copy(srm_weighted_pm25)
-  srm_pm25_df[, GEOID := paste0("0", GEOID)]
+  # srm_pm25_df[, GEOID := paste0("0", GEOID)] # GEOID is already in the correct format, no need to add prefix
 
   srm_pm25_df[,
     weighted_total_pm25 := weighted_totalpm25_nh3 +
@@ -45,12 +48,12 @@ create_srm_xwalk <- function(
   ## prepare pollution output
   setnames(srm_pm25_df, "GEOID", "GEOID_2019")
 
-  ## merge
+  ## merge - using all.x = TRUE to keep only rows from srm_pm25_df (with valid site_ids)
   srm_pm25_df <- merge(
     srm_pm25_df,
     ct_xwalk,
     by = c("GEOID_2019"),
-    all = TRUE,
+    all.x = TRUE,
     allow.cartesian = TRUE
   )
 
@@ -66,8 +69,8 @@ create_srm_xwalk <- function(
     by = .(site_id, GEOID_2020)
   ]
 
-  ## filter out NA GEOID_2020, NA pm2.5
-  srm_pm25_df <- srm_pm25_df[!is.na(GEOID_2020)]
+  ## filter out NA GEOID_2020, NA pm2.5, and NA site_id
+  srm_pm25_df <- srm_pm25_df[!is.na(GEOID_2020) & !is.na(site_id)]
 
   ## rename columns
   setnames(
@@ -99,35 +102,41 @@ create_srm_xwalk <- function(
     allow.cartesian = TRUE
   )
 
-  ## save pm2.5 exposure by refinery
-  fwrite(
-    srm_pm25_df,
-    file.path(
-      main_path,
-      save_path,
-      "fig-csv-files",
-      "srm_pm25_refinery_level.csv"
-    )
-  )
-  # fwrite(srm_pm25_df, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_refinery_level.csv"))
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   srm_pm25_df,
+  ##   folder_path = NULL,
+  ##   filename = "srm_pm25_refinery_level.csv",
+  ##   save_path = save_path,
+  ##   file_type = "table",
+  ##   figure_number = NULL,
+  ##   extra_subfolder = "pulse-figs"
+  ## )
 
   return(srm_pm25_df)
 }
 
 create_srm_ct <- function(main_path, save_path, refinery_pm25_srm) {
   pm25_srm <- copy(refinery_pm25_srm)
+  setDT(pm25_srm)
 
   pm25_srm <- pm25_srm[,
     .(total_pm25 = sum(total_pm25)),
     by = .(census_tract, COUNTYFP, NAME)
   ]
 
-  ## save pm2.5 exposure for each ct
-  fwrite(
-    pm25_srm,
-    file.path(main_path, save_path, "fig-csv-files/", "srm_pm25_ct.csv")
-  )
-  # fwrite(pm25_srm, file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "srm_pm25_ct.csv"))
+  ## File saving is now handled by targets pipeline
+  ## Previously saved with:
+  ## simple_fwrite_repo(
+  ##   pm25_srm,
+  ##   folder_path = NULL,
+  ##   filename = "srm_pm25_ct.csv",
+  ##   save_path = save_path,
+  ##   file_type = "table",
+  ##   figure_number = NULL,
+  ##   extra_subfolder = "pulse-figs"
+  ## )
 
   return(pm25_srm)
 }
@@ -268,40 +277,20 @@ create_pulse_fig <- function(
     # NOTE from tracey: this throws and erorr for me (Error in f(...): unused argument (create.dir = TRUE))
     # added code to create the directory if it doesn't exist
 
-    # check if the folder exists
-    if (
-      !dir.exists(file.path(
-        main_path,
-        "outputs",
-        "academic-out",
-        "refining",
-        "figures",
-        "2024-08-update",
-        "pulse-figs"
-      ))
-    ) {
-      # Create the folder if it does not exist
-      dir.create(file.path(
-        main_path,
-        "outputs",
-        "academic-out",
-        "refining",
-        "figures",
-        "2024-08-update",
-        "pulse-figs"
-      ))
-    }
-
-    ggsave(
+    # Save using simple_ggsave_repo to ensure consistent structure and tracking
+    # Using "extra" as file_type since these are not main figures
+    simple_ggsave_repo(
       plot = pm25_fig_tmp,
-      filename = paste0(
-        file.path(main_path, save_path, "pulse-figs", "pulse_"),
-        id_tmp,
-        ".jpeg"
+      folder_path = file.path(
+        save_path,
+        "results",
+        "figures",
+        "extra",
+        "pulse-figs"
       ),
-      device = "jpeg",
-      # width = 6.5,
-      # height = 8,
+      filename = paste0("pulse_", id_tmp),
+      width = 7,
+      height = 5,
       dpi = 300
     )
   }
@@ -403,24 +392,44 @@ create_pulse_fig <- function(
   #        dpi = 300)
   #
 
-  # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0 and added `create.dir = TRUE`
+  # NOTE from Meas: same as above, I switched to using `file.path` instead of paste0
   # NOTE from Tracey: same error! removed `create.dir = TRUE`
-  ggsave(
+  # Save using simple_ggsave_repo to ensure consistent structure and tracking
+  # Using direct folder path instead of file_type/figure_number to avoid the error
+  simple_ggsave_repo(
     plot = pm25_fig_all,
-    filename = file.path(
-      main_path,
+    folder_path = file.path(
       save_path,
-      "pulse-figs",
-      "pulse_all_crop.jpeg"
+      "results",
+      "figures",
+      "extra",
+      "pulse-figs"
     ),
-    device = "jpeg",
-    # width = 6.5,
-    # height = 8,
+    filename = "pulse_all_crop",
+    width = 7,
+    height = 5,
     dpi = 300
   )
 
   return(pm25_fig_all)
 }
+
+# ## crop
+# ## -----------------------------------
+# disp_win_la_wgs84 <- st_sfc(st_point(c(-118.5, 33.6)), st_point(c(-117.8, 34.2)),
+#                             crs = 4326)
+#
+# disp_win_la_trans <- st_transform(disp_win_la_wgs84, crs = ca_crs)
+#
+# disp_win_la_coord <- st_coordinates(disp_win_la_trans)
+#
+# zoom_coord_df <- as.data.frame(disp_win_la_coord)
+#
+# county_crop <- st_crop(CA_counties_noisl, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+# ct_cropped <- st_crop(ct_map_county, xmin = zoom_coord_df$X[1], xmax = zoom_coord_df$X[2], ymin = zoom_coord_df$Y[1], ymax = zoom_coord_df$Y[2])
+#
+# ## only include census tracts that are in the crop
+# ct_intersect <- st_intersection(ct_map_county, county_crop)
 
 # ## crop
 # ## -----------------------------------

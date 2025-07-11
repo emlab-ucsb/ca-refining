@@ -158,3 +158,59 @@ In the outputs you'll see that the targets that are affected are being updated, 
 If you run ``tar_visnetwork()`` everything should be up-to-date now in the diagram.
 
 **Remember to change the value of the target back to normal (by ctrl + z for example).**
+
+## Output Structure and Git Tracking
+
+This repository uses a standardized output structure defined in `structure.md` and `output_structure.csv`.
+The `output_structure.csv` file specifies:
+
+- `file_name`: The name of each output file
+- `relative_path`: The path where the file should be saved (relative to `save_path`)
+- `tracked`: Whether the file should be tracked in git (`YES` or `NO`)
+
+### Directory Structure
+
+```text
+outputs/
+  version/
+    iteration/
+      intermediate/
+        health/
+        labor/
+      results/
+        figures/
+          figure-3/
+          figure-4/
+          figure-5/
+          figures-si/
+          extra/
+      tables/
+        health/
+        labor/
+        health-and-labor/
+        other/
+```
+
+### Managing Output Files
+
+Two utility scripts help manage output files and git tracking:
+
+1. `update_gitignore.R`: Updates all `.gitignore` files based on `output_structure.csv`
+2. `verify_file_paths.R`: Verifies that all files in `_targets.R` are saved in the correct locations
+
+### File Saving Conventions
+
+All file-producing targets in `_targets.R` should use the `simple_fwrite_repo` function:
+
+```r
+simple_fwrite_repo(
+  data = your_data,
+  folder_path = NULL,  # Not needed when using save_path and file_type
+  filename = "your_filename.csv",
+  save_path = save_path,
+  file_type = "health|labor|figure|table",  # File type category
+  figure_number = "figure-3"  # For figure outputs
+)
+```
+
+This ensures files are saved in the correct location and properly tracked in git.

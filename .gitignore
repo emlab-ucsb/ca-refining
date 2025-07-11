@@ -8,6 +8,9 @@
 # User-specific files
 .Ruserdata
 
+# R plots (auto-generated)
+Rplots.pdf
+
 # Example code in package build process
 *-Ex.R
 
@@ -43,3 +46,28 @@ _targets/
 
 # .DS_Store
 .DS_Store
+
+# data
+# /data/
+
+# shapefiles (and all related files to .shp files)
+*.shp*
+*.shx*
+*.dbf*
+*.prj*
+*.cpg*
+*.qpj*
+*.sbn*
+*.sbx*
+
+# other file types to not track
+*.atx
+
+# labor files
+/data/data-staged-for-deletion/labor/*
+
+# data
+/data/*
+
+# outputs
+/outputs/*
