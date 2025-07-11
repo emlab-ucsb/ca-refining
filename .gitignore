@@ -69,5 +69,14 @@ _targets/
 # data
 /data/*
 
-# outputs
-/outputs/*
+# outputs - selective tracking based on output_structure.csv
+# Exclude directories with no tracked files (NONE_TRACKED)
+/outputs/*/results/figures/extra/extra-figure-3/
+/outputs/*/results/figures/extra/extra-figure-4/
+/outputs/*/results/figures/extra/extra-figure-5/
+/outputs/*/results/figures/extra/health-figures/
+/outputs/*/results/figures/extra/health-labor-figures/
+/outputs/*/results/figures/extra/labor-figures/
+/outputs/*/results/figures/extra/pulse-figs/
+/outputs/*/results/figures/extra/state-levels-fig/
+/outputs/*/tables/other/
