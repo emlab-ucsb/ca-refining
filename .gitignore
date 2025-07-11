@@ -8,6 +8,9 @@
 # User-specific files
 .Ruserdata
 
+# R plots (auto-generated)
+Rplots.pdf
+
 # Example code in package build process
 *-Ex.R
 
@@ -65,3 +68,6 @@ _targets/
 
 # data
 /data/*
+
+# outputs
+/outputs/*

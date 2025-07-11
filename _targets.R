@@ -68,12 +68,8 @@ list(
   ),
 
   # list save paths
-  tar_target(
-    name = run_type,
-    command = "jul07"
-  ),
-  tar_target(name = version, command = "jul10"),
-  tar_target(name = iteration, "cuf=0.6"),
+  tar_target(name = version, command = "v0.1"),
+  tar_target(name = iteration, "cuf=0.2"),
 
   # Set run type and stop if unknown run type
   tar_target(
@@ -95,46 +91,6 @@ list(
     command = file.path(save_path, "tables")
   ),
 
-  # Deprecated paths - use for backward compatibility
-  tar_target(
-    name = deprecated_figures_path,
-    command = switch(
-      run_type,
-      "revision-main" = file.path(
-        save_path,
-        "results",
-        "figures",
-        "2025-revision-main"
-      ),
-      "labor-take-2" = file.path(
-        "outputs",
-        iteration,
-        "figures",
-        "2025-labor-take-2"
-      ),
-      "ghg-emfac" = file.path(
-        "outputs",
-        iteration,
-        "figures",
-        "ghg-emfac-cluster"
-      ),
-      "jul07" = file.path(
-        "outputs",
-        iteration,
-        "figures",
-        "jul07"
-      ),
-      "figure-development" = file.path(
-        "outputs",
-        "academic-out",
-        "refining",
-        "figures",
-        "figure-development"
-      ),
-      stop("Unknown run_type")
-    )
-  ),
-
   # create folders in repository
   tar_target(
     name = save_folders,
@@ -142,7 +98,7 @@ list(
   ),
 
   # module settings
-  tar_target(name = ref_threshold, command = 0.6),
+  tar_target(name = ref_threshold, command = 0.2),
   tar_target(name = ren_threshold, command = 0.9),
   tar_target(name = pred_years, command = 2020:2045),
   tar_target(name = drop_in_perc, command = 1),
@@ -1842,6 +1798,451 @@ list(
       cpi2019,
       annual_direct_labor
     )
+  ),
+  # Figure 1 save targets - individual files
+  tar_target(
+    name = save_figure1a_pop_weighted,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1a_pop_weighted,
+      NULL,
+      "figure1a-pop-weighted*",
+      width = figure_1$dimensions$fig1a_pop_weighted$width / 25.4,
+      height = figure_1$dimensions$fig1a_pop_weighted$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1a_not_weighted,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1a_not_weighted,
+      NULL,
+      "figure1a-not-weighted*",
+      width = figure_1$dimensions$fig1a_not_weighted$width / 25.4,
+      height = figure_1$dimensions$fig1a_not_weighted$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1b_pop_weighted,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1b_pop_weighted,
+      NULL,
+      "figure1b-pop-weighted*",
+      width = figure_1$dimensions$fig1b_pop_weighted$width / 25.4,
+      height = figure_1$dimensions$fig1b_pop_weighted$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1b_not_weighted,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1b_not_weighted,
+      NULL,
+      "figure1b-not-weighted*",
+      width = figure_1$dimensions$fig1b_not_weighted$width / 25.4,
+      height = figure_1$dimensions$fig1b_not_weighted$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1c_pop_weighted,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1c_pop_weighted,
+      NULL,
+      "figure1c-pop-weighted*",
+      width = figure_1$dimensions$fig1c_pop_weighted$width / 25.4,
+      height = figure_1$dimensions$fig1c_pop_weighted$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1c_not_weighted,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1c_not_weighted,
+      NULL,
+      "figure1c-not-weighted*",
+      width = figure_1$dimensions$fig1c_not_weighted$width / 25.4,
+      height = figure_1$dimensions$fig1c_not_weighted$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_health,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_health,
+      NULL,
+      "figure1-health*",
+      width = figure_1$dimensions$fig1_health$width / 25.4,
+      height = figure_1$dimensions$fig1_health$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_north_inset,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_north_inset,
+      NULL,
+      "figure1-north-inset*",
+      width = figure_1$dimensions$fig1_north_inset$width / 25.4,
+      height = figure_1$dimensions$fig1_north_inset$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_south_inset,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_south_inset,
+      NULL,
+      "figure1-south-inset*",
+      width = figure_1$dimensions$fig1_south_inset$width / 25.4,
+      height = figure_1$dimensions$fig1_south_inset$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor_pop_wt_bay_area,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_labor_pop_wt_bay_area,
+      NULL,
+      "figure1-labor-pop-wt-bay-area*",
+      width = figure_1$dimensions$fig1_labor_pop_wt_bay_area$width / 25.4,
+      height = figure_1$dimensions$fig1_labor_pop_wt_bay_area$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor_total_bay_area,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_labor_total_bay_area,
+      NULL,
+      "figure1-labor-total-bay-area*",
+      width = figure_1$dimensions$fig1_labor_total_bay_area$width / 25.4,
+      height = figure_1$dimensions$fig1_labor_total_bay_area$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor_pop_wt_kern,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_labor_pop_wt_kern,
+      NULL,
+      "figure1-labor-pop-wt-kern*",
+      width = figure_1$dimensions$fig1_labor_pop_wt_kern$width / 25.4,
+      height = figure_1$dimensions$fig1_labor_pop_wt_kern$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor_total_kern,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_labor_total_kern,
+      NULL,
+      "figure1-labor-total-kern*",
+      width = figure_1$dimensions$fig1_labor_total_kern$width / 25.4,
+      height = figure_1$dimensions$fig1_labor_total_kern$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor_pop_wt_la,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_labor_pop_wt_la,
+      NULL,
+      "figure1-labor-pop-wt-la*",
+      width = figure_1$dimensions$fig1_labor_pop_wt_la$width / 25.4,
+      height = figure_1$dimensions$fig1_labor_pop_wt_la$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor_total_la,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_labor_total_la,
+      NULL,
+      "figure1-labor-total-la*",
+      width = figure_1$dimensions$fig1_labor_total_la$width / 25.4,
+      height = figure_1$dimensions$fig1_labor_total_la$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_labor,
+      NULL,
+      "figure1-labor*",
+      width = figure_1$dimensions$fig1_labor$width / 25.4,
+      height = figure_1$dimensions$fig1_labor$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_total_comp_all,
+    command = simple_ggsave_repo(
+      figure_1$plots$fig1_total_comp_all,
+      NULL,
+      "figure1-total-comp-all*",
+      width = figure_1$dimensions$fig1_total_comp_all$width / 25.4,
+      height = figure_1$dimensions$fig1_total_comp_all$height / 25.4,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-1"
+    ),
+    format = "file"
+  ),
+  # Figure 1 legend save targets - these are grob objects that need special handling
+  tar_target(
+    name = save_figure1_dac_legend,
+    command = {
+      # Save PNG
+      png(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-dac-legend.png"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_dac_legend)
+      dev.off()
+
+      # Save PDF
+      pdf(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-dac-legend.pdf"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_dac_legend)
+      dev.off()
+
+      # Return file paths
+      c(
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-dac-legend.png"
+        ),
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-dac-legend.pdf"
+        )
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_health_legend,
+    command = {
+      # Save PNG
+      png(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-health-legend.png"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_health_legend)
+      dev.off()
+
+      # Save PDF
+      pdf(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-health-legend.pdf"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_health_legend)
+      dev.off()
+
+      # Return file paths
+      c(
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-health-legend.png"
+        ),
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-health-legend.pdf"
+        )
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_labor_legend,
+    command = {
+      # Save PNG
+      png(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-labor-legend.png"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_labor_legend)
+      dev.off()
+
+      # Save PDF
+      pdf(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-labor-legend.pdf"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_labor_legend)
+      dev.off()
+
+      # Return file paths
+      c(
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-labor-legend.png"
+        ),
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-labor-legend.pdf"
+        )
+      )
+    },
+    format = "file"
+  ),
+  tar_target(
+    name = save_figure1_refining_legend,
+    command = {
+      # Save PNG
+      png(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-refining-legend.png"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_refining_legend)
+      dev.off()
+
+      # Save PDF
+      pdf(file.path(
+        save_path,
+        "results",
+        "figures",
+        "figure-1",
+        "figure1-refining-legend.pdf"
+      ))
+      grid::grid.newpage()
+      grid::grid.draw(figure_1$legends$fig1_refining_legend)
+      dev.off()
+
+      # Return file paths
+      c(
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-refining-legend.png"
+        ),
+        file.path(
+          save_path,
+          "results",
+          "figures",
+          "figure-1",
+          "figure1-refining-legend.pdf"
+        )
+      )
+    },
+    format = "file"
   ),
   # # save figures
   tar_target(
