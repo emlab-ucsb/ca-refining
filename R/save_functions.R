@@ -189,37 +189,6 @@ create_save_folders_repo <- function(save_path, iteration) {
         }
     }
 
-    # Create README file in main directory
-    readme_path <- file.path(save_path, "README.md")
-    if (!file.exists(readme_path)) {
-        writeLines(
-            paste0(
-                "# Output Structure for ",
-                basename(dirname(save_path)),
-                "/",
-                basename(save_path),
-                "\n\n",
-                "This directory follows the standardized output structure for the CA Refining project.\n\n",
-                "## Structure\n\n",
-                "- `intermediate/` - Intermediate data files\n",
-                "  - `health/` - Health-related intermediate outputs\n",
-                "  - `labor/` - Labor-related intermediate outputs\n",
-                "- `results/` - Final results\n",
-                "  - `figures/` - Organized by figure number and supplementary materials\n",
-                "- `tables/` - Output tables organized by category\n",
-                "  - `other/` - Miscellaneous tables\n",
-                "  - `health/` - Health-related tables\n",
-                "  - `labor/` - Labor-related tables\n",
-                "  - `health-and-labor/` - Combined health and labor tables\n\n",
-                "## Git Tracking\n\n",
-                "Only files and folders marked with an asterisk (*) in structure.md are tracked in git.\n",
-                "All other files and folders are excluded from git tracking via .gitignore files."
-            ),
-            readme_path
-        )
-        message("Created README at: ", readme_path)
-    }
-
     return(all_dirs)
 }
 
