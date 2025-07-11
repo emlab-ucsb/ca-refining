@@ -24,7 +24,7 @@ create_srm_xwalk <- function(
   raw_ct_2020_all
 ) {
   srm_pm25_df <- copy(srm_weighted_pm25)
-  srm_pm25_df[, GEOID := paste0("0", GEOID)]
+  # srm_pm25_df[, GEOID := paste0("0", GEOID)] # GEOID is already in the correct format, no need to add prefix
 
   srm_pm25_df[,
     weighted_total_pm25 := weighted_totalpm25_nh3 +
@@ -48,12 +48,12 @@ create_srm_xwalk <- function(
   ## prepare pollution output
   setnames(srm_pm25_df, "GEOID", "GEOID_2019")
 
-  ## merge
+  ## merge - using all.x = TRUE to keep only rows from srm_pm25_df (with valid site_ids)
   srm_pm25_df <- merge(
     srm_pm25_df,
     ct_xwalk,
     by = c("GEOID_2019"),
-    all = TRUE,
+    all.x = TRUE,
     allow.cartesian = TRUE
   )
 
@@ -69,8 +69,8 @@ create_srm_xwalk <- function(
     by = .(site_id, GEOID_2020)
   ]
 
-  ## filter out NA GEOID_2020, NA pm2.5
-  srm_pm25_df <- srm_pm25_df[!is.na(GEOID_2020)]
+  ## filter out NA GEOID_2020, NA pm2.5, and NA site_id
+  srm_pm25_df <- srm_pm25_df[!is.na(GEOID_2020) & !is.na(site_id)]
 
   ## rename columns
   setnames(
