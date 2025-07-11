@@ -65,6 +65,3 @@ _targets/
 
 # outputs
 /outputs/*
-
-# exploratory figs
-/before-targets/exploratory/exploratory-figs/*
