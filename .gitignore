@@ -44,9 +44,6 @@ _targets/
 # .DS_Store
 .DS_Store
 
-# data
-/data/*
-
 # shapefiles (and all related files to .shp files)
 *.shp*
 *.shx*
@@ -62,6 +59,12 @@ _targets/
 
 # labor files
 /data/data-staged-for-deletion/labor/*
+
+# data
+/data/*
+
+# outputs
+/outputs/*
 
 # exploratory figs
 /before-targets/exploratory/exploratory-figs/*
