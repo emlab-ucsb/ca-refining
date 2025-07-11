@@ -69,7 +69,7 @@ list(
 
   # list save paths
   tar_target(name = version, command = "v0.1"),
-  tar_target(name = iteration, "cuf=0.2"),
+  tar_target(name = iteration, "cuf=0.4"),
 
   # Set run type and stop if unknown run type
   tar_target(
@@ -98,7 +98,7 @@ list(
   ),
 
   # module settings
-  tar_target(name = ref_threshold, command = 0.2),
+  tar_target(name = ref_threshold, command = 0.4),
   tar_target(name = ren_threshold, command = 0.9),
   tar_target(name = pred_years, command = 2020:2045),
   tar_target(name = drop_in_perc, command = 1),
