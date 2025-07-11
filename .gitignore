@@ -45,8 +45,7 @@ _targets/
 .DS_Store
 
 # data
-data/*
-data.zip
+/data/*
 
 # shapefiles (and all related files to .shp files)
 *.shp*
