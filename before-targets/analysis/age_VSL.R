@@ -100,6 +100,19 @@ age_vsl_2019%>%
 
 ## adjust our baseline value from our current version
 
+#from 1990 as baseline year (https://www.epa.gov/sites/default/files/2017-09/documents/ee-0568-22.pdf)
+
+growth_9019 <- gdp_growth %>%
+  filter(year>1990)%>%
+  mutate(cum_growth = cumprod(1 + growth_rate))%>%
+  filter(year==2019)%>%
+  select(cum_growth) %>% pull()
+
+# (https://fred.stlouisfed.org/series/CPALTT01USA661S)
+
+CPI_9019 <- 107.8645906/55.12614
+VSL_9019 = ((0.4 * (growth_9019-1) * 4.8 + 4.8)*CPI_9019) ; VSL_9019
+
 #assume $1997 as baseline year (https://www.epa.gov/sites/default/files/2017-09/documents/ee-0568-22.pdf)
 
 growth_9719 <- gdp_growth %>%
@@ -111,7 +124,7 @@ growth_9719 <- gdp_growth %>%
 # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
   
 CPI_9719 <- 107.8645906/67.72369
-VSL_9719 = (0.4 * growth_9719-1 * 5.8 + 5.8)*CPI_9719
+VSL_9719 = ((0.4 * (growth_9719-1) * 5.8 + 5.8)*CPI_9719);VSL_9719
 
 #from CalEPA numbers
 

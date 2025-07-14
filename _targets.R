@@ -142,7 +142,7 @@ list(
   tar_target(name = se, command = 0.0009628), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = vsl_2015, command = 8705114.25462459),
   #tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906 / 100), # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
-  tar_target(name = vsl_2019, command = 10653160), # see VSL_9719 in age_VSL.R
+  tar_target(name = vsl_2019, command = 11493820), # see VSL_9019 in age_VSL.R
   tar_target(name = income_elasticity_mort, command = 0.4),
   tar_target(name = discount_rate, command = 0.03),
   tar_target(
