@@ -1555,8 +1555,11 @@ create_figure_1 <- function(
   #   left_join(census_tract_labor_2020)
 
   ## join with spatial data
-  census_tract_labor_2020_sp <- census_tracts %>%
-    left_join(census_tract_labor_2020)
+  census_tract_labor_2020_sp <- census_tracts |>
+    left_join(census_tract_labor_2020) |>
+    mutate(value = ifelse(is.na(value), 0, value),
+           pop_x_comp19 = ifelse(is.na(value), 0, pop_x_comp19))
+    
 
   census_tract_labor_2020_sp_w_remp <- census_tract_labor_2020_sp |>
     filter(re_emp_scen == "total_comp_usd19_l")
