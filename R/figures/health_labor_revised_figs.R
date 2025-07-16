@@ -9546,8 +9546,7 @@ plot_hl_levels <- function(main_path, save_path, demographic_npv_df) {
     dpi = 600,
     save_path = save_path,
     file_type = "figure",
-    figure_number = "health-labor-figures",
-    extra_subfolder = "health-labor-figures"
+    figure_number = "figures-si"
   )
 
   ## original -- all together now
@@ -12597,8 +12596,7 @@ fig4_hl <- function(
     dpi = 600,
     save_path = save_path,
     file_type = "figure",
-    figure_number = "health-labor-figures",
-    extra_subfolder = "health-labor-figures"
+    figure_number = "figures-si"
   )
 
   ## SI -- no re-emp
@@ -12627,7 +12625,7 @@ fig4_hl <- function(
     dpi = 600,
     save_path = save_path,
     file_type = "figure",
-    figure_number = "health-labor-figures"
+    figure_number = "figures-si"
   )
 
   health_labor_plot <- plot_grid(
