@@ -7,14 +7,25 @@
 #' @param coords Coordinates from st_coordinates()
 #' @param expand Whether to expand the plot area
 #' @return A coord_sf object with proper xlim and ylim
+# safe_coord_sf <- function(coords, expand = FALSE) {
+#   coord_sf(
+#     xlim = c(coords[1, "X"], coords[2, "X"]),
+#     ylim = c(coords[1, "Y"], coords[2, "Y"]),
+#     expand = expand,
+#     datum = NULL # Disable graticules to avoid MULTILINESTRING error
+#   )
+# }
+
 safe_coord_sf <- function(coords, expand = FALSE) {
   coord_sf(
     xlim = c(coords[1, "X"], coords[2, "X"]),
     ylim = c(coords[1, "Y"], coords[2, "Y"]),
     expand = expand,
-    datum = NULL # Disable graticules to avoid MULTILINESTRING error
+    datum = sf::st_crs(4326),  # specify the CRS for axis labels
+    label_graticule = "SW"     # optional: format of axis ticks (S = south, W = west)
   )
 }
+
 
 create_figure_1 <- function(
   main_path,
@@ -908,7 +919,7 @@ create_figure_1 <- function(
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill = "lightgrey", color = NA),
       axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -1015,8 +1026,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill = "lightgrey", color = NA),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -1554,11 +1565,19 @@ create_figure_1 <- function(
   #   rename(census_tract = GEOID) |>
   #   left_join(census_tract_labor_2020)
 
-  ## join with spatial data
-  census_tract_labor_2020_sp <- census_tracts |>
+  # Create the expanded data
+  census_tracts_l_expanded <- expand_grid(
+    census_tracts,
+    re_emp_scen = c("total_comp_usd19_h", "total_comp_usd19_l")
+  )
+  
+  ## merge with spatial data
+  census_tract_labor_2020_sp <- census_tracts_l_expanded |>
+    left_join(census_tracts |> select(census_tract, geometry)) |>
     left_join(census_tract_labor_2020) |>
     mutate(value = ifelse(is.na(value), 0, value),
-           pop_x_comp19 = ifelse(is.na(value), 0, pop_x_comp19))
+           pop_x_comp19 = ifelse(is.na(value), 0, pop_x_comp19)) |>
+    st_as_sf()
     
 
   census_tract_labor_2020_sp_w_remp <- census_tract_labor_2020_sp |>
@@ -1720,8 +1739,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill = "lightgrey", color = NA),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -1949,8 +1968,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill = "lightgrey", color = NA),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2062,8 +2081,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill = "lightgrey", color = NA),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2282,8 +2301,8 @@ create_figure_1 <- function(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill = "lightgrey", color = NA),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
