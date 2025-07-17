@@ -1,2 +1,1 @@
 outputs/*/intermediate/health/refining_health_income_2023.csv filter=lfs diff=lfs merge=lfs -text
-outputs/ncomm-rev/cuf=0.6/intermediate/health/refining_health_income_2023.csv filter=lfs diff=lfs merge=lfs -text
