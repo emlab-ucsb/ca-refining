@@ -91,6 +91,13 @@ list(
     command = file.path(save_path, "tables")
   ),
 
+  # output structure file for validation
+  tar_target(
+    name = file_output_structure,
+    command = "extras/output_structure.csv",
+    format = "file"
+  ),
+
   # create folders in repository
   tar_target(
     name = save_folders,
@@ -2355,7 +2362,7 @@ list(
       width = 25,
       save_path = save_path,
       file_type = "figure",
-      figure_number = "figures-si",
+      figure_number = "figure-2",
       height = 13,
       dpi = 600
     ),
