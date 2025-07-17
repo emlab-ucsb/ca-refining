@@ -68,7 +68,7 @@ list(
   ),
 
   # list save paths
-  tar_target(name = version, command = "v0.1"),
+  tar_target(name = version, command = "ncomm-rev"),
   tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
