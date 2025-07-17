@@ -2362,7 +2362,7 @@ list(
       width = 25,
       save_path = save_path,
       file_type = "figure",
-      figure_number = "figures-si",
+      figure_number = "figure-2",
       height = 13,
       dpi = 600
     ),
