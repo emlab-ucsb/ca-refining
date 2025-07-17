@@ -100,8 +100,16 @@ create_save_folders_repo <- function(save_path, iteration) {
                 writeLines(gitignore_content, gitignore_path)
                 message("Created selective .gitignore in: ", dir_path)
             }
+        } else if (tracking_pattern == "NONE_TRACKED") {
+            # For directories where no files are tracked, create .gitignore to ignore everything
+            gitignore_path <- file.path(dir_path, ".gitignore")
+            
+            if (!file.exists(gitignore_path)) {
+                writeLines("*", gitignore_path)
+                message("Created .gitignore to ignore all files in: ", dir_path)
+            }
         }
-        # Note: NONE_TRACKED directories are handled by main .gitignore exclusions
+        # Note: NONE_TRACKED directories also get local .gitignore files to ensure exclusion
     }
 
     return(all_dirs)

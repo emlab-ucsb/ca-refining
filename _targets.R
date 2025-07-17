@@ -91,6 +91,13 @@ list(
     command = file.path(save_path, "tables")
   ),
 
+  # output structure file for validation
+  tar_target(
+    name = file_output_structure,
+    command = "output_structure.csv",
+    format = "file"
+  ),
+
   # create folders in repository
   tar_target(
     name = save_folders,
