@@ -94,7 +94,7 @@ list(
   # output structure file for validation
   tar_target(
     name = file_output_structure,
-    command = "output_structure.csv",
+    command = "extras/output_structure.csv",
     format = "file"
   ),
 
