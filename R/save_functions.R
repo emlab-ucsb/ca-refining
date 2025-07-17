@@ -3,37 +3,43 @@
 #' @param iteration Iteration name (not used anymore, kept for backward compatibility)
 create_save_folders_repo <- function(save_path, iteration) {
     # Load output_structure.csv to extract directories and files to track
-    structure_file <- file.path("output_structure.csv")
+    structure_file <- file.path("extras/output_structure.csv")
     if (!file.exists(structure_file)) {
         stop("output_structure.csv file not found")
     }
 
     structure_df <- data.table::fread(structure_file)
-    
+
     # Get unique directories and analyze their tracking patterns
-    dir_analysis <- structure_df[, .(
-        total_files = .N,
-        tracked_yes = sum(tracked == "YES"),
-        tracked_no = sum(tracked == "NO")
-    ), by = relative_path]
-    
+    dir_analysis <- structure_df[,
+        .(
+            total_files = .N,
+            tracked_yes = sum(tracked == "YES"),
+            tracked_no = sum(tracked == "NO")
+        ),
+        by = relative_path
+    ]
+
     # Classify directories by tracking pattern
-    dir_analysis[, tracking_pattern := ifelse(
-        tracked_no == 0, "ALL_TRACKED",
-        ifelse(tracked_yes == 0, "NONE_TRACKED", "MIXED")
-    )]
-    
+    dir_analysis[,
+        tracking_pattern := ifelse(
+            tracked_no == 0,
+            "ALL_TRACKED",
+            ifelse(tracked_yes == 0, "NONE_TRACKED", "MIXED")
+        )
+    ]
+
     # Create full directory paths
     all_dirs <- unique(file.path(save_path, dir_analysis$relative_path))
-    
+
     # Get files grouped by directory for mixed tracking
     mixed_dirs <- dir_analysis[tracking_pattern == "MIXED", relative_path]
     git_tracked_files <- list()
-    
+
     for (dir_path in mixed_dirs) {
         full_dir_path <- file.path(save_path, dir_path)
         tracked_files <- structure_df[
-            relative_path == dir_path & tracked == "YES", 
+            relative_path == dir_path & tracked == "YES",
             file_name
         ]
         git_tracked_files[[full_dir_path]] <- tracked_files
@@ -62,30 +68,34 @@ create_save_folders_repo <- function(save_path, iteration) {
     for (i in 1:nrow(dir_analysis)) {
         dir_path <- file.path(save_path, dir_analysis$relative_path[i])
         tracking_pattern <- dir_analysis$tracking_pattern[i]
-        
+
         gitignore_path <- file.path(dir_path, ".gitignore")
-        
+
         if (tracking_pattern == "ALL_TRACKED") {
             # For directories where all files are tracked, no .gitignore needed
             # (or create one that allows everything)
             if (!file.exists(gitignore_path)) {
-                writeLines("# All files in this directory are tracked in git", gitignore_path)
+                writeLines(
+                    "# All files in this directory are tracked in git",
+                    gitignore_path
+                )
                 message("Created .gitignore for all-tracked dir: ", dir_path)
             }
         } else if (tracking_pattern == "MIXED") {
             # For directories with mixed tracking, create selective .gitignore
             tracked_files <- structure_df[
-                relative_path == dir_analysis$relative_path[i] & tracked == "YES", 
+                relative_path == dir_analysis$relative_path[i] &
+                    tracked == "YES",
                 file_name
             ]
-            
+
             gitignore_content <- c(
                 "# Only specific files are tracked in this directory",
                 "*",
                 "!.gitignore",
                 "!.gitkeep"
             )
-            
+
             # Add exceptions for tracked files
             for (tracked_file in tracked_files) {
                 gitignore_content <- c(
@@ -93,17 +103,19 @@ create_save_folders_repo <- function(save_path, iteration) {
                     paste0("!", tracked_file)
                 )
             }
-            
+
             # Write the file if it doesn't exist or needs updating
-            if (!file.exists(gitignore_path) || 
-                !identical(readLines(gitignore_path), gitignore_content)) {
+            if (
+                !file.exists(gitignore_path) ||
+                    !identical(readLines(gitignore_path), gitignore_content)
+            ) {
                 writeLines(gitignore_content, gitignore_path)
                 message("Created selective .gitignore in: ", dir_path)
             }
         } else if (tracking_pattern == "NONE_TRACKED") {
             # For directories where no files are tracked, create .gitignore to ignore everything
             gitignore_path <- file.path(dir_path, ".gitignore")
-            
+
             if (!file.exists(gitignore_path)) {
                 writeLines("*", gitignore_path)
                 message("Created .gitignore to ignore all files in: ", dir_path)
@@ -410,7 +422,7 @@ validate_and_save_file <- function(
     save_path
 ) {
     # Load output_structure.csv
-    structure_file <- "output_structure.csv"
+    structure_file <- "extrasoutput_structure.csv"
     if (!file.exists(structure_file)) {
         stop("output_structure.csv file not found")
     }
@@ -449,7 +461,7 @@ validate_and_save_file <- function(
 #' @param filename The filename to check
 #' @return TRUE if the file should be tracked, FALSE otherwise
 should_be_tracked <- function(filename) {
-    if (!file.exists("output_structure.csv")) {
+    if (!file.exists("extras/output_structure.csv")) {
         warning("output_structure.csv not found, using default tracking")
         return(FALSE)
     }
