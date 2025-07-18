@@ -9546,8 +9546,7 @@ plot_hl_levels <- function(main_path, save_path, demographic_npv_df) {
     dpi = 600,
     save_path = save_path,
     file_type = "figure",
-    figure_number = "health-labor-figures",
-    extra_subfolder = "health-labor-figures"
+    figure_number = "figures-si"
   )
 
   ## original -- all together now
@@ -9606,6 +9605,11 @@ plot_hl_levels_pc <- function(
 
   ## calculate per capita
   plot_df_long[, value := value / pop_2020]
+  
+  ## udpate labor segment title
+  plot_df_long[, seg_title := fifelse(seg_title == "Labor: forgone wages",
+                                      "Labor: forgone wages of directly employed workers",
+                                      seg_title)]
 
   ## save figure inputs
   simple_fwrite_repo(
@@ -12044,13 +12048,13 @@ fig4_hl <- function(
   l_gaps_df[, gap_emp := emp_value - bau_emp_value]
   # l_gaps_df[, gap_emp_pc :=  demo_emp_pc - bau_demo_emp_pc]
 
-  ## figure labor a -- changing product prices
+  ## figure labor a -- changing product prices, with re-emp
   labor_gap_fig_a <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario == "changing prices",
-        ## choose with re-emp for main text
+        ## with re-emp (revised)
         employment_scen == "sum_demo_emp_revised",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -12088,13 +12092,13 @@ fig4_hl <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor 2020 prod prices -- MAIN TEXT
+  ## labor 2020 prod prices and with re-emp (revised)
   labor_gap_fig_a_2020ppx <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## choose with re-emp for main text
+        ## with re-emp (revised)
         employment_scen == "sum_demo_emp_revised",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -12132,13 +12136,13 @@ fig4_hl <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor changing price, no-remp
+  ## labor 2020 prices and no-remp (MAIN TEXT)
   labor_gap_fig_a_2020ppx_no_reemp <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## choose without re-emp for SI
+        ## without re-employment
         employment_scen == "sum_demo_emp",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -12186,14 +12190,14 @@ fig4_hl <- function(
       theme(legend.text = element_text(size = 6))
   )
 
-  ## labor b
+  ## labor b: changing prices, with re-emp (revised)
   labor_gap_fig_b <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         demo_cat == "DAC",
         product_scenario == "changing prices",
-        ## choose with re-emp for main text
+        ## with re-emp (revised)
         employment_scen == "sum_demo_emp_revised",
       ),
     aes(x = year, y = gap_emp / 1000, lty = title)
@@ -12223,7 +12227,7 @@ fig4_hl <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor b -- 2020 prices, MAIN TEXT
+  ## labor b -- 2020 prices, with re-emp (revised)
   labor_gap_fig_b_2020ppx <- ggplot(
     l_gaps_df %>%
       filter(
@@ -12260,14 +12264,14 @@ fig4_hl <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor b -- 2020 prices, no re-emp, SI
+  ## labor b -- 2020 prices, no re-emp (MAIN TEXT)
   labor_gap_fig_b_2020ppx_no_reemp <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         demo_cat == "DAC",
         product_scenario != "changing prices",
-        ## choose without re-emp for SI
+        ## choose without re-emp for main text
         employment_scen == "sum_demo_emp",
       ),
     aes(x = year, y = gap_emp / 1000, lty = title)
@@ -12307,13 +12311,13 @@ fig4_hl <- function(
       theme(legend.text = element_text(size = 6))
   )
 
-  ## labor c -- chaning prices
+  ## labor c -- changing prices, with re-emp (revised)
   labor_gap_fig_c <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario == "changing prices",
-        ## choose with re-emp for main text
+        ## with re-emp (revised)
         employment_scen == "sum_demo_emp_revised",
         demo_cat == "Poverty"
       ) %>%
@@ -12350,13 +12354,13 @@ fig4_hl <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor c - 2020 prices MAIN text
+  ## labor c - 2020 prices with re-emp (revised)
   labor_gap_fig_c_2020ppx <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## choose with re-emp for main text
+        ## with re-emp (revised)
         employment_scen == "sum_demo_emp_revised",
         demo_cat == "Poverty"
       ) %>%
@@ -12393,13 +12397,13 @@ fig4_hl <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor c - 2020 prices, no re-emp, SI
+  ## labor c - 2020 prices, no re-emp, MAIN TEXT
   labor_gap_fig_c_2020ppx_no_reemp <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## choose without re-emp for SI
+        ## choose without re-emp for MAIN TEXT
         employment_scen == "sum_demo_emp",
         demo_cat == "Poverty"
       ) %>%
@@ -12455,7 +12459,7 @@ fig4_hl <- function(
       angle = 90
     )
 
-  ## 2020 product prices, with re-emp, main text
+  ## 2020 product prices, with re-emp, SI
   l_gaps_plot_grid_2020ppx <- plot_grid(
     labor_gap_fig_b_2020ppx + theme(legend.position = "none"),
     labor_gap_fig_c_2020ppx + theme(legend.position = "none"),
@@ -12485,7 +12489,7 @@ fig4_hl <- function(
     rel_heights = c(1, 1)
   )
 
-  ## 2020 product prices, without re-emp, SI
+  ## 2020 product prices, without re-emp, MAIN TEXT
   l_gaps_plot_grid_2020ppx_no_reemp <- plot_grid(
     labor_gap_fig_b_2020ppx_no_reemp + theme(legend.position = "none"),
     labor_gap_fig_c_2020ppx_no_reemp + theme(legend.position = "none"),
@@ -12515,6 +12519,7 @@ fig4_hl <- function(
     rel_heights = c(1, 1)
   )
 
+  ## changing prices, with re-emp
   l_gaps_plot_grid <- plot_grid(
     labor_gap_fig_b + theme(legend.position = "none"),
     labor_gap_fig_c + theme(legend.position = "none"),
@@ -12565,7 +12570,7 @@ fig4_hl <- function(
   ## plot side by side
   ## ----------------------------------------------
 
-  ## MAIN TEXT
+  ## SI
   health_labor_plot_2020ppx <- plot_grid(
     gaps_plot_grid2,
     l_gaps_plot_grid2_2020ppx,
@@ -12591,8 +12596,7 @@ fig4_hl <- function(
     dpi = 600,
     save_path = save_path,
     file_type = "figure",
-    figure_number = "health-labor-figures",
-    extra_subfolder = "health-labor-figures"
+    figure_number = "figures-si"
   )
 
   ## SI -- no re-emp
@@ -12615,13 +12619,13 @@ fig4_hl <- function(
   simple_ggsave_repo(
     plot = health_labor_plot_2020ppx_no_reemp,
     folder_path = NULL,
-    filename = "health_labor_gaps_pmil_plot_2020ppx_no_reemp",
+    filename = "health_labor_gaps_plot_2020ppx_no_reemp",
     width = 14,
     height = 6,
     dpi = 600,
     save_path = save_path,
     file_type = "figure",
-    figure_number = "figure-4"
+    figure_number = "figures-si"
   )
 
   health_labor_plot <- plot_grid(
@@ -13123,13 +13127,13 @@ fig4_hl_pmil <- function(
   l_gaps_df[, gap_emp_pc := gap_emp / pop_2020]
   l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
 
-  ## figure labor a
+  ## figure labor a: changing prices and with re-emp
   labor_gap_fig_a <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario == "changing prices",
-        ## with re-employment for main text
+        ## with re-employment 
         employment_scen == "sum_demo_emp_revised",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -13172,13 +13176,13 @@ fig4_hl_pmil <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## figure labor a -- MAIN TEXT
+  ## figure labor a -- 2020 ppx and with remp
   labor_gap_fig_a_2020ppx <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## with re-employment for main text
+        ## with re-employment 
         employment_scen == "sum_demo_emp_revised",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -13221,13 +13225,13 @@ fig4_hl_pmil <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## figure labor a -- SI, 2020 px and no re-emp
+  ## figure labor a -- 2020 px and no re-emp (main text)
   labor_gap_fig_a_2020ppx_no_reemp <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## without re-employment for SI
+        ## without re-employment for main text
         employment_scen == "sum_demo_emp",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -13280,14 +13284,14 @@ fig4_hl_pmil <- function(
       theme(legend.text = element_text(size = fig_text_size))
   )
 
-  ## labor b
+  ## labor b - changing prices and with re-emp
   labor_gap_fig_b <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         demo_cat == "DAC",
         product_scenario == "changing prices",
-        ## with re-employment for main text
+        ## with re-employment 
         employment_scen == "sum_demo_emp_revised",
       ),
     aes(x = year, y = gap_emp_pmil, lty = title)
@@ -13323,14 +13327,14 @@ fig4_hl_pmil <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor b -- MAIN TEXT
+  ## labor b -- 2020 prices, with re-emp
   labor_gap_fig_b_2020ppx <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         demo_cat == "DAC",
         product_scenario != "changing prices",
-        ## with re-employment for main text
+        ## with re-employment 
         employment_scen == "sum_demo_emp_revised"
       ),
     aes(x = year, y = gap_emp_pmil, lty = title)
@@ -13366,14 +13370,14 @@ fig4_hl_pmil <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor b -- SI, without re-emp
+  ## labor b -- 2020 ppx and without re-emp
   labor_gap_fig_b_2020ppx_no_reemp <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         demo_cat == "DAC",
         product_scenario != "changing prices",
-        ## without re-employment for SI
+        ## without re-employment for MAIN TEXT
         employment_scen == "sum_demo_emp"
       ),
     aes(x = year, y = gap_emp_pmil, lty = title)
@@ -13419,13 +13423,13 @@ fig4_hl_pmil <- function(
       theme(legend.text = element_text(size = fig_text_size))
   )
 
-  ## labor c
+  ## labor c: changing prices, with re-emp
   labor_gap_fig_c <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario == "changing prices",
-        ## with re-employment for main text
+        ## with re-employment 
         employment_scen == "sum_demo_emp_revised",
         demo_cat == "Poverty"
       ) %>%
@@ -13468,13 +13472,13 @@ fig4_hl_pmil <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor c -- MAIN TEXT
+  ## labor c --  2020ppx with remp
   labor_gap_fig_c_2020ppx <- ggplot(
     l_gaps_df %>%
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## with re-employment for main text
+        ## with re-employment 
         employment_scen == "sum_demo_emp_revised",
         demo_cat == "Poverty"
       ) %>%
@@ -13517,7 +13521,7 @@ fig4_hl_pmil <- function(
       axis.ticks.length.x = unit(0.1, "cm")
     )
 
-  ## labor c -- SI, without re-emp
+  ## labor c -- 2020 ppx and with out re-emp (main text)
   labor_gap_fig_c_2020ppx_no_reemp <- ggplot(
     l_gaps_df %>%
       filter(
@@ -13580,12 +13584,12 @@ fig4_hl_pmil <- function(
   # yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE direct employment changes per million people (difference from reference)",
+      "Labor: FTE direct employment per million people (difference from reference)",
       size = fig_text_size,
       angle = 90
     )
 
-  ## 2020 product prices, MAIN TEXT
+  ## 2020 product prices, with re-emp
   l_gaps_plot_grid_2020ppx <- plot_grid(
     NULL,
     labor_gap_fig_b_2020ppx + theme(legend.position = "none"),
@@ -13619,7 +13623,7 @@ fig4_hl_pmil <- function(
     rel_heights = c(1, 1)
   )
 
-  ## 2020 product prices, no-remp SI
+  ## 2020 product prices, no-remp MAIN TEXT
   l_gaps_plot_grid_2020ppx_no_reemp <- plot_grid(
     NULL,
     labor_gap_fig_b_2020ppx_no_reemp + theme(legend.position = "none"),
@@ -13711,6 +13715,7 @@ fig4_hl_pmil <- function(
   ## plot side by side
   ## ----------------------------------------------
 
+  ## 2020 prices with re-emp (SI)
   health_labor_plot_2020ppx <- plot_grid(
     gaps_plot_grid2,
     l_gaps_plot_grid2_2020ppx,

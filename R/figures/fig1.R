@@ -2,18 +2,30 @@
 # ## original version: september 9, 2024
 ## updated version: march 30, 2025 - address reviewer comments
 
+
 #' Helper function to create a proper coord_sf without graticule errors
 #' @param coords Coordinates from st_coordinates()
 #' @param expand Whether to expand the plot area
 #' @return A coord_sf object with proper xlim and ylim
+# safe_coord_sf <- function(coords, expand = FALSE) {
+#   coord_sf(
+#     xlim = c(coords[1, "X"], coords[2, "X"]),
+#     ylim = c(coords[1, "Y"], coords[2, "Y"]),
+#     expand = expand,
+#     datum = NULL # Disable graticules to avoid MULTILINESTRING error
+#   )
+# }
+
 safe_coord_sf <- function(coords, expand = FALSE) {
   coord_sf(
     xlim = c(coords[1, "X"], coords[2, "X"]),
     ylim = c(coords[1, "Y"], coords[2, "Y"]),
     expand = expand,
-    datum = NULL # Disable graticules to avoid MULTILINESTRING error
+    datum = sf::st_crs(4326),  # specify the CRS for axis labels
+    label_graticule = "SW"     # optional: format of axis ticks (S = south, W = west)
   )
 }
+
 
 create_figure_1 <- function(
   main_path,
@@ -181,6 +193,7 @@ create_figure_1 <- function(
     pop_x_pm25
   )]
 
+
   ## join with spatial data
   ct_census_tract_pm25_2019_sp <- census_tracts %>%
     left_join(ct_census_tract_pm25_2019)
@@ -217,7 +230,7 @@ create_figure_1 <- function(
   ## -------------------------------------------------------------------
 
   disp_win_bay_cluster_wgs84 <- st_sfc(
-    st_point(c(-122.3, 37.7)),
+    st_point(c(-122.5, 37.7)),
     st_point(c(-121.1, 38.6)),
     crs = 4326
   )
@@ -249,6 +262,7 @@ create_figure_1 <- function(
 
   bay_cluster_ct_cropped <- bay_cluster_ct_cropped |>
     mutate(cluster_title = "North cluster: Bay area")
+  
 
   ## north cluster - kern
   ## -------------------------------------------------------------------
@@ -290,8 +304,8 @@ create_figure_1 <- function(
   ## southern cluster - LA
   ## -------------------------------------------------------
   disp_win_la_cluster_wgs84 <- st_sfc(
-    st_point(c(-118.9, 33.6)),
-    st_point(c(-117.6, 34.5)),
+    st_point(c(-119.0, 33.6)),
+    st_point(c(-117.5, 34.5)),
     crs = 4326
   )
 
@@ -323,6 +337,23 @@ create_figure_1 <- function(
   la_cluster_ct_cropped <- la_cluster_ct_cropped |>
     mutate(cluster_title = "South cluster")
 
+  
+  ## save health inputs
+  ## ----------------------------------------------------------------------
+  fig1_health_inputs <- rbind(bay_cluster_ct_cropped |> st_drop_geometry(),
+                              la_cluster_ct_cropped |> st_drop_geometry())
+  
+  ## save figure inputs
+  simple_fwrite_repo(
+    data = fig1_health_inputs, 
+    folder_path = NULL,
+    filename = "fig1_health_inputs.csv",
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-1"
+  )
+  
+  
   ## refinery color
   refinery_color <- "#095F66"
   # refinery_color <- "#fca311"
@@ -423,7 +454,7 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       axis.title = element_text(size = 9),
       axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
@@ -529,6 +560,7 @@ create_figure_1 <- function(
       # legend.justification defines the edge of the legend that the legend.position coordinates refer to
       legend.justification = c(0, 1),
       # Set the legend flush with the left side of the plot, and just slightly below the top of the plot
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       legend.position = c(0.01, 0.2),
       legend.key.width = unit(0.7, "line"),
       legend.key.height = unit(0.5, "line"),
@@ -538,7 +570,7 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      # panel.background = element_blank(),
       axis.title = element_text(size = 9),
       axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
@@ -657,7 +689,7 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       axis.title = element_text(size = 9),
       axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
@@ -769,7 +801,7 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       axis.title = element_text(size = 9),
       axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
@@ -820,14 +852,12 @@ create_figure_1 <- function(
     ) +
     facet_wrap(~cluster_title) +
     # geom_sf(data = county_19, mapping = aes(geometry = geometry), fill = NA, color = "#4A6C6F", lwd = 0.5) +
-    geom_sf(
-      data = la_cluster_county_crop,
-      mapping = aes(geometry = geometry),
-      lwd = 0.15,
-      alpha = 0
-    ) +
+    geom_sf(data = st_transform(la_cluster_county_crop, crs = 4326),
+            mapping = aes(geometry = geometry),
+            lwd = 0.15,
+            alpha = 0) +
     geom_sf_text(
-      data = CA_counties_noisl %>%
+      data = st_transform(CA_counties_noisl, crs = 4326) %>%
         filter(adj_county_name %in% c("Los Angeles", "Orange")),
       mapping = aes(
         geometry = geometry,
@@ -887,9 +917,9 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -995,9 +1025,9 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -1168,7 +1198,7 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -1524,6 +1554,8 @@ create_figure_1 <- function(
 
   ## weight by total population
   census_tract_labor_2020[, pop_x_comp19 := value * pop]
+  census_tract_labor_2020[, pop_x_comp19 := fifelse(is.na(pop_x_comp19), 0, pop_x_comp19)]
+  census_tract_labor_2020[, value := fifelse(is.na(value), 0, value)]
 
   ## merge counties to census tracts
   ## -----------------------------------------------------------------
@@ -1533,9 +1565,20 @@ create_figure_1 <- function(
   #   rename(census_tract = GEOID) |>
   #   left_join(census_tract_labor_2020)
 
-  ## join with spatial data
-  census_tract_labor_2020_sp <- census_tracts %>%
-    left_join(census_tract_labor_2020)
+  # Create the expanded data
+  census_tracts_l_expanded <- expand_grid(
+    census_tracts,
+    re_emp_scen = c("total_comp_usd19_h", "total_comp_usd19_l")
+  )
+  
+  ## merge with spatial data
+  census_tract_labor_2020_sp <- census_tracts_l_expanded |>
+    left_join(census_tracts |> select(census_tract, geometry)) |>
+    left_join(census_tract_labor_2020) |>
+    mutate(value = ifelse(is.na(value), 0, value),
+           pop_x_comp19 = ifelse(is.na(value), 0, pop_x_comp19)) |>
+    st_as_sf()
+    
 
   census_tract_labor_2020_sp_w_remp <- census_tract_labor_2020_sp |>
     filter(re_emp_scen == "total_comp_usd19_l")
@@ -1581,6 +1624,27 @@ create_figure_1 <- function(
 
   la_cluster_ct_cropped_labor <- la_cluster_ct_cropped_labor |>
     mutate(cluster_title = "South cluster")
+  
+  ## save labor inputs
+  ## -------------------------------------------------
+  
+  fig1_labor_inputs <- rbind(bay_cluster_ct_cropped_labor |> 
+                               filter(re_emp_scen == "total_comp_usd19_l") |>
+                               st_drop_geometry(),
+                             la_cluster_ct_cropped_labor |> 
+                               filter(re_emp_scen == "total_comp_usd19_l") |>
+                               st_drop_geometry()
+                             )
+  
+  ## save figure inputs
+  simple_fwrite_repo(
+    data = fig1_labor_inputs, 
+    folder_path = NULL,
+    filename = "fig1_labor_inputs.csv",
+    save_path = save_path,
+    file_type = "figure",
+    figure_number = "figure-1"
+  )
 
   ## plot labor
   ## --------------------------------------------------------------
@@ -1674,9 +1738,9 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -1790,7 +1854,7 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       axis.title = element_text(size = 9),
       axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
@@ -1903,9 +1967,9 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2016,9 +2080,9 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(
@@ -2127,7 +2191,7 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
       axis.title = element_text(size = 9),
       axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
@@ -2236,9 +2300,9 @@ create_figure_1 <- function(
       plot.title = element_text(face = "bold", size = 4),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      panel.background = element_blank(),
-      axis.title = element_text(size = 10),
-      axis.text = element_text(size = 8),
+      panel.background = element_rect(fill = "lightgrey", color = NA),
+      axis.title = element_text(size = 9),
+      axis.text = element_text(size = 7),
       legend.background = element_rect(fill = NA)
     ) +
     guides(

@@ -48,14 +48,15 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
     name = list_paths,
     c(
-      "tracey-laptop" = "/Users/traceymangin/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
-      "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
+      "tracey-laptop" = "data",
+      "tracey-desktop" = "data",
+      # "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
       "vincent" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
       "meas" = "data"
     )
@@ -68,7 +69,7 @@ list(
   ),
 
   # list save paths
-  tar_target(name = version, command = "ncomm-rev"),
+  tar_target(name = version, command = "rev-submission"),
   tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
@@ -2674,13 +2675,14 @@ list(
     command = simple_ggsave_repo(
       health_labor_gaps_pmil_plot,
       NULL,
-      "health_labor_gaps_pmil_plot_2020ppx_no_reemp*",
+      "health_labor_gaps_pmil_plot",
       width = 18,
       height = 6,
       dpi = 600,
       save_path = save_path,
       file_type = "figure",
-      figure_number = "figure-4"
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-4"
     ),
     format = "file"
   ),
