@@ -68,8 +68,8 @@ list(
   ),
 
   # list save paths
-  tar_target(name = version, command = "v0.1"),
-  tar_target(name = iteration, "cuf=0.4"),
+  tar_target(name = version, command = "ncomm-rev"),
+  tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
   tar_target(
@@ -91,6 +91,13 @@ list(
     command = file.path(save_path, "tables")
   ),
 
+  # output structure file for validation
+  tar_target(
+    name = file_output_structure,
+    command = "extras/output_structure.csv",
+    format = "file"
+  ),
+
   # create folders in repository
   tar_target(
     name = save_folders,
@@ -98,7 +105,7 @@ list(
   ),
 
   # module settings
-  tar_target(name = ref_threshold, command = 0.4),
+  tar_target(name = ref_threshold, command = 0.6),
   tar_target(name = ren_threshold, command = 0.9),
   tar_target(name = pred_years, command = 2020:2045),
   tar_target(name = drop_in_perc, command = 1),
@@ -2355,7 +2362,7 @@ list(
       width = 25,
       save_path = save_path,
       file_type = "figure",
-      figure_number = "figures-si",
+      figure_number = "figure-2",
       height = 13,
       dpi = 600
     ),
