@@ -70,7 +70,7 @@ list(
 
   # list save paths
   tar_target(name = version, command = "rev-submission"),
-  tar_target(name = iteration, "cuf=0.8"),
+  tar_target(name = iteration, "cuf=0.6"),
 
   # Set run type and stop if unknown run type
   tar_target(
