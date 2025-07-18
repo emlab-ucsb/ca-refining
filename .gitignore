@@ -8,6 +8,9 @@
 # User-specific files
 .Ruserdata
 
+# R plots (auto-generated)
+Rplots.pdf
+
 # Example code in package build process
 *-Ex.R
 
@@ -43,3 +46,34 @@ _targets/
 
 # .DS_Store
 .DS_Store
+
+# shapefiles (and all related files to .shp files)
+*.shp*
+*.shx*
+*.dbf*
+*.prj*
+*.cpg*
+*.qpj*
+*.sbn*
+*.sbx*
+
+# other file types to not track
+*.atx
+
+# labor files
+/data/data-staged-for-deletion/labor/*
+
+# data
+/data/*
+
+# outputs - selective tracking based on output_structure.csv
+# Exclude directories with no tracked files (NONE_TRACKED)
+/outputs/*/results/figures/extra/extra-figure-3/
+/outputs/*/results/figures/extra/extra-figure-4/
+/outputs/*/results/figures/extra/extra-figure-5/
+/outputs/*/results/figures/extra/health-figures/
+/outputs/*/results/figures/extra/health-labor-figures/
+/outputs/*/results/figures/extra/labor-figures/
+/outputs/*/results/figures/extra/pulse-figs/
+/outputs/*/results/figures/extra/state-levels-fig/
+/outputs/*/tables/other/

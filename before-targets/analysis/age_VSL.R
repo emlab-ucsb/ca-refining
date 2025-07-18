@@ -137,7 +137,7 @@ growth_1319 <- gdp_growth %>%
   select(cum_growth) %>% pull()
 
 CPI_1319 <- 107.8645906/98.28708
-VSL_1319 = (0.4 * growth_1319-1 * 9 + 9)*CPI_1319
+VSL_1319 = (0.4 * (growth_1319-1) * 9 + 9)*CPI_1319
 
 #### BEN MAP GROWTH FACTORS
 
@@ -152,3 +152,24 @@ fread("./FRED_gdp_cap.csv", stringsAsFactors = F)%>%
   mutate(gdpcap_growth_95 = GDP_per_cap_2017/gdp_cap_1995)%>%
   filter(year>1994)
 
+#benmap equation
+
+#2020 real per capita in 2019$
+(5.8 * (0.4*45318 - 0.4*61076 - 61076 - 45318)/(0.4*61076 - 0.4*45318 - 61076 - 45318))*107.8645906/67.72369
+
+#2019 real per capita in 2019$
+(5.8 * (0.4*45318 - 0.4*62677 - 62677 - 45318)/(0.4*62677 - 0.4*45318 - 62677 - 45318))*107.8645906/67.72369
+
+
+#using the growth factors from benmap to find Carleton 
+5.8*(1.1898944/1.0491565)*(107.8645906/67.72369) #this analysis in 2011$ after adjusting for income growth are $9.9 million for 2020 
+
+#approximation from discrete form
+(5.8*(61076/45318)^0.4)*(107.8645906/67.72369)
+
+gdp_growth %>%
+  filter(year>1997)%>%
+  mutate(cum_growth = cumprod(1 + growth_rate))
+
+#discrete form
+(5.8*((61076-45318)/45318)*0.4 + 5.8)*(107.8645906/67.72369)
