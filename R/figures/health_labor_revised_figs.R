@@ -1453,7 +1453,7 @@ plot_npv_health_labor <- function(
 
   ## save legends
   # Create legends directory if it doesn't exist
-  legends_dir <- file.path(save_path, "legends")
+  legends_dir <- file.path(save_path, "results", "figures", "figure-3")
   if (!dir.exists(legends_dir)) {
     dir.create(legends_dir, recursive = TRUE, showWarnings = FALSE)
   }
