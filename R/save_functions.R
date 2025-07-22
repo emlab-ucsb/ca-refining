@@ -531,7 +531,7 @@ create_targets_snapshot <- function(save_path, version, iteration, ...) {
 extract_targets_parameters <- function(targets_content) {
     params <- list()
 
-    # Extract single-value targets
+    # Extract single-value targets (handles complex expressions)
     extract_single_value <- function(pattern, name) {
         lines <- grep(pattern, targets_content, value = TRUE)
         if (length(lines) > 0) {
@@ -539,14 +539,46 @@ extract_targets_parameters <- function(targets_content) {
             active_lines <- lines[!grepl("^\\s*#", lines)]
             if (length(active_lines) > 0) {
                 line <- active_lines[1] # Take the first non-commented line
-                # Extract the value between 'command = ' and '),'
-                value_match <- regmatches(
-                    line,
-                    regexpr("command = [^,)]+", line)
-                )
-                if (length(value_match) > 0) {
-                    value <- gsub("command = ", "", value_match)
+                # For complex expressions, extract everything after "command = " until we hit "),"
+                # but handle nested parentheses properly
+                command_start <- regexpr("command = ", line)
+                if (command_start > 0) {
+                    after_command <- substring(line, command_start + 10) # 10 = length("command = ")
+                    
+                    # Find the end - look for "), " but handle nested parentheses
+                    paren_depth <- 0
+                    end_pos <- 0
+                    chars <- strsplit(after_command, "")[[1]]
+                    
+                    for (i in seq_along(chars)) {
+                        if (chars[i] == "(") {
+                            paren_depth <- paren_depth + 1
+                        } else if (chars[i] == ")") {
+                            if (paren_depth > 0) {
+                                paren_depth <- paren_depth - 1
+                            } else {
+                                # This is our closing parenthesis
+                                end_pos <- i - 1
+                                break
+                            }
+                        }
+                    }
+                    
+                    if (end_pos > 0) {
+                        value <- substring(after_command, 1, end_pos)
+                    } else {
+                        # Fallback: take everything until first comma or end
+                        comma_pos <- regexpr(",", after_command)
+                        if (comma_pos > 0) {
+                            value <- substring(after_command, 1, comma_pos - 1)
+                        } else {
+                            value <- after_command
+                        }
+                    }
+                    
+                    # Clean up the value
                     value <- gsub('"', '', value) # Remove quotes
+                    value <- trimws(value)
                     return(value)
                 }
             }
@@ -554,22 +586,76 @@ extract_targets_parameters <- function(targets_content) {
         return(NA)
     }
 
-    # Extract vector/array targets
+    # Extract vector/array targets (handles multi-line targets)
     extract_vector_value <- function(pattern) {
         start_lines <- grep(pattern, targets_content)
         if (length(start_lines) > 0) {
             # Find lines that are not commented out
             for (start_line in start_lines) {
                 if (!grepl("^\\s*#", targets_content[start_line])) {
-                    # Extract the command value part
+                    # Check if the command is on the same line or the next line
+                    current_line <- targets_content[start_line]
                     command_match <- regmatches(
-                        targets_content[start_line],
-                        regexpr("command = .*", targets_content[start_line])
+                        current_line,
+                        regexpr("command = .*", current_line)
                     )
-                    if (length(command_match) > 0) {
+                    
+                    command_line <- start_line
+                    command_part <- ""
+                    
+                    # If command is not on the current line, check the next line
+                    if (length(command_match) == 0) {
+                        if ((start_line + 1) <= length(targets_content)) {
+                            next_line <- targets_content[start_line + 1]
+                            command_match <- regmatches(
+                                next_line,
+                                regexpr("command = .*", next_line)
+                            )
+                            if (length(command_match) > 0) {
+                                command_line <- start_line + 1
+                                command_part <- gsub("command = ", "", command_match)
+                            }
+                        }
+                    } else {
                         command_part <- gsub("command = ", "", command_match)
-                        # Clean up the formatting
+                    }
+                    
+                    if (nchar(command_part) > 0) {
+                        # If the line doesn't end with a proper closing pattern,
+                        # we need to look at the next lines too
+                        if (!grepl("\\)\\s*,?\\s*$|\\)\\s*\\)\\s*,?\\s*$", command_part)) {
+                            # Multi-line target - collect all lines until we find the closing
+                            full_command <- command_part
+                            line_idx <- command_line + 1
+                            
+                            while (line_idx <= length(targets_content)) {
+                                next_line <- targets_content[line_idx]
+                                full_command <- paste(full_command, trimws(next_line))
+                                
+                                if (grepl("\\)\\s*,?\\s*$|\\)\\s*\\)\\s*,?\\s*$", next_line)) {
+                                    break
+                                }
+                                line_idx <- line_idx + 1
+                            }
+                            command_part <- full_command
+                        }
+                        
+                        # Clean up the formatting and remove trailing patterns
+                        # Remove )), or ), or ) at the end
+                        command_part <- gsub("\\)\\s*\\)\\s*,?\\s*$|\\)\\s*,?\\s*$", "", command_part)
                         command_part <- gsub("\\s+", " ", command_part)
+                        command_part <- trimws(command_part)
+                        
+                        # For vectors, clean up the c() notation if present
+                        if (grepl("^c\\(", command_part)) {
+                            # Extract just the contents between c( and any remaining )
+                            vector_content <- gsub("^c\\((.*)\\)*$", "\\1", command_part)
+                            # Clean up quotes and make it readable
+                            vector_content <- gsub('"', '', vector_content)
+                            vector_content <- trimws(vector_content)
+                            return(paste0("c(", vector_content, ")"))
+                        }
+                        
                         return(command_part)
                     }
                 }
@@ -667,13 +753,17 @@ extract_targets_parameters <- function(targets_content) {
         'cpi2019'
     )
 
-    # Scenarios
+    # Scenarios - need to handle both single-line and multi-line targets
     params$dem_scens <- extract_vector_value(
         'tar_target\\(\\s*name = dem_scens'
     )
+    # For ref_scens, try both patterns since it might be multi-line
     params$ref_scens <- extract_vector_value(
         'tar_target\\(\\s*name = ref_scens'
     )
+    if (is.na(params$ref_scens)) {
+        params$ref_scens <- extract_vector_value('name = ref_scens')
+    }
     params$clus <- extract_vector_value('tar_target\\(\\s*name = clus')
 
     return(params)
