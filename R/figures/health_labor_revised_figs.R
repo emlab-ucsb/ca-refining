@@ -603,7 +603,7 @@ plot_npv_labor_oilpx <- function(
   } else if (variant == "bartik") {
     return(forgone_wages_all_oil_px_fig_2020ppx_bc)
   } else {
-    return(forgone_wages_all_oil_px_fig)  # base variant (changing prices)
+    return(forgone_wages_all_oil_px_fig) # base variant (changing prices)
   }
 }
 
@@ -977,9 +977,9 @@ plot_npv_health_labor <- function(
     folder_path = NULL,
     filename = "state_npv_fig_inputs_health.csv",
     save_path = save_path,
-    file_type = "table",
-    figure_number = NULL,
-    extra_subfolder = "health"
+    file_type = "figure",
+    figure_number = "figure-3",
+    extra_subfolder = NULL
   )
 
   ## prepare labor ----------------------
@@ -9605,11 +9605,15 @@ plot_hl_levels_pc <- function(
 
   ## calculate per capita
   plot_df_long[, value := value / pop_2020]
-  
+
   ## udpate labor segment title
-  plot_df_long[, seg_title := fifelse(seg_title == "Labor: forgone wages",
-                                      "Labor: forgone wages of directly employed workers",
-                                      seg_title)]
+  plot_df_long[,
+    seg_title := fifelse(
+      seg_title == "Labor: forgone wages",
+      "Labor: forgone wages of directly employed workers",
+      seg_title
+    )
+  ]
 
   ## save figure inputs
   simple_fwrite_repo(
@@ -13133,7 +13137,7 @@ fig4_hl_pmil <- function(
       filter(
         !scenario %in% remove_scen,
         product_scenario == "changing prices",
-        ## with re-employment 
+        ## with re-employment
         employment_scen == "sum_demo_emp_revised",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -13182,7 +13186,7 @@ fig4_hl_pmil <- function(
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## with re-employment 
+        ## with re-employment
         employment_scen == "sum_demo_emp_revised",
         title %in% fig_title_vec,
         demo_cat == "Race"
@@ -13291,7 +13295,7 @@ fig4_hl_pmil <- function(
         !scenario %in% remove_scen,
         demo_cat == "DAC",
         product_scenario == "changing prices",
-        ## with re-employment 
+        ## with re-employment
         employment_scen == "sum_demo_emp_revised",
       ),
     aes(x = year, y = gap_emp_pmil, lty = title)
@@ -13334,7 +13338,7 @@ fig4_hl_pmil <- function(
         !scenario %in% remove_scen,
         demo_cat == "DAC",
         product_scenario != "changing prices",
-        ## with re-employment 
+        ## with re-employment
         employment_scen == "sum_demo_emp_revised"
       ),
     aes(x = year, y = gap_emp_pmil, lty = title)
@@ -13429,7 +13433,7 @@ fig4_hl_pmil <- function(
       filter(
         !scenario %in% remove_scen,
         product_scenario == "changing prices",
-        ## with re-employment 
+        ## with re-employment
         employment_scen == "sum_demo_emp_revised",
         demo_cat == "Poverty"
       ) %>%
@@ -13478,7 +13482,7 @@ fig4_hl_pmil <- function(
       filter(
         !scenario %in% remove_scen,
         product_scenario != "changing prices",
-        ## with re-employment 
+        ## with re-employment
         employment_scen == "sum_demo_emp_revised",
         demo_cat == "Poverty"
       ) %>%

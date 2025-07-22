@@ -68,9 +68,19 @@ list(
     command = list_paths[user]
   ),
 
+  # module settings
+  tar_target(name = ref_threshold, command = 0.8),
+  tar_target(name = ren_threshold, command = 0.9),
+  tar_target(name = pred_years, command = 2020:2045),
+  tar_target(name = drop_in_perc, command = 1),
+  tar_target(name = kern_perc, command = 0.9375),
+  # tar_target(name = a, command = 4),
+  # tar_target(name = ccs_capture_rate, command = 0.474),
+  tar_target(name = refinery_level_ghg, command = FALSE),
+
   # list save paths
   tar_target(name = version, command = "rev-submission"),
-  tar_target(name = iteration, "cuf=0.6"),
+  tar_target(name = iteration, command = paste0("cuf=", ref_threshold)),
 
   # Set run type and stop if unknown run type
   tar_target(
@@ -105,15 +115,11 @@ list(
     command = create_save_folders_repo(save_path, iteration)
   ),
 
-  # module settings
-  tar_target(name = ref_threshold, command = 0.8),
-  tar_target(name = ren_threshold, command = 0.9),
-  tar_target(name = pred_years, command = 2020:2045),
-  tar_target(name = drop_in_perc, command = 1),
-  tar_target(name = kern_perc, command = 0.9375),
-  # tar_target(name = a, command = 4),
-  # tar_target(name = ccs_capture_rate, command = 0.474),
-  tar_target(name = refinery_level_ghg, command = FALSE),
+  # create targets snapshot for this version-iteration
+  tar_target(
+    name = targets_snapshot,
+    command = create_targets_snapshot(save_path, version, iteration)
+  ),
 
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
