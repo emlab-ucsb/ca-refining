@@ -68,8 +68,24 @@ list(
     command = list_paths[user]
   ),
 
-  # module settings
+  ## set module settings for specific run (cuf and beta)
+  tar_target(name = beta_scenario, command = "main"), ## UPDATE WITH ("main", "high", or "low")
+  tar_target(name = beta, command = ifelse(beta_scenario == "low", 0.00422068,
+                                           ifelse(beta_scenario == "high", 0.00737932,
+                                                  0.00582))), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = ref_threshold, command = 0.6),
+  
+  # list save paths (UPDATE VERSION AS NEEDED)
+  tar_target(name = version, command = "rev-submission"), 
+  tar_target(name = iteration, command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)),
+  
+  # Set run type and stop if unknown run type
+  tar_target(
+    name = save_path,
+    command = file.path("outputs", version, iteration)
+  ),
+  
+  # module settings
   tar_target(name = ren_threshold, command = 0.9),
   tar_target(name = pred_years, command = 2020:2045),
   tar_target(name = drop_in_perc, command = 1),
@@ -77,16 +93,6 @@ list(
   # tar_target(name = a, command = 4),
   # tar_target(name = ccs_capture_rate, command = 0.474),
   tar_target(name = refinery_level_ghg, command = FALSE),
-
-  # list save paths
-  tar_target(name = version, command = "rev-submission"),
-  tar_target(name = iteration, command = paste0("cuf=", ref_threshold)),
-
-  # Set run type and stop if unknown run type
-  tar_target(
-    name = save_path,
-    command = file.path("outputs", version, iteration)
-  ),
 
   # Create folders for structured output
   tar_target(
@@ -128,9 +134,6 @@ list(
   tar_target(name = indirect_induced_mult, command = 0.741), # multiplier for indirect and induced effects
 
   # health analysis parameters
-  # tar_target(name = beta, command = 0.00737932), #Coefficient (high)
-  # tar_target(name = beta, command = 0.00422068), #Coefficient (low)
-  tar_target(name = beta, command = 0.00582), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = se, command = 0.0009628), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = vsl_2015, command = 8705114.25462459),
   #tar_target(name = vsl_2019, command = vsl_2015 * 107.8645906 / 100), # (https://fred.stlouisfed.org/series/CPALTT01USA661S)
@@ -2290,7 +2293,7 @@ list(
     format = "file"
   ),
   # # save figures
-  tar_target(
+   tar_target(
     name = save_ct_xwalk,
     command = simple_fwrite_repo(
       data = ct_xwalk,
@@ -2755,6 +2758,19 @@ list(
   ),
 
   # ---- Output targets for labor_functions_product_px.R ----
+  tar_target(
+    save_annual_direct_labor,
+    command = {
+      simple_fwrite_repo(
+        data = annual_direct_labor,
+        folder_path = NULL,
+        filename = "annual_labor_outputs.csv*",
+        save_path = save_path,
+        file_type = "labor"
+      )
+    },
+    format = "file"
+  ),
   tar_target(
     state_labor_direct_impacts_demo_annual,
     command = {
