@@ -485,8 +485,9 @@ should_be_tracked <- function(filename) {
 #' @param save_path Base save path (outputs/version/iteration)
 #' @param version Version identifier
 #' @param iteration Iteration identifier (typically cuf=X.X)
+#' @param ... Additional parameters (used for dependency tracking, not directly used in function)
 #' @return List of created files
-create_targets_snapshot <- function(save_path, version, iteration) {
+create_targets_snapshot <- function(save_path, version, iteration, ...) {
     # Ensure save_path directory exists
     if (!dir.exists(save_path)) {
         dir.create(save_path, recursive = TRUE, showWarnings = FALSE)
