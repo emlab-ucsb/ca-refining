@@ -69,7 +69,7 @@ list(
   ),
 
   # module settings
-  tar_target(name = ref_threshold, command = 0.8),
+  tar_target(name = ref_threshold, command = 0.6),
   tar_target(name = ren_threshold, command = 0.9),
   tar_target(name = pred_years, command = 2020:2045),
   tar_target(name = drop_in_perc, command = 1),
@@ -113,12 +113,6 @@ list(
   tar_target(
     name = save_folders,
     command = create_save_folders_repo(save_path, iteration)
-  ),
-
-  # create targets snapshot for this version-iteration
-  tar_target(
-    name = targets_snapshot,
-    command = create_targets_snapshot(save_path, version, iteration)
   ),
 
   # energy intensities
@@ -181,6 +175,43 @@ list(
 
   # crs
   tar_target(name = ca_crs, command = 3310), ## crs NAD83 / California Albers
+
+  # create targets snapshot for this version-iteration
+  # Include key parameters as dependencies to ensure snapshot updates when parameters change
+  tar_target(
+    name = targets_snapshot,
+    command = create_targets_snapshot(
+      save_path,
+      version,
+      iteration,
+      # Include parameter dependencies to trigger updates
+      ref_threshold,
+      ren_threshold,
+      pred_years,
+      drop_in_perc,
+      kern_perc,
+      refinery_level_ghg,
+      beta,
+      se,
+      vsl_2015,
+      vsl_2019,
+      income_elasticity_mort,
+      discount_rate,
+      alpha_comp,
+      alpha_emp,
+      indirect_induced_mult,
+      ei_crude,
+      ei_gasoline,
+      ei_diesel,
+      ei_jet,
+      cpi2020,
+      cpi2019,
+      dem_scens,
+      ref_scens,
+      clus,
+      user
+    )
+  ),
 
   # set raw data paths
   tar_target(
