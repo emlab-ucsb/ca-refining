@@ -115,21 +115,6 @@ list(
     command = create_save_folders_repo(save_path, iteration)
   ),
 
-  # create targets snapshot for this version-iteration
-  # Include key parameters as dependencies to ensure snapshot updates when parameters change
-  tar_target(
-    name = targets_snapshot,
-    command = create_targets_snapshot(
-      save_path, version, iteration,
-      # Include parameter dependencies to trigger updates
-      ref_threshold, ren_threshold, pred_years, drop_in_perc, kern_perc, refinery_level_ghg,
-      beta, se, vsl_2015, vsl_2019, income_elasticity_mort, discount_rate,
-      alpha_comp, alpha_emp, indirect_induced_mult,
-      ei_crude, ei_gasoline, ei_diesel, ei_jet,
-      cpi2020, cpi2019, dem_scens, ref_scens, clus, user
-    )
-  ),
-
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
   tar_target(name = ei_gasoline, command = 5.052), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_4.pdf
@@ -190,6 +175,43 @@ list(
 
   # crs
   tar_target(name = ca_crs, command = 3310), ## crs NAD83 / California Albers
+
+  # create targets snapshot for this version-iteration
+  # Include key parameters as dependencies to ensure snapshot updates when parameters change
+  tar_target(
+    name = targets_snapshot,
+    command = create_targets_snapshot(
+      save_path,
+      version,
+      iteration,
+      # Include parameter dependencies to trigger updates
+      ref_threshold,
+      ren_threshold,
+      pred_years,
+      drop_in_perc,
+      kern_perc,
+      refinery_level_ghg,
+      beta,
+      se,
+      vsl_2015,
+      vsl_2019,
+      income_elasticity_mort,
+      discount_rate,
+      alpha_comp,
+      alpha_emp,
+      indirect_induced_mult,
+      ei_crude,
+      ei_gasoline,
+      ei_diesel,
+      ei_jet,
+      cpi2020,
+      cpi2019,
+      dem_scens,
+      ref_scens,
+      clus,
+      user
+    )
+  ),
 
   # set raw data paths
   tar_target(
