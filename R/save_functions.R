@@ -480,3 +480,342 @@ should_be_tracked <- function(filename) {
 
     return(file_info$tracked[1] == "YES")
 }
+
+#' Create targets snapshot for version-iteration documentation
+#' @param save_path Base save path (outputs/version/iteration)
+#' @param version Version identifier
+#' @param iteration Iteration identifier (typically cuf=X.X)
+#' @return List of created files
+create_targets_snapshot <- function(save_path, version, iteration) {
+    # Ensure save_path directory exists
+    if (!dir.exists(save_path)) {
+        dir.create(save_path, recursive = TRUE, showWarnings = FALSE)
+    }
+
+    # Read the current _targets.R file
+    targets_file <- "_targets.R"
+    if (!file.exists(targets_file)) {
+        stop("_targets.R file not found")
+    }
+
+    targets_content <- readLines(targets_file)
+
+    # Generate timestamp
+    timestamp <- Sys.time()
+
+    # Extract key parameters from _targets.R
+    params <- extract_targets_parameters(targets_content)
+
+    # Create human-readable summary
+    summary_file <- file.path(save_path, "targets_snapshot_summary.md")
+    write_targets_summary(summary_file, params, version, iteration, timestamp)
+
+    # Create full script copy
+    full_script_file <- file.path(save_path, "targets_snapshot_full.R")
+    write_full_targets_script(full_script_file, targets_content, timestamp)
+
+    message("Created targets snapshots:")
+    message("  - Summary: ", summary_file)
+    message("  - Full script: ", full_script_file)
+
+    return(list(
+        summary = summary_file,
+        full_script = full_script_file
+    ))
+}
+
+#' Extract key parameters from _targets.R content
+#' @param targets_content Character vector of _targets.R file lines
+#' @return List of extracted parameters
+extract_targets_parameters <- function(targets_content) {
+    params <- list()
+
+    # Extract single-value targets
+    extract_single_value <- function(pattern, name) {
+        lines <- grep(pattern, targets_content, value = TRUE)
+        if (length(lines) > 0) {
+            # Find lines that are not commented out
+            active_lines <- lines[!grepl("^\\s*#", lines)]
+            if (length(active_lines) > 0) {
+                line <- active_lines[1] # Take the first non-commented line
+                # Extract the value between 'command = ' and '),'
+                value_match <- regmatches(
+                    line,
+                    regexpr("command = [^,)]+", line)
+                )
+                if (length(value_match) > 0) {
+                    value <- gsub("command = ", "", value_match)
+                    value <- gsub('"', '', value) # Remove quotes
+                    return(value)
+                }
+            }
+        }
+        return(NA)
+    }
+
+    # Extract vector/array targets
+    extract_vector_value <- function(pattern) {
+        start_lines <- grep(pattern, targets_content)
+        if (length(start_lines) > 0) {
+            # Find lines that are not commented out
+            for (start_line in start_lines) {
+                if (!grepl("^\\s*#", targets_content[start_line])) {
+                    # Extract the command value part
+                    command_match <- regmatches(
+                        targets_content[start_line],
+                        regexpr("command = .*", targets_content[start_line])
+                    )
+                    if (length(command_match) > 0) {
+                        command_part <- gsub("command = ", "", command_match)
+                        # Clean up the formatting
+                        command_part <- gsub("\\s+", " ", command_part)
+                        return(command_part)
+                    }
+                }
+            }
+        }
+        return(NA)
+    }
+
+    # Module settings
+    params$user <- extract_single_value('tar_target\\(name = user', 'user')
+    params$ref_threshold <- extract_single_value(
+        'tar_target\\(name = ref_threshold',
+        'ref_threshold'
+    )
+    params$ren_threshold <- extract_single_value(
+        'tar_target\\(name = ren_threshold',
+        'ren_threshold'
+    )
+    params$pred_years <- extract_single_value(
+        'tar_target\\(name = pred_years',
+        'pred_years'
+    )
+    params$drop_in_perc <- extract_single_value(
+        'tar_target\\(name = drop_in_perc',
+        'drop_in_perc'
+    )
+    params$kern_perc <- extract_single_value(
+        'tar_target\\(name = kern_perc',
+        'kern_perc'
+    )
+    params$refinery_level_ghg <- extract_single_value(
+        'tar_target\\(name = refinery_level_ghg',
+        'refinery_level_ghg'
+    )
+
+    # Analysis parameters - Health
+    params$beta <- extract_single_value('tar_target\\(name = beta', 'beta')
+    params$se <- extract_single_value('tar_target\\(name = se', 'se')
+    params$vsl_2015 <- extract_single_value(
+        'tar_target\\(name = vsl_2015',
+        'vsl_2015'
+    )
+    params$vsl_2019 <- extract_single_value(
+        'tar_target\\(name = vsl_2019',
+        'vsl_2019'
+    )
+    params$income_elasticity_mort <- extract_single_value(
+        'tar_target\\(name = income_elasticity_mort',
+        'income_elasticity_mort'
+    )
+    params$discount_rate <- extract_single_value(
+        'tar_target\\(name = discount_rate',
+        'discount_rate'
+    )
+
+    # Analysis parameters - Labor
+    params$alpha_comp <- extract_single_value(
+        'tar_target\\(name = alpha_comp',
+        'alpha_comp'
+    )
+    params$alpha_emp <- extract_single_value(
+        'tar_target\\(name = alpha_emp',
+        'alpha_emp'
+    )
+    params$indirect_induced_mult <- extract_single_value(
+        'tar_target\\(name = indirect_induced_mult',
+        'indirect_induced_mult'
+    )
+
+    # Energy intensities
+    params$ei_crude <- extract_single_value(
+        'tar_target\\(name = ei_crude',
+        'ei_crude'
+    )
+    params$ei_gasoline <- extract_single_value(
+        'tar_target\\(name = ei_gasoline',
+        'ei_gasoline'
+    )
+    params$ei_diesel <- extract_single_value(
+        'tar_target\\(name = ei_diesel',
+        'ei_diesel'
+    )
+    params$ei_jet <- extract_single_value(
+        'tar_target\\(name = ei_jet',
+        'ei_jet'
+    )
+
+    # CPI values
+    params$cpi2020 <- extract_single_value(
+        'tar_target\\(name = cpi2020',
+        'cpi2020'
+    )
+    params$cpi2019 <- extract_single_value(
+        'tar_target\\(name = cpi2019',
+        'cpi2019'
+    )
+
+    # Scenarios
+    params$dem_scens <- extract_vector_value(
+        'tar_target\\(\\s*name = dem_scens'
+    )
+    params$ref_scens <- extract_vector_value(
+        'tar_target\\(\\s*name = ref_scens'
+    )
+    params$clus <- extract_vector_value('tar_target\\(\\s*name = clus')
+
+    return(params)
+}
+
+#' Write human-readable targets summary
+#' @param file_path Path to write the summary file
+#' @param params List of extracted parameters
+#' @param version Version identifier
+#' @param iteration Iteration identifier
+#' @param timestamp Timestamp of creation
+write_targets_summary <- function(
+    file_path,
+    params,
+    version,
+    iteration,
+    timestamp
+) {
+    content <- c(
+        "# Targets Snapshot Summary",
+        "",
+        paste("**Generated:** ", format(timestamp, "%Y-%m-%d %H:%M:%S %Z")),
+        paste("**Version:** ", version),
+        paste("**Iteration:** ", iteration),
+        # paste("**User:** ", params$user %||% "Not specified"),
+        "",
+        "## Module Settings",
+        "",
+        paste(
+            "- **Refinery threshold:** ",
+            params$ref_threshold %||% "Not specified"
+        ),
+        paste(
+            "- **Renewable threshold:** ",
+            params$ren_threshold %||% "Not specified"
+        ),
+        paste(
+            "- **Prediction years:** ",
+            params$pred_years %||% "Not specified"
+        ),
+        paste(
+            "- **Drop-in percentage:** ",
+            params$drop_in_perc %||% "Not specified"
+        ),
+        paste("- **Kern percentage:** ", params$kern_perc %||% "Not specified"),
+        paste(
+            "- **Refinery-level GHG:** ",
+            params$refinery_level_ghg %||% "Not specified"
+        ),
+        "",
+        "## Analysis Parameters",
+        "",
+        "### Health Analysis",
+        paste("- **Beta coefficient:** ", params$beta %||% "Not specified"),
+        paste("- **Standard error:** ", params$se %||% "Not specified"),
+        paste("- **VSL 2015:** ", params$vsl_2015 %||% "Not specified"),
+        paste("- **VSL 2019:** ", params$vsl_2019 %||% "Not specified"),
+        paste(
+            "- **Income elasticity (mortality):** ",
+            params$income_elasticity_mort %||% "Not specified"
+        ),
+        paste(
+            "- **Discount rate:** ",
+            params$discount_rate %||% "Not specified"
+        ),
+        "",
+        "### Labor Analysis",
+        paste(
+            "- **Alpha compensation:** ",
+            params$alpha_comp %||% "Not specified"
+        ),
+        paste(
+            "- **Alpha employment:** ",
+            params$alpha_emp %||% "Not specified"
+        ),
+        paste(
+            "- **Indirect/induced multiplier:** ",
+            params$indirect_induced_mult %||% "Not specified"
+        ),
+        "",
+        "## Energy Intensities (MMBtu/bbl)",
+        "",
+        paste("- **Crude:** ", params$ei_crude %||% "Not specified"),
+        paste("- **Gasoline:** ", params$ei_gasoline %||% "Not specified"),
+        paste("- **Diesel:** ", params$ei_diesel %||% "Not specified"),
+        paste("- **Jet fuel:** ", params$ei_jet %||% "Not specified"),
+        "",
+        "## Economic Parameters",
+        "",
+        paste("- **CPI 2020:** ", params$cpi2020 %||% "Not specified"),
+        paste("- **CPI 2019:** ", params$cpi2019 %||% "Not specified"),
+        "",
+        "## Scenarios",
+        "",
+        paste(
+            "- **Demand scenarios:** ",
+            params$dem_scens %||% "Not specified"
+        ),
+        paste(
+            "- **Refining scenarios:** ",
+            params$ref_scens %||% "Not specified"
+        ),
+        paste("- **Clusters:** ", params$clus %||% "Not specified"),
+        "",
+        "## Notes",
+        "",
+        "This snapshot captures the key parameters used for this specific analysis run.",
+        "For the complete _targets.R configuration, see `targets_snapshot_full.R`.",
+        "",
+        "---",
+        "*Generated automatically by the targets snapshot system*"
+    )
+
+    writeLines(content, file_path)
+}
+
+#' Write full targets script copy
+#' @param file_path Path to write the full script
+#' @param targets_content Character vector of _targets.R file lines
+#' @param timestamp Timestamp of creation
+write_full_targets_script <- function(file_path, targets_content, timestamp) {
+    # Add header comment
+    header <- c(
+        paste(
+            "# Targets snapshot created:",
+            format(timestamp, "%Y-%m-%d %H:%M:%S %Z")
+        ),
+        "# This is a complete copy of _targets.R as it was when this run was executed",
+        "# Do not modify this file - it serves as a historical record",
+        "",
+        targets_content
+    )
+
+    writeLines(header, file_path)
+}
+
+# Helper function for null coalescing
+`%||%` <- function(a, b) {
+    if (is.null(a) || length(a) == 0) {
+        return(b)
+    }
+    if (length(a) == 1 && is.na(a)) {
+        return(b)
+    }
+    return(a)
+}

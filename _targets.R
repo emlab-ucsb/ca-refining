@@ -115,6 +115,12 @@ list(
     command = create_save_folders_repo(save_path, iteration)
   ),
 
+  # create targets snapshot for this version-iteration
+  tar_target(
+    name = targets_snapshot,
+    command = create_targets_snapshot(save_path, version, iteration)
+  ),
+
   # energy intensities
   tar_target(name = ei_crude, command = 5.698), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_3.pdf
   tar_target(name = ei_gasoline, command = 5.052), # mmbtu/bbl; source: https://www.eia.gov/totalenergy/data/monthly/pdf/sec12_4.pdf
