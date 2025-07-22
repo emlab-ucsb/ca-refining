@@ -79,7 +79,7 @@ list(
   tar_target(name = refinery_level_ghg, command = FALSE),
 
   # list save paths
-  tar_target(name = version, command = "missing-labor-outputs"),
+  tar_target(name = version, command = "rev-submission"),
   tar_target(name = iteration, command = paste0("cuf=", ref_threshold)),
 
   # Set run type and stop if unknown run type
