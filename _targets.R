@@ -2757,20 +2757,20 @@ list(
     format = "file"
   ),
 
-  # ---- Output targets for labor_functions_product_px.R ----
-  tar_target(
-    save_annual_direct_labor,
-    command = {
-      simple_fwrite_repo(
-        data = annual_direct_labor,
-        folder_path = NULL,
-        filename = "annual_labor_outputs.csv*",
-        save_path = save_path,
-        file_type = "labor"
-      )
-    },
-    format = "file"
-  ),
+  # # ---- Output targets for labor_functions_product_px.R ----
+  # tar_target(
+  #   save_annual_direct_labor,
+  #   command = {
+  #     simple_fwrite_repo(
+  #       data = annual_direct_labor,
+  #       folder_path = NULL,
+  #       filename = "annual_labor_outputs.csv*",
+  #       save_path = save_path,
+  #       file_type = "labor"
+  #     )
+  #   },
+  #   format = "file"
+  # ),
   tar_target(
     state_labor_direct_impacts_demo_annual,
     command = {
