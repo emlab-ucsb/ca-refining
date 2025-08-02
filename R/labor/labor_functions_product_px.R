@@ -251,15 +251,15 @@ calc_labor_outputs <- function(
       census_tract
     ) %>%
     mutate(
-      prev_emp = ifelse(year == 2020, NA, lag(total_emp)),
+      prev_emp = ifelse(year == min(year), NA, lag(total_emp)),
       total_emp_revised = ifelse(
-        year == 2020,
+        year == min(year),
         total_emp,
         total_emp - ((1 - alpha_emp) * prev_emp)
       ),
-      prev_comp_usd19h = ifelse(year == 2020, NA, lag(total_comp_usd19_h)),
+      prev_comp_usd19h = ifelse(year == min(year), NA, lag(total_comp_usd19_h)),
       total_comp_usd19_l = ifelse(
-        year == 2020,
+        year == min(year),
         total_comp_usd19_h,
         total_comp_usd19_h - ((1 - alpha_comp) * prev_comp_usd19h)
       )
@@ -656,15 +656,15 @@ calc_labor_all_impacts_outputs <- function(
       oil_price_scenario
     ) %>%
     mutate(
-      prev_comp = ifelse(year == 2020, NA, lag(state_comp_all_impacts)),
-      prev_comp_bau = ifelse(year == 2020, NA, lag(state_comp_all_impacts_bau)),
+      prev_comp = ifelse(year == min(year), NA, lag(state_comp_all_impacts)),
+      prev_comp_bau = ifelse(year == min(year), NA, lag(state_comp_all_impacts_bau)),
       state_comp_all_impacts_l = ifelse(
-        year == 2020,
+        year == min(year),
         state_comp_all_impacts,
         state_comp_all_impacts - ((1 - alpha_comp) * prev_comp)
       ),
       state_comp_all_impacts_l_bau = ifelse(
-        year == 2020,
+        year == min(year),
         state_comp_all_impacts_bau,
         state_comp_all_impacts_bau - ((1 - alpha_comp) * prev_comp_bau)
       ),
@@ -676,17 +676,17 @@ calc_labor_all_impacts_outputs <- function(
         state_comp_all_impacts_l_relative
       ),
       prev_comp_l = ifelse(
-        year == 2020,
+        year == min(year),
         NA,
         lag(state_comp_all_impacts_l_relative_adj)
       ),
       state_comp_emp_li = ifelse(
-        year == 2020,
+        year == min(year),
         NA,
         (prev_comp_l / 1e6) * total_indir_induc_multipliers$emp.li[1]
       ),
       state_comp_ec_li = ifelse(
-        year == 2020,
+        year == min(year),
         NA,
         (prev_comp_l / 1e6) * total_indir_induc_multipliers$ec.li[1]
       )
@@ -747,15 +747,15 @@ calc_labor_all_impacts_outputs <- function(
       oil_price_scenario
     ) %>%
     mutate(
-      prev_comp = ifelse(year == 2020, NA, lag(comp_indir_induc_impact)),
-      prev_empl = ifelse(year == 2020, NA, lag(empl_indir_induc_impact)),
+      prev_comp = ifelse(year == min(year), NA, lag(comp_indir_induc_impact)),
+      prev_empl = ifelse(year == min(year), NA, lag(empl_indir_induc_impact)),
       comp_indir_induc_impact_l = ifelse(
-        year == 2020,
+        year == min(year),
         comp_indir_induc_impact,
         comp_indir_induc_impact - ((1 - alpha_comp) * prev_comp)
       ),
       empl_indir_induc_impact_l = ifelse(
-        year == 2020,
+        year == min(year),
         empl_indir_induc_impact,
         empl_indir_induc_impact - ((1 - alpha_emp) * prev_empl)
       )
@@ -764,12 +764,12 @@ calc_labor_all_impacts_outputs <- function(
 
   state_out_refining_summary[, `:=`(
     empl_indir_induc_impact_l = fifelse(
-      year == 2020,
+      year == min(year),
       empl_indir_induc_impact_l,
       empl_indir_induc_impact_l - state_comp_emp_li
     ),
     comp_indir_induc_impact_l = fifelse(
-      year == 2020,
+      year == min(year),
       comp_indir_induc_impact_l,
       comp_indir_induc_impact_l - state_comp_ec_li
     )
