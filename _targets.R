@@ -70,21 +70,29 @@ list(
 
   ## set module settings for specific run (cuf and beta)
   tar_target(name = beta_scenario, command = "main"), ## UPDATE WITH ("main", "high", or "low")
-  tar_target(name = beta, command = ifelse(beta_scenario == "low", 0.00422068,
-                                           ifelse(beta_scenario == "high", 0.00737932,
-                                                  0.00582))), # Coefficient from Krewski et al (2009) for mortality impact
+  tar_target(
+    name = beta,
+    command = ifelse(
+      beta_scenario == "low",
+      0.00422068,
+      ifelse(beta_scenario == "high", 0.00737932, 0.00582)
+    )
+  ), # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = ref_threshold, command = 0.6),
-  
+
   # list save paths (UPDATE VERSION AS NEEDED)
-  tar_target(name = version, command = "rev-submission"), 
-  tar_target(name = iteration, command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)),
-  
+  tar_target(name = version, command = "rev-submission"),
+  tar_target(
+    name = iteration,
+    command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)
+  ),
+
   # Set run type and stop if unknown run type
   tar_target(
     name = save_path,
     command = file.path("outputs", version, iteration)
   ),
-  
+
   # module settings
   tar_target(name = ren_threshold, command = 0.9),
   tar_target(name = pred_years, command = 2020:2045),
@@ -2293,7 +2301,7 @@ list(
     format = "file"
   ),
   # # save figures
-   tar_target(
+  tar_target(
     name = save_ct_xwalk,
     command = simple_fwrite_repo(
       data = ct_xwalk,
