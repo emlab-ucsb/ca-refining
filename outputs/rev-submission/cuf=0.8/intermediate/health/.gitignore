@@ -1,5 +1,0 @@
-# Only specific files are tracked in this directory
-*
-!.gitignore
-!.gitkeep
-!refining_health_income_2023.csv

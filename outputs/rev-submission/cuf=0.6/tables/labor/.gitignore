@@ -1,6 +1,0 @@
-# Only specific files are tracked in this directory
-*
-!.gitignore
-!.gitkeep
-!labor_county_outputs.csv
-!labor_high_low_annual_outputs.csv
