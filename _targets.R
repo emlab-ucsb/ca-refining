@@ -56,8 +56,7 @@ list(
     c(
       "tracey-laptop" = "data",
       "tracey-desktop" = "data",
-      # "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
-      "vincent" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
+      "vincent" = "data",
       "meas" = "data"
     )
   ),
