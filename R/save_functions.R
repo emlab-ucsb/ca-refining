@@ -1,7 +1,8 @@
 #' Create save folders in repository based on output_files.csv
 #' @param save_path Base path for outputs (outputs/version/iteration)
 #' @param iteration Iteration name (not used anymore, kept for backward compatibility)
-create_save_folders_repo <- function(save_path, iteration) {
+#' @param output_structure_file Path to output structure file (for dependency tracking)
+create_save_folders_repo <- function(save_path, iteration, output_structure_file = NULL) {
     # Load output_files.csv to extract directories and files to track
     structure_file <- file.path("extras/output_files.csv")
     if (!file.exists(structure_file)) {
