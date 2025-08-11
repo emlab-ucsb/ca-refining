@@ -80,7 +80,7 @@ list(
   tar_target(name = ref_threshold, command = 0.6),
 
   # list save paths (UPDATE VERSION AS NEEDED)
-  tar_target(name = version, command = "fig3-edit"),
+  tar_target(name = version, command = "new-outputs"),
   tar_target(
     name = iteration,
     command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)
@@ -1884,7 +1884,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1a_pop_weighted,
       NULL,
-      "figure1a-pop-weighted*",
+      "figure1a-pop-weighted",
       width = figure_1$dimensions$fig1a_pop_weighted$width / 25.4,
       height = figure_1$dimensions$fig1a_pop_weighted$height / 25.4,
       dpi = 600,
@@ -1899,7 +1899,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1a_not_weighted,
       NULL,
-      "figure1a-not-weighted*",
+      "figure1a-not-weighted",
       width = figure_1$dimensions$fig1a_not_weighted$width / 25.4,
       height = figure_1$dimensions$fig1a_not_weighted$height / 25.4,
       dpi = 600,
@@ -1914,7 +1914,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1b_pop_weighted,
       NULL,
-      "figure1b-pop-weighted*",
+      "figure1b-pop-weighted",
       width = figure_1$dimensions$fig1b_pop_weighted$width / 25.4,
       height = figure_1$dimensions$fig1b_pop_weighted$height / 25.4,
       dpi = 600,
@@ -1929,7 +1929,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1b_not_weighted,
       NULL,
-      "figure1b-not-weighted*",
+      "figure1b-not-weighted",
       width = figure_1$dimensions$fig1b_not_weighted$width / 25.4,
       height = figure_1$dimensions$fig1b_not_weighted$height / 25.4,
       dpi = 600,
@@ -1944,7 +1944,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1c_pop_weighted,
       NULL,
-      "figure1c-pop-weighted*",
+      "figure1c-pop-weighted",
       width = figure_1$dimensions$fig1c_pop_weighted$width / 25.4,
       height = figure_1$dimensions$fig1c_pop_weighted$height / 25.4,
       dpi = 600,
@@ -1959,7 +1959,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1c_not_weighted,
       NULL,
-      "figure1c-not-weighted*",
+      "figure1c-not-weighted",
       width = figure_1$dimensions$fig1c_not_weighted$width / 25.4,
       height = figure_1$dimensions$fig1c_not_weighted$height / 25.4,
       dpi = 600,
@@ -1974,7 +1974,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_health,
       NULL,
-      "figure1-health*",
+      "figure1-health",
       width = figure_1$dimensions$fig1_health$width / 25.4,
       height = figure_1$dimensions$fig1_health$height / 25.4,
       dpi = 600,
@@ -1989,7 +1989,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_north_inset,
       NULL,
-      "figure1-north-inset*",
+      "figure1-north-inset",
       width = figure_1$dimensions$fig1_north_inset$width / 25.4,
       height = figure_1$dimensions$fig1_north_inset$height / 25.4,
       dpi = 600,
@@ -2004,7 +2004,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_south_inset,
       NULL,
-      "figure1-south-inset*",
+      "figure1-south-inset",
       width = figure_1$dimensions$fig1_south_inset$width / 25.4,
       height = figure_1$dimensions$fig1_south_inset$height / 25.4,
       dpi = 600,
@@ -2019,7 +2019,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_pop_wt_bay_area,
       NULL,
-      "figure1-labor-pop-wt-bay-area*",
+      "figure1-labor-pop-wt-bay-area",
       width = figure_1$dimensions$fig1_labor_pop_wt_bay_area$width / 25.4,
       height = figure_1$dimensions$fig1_labor_pop_wt_bay_area$height / 25.4,
       dpi = 600,
@@ -2034,7 +2034,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_total_bay_area,
       NULL,
-      "figure1-labor-total-bay-area*",
+      "figure1-labor-total-bay-area",
       width = figure_1$dimensions$fig1_labor_total_bay_area$width / 25.4,
       height = figure_1$dimensions$fig1_labor_total_bay_area$height / 25.4,
       dpi = 600,
@@ -2049,7 +2049,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_pop_wt_kern,
       NULL,
-      "figure1-labor-pop-wt-kern*",
+      "figure1-labor-pop-wt-kern",
       width = figure_1$dimensions$fig1_labor_pop_wt_kern$width / 25.4,
       height = figure_1$dimensions$fig1_labor_pop_wt_kern$height / 25.4,
       dpi = 600,
@@ -2064,7 +2064,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_total_kern,
       NULL,
-      "figure1-labor-total-kern*",
+      "figure1-labor-total-kern",
       width = figure_1$dimensions$fig1_labor_total_kern$width / 25.4,
       height = figure_1$dimensions$fig1_labor_total_kern$height / 25.4,
       dpi = 600,
@@ -2079,7 +2079,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_pop_wt_la,
       NULL,
-      "figure1-labor-pop-wt-la*",
+      "figure1-labor-pop-wt-la",
       width = figure_1$dimensions$fig1_labor_pop_wt_la$width / 25.4,
       height = figure_1$dimensions$fig1_labor_pop_wt_la$height / 25.4,
       dpi = 600,
@@ -2094,7 +2094,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_total_la,
       NULL,
-      "figure1-labor-total-la*",
+      "figure1-labor-total-la",
       width = figure_1$dimensions$fig1_labor_total_la$width / 25.4,
       height = figure_1$dimensions$fig1_labor_total_la$height / 25.4,
       dpi = 600,
@@ -2109,7 +2109,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor,
       NULL,
-      "figure1-labor*",
+      "figure1-labor",
       width = figure_1$dimensions$fig1_labor$width / 25.4,
       height = figure_1$dimensions$fig1_labor$height / 25.4,
       dpi = 600,
@@ -2124,7 +2124,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_total_comp_all,
       NULL,
-      "figure1-total-comp-all*",
+      "figure1-total-comp-all",
       width = figure_1$dimensions$fig1_total_comp_all$width / 25.4,
       height = figure_1$dimensions$fig1_total_comp_all$height / 25.4,
       dpi = 600,
@@ -2340,7 +2340,7 @@ list(
     command = simple_fwrite_repo(
       refining_health_income,
       NULL,
-      "refining_health_income_2023.csv*", # Note the asterisk for git tracking
+      "refining_health_income_2023.csv",
       save_path = save_path,
       file_type = "health"
     ),
@@ -2700,7 +2700,7 @@ list(
     command = simple_ggsave_repo(
       demographic_npv_shares_plot,
       NULL,
-      "demographic_npv_shares_fig_2020ppx*",
+      "demographic_npv_shares_fig_2020ppx",
       width = 12,
       height = 12,
       dpi = 600,
@@ -2715,7 +2715,7 @@ list(
     command = simple_ggsave_repo(
       demographic_npv_plot_pc,
       NULL,
-      "demographic_npv_pc_fig_2020ppx*",
+      "demographic_npv_pc_fig_2020ppx",
       width = 11,
       height = 12,
       dpi = 600,
@@ -2762,7 +2762,7 @@ list(
     command = simple_ggsave_repo(
       fig_refinery_capacity,
       NULL,
-      "refinery_capacity*",
+      "refinery_capacity",
       width = 16,
       save_path = save_path,
       file_type = "figure",
@@ -2777,7 +2777,7 @@ list(
     command = simple_ggsave_repo(
       fig_refinery_count,
       NULL,
-      "refinery_count*",
+      "refinery_count",
       width = 16,
       height = 12,
       dpi = 600,
@@ -2834,7 +2834,7 @@ list(
       simple_fwrite_repo(
         data = ref_labor_demog_yr,
         folder_path = NULL,
-        filename = "state_labor_direct_impacts_demo_annual.csv*",
+        filename = "state_labor_direct_impacts_demo_annual.csv",
         save_path = save_path,
         file_type = "labor"
       )
@@ -2849,7 +2849,7 @@ list(
       simple_fwrite_repo(
         data = annual_labor_jobs_comp,
         folder_path = NULL,
-        filename = "labor_high_low_annual_outputs.csv*",
+        filename = "labor_high_low_annual_outputs.csv",
         save_path = save_path,
         file_type = "table"
       )
@@ -2864,7 +2864,7 @@ list(
       simple_fwrite_repo(
         data = county_labor_outputs,
         folder_path = NULL,
-        filename = "labor_county_outputs.csv*",
+        filename = "labor_county_outputs.csv",
         save_path = save_path,
         file_type = "table"
       )
@@ -2946,7 +2946,7 @@ list(
       simple_fwrite_repo(
         cumul_av_mort,
         folder_path = NULL,
-        filename = "cumulative_avoided_mortality.csv*",
+        filename = "cumulative_avoided_mortality.csv",
         save_path = save_path,
         file_type = "table"
       )
@@ -2977,7 +2977,7 @@ list(
       simple_fwrite_repo(
         cumulative_health_x_county_dt,
         folder_path = NULL,
-        filename = "cumulative_health_x_county.csv*",
+        filename = "cumulative_health_x_county.csv",
         save_path = save_path,
         file_type = "table"
       )
