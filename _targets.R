@@ -125,7 +125,7 @@ list(
   # create folders in repository
   tar_target(
     name = save_folders,
-    command = create_save_folders_repo(save_path, iteration)
+    command = create_save_folders_repo(save_path, iteration, file_output_structure)
   ),
 
   # energy intensities
