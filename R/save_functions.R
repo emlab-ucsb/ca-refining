@@ -1,11 +1,11 @@
-#' Create save folders in repository based on output_structure.csv
+#' Create save folders in repository based on output_files.csv
 #' @param save_path Base path for outputs (outputs/version/iteration)
 #' @param iteration Iteration name (not used anymore, kept for backward compatibility)
 create_save_folders_repo <- function(save_path, iteration) {
-    # Load output_structure.csv to extract directories and files to track
-    structure_file <- file.path("extras/output_structure.csv")
+    # Load output_files.csv to extract directories and files to track
+    structure_file <- file.path("extras/output_files.csv")
     if (!file.exists(structure_file)) {
-        stop("output_structure.csv file not found")
+        stop("output_files.csv file not found")
     }
 
     structure_df <- data.table::fread(structure_file)
@@ -144,13 +144,13 @@ simple_fwrite_repo <- function(
     figure_number = NULL,
     extra_subfolder = NULL
 ) {
-    # Load output_structure.csv if it exists
+    # Load output_files.csv if it exists
     structure_df <- NULL
-    if (file.exists("output_structure.csv")) {
-        structure_df <- data.table::fread("output_structure.csv")
+    if (file.exists("extras/output_files.csv")) {
+        structure_df <- data.table::fread("extras/output_files.csv")
     }
 
-    # Check if we have the file in output_structure.csv
+    # Check if we have the file in output_files.csv
     clean_filename <- gsub("\\*$", "", filename) # Remove any existing asterisk
     file_info <- NULL
     if (!is.null(structure_df)) {
@@ -167,11 +167,11 @@ simple_fwrite_repo <- function(
             extra_subfolder
         )
 
-        # Override with output_structure.csv path if found
+        # Override with output_files.csv path if found
         if (!is.null(file_info) && nrow(file_info) > 0) {
             rel_path <- file_info$relative_path[1]
             folder_path <- file.path(save_path, rel_path)
-            message("Using path from output_structure.csv: ", folder_path)
+            message("Using path from output_files.csv: ", folder_path)
         }
     }
 
@@ -412,7 +412,7 @@ safe_fwrite_with_dir <- function(
     return(file_path)
 }
 
-#' Save data frame to repository location using output_structure.csv for path and tracking info
+#' Save data frame to repository location using output_files.csv for path and tracking info
 #' @param data Data frame to save
 #' @param filename Filename for the CSV
 #' @param save_path Base save path (outputs/version/iteration)
@@ -421,10 +421,10 @@ validate_and_save_file <- function(
     filename,
     save_path
 ) {
-    # Load output_structure.csv
-    structure_file <- "extrasoutput_structure.csv"
+    # Load output_files.csv
+    structure_file <- "extras/output_files.csv"
     if (!file.exists(structure_file)) {
-        stop("output_structure.csv file not found")
+        stop("output_files.csv file not found")
     }
 
     structure_df <- data.table::fread(structure_file)
@@ -436,7 +436,7 @@ validate_and_save_file <- function(
         warning(
             "File ",
             filename,
-            " not found in output_structure.csv, using default path"
+            " not found in output_files.csv, using default path"
         )
         return(simple_fwrite_repo(data, save_path, filename))
     }
@@ -457,23 +457,23 @@ validate_and_save_file <- function(
     return(file.path(folder_path, filename))
 }
 
-#' Check if a file should be tracked in git based on output_structure.csv
+#' Check if a file should be tracked in git based on output_files.csv
 #' @param filename The filename to check
 #' @return TRUE if the file should be tracked, FALSE otherwise
 should_be_tracked <- function(filename) {
-    if (!file.exists("extras/output_structure.csv")) {
-        warning("output_structure.csv not found, using default tracking")
+    if (!file.exists("extras/output_files.csv")) {
+        warning("output_files.csv not found, using default tracking")
         return(FALSE)
     }
 
-    structure_df <- data.table::fread("output_structure.csv")
+    structure_df <- data.table::fread("extras/output_files.csv")
     file_info <- structure_df[structure_df$file_name == filename, ]
 
     if (nrow(file_info) == 0) {
         warning(
             "File ",
             filename,
-            " not found in output_structure.csv, using default tracking"
+            " not found in output_files.csv, using default tracking"
         )
         return(FALSE)
     }

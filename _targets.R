@@ -118,7 +118,7 @@ list(
   # output structure file for validation
   tar_target(
     name = file_output_structure,
-    command = "extras/output_structure.csv",
+    command = "extras/output_files.csv",
     format = "file"
   ),
 
@@ -2980,7 +2980,7 @@ list(
     format = "file"
   ),
 
-  # ---- Missing CSV input file targets from output_structure.csv ----
+  # ---- CSV input file targets for figure data ----
   tar_target(
     name = save_npv_fig_inputs_labor,
     command = simple_fwrite_repo(
@@ -3046,7 +3046,7 @@ list(
     format = "file"
   ),
 
-  # ---- Missing PNG legend file targets from output_structure.csv ----
+  # ---- Legend file targets ----
   # Note: Legend PNG targets will be added after testing the current changes
 
   # ---- Additional figure targets for 2020ppx variants ----
