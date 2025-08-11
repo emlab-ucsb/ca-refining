@@ -1271,6 +1271,25 @@ list(
     )
   ),
 
+  # Refinery operations data for export
+  tar_target(
+    name = refinery_operations_summary,
+    command = get_refinery_count_and_capacity(
+      res_crude_ref_reg,
+      res_renew_ref_reg,
+      ei_crude,
+      ei_gasoline
+    )
+  ),
+  tar_target(
+    name = individual_refineries_operating,
+    command = combine_individual_refinery_data(
+      res_crude_ref_reg,
+      res_renew_ref_reg,
+      renewables_info
+    )
+  ),
+
   # DAC / health: PM2.5 by county
   tar_target(name = county_dac, command = get_county_dac(dt_ces, ces_county)), ## matches county to DAC, but maybe circular
   # tar_target(name = site_ids, command = get_refinery_site_ids(dt_refcap)),
@@ -2757,6 +2776,32 @@ list(
       width = 16,
       height = 12,
       dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
+    ),
+    format = "file"
+  ),
+
+  # Save refinery operations data
+  tar_target(
+    name = save_refinery_operations_summary,
+    command = simple_fwrite_repo(
+      data = refinery_operations_summary,
+      folder_path = NULL,
+      filename = "refinery_operations_summary_by_year.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_individual_refineries_operating,
+    command = simple_fwrite_repo(
+      data = individual_refineries_operating,
+      folder_path = NULL,
+      filename = "individual_refineries_operating_by_year.csv",
       save_path = save_path,
       file_type = "figure",
       figure_number = "figures-si"
