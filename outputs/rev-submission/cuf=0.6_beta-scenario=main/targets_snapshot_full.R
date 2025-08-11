@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-04 17:39:47 CEST
+# Targets snapshot created: 2025-08-11 14:28:32 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -52,7 +52,7 @@ source("extras/plot_settings.R")
 # Replace the target list below with your own:
 list(
   # set user
-  tar_target(name = user, "tracey-laptop"), # choose: tracey, vincent, meas (add users and paths as needed)
+  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
 
   # list paths
   tar_target(
@@ -60,8 +60,7 @@ list(
     c(
       "tracey-laptop" = "data",
       "tracey-desktop" = "data",
-      # "tracey-desktop" = "/Users/tracey/Library/CloudStorage/GoogleDrive-tmangin@ucsb.edu/Shared\ drives/emlab/projects/current-projects/calepa-cn/",
-      "vincent" = "H://Shared drives/emlab/projects/current-projects/calepa-cn",
+      "vincent" = "data",
       "meas" = "data"
     )
   ),
@@ -2770,19 +2769,19 @@ list(
   ),
 
   # # ---- Output targets for labor_functions_product_px.R ----
-  # tar_target(
-  #   save_annual_direct_labor,
-  #   command = {
-  #     simple_fwrite_repo(
-  #       data = annual_direct_labor,
-  #       folder_path = NULL,
-  #       filename = "annual_labor_outputs.csv*",
-  #       save_path = save_path,
-  #       file_type = "labor"
-  #     )
-  #   },
-  #   format = "file"
-  # ),
+  tar_target(
+    save_annual_direct_labor,
+    command = {
+      simple_fwrite_repo(
+        data = annual_direct_labor,
+        folder_path = NULL,
+        filename = "annual_labor_outputs.csv",
+        save_path = save_path,
+        file_type = "labor"
+      )
+    },
+    format = "file"
+  ),
   tar_target(
     state_labor_direct_impacts_demo_annual,
     command = {
