@@ -130,7 +130,7 @@ create_save_folders_repo <- function(save_path, iteration) {
 #' Save data frame to repository location
 #' @param data Data frame to save
 #' @param folder_path Relative folder path within repository
-#' @param filename Filename for the CSV
+#' @param filename Filename for the CSV (asterisks are automatically removed for backward compatibility)
 #' @param save_path Base save path (optional, will override folder_path if provided)
 #' @param file_type Optional file type for structured path resolution
 #' @param figure_number Optional figure number for figures
@@ -180,7 +180,7 @@ simple_fwrite_repo <- function(
         dir.create(folder_path, recursive = TRUE, showWarnings = FALSE)
     }
 
-    # Clean filename (remove any asterisk markers)
+    # Clean filename (remove any asterisk markers for backward compatibility)
     clean_filename <- gsub("\\*$", "", filename)
 
     # Full file path
@@ -203,7 +203,7 @@ simple_fwrite_repo <- function(
 #' Save ggplot to repository location
 #' @param plot ggplot object
 #' @param folder_path Relative folder path within repository
-#' @param filename Filename (without extension)
+#' @param filename Filename (without extension, asterisks are automatically removed for backward compatibility)
 #' @param width Plot width
 #' @param height Plot height
 #' @param dpi Resolution
@@ -239,7 +239,7 @@ simple_ggsave_repo <- function(
         dir.create(folder_path, recursive = TRUE, showWarnings = FALSE)
     }
 
-    # Clean filename (remove any asterisk markers)
+    # Clean filename (remove any asterisk markers for backward compatibility)
     filename <- gsub("\\*$", "", filename)
 
     # Full file paths for both PNG and PDF
