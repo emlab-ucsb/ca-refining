@@ -971,16 +971,7 @@ plot_npv_health_labor <- function(
   ]
   plot_df_health[, scenario := str_replace(scenario, "historic", "historical")]
 
-  ## save figure inputs
-  simple_fwrite_repo(
-    plot_df_health,
-    folder_path = NULL,
-    filename = "state_npv_fig_inputs_health.csv",
-    save_path = save_path,
-    file_type = "figure",
-    figure_number = "figure-3",
-    extra_subfolder = NULL
-  )
+  ## Figure inputs will be saved by targets pipeline
 
   ## prepare labor ----------------------
   plot_df_labor <- plot_df_labor %>%
@@ -1061,16 +1052,7 @@ plot_npv_health_labor <- function(
   ]
   plot_df_labor[, scenario := str_replace(scenario, "historic", "historical")]
 
-  ## save figure inputs
-  simple_fwrite_repo(
-    plot_df_labor,
-    folder_path = NULL,
-    filename = "state_npv_fig_inputs_labor.csv",
-    save_path = save_path,
-    file_type = "table",
-    figure_number = NULL,
-    extra_subfolder = "labor"
-  )
+  ## Figure inputs will be saved by targets pipeline
 
   ## scenarios for filtering
   remove_scen <- c("LC1 historical production", "BAU historical production")
@@ -1733,7 +1715,12 @@ plot_npv_health_labor <- function(
   #   # rel_widths = c(1, 1),
   # )
 
-  return(fig3_plot_grid_ab)
+  # Return both plot and processed data
+  return(list(
+    plot = fig3_plot_grid_ab,
+    plot_data_health = plot_df_health,
+    plot_data_labor = plot_df_labor
+  ))
 }
 
 

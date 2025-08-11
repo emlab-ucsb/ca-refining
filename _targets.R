@@ -80,7 +80,7 @@ list(
   tar_target(name = ref_threshold, command = 0.6),
 
   # list save paths (UPDATE VERSION AS NEEDED)
-  tar_target(name = version, command = "rev-submission"),
+  tar_target(name = version, command = "fig3-edit"),
   tar_target(
     name = iteration,
     command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)
@@ -1592,7 +1592,7 @@ list(
     )
   ),
   tar_target(
-    name = npv_plot,
+    name = npv_plot_result,
     command = plot_npv_health_labor(
       main_path,
       save_path,
@@ -1601,6 +1601,11 @@ list(
       dt_ghg_2019,
       annual_all_impacts_labor
     )
+  ),
+
+  tar_target(
+    name = npv_plot,
+    command = npv_plot_result$plot
   ),
   tar_target(
     name = npv_plot_ref,
@@ -2406,7 +2411,7 @@ list(
     command = simple_ggsave_repo(
       fig_demand_ghg,
       NULL,
-      "combined_its_and_production*",
+      "combined_its_and_production",
       width = 25,
       save_path = save_path,
       file_type = "figure",
@@ -2421,7 +2426,7 @@ list(
     command = simple_ggsave_repo(
       npv_plot,
       NULL,
-      "state_npv_fig_2020_ppx_bartik*",
+      "state_npv_fig_2020_ppx_bartik",
       width = 10,
       save_path = save_path,
       file_type = "figure",
@@ -2937,9 +2942,22 @@ list(
 
   # ---- Missing CSV input file targets from output_structure.csv ----
   tar_target(
+    name = save_npv_fig_inputs_health,
+    command = simple_fwrite_repo(
+      data = npv_plot_result$plot_data_health, # Processed health data from plot function
+      folder_path = NULL,
+      filename = "state_npv_fig_inputs_health.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-3"
+    ),
+    format = "file"
+  ),
+
+  tar_target(
     name = save_npv_fig_inputs_labor,
     command = simple_fwrite_repo(
-      data = annual_all_impacts_labor, # Labor data used for NPV calculations
+      data = npv_plot_result$plot_data_labor, # Processed labor data from plot function
       folder_path = NULL,
       filename = "state_npv_fig_inputs_labor.csv",
       save_path = save_path,
