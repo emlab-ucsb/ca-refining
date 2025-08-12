@@ -10424,7 +10424,7 @@ plot_hl_shares <- function(
   state_pop_ratios
 ) {
   fig_csv_dir <- file.path(save_path, "results", "figures", "figures-si")
-  legends_dir <- file.path(save_path, "results", "figures", "extra")
+  legends_dir <- file.path(save_path, "results", "figures", "figure-4")
   ensure_dir(fig_csv_dir)
   ensure_dir(legends_dir)
 

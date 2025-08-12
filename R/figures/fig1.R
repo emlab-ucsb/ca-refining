@@ -343,11 +343,6 @@ create_figure_1 <- function(
   fig1_health_inputs <- rbind(bay_cluster_ct_cropped |> st_drop_geometry(),
                               la_cluster_ct_cropped |> st_drop_geometry())
   
-  if (!dir.exists(file.path(save_path, "figure-1"))) {
-    dir.create(file.path(save_path, "figure-1"), recursive = TRUE)
-  }
-  
-  
   ## save figure inputs
   simple_fwrite_repo(
     data = fig1_health_inputs, 
