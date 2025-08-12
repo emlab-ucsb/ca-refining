@@ -79,6 +79,3 @@ _targets/
 /outputs/*/results/figures/extra/state-levels-fig/
 /outputs/*/tables/other/
 /outputs/*/*/intermediate/labor/annual_labor_outputs.csv
-
-# temp
-/outputs/fig3-edit/*
