@@ -54,7 +54,7 @@ fread("./cumulative_health_x_county.csv", stringsAsFactors = F)%>%
          diff_level = mortality_level[scen_id == "BAU historic production"]-mortality_level)
 
   
-## State-wide monetized mortality by county
+## State-wide monetized mortality by county (new results)
 
 fread("./cumulative_health_x_county.csv", stringsAsFactors = F)%>%
   filter(demo_cat%in%"DAC")%>%
@@ -91,6 +91,39 @@ fread("./cumulative_health_x_county.csv", stringsAsFactors = F)%>%
   filter(NAME %in% c("Solano","San Bernardino"))
   
 
+## State-wide monetized mortality by county (old results)
 
+fread("C:/Users/vince/Desktop/cumulative_health_x_county.csv", stringsAsFactors = F)%>%
+  filter(demo_cat%in%"DAC")%>%
+  filter(scen_id %in% c("BAU historic production","LC1 low exports"))%>%
+  group_by(scen_id,NAME)%>%
+  summarize(mortality_pv_dem = sum(mortality_pv_dem),
+            mortality_level_dem = sum(mortality_level_dem))%>%
+  ungroup()%>%  
+  group_by(scen_id)%>%
+  mutate(mortality_pv = sum(mortality_pv_dem))%>%
+  ungroup()%>%
+  mutate(diff_pv_state = mortality_pv[scen_id == "BAU historic production"]-mortality_pv,
+         diff_pv = mortality_pv_dem[scen_id == "BAU historic production"]-mortality_pv_dem)%>%
+  mutate(share_pv = (diff_pv/diff_pv_state))%>%
+  #filter(scen_id %in% c("LC1 low exports"))%>%
+  arrange(-share_pv)
+
+fread("C:/Users/vince/Desktop/cumulative_health_x_county.csv", stringsAsFactors = F)%>%
+  filter(demo_cat%in%"DAC")%>%
+  filter(scen_id %in% c("BAU historic production","LC1 low exports"))%>%
+  group_by(scen_id,NAME)%>%
+  summarize(mortality_pv_dem = sum(mortality_pv_dem),
+            mortality_level_dem = sum(mortality_level_dem))%>%
+  ungroup()%>%  
+  group_by(scen_id)%>%
+  mutate(mortality_pv = sum(mortality_pv_dem))%>%
+  ungroup()%>%
+  mutate(diff_pv_state = mortality_pv[scen_id == "BAU historic production"]-mortality_pv,
+         diff_pv = mortality_pv_dem[scen_id == "BAU historic production"]-mortality_pv_dem)%>%
+  mutate(share_pv = (diff_pv/diff_pv_state))%>%
+  #filter(scen_id %in% c("LC1 low exports"))%>%
+  arrange(-share_pv)%>%
+  filter(NAME %in% c("Solano","San Bernardino"))
 
 
