@@ -70,6 +70,11 @@ create_save_folders_repo <- function(save_path, iteration, output_structure_file
         dir_path <- file.path(save_path, dir_analysis$relative_path[i])
         tracking_pattern <- dir_analysis$tracking_pattern[i]
 
+        # Skip root directory - we never want to create .gitignore at iteration root level
+        if (dir_analysis$relative_path[i] == "") {
+            next
+        }
+
         gitignore_path <- file.path(dir_path, ".gitignore")
 
         if (tracking_pattern == "ALL_TRACKED") {
