@@ -120,17 +120,129 @@ create_save_folders_repo <- function(save_path, iteration, output_structure_file
             }
         } else if (tracking_pattern == "NONE_TRACKED") {
             # For directories where no files are tracked, create .gitignore to ignore everything
-            gitignore_path <- file.path(dir_path, ".gitignore")
-
-            if (!file.exists(gitignore_path)) {
-                writeLines("*", gitignore_path)
-                message("Created .gitignore to ignore all files in: ", dir_path)
+            # But check if this directory has subdirectories with different tracking patterns
+            has_mixed_children <- any(
+                dir_analysis[
+                    relative_path != dir_analysis$relative_path[i] & 
+                    startsWith(relative_path, paste0(dir_analysis$relative_path[i], "/")),
+                    tracking_pattern
+                ] != "NONE_TRACKED"
+            )
+            
+            if (has_mixed_children) {
+                # Create selective .gitignore that allows subdirectories but ignores files
+                tracked_subdirs <- dir_analysis[
+                    relative_path != dir_analysis$relative_path[i] & 
+                    startsWith(relative_path, paste0(dir_analysis$relative_path[i], "/")) &
+                    tracking_pattern != "NONE_TRACKED",
+                    relative_path
+                ]
+                
+                # Extract just the immediate subdirectory names
+                subdir_names <- unique(sapply(tracked_subdirs, function(x) {
+                    rel_part <- gsub(paste0("^", dir_analysis$relative_path[i], "/"), "", x)
+                    strsplit(rel_part, "/")[[1]][1]
+                }))
+                
+                gitignore_content <- c(
+                    "# Ignore files but allow tracked subdirectories",
+                    "*",
+                    "!.gitignore",
+                    "!.gitkeep",
+                    paste0("!", subdir_names, "/")
+                )
+                
+                writeLines(gitignore_content, gitignore_path)
+                message("Created selective .gitignore with subdirectory exceptions in: ", dir_path)
+            } else {
+                # No mixed children, ignore everything
+                if (!file.exists(gitignore_path)) {
+                    writeLines("*", gitignore_path)
+                    message("Created .gitignore to ignore all files in: ", dir_path)
+                }
             }
         }
         # Note: NONE_TRACKED directories also get local .gitignore files to ensure exclusion
     }
 
+    # Update root .gitignore file to reflect current tracking patterns
+    update_root_gitignore(save_path, dir_analysis)
+    
     return(all_dirs)
+}
+
+#' Update root .gitignore file based on directory tracking patterns
+#' @param save_path Base path for outputs  
+#' @param dir_analysis Data table with directory tracking analysis
+update_root_gitignore <- function(save_path, dir_analysis) {
+    root_gitignore_path <- ".gitignore"
+    
+    # Read current .gitignore if it exists
+    if (file.exists(root_gitignore_path)) {
+        gitignore_lines <- readLines(root_gitignore_path)
+    } else {
+        gitignore_lines <- character(0)
+    }
+    
+    # Find the outputs section
+    outputs_start <- which(grepl("# outputs - selective tracking", gitignore_lines))
+    outputs_end <- which(grepl("/outputs/.*/intermediate/labor/annual_labor_outputs.csv", gitignore_lines))
+    
+    if (length(outputs_start) == 0 || length(outputs_end) == 0) {
+        message("Root .gitignore outputs section not found - skipping update")
+        return()
+    }
+    
+    # Get current NONE_TRACKED directories (these should be in root .gitignore)
+    # Exclude parent directories that have subdirectories with different tracking patterns
+    none_tracked_dirs <- dir_analysis[tracking_pattern == "NONE_TRACKED" & relative_path != "", relative_path]
+    
+    # Remove parent directories if any of their children have different tracking patterns
+    filtered_none_tracked <- character(0)
+    for (dir in none_tracked_dirs) {
+        # Check if any subdirectory has a different tracking pattern
+        has_mixed_children <- any(
+            dir_analysis[
+                relative_path != dir & 
+                startsWith(relative_path, paste0(dir, "/")),
+                tracking_pattern
+            ] != "NONE_TRACKED"
+        )
+        
+        if (!has_mixed_children) {
+            filtered_none_tracked <- c(filtered_none_tracked, dir)
+        }
+    }
+    
+    none_tracked_dirs <- filtered_none_tracked
+    
+    # Generate new output ignore patterns
+    new_output_patterns <- c(
+        "# outputs - selective tracking based on output_structure.csv",
+        "# Exclude directories with no tracked files (NONE_TRACKED)"
+    )
+    
+    # Add patterns for NONE_TRACKED directories
+    if (length(none_tracked_dirs) > 0) {
+        # Convert relative paths to patterns (handle both 2-level and 3-level structures)
+        # Only add patterns for leaf directories (no subdirectories should be tracked)
+        ignore_patterns <- paste0("/outputs/*/", none_tracked_dirs, "/")
+        new_output_patterns <- c(new_output_patterns, ignore_patterns)
+    }
+    
+    # Always add the labor file pattern (it's special - individual file, not directory)
+    new_output_patterns <- c(new_output_patterns, "/outputs/*/*/intermediate/labor/annual_labor_outputs.csv")
+    
+    # Replace the outputs section
+    new_gitignore <- c(
+        if (outputs_start > 1) gitignore_lines[1:(outputs_start - 1)] else character(0),
+        new_output_patterns,
+        if (outputs_end < length(gitignore_lines)) gitignore_lines[(outputs_end + 1):length(gitignore_lines)] else character(0)
+    )
+    
+    # Write updated .gitignore
+    writeLines(new_gitignore, root_gitignore_path)
+    message("Updated root .gitignore with current tracking patterns")
 }
 
 #' Save data frame to repository location
