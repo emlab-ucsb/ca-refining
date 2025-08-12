@@ -125,3 +125,73 @@ plot_refinery_count <- function(res_crude_ref_reg, res_renew_ref_reg, ei_crude, 
 
   return(fig_refinery_count)
 }
+
+#' Combine individual refinery data from crude and renewable sources
+#' @param res_crude_ref_reg Crude refinery regional results from module
+#' @param res_renew_ref_reg Renewable refinery regional results from module
+#' @param renewables_info Renewables info with site_id mapping
+#' @return data.table with individual refinery operational data by scenario/year
+combine_individual_refinery_data <- function(res_crude_ref_reg, res_renew_ref_reg, renewables_info) {
+  
+  # Process crude refineries data
+  crude_individual <- copy(res_crude_ref_reg)
+  crude_individual[, `:=` (
+    refinery_id = site_id,
+    refinery_name = refinery_name,
+    refinery_type = "crude",
+    capacity_bpd = barrels_per_day,
+    operational_status = "operating"
+  )]
+  
+  # Select relevant columns for crude refineries
+  crude_individual <- crude_individual[, .(
+    refinery_id, 
+    refinery_name, 
+    refinery_type, 
+    region, 
+    capacity_bpd, 
+    demand_scenario, 
+    refining_scenario, 
+    year, 
+    operational_status
+  )]
+  
+  # Process renewable refineries data  
+  renew_individual <- copy(res_renew_ref_reg)
+  
+  # Merge with renewables_info to get site_id
+  renew_individual <- renew_individual[renewables_info, on = "refinery_name", nomatch = 0]
+  
+  renew_individual[, `:=` (
+    refinery_id = site_id, # Use actual site_id from renewables_info
+    refinery_type = "renewable", 
+    region = "Renewables",
+    capacity_bpd = installation_capacity_bpd,
+    operational_status = "operating"
+  )]
+  
+  # Select relevant columns for renewable refineries
+  renew_individual <- renew_individual[, .(
+    refinery_id,
+    refinery_name,
+    refinery_type,
+    region, 
+    capacity_bpd,
+    demand_scenario,
+    refining_scenario,
+    year,
+    operational_status
+  )]
+  
+  # Combine both datasets
+  combined_refineries <- rbindlist(list(crude_individual, renew_individual), use.names = TRUE, fill = TRUE)
+  
+  # Order factor levels for refining_scenario
+  combined_refineries[, refining_scenario := factor(refining_scenario, 
+                                                   levels = c("historic production", "historic exports", "low exports"))]
+  
+  # Order by scenario, year, and refinery type
+  setorder(combined_refineries, demand_scenario, refining_scenario, year, refinery_type, refinery_id)
+  
+  return(combined_refineries)
+}
