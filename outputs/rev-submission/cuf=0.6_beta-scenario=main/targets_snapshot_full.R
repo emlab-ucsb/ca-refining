@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-11 14:28:32 CEST
+# Targets snapshot created: 2025-08-12 22:19:42 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -122,14 +122,18 @@ list(
   # output structure file for validation
   tar_target(
     name = file_output_structure,
-    command = "extras/output_structure.csv",
+    command = "extras/output_files.csv",
     format = "file"
   ),
 
   # create folders in repository
   tar_target(
     name = save_folders,
-    command = create_save_folders_repo(save_path, iteration)
+    command = create_save_folders_repo(
+      save_path,
+      iteration,
+      file_output_structure
+    )
   ),
 
   # energy intensities
@@ -1275,6 +1279,25 @@ list(
     )
   ),
 
+  # Refinery operations data for export
+  tar_target(
+    name = refinery_operations_summary,
+    command = get_refinery_count_and_capacity(
+      res_crude_ref_reg,
+      res_renew_ref_reg,
+      ei_crude,
+      ei_gasoline
+    )
+  ),
+  tar_target(
+    name = individual_refineries_operating,
+    command = combine_individual_refinery_data(
+      res_crude_ref_reg,
+      res_renew_ref_reg,
+      renewables_info
+    )
+  ),
+
   # DAC / health: PM2.5 by county
   tar_target(name = county_dac, command = get_county_dac(dt_ces, ces_county)), ## matches county to DAC, but maybe circular
   # tar_target(name = site_ids, command = get_refinery_site_ids(dt_refcap)),
@@ -1596,7 +1619,7 @@ list(
     )
   ),
   tar_target(
-    name = npv_plot,
+    name = npv_plot_result,
     command = plot_npv_health_labor(
       main_path,
       save_path,
@@ -1605,6 +1628,11 @@ list(
       dt_ghg_2019,
       annual_all_impacts_labor
     )
+  ),
+
+  tar_target(
+    name = npv_plot,
+    command = npv_plot_result$plot
   ),
   tar_target(
     name = npv_plot_ref,
@@ -1864,7 +1892,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1a_pop_weighted,
       NULL,
-      "figure1a-pop-weighted*",
+      "figure1a-pop-weighted",
       width = figure_1$dimensions$fig1a_pop_weighted$width / 25.4,
       height = figure_1$dimensions$fig1a_pop_weighted$height / 25.4,
       dpi = 600,
@@ -1879,7 +1907,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1a_not_weighted,
       NULL,
-      "figure1a-not-weighted*",
+      "figure1a-not-weighted",
       width = figure_1$dimensions$fig1a_not_weighted$width / 25.4,
       height = figure_1$dimensions$fig1a_not_weighted$height / 25.4,
       dpi = 600,
@@ -1894,7 +1922,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1b_pop_weighted,
       NULL,
-      "figure1b-pop-weighted*",
+      "figure1b-pop-weighted",
       width = figure_1$dimensions$fig1b_pop_weighted$width / 25.4,
       height = figure_1$dimensions$fig1b_pop_weighted$height / 25.4,
       dpi = 600,
@@ -1909,7 +1937,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1b_not_weighted,
       NULL,
-      "figure1b-not-weighted*",
+      "figure1b-not-weighted",
       width = figure_1$dimensions$fig1b_not_weighted$width / 25.4,
       height = figure_1$dimensions$fig1b_not_weighted$height / 25.4,
       dpi = 600,
@@ -1924,7 +1952,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1c_pop_weighted,
       NULL,
-      "figure1c-pop-weighted*",
+      "figure1c-pop-weighted",
       width = figure_1$dimensions$fig1c_pop_weighted$width / 25.4,
       height = figure_1$dimensions$fig1c_pop_weighted$height / 25.4,
       dpi = 600,
@@ -1939,7 +1967,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1c_not_weighted,
       NULL,
-      "figure1c-not-weighted*",
+      "figure1c-not-weighted",
       width = figure_1$dimensions$fig1c_not_weighted$width / 25.4,
       height = figure_1$dimensions$fig1c_not_weighted$height / 25.4,
       dpi = 600,
@@ -1954,7 +1982,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_health,
       NULL,
-      "figure1-health*",
+      "figure1-health",
       width = figure_1$dimensions$fig1_health$width / 25.4,
       height = figure_1$dimensions$fig1_health$height / 25.4,
       dpi = 600,
@@ -1969,7 +1997,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_north_inset,
       NULL,
-      "figure1-north-inset*",
+      "figure1-north-inset",
       width = figure_1$dimensions$fig1_north_inset$width / 25.4,
       height = figure_1$dimensions$fig1_north_inset$height / 25.4,
       dpi = 600,
@@ -1984,7 +2012,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_south_inset,
       NULL,
-      "figure1-south-inset*",
+      "figure1-south-inset",
       width = figure_1$dimensions$fig1_south_inset$width / 25.4,
       height = figure_1$dimensions$fig1_south_inset$height / 25.4,
       dpi = 600,
@@ -1999,7 +2027,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_pop_wt_bay_area,
       NULL,
-      "figure1-labor-pop-wt-bay-area*",
+      "figure1-labor-pop-wt-bay-area",
       width = figure_1$dimensions$fig1_labor_pop_wt_bay_area$width / 25.4,
       height = figure_1$dimensions$fig1_labor_pop_wt_bay_area$height / 25.4,
       dpi = 600,
@@ -2014,7 +2042,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_total_bay_area,
       NULL,
-      "figure1-labor-total-bay-area*",
+      "figure1-labor-total-bay-area",
       width = figure_1$dimensions$fig1_labor_total_bay_area$width / 25.4,
       height = figure_1$dimensions$fig1_labor_total_bay_area$height / 25.4,
       dpi = 600,
@@ -2029,7 +2057,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_pop_wt_kern,
       NULL,
-      "figure1-labor-pop-wt-kern*",
+      "figure1-labor-pop-wt-kern",
       width = figure_1$dimensions$fig1_labor_pop_wt_kern$width / 25.4,
       height = figure_1$dimensions$fig1_labor_pop_wt_kern$height / 25.4,
       dpi = 600,
@@ -2044,7 +2072,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_total_kern,
       NULL,
-      "figure1-labor-total-kern*",
+      "figure1-labor-total-kern",
       width = figure_1$dimensions$fig1_labor_total_kern$width / 25.4,
       height = figure_1$dimensions$fig1_labor_total_kern$height / 25.4,
       dpi = 600,
@@ -2059,7 +2087,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_pop_wt_la,
       NULL,
-      "figure1-labor-pop-wt-la*",
+      "figure1-labor-pop-wt-la",
       width = figure_1$dimensions$fig1_labor_pop_wt_la$width / 25.4,
       height = figure_1$dimensions$fig1_labor_pop_wt_la$height / 25.4,
       dpi = 600,
@@ -2074,7 +2102,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor_total_la,
       NULL,
-      "figure1-labor-total-la*",
+      "figure1-labor-total-la",
       width = figure_1$dimensions$fig1_labor_total_la$width / 25.4,
       height = figure_1$dimensions$fig1_labor_total_la$height / 25.4,
       dpi = 600,
@@ -2089,7 +2117,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_labor,
       NULL,
-      "figure1-labor*",
+      "figure1-labor",
       width = figure_1$dimensions$fig1_labor$width / 25.4,
       height = figure_1$dimensions$fig1_labor$height / 25.4,
       dpi = 600,
@@ -2104,7 +2132,7 @@ list(
     command = simple_ggsave_repo(
       figure_1$plots$fig1_total_comp_all,
       NULL,
-      "figure1-total-comp-all*",
+      "figure1-total-comp-all",
       width = figure_1$dimensions$fig1_total_comp_all$width / 25.4,
       height = figure_1$dimensions$fig1_total_comp_all$height / 25.4,
       dpi = 600,
@@ -2320,7 +2348,7 @@ list(
     command = simple_fwrite_repo(
       refining_health_income,
       NULL,
-      "refining_health_income_2023.csv*", # Note the asterisk for git tracking
+      "refining_health_income_2023.csv",
       save_path = save_path,
       file_type = "health"
     ),
@@ -2410,7 +2438,7 @@ list(
     command = simple_ggsave_repo(
       fig_demand_ghg,
       NULL,
-      "combined_its_and_production*",
+      "combined_its_and_production",
       width = 25,
       save_path = save_path,
       file_type = "figure",
@@ -2425,7 +2453,7 @@ list(
     command = simple_ggsave_repo(
       npv_plot,
       NULL,
-      "state_npv_fig_2020_ppx_bartik*",
+      "state_npv_fig_2020_ppx_bartik",
       width = 10,
       save_path = save_path,
       file_type = "figure",
@@ -2680,7 +2708,7 @@ list(
     command = simple_ggsave_repo(
       demographic_npv_shares_plot,
       NULL,
-      "demographic_npv_shares_fig_2020ppx*",
+      "demographic_npv_shares_fig_2020ppx",
       width = 12,
       height = 12,
       dpi = 600,
@@ -2695,7 +2723,7 @@ list(
     command = simple_ggsave_repo(
       demographic_npv_plot_pc,
       NULL,
-      "demographic_npv_pc_fig_2020ppx*",
+      "demographic_npv_pc_fig_2020ppx",
       width = 11,
       height = 12,
       dpi = 600,
@@ -2742,7 +2770,7 @@ list(
     command = simple_ggsave_repo(
       fig_refinery_capacity,
       NULL,
-      "refinery_capacity*",
+      "refinery_capacity",
       width = 16,
       save_path = save_path,
       file_type = "figure",
@@ -2757,10 +2785,36 @@ list(
     command = simple_ggsave_repo(
       fig_refinery_count,
       NULL,
-      "refinery_count*",
+      "refinery_count",
       width = 16,
       height = 12,
       dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
+    ),
+    format = "file"
+  ),
+
+  # Save refinery operations data
+  tar_target(
+    name = save_refinery_operations_summary,
+    command = simple_fwrite_repo(
+      data = refinery_operations_summary,
+      folder_path = NULL,
+      filename = "refinery_operations_summary_by_year.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figures-si"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_individual_refineries_operating,
+    command = simple_fwrite_repo(
+      data = individual_refineries_operating,
+      folder_path = NULL,
+      filename = "individual_refineries_operating_by_year.csv",
       save_path = save_path,
       file_type = "figure",
       figure_number = "figures-si"
@@ -2788,7 +2842,7 @@ list(
       simple_fwrite_repo(
         data = ref_labor_demog_yr,
         folder_path = NULL,
-        filename = "state_labor_direct_impacts_demo_annual.csv*",
+        filename = "state_labor_direct_impacts_demo_annual.csv",
         save_path = save_path,
         file_type = "labor"
       )
@@ -2803,7 +2857,7 @@ list(
       simple_fwrite_repo(
         data = annual_labor_jobs_comp,
         folder_path = NULL,
-        filename = "labor_high_low_annual_outputs.csv*",
+        filename = "labor_high_low_annual_outputs.csv",
         save_path = save_path,
         file_type = "table"
       )
@@ -2818,7 +2872,7 @@ list(
       simple_fwrite_repo(
         data = county_labor_outputs,
         folder_path = NULL,
-        filename = "labor_county_outputs.csv*",
+        filename = "labor_county_outputs.csv",
         save_path = save_path,
         file_type = "table"
       )
@@ -2900,7 +2954,7 @@ list(
       simple_fwrite_repo(
         cumul_av_mort,
         folder_path = NULL,
-        filename = "cumulative_avoided_mortality.csv*",
+        filename = "cumulative_avoided_mortality.csv",
         save_path = save_path,
         file_type = "table"
       )
@@ -2931,7 +2985,7 @@ list(
       simple_fwrite_repo(
         cumulative_health_x_county_dt,
         folder_path = NULL,
-        filename = "cumulative_health_x_county.csv*",
+        filename = "cumulative_health_x_county.csv",
         save_path = save_path,
         file_type = "table"
       )
@@ -2939,11 +2993,24 @@ list(
     format = "file"
   ),
 
-  # ---- Missing CSV input file targets from output_structure.csv ----
+  # ---- CSV input file targets for figure data ----
+  tar_target(
+    name = save_npv_fig_inputs_health,
+    command = simple_fwrite_repo(
+      data = npv_plot_result$plot_data_health, # Processed health data from plot function
+      folder_path = NULL,
+      filename = "state_npv_fig_inputs_health.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-3"
+    ),
+    format = "file"
+  ),
+
   tar_target(
     name = save_npv_fig_inputs_labor,
     command = simple_fwrite_repo(
-      data = annual_all_impacts_labor, # Labor data used for NPV calculations
+      data = npv_plot_result$plot_data_labor, # Processed labor data from plot function
       folder_path = NULL,
       filename = "state_npv_fig_inputs_labor.csv",
       save_path = save_path,
@@ -3005,7 +3072,7 @@ list(
     format = "file"
   ),
 
-  # ---- Missing PNG legend file targets from output_structure.csv ----
+  # ---- Legend file targets ----
   # Note: Legend PNG targets will be added after testing the current changes
 
   # ---- Additional figure targets for 2020ppx variants ----

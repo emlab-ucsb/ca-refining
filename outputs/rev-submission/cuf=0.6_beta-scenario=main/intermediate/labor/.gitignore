@@ -1,1 +1,5 @@
-# All files in this directory are tracked in git
+# Only specific files are tracked in this directory
+*
+!.gitignore
+!.gitkeep
+!state_labor_direct_impacts_demo_annual.csv
