@@ -4777,14 +4777,7 @@ calc_county_pm25 <- function(
     ungroup() %>%
     arrange(-avg_pm25_popw)
 
-  simple_fwrite_repo(
-    health_county_df,
-    folder_path = NULL,
-    filename = "avg_pm25_county_2019.csv",
-    save_path = save_path,
-    file_type = "table",
-    figure_number = NULL
-  )
+  ## CSV will be saved by _targets.R pipeline
   # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "avg_pm25_county_2019.csv")
 
   return(health_county_df)
@@ -6055,15 +6048,7 @@ plot_health_levels_gaps_pmil <- function(
   )
 
   ## save figure inputs
-  simple_fwrite_repo(
-    gaps_df,
-    folder_path = NULL,
-    filename = "state_levels_fig_gaps_pmil_inputs.csv",
-    save_path = save_path,
-    file_type = "table",
-    figure_number = NULL,
-    extra_subfolder = "health"
-  )
+  ## Figure inputs will be saved by _targets.R pipeline
   # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_levels_fig_gaps_pmil_inputs.csv")
 
   ## make figures
@@ -8307,15 +8292,7 @@ plot_labor_levels_gaps_pmil <- function(
   l_gaps_df[, gap_emp_pmil := gap_emp_pc * 1e6]
 
   ## save figure inputs
-  simple_fwrite_repo(
-    l_gaps_df,
-    folder_path = NULL,
-    filename = "state_labor_levels_fig_gaps_pmil_inputs.csv",
-    save_path = save_path,
-    file_type = "table",
-    figure_number = NULL,
-    extra_subfolder = "labor"
-  )
+  ## Figure inputs will be saved by _targets.R pipeline
   # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_labor_levels_fig_gaps_pmil_inputs.csv")
 
   ## figure a
@@ -8983,16 +8960,7 @@ plot_hl_levels_df <- function(
     )
   )
 
-  ## save figure inputs
-  simple_fwrite_repo(
-    plot_df_long,
-    folder_path = NULL,
-    filename = "state_disaggregated_npv_fig_inputs.csv",
-    save_path = save_path,
-    file_type = "table",
-    figure_number = NULL,
-    extra_subfolder = "health-and-labor"
-  )
+  ## Figure inputs will be saved by _targets.R pipeline
   # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_fig_inputs.csv")
 
   return(plot_df_long)
@@ -9596,15 +9564,7 @@ plot_hl_levels_pc <- function(
   ]
 
   ## save figure inputs
-  simple_fwrite_repo(
-    plot_df_long,
-    folder_path = NULL,
-    filename = "state_disaggregated_npv_pc_fig_inputs.csv",
-    save_path = save_path,
-    file_type = "table",
-    figure_number = NULL,
-    extra_subfolder = "health-and-labor"
-  )
+  ## Figure inputs will be saved by _targets.R pipeline
   # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv")
 
   ## create the figure ---------------------------------------------
