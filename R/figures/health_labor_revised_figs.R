@@ -4684,18 +4684,6 @@ plot_npv_health_labor_non_age_vsl <- function(
     rel_widths = c(1, 1)
   )
 
-  simple_ggsave_repo(
-    plot = fig3_plot_grid_ab_2020ppx,
-    folder_path = NULL,
-    filename = "state_npv_fig_2020_ppx_non_age_vsl",
-    width = 10,
-    height = 5,
-    dpi = 600,
-    save_path = save_path,
-    file_type = "figure",
-    figure_number = "extra-figure-3"
-  )
-
   ## bartik correction
   fig3_plot_grid_ab_2020ppx_bc <- plot_grid(
     fig_bxm_a,
@@ -4707,18 +4695,6 @@ plot_npv_health_labor_non_age_vsl <- function(
     hjust = -1,
     nrow = 1,
     rel_widths = c(1, 1)
-  )
-
-  simple_ggsave_repo(
-    plot = fig3_plot_grid_ab_2020ppx_bc,
-    folder_path = NULL,
-    filename = "state_npv_fig_2020_ppx_bartik_non_age_vsl",
-    width = 10,
-    height = 5,
-    dpi = 600,
-    save_path = save_path,
-    file_type = "figure",
-    figure_number = "extra-figure-3"
   )
 
   fig3_plot_grid_ab <- plot_grid(
