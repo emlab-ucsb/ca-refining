@@ -221,7 +221,5 @@ state_levels_fig_gaps_inputs.csv,tables/other,NO
 state_levels_fig_gaps_pmil_inputs.csv,tables/other,NO
 state_levels_fig_inputs.csv,tables/other,NO
 state_levels_pmil_fig_inputs.csv,tables/other,NO
-state_npv_fig_2020_ppx_bartik_non_age_vsl.png,results/figures/extra,NO
-state_npv_fig_2020_ppx_non_age_vsl.png,results/figures/extra,NO
 targets_snapshot_full.R,,NO
 targets_snapshot_summary.md,,NO

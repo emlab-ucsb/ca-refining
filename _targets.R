@@ -1628,10 +1628,10 @@ list(
 
   tar_target(
     name = npv_plot,
-    command = npv_plot_result$plot
+    command = npv_plot_result$fig3_plot_grid_ab_2020ppx_bc
   ),
   tar_target(
-    name = npv_plot_ref,
+    name = npv_plot_ref_result,
     command = plot_npv_health_labor_ref(
       main_path,
       save_path,
@@ -1642,7 +1642,11 @@ list(
     )
   ),
   tar_target(
-    name = npv_plot_annual_vsl,
+    name = npv_plot_ref,
+    command = npv_plot_ref_result$fig3_plot_grid_ab_2020ppx
+  ),
+  tar_target(
+    name = npv_plot_annual_vsl_result,
     command = plot_npv_health_labor_annual_vsl(
       main_path,
       save_path,
@@ -1653,7 +1657,11 @@ list(
     )
   ),
   tar_target(
-    name = npv_plot_non_age_vsl,
+    name = npv_plot_annual_vsl,
+    command = npv_plot_annual_vsl_result$fig3_plot_grid_ab_2020ppx
+  ),
+  tar_target(
+    name = npv_plot_non_age_vsl_result,
     command = plot_npv_health_labor_non_age_vsl(
       main_path,
       save_path,
@@ -1662,6 +1670,44 @@ list(
       dt_ghg_2019,
       annual_all_impacts_labor
     )
+  ),
+  tar_target(
+    name = npv_plot_non_age_vsl,
+    command = npv_plot_non_age_vsl_result$fig3_plot_grid_ab
+  ),
+
+  # Additional plot variants for missing figure variants
+  tar_target(
+    name = npv_plot_2020ppx_bartik_ref,
+    command = npv_plot_ref_result$fig3_plot_grid_ab_2020ppx_bc
+  ),
+  tar_target(
+    name = npv_plot_2020ppx_bartik_annual_vsl,
+    command = npv_plot_annual_vsl_result$fig3_plot_grid_ab_2020ppx_bc
+  ),
+  tar_target(
+    name = npv_plot_2020ppx_bartik_non_age_vsl,
+    command = npv_plot_non_age_vsl_result$fig3_plot_grid_ab_2020ppx_bc
+  ),
+  tar_target(
+    name = npv_plot_2020ppx_ref,
+    command = npv_plot_ref_result$fig3_plot_grid_ab_2020ppx
+  ),
+  tar_target(
+    name = npv_plot_2020ppx,
+    command = npv_plot_result$fig3_plot_grid_ab_2020ppx
+  ),
+  tar_target(
+    name = npv_plot_annual_vsl_base,
+    command = npv_plot_annual_vsl_result$fig3_plot_grid_ab
+  ),
+  tar_target(
+    name = npv_plot_ref_base,
+    command = npv_plot_ref_result$fig3_plot_grid_ab
+  ),
+  tar_target(
+    name = npv_plot_base,
+    command = npv_plot_result$fig3_plot_grid_ab
   ),
   tar_target(
     name = npv_labor_plot,
@@ -2507,6 +2553,137 @@ list(
     ),
     format = "file"
   ),
+
+  # Missing NPV figure save targets
+  tar_target(
+    name = save_npv_fig_2020ppx_bartik_ref,
+    command = simple_ggsave_repo(
+      npv_plot_2020ppx_bartik_ref,
+      NULL,
+      "state_npv_fig_2020_ppx_bartik_ref",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_2020ppx_bartik_annual_vsl,
+    command = simple_ggsave_repo(
+      npv_plot_2020ppx_bartik_annual_vsl,
+      NULL,
+      "state_npv_fig_2020_ppx_bartik_annual_vsl",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_2020ppx_bartik_non_age_vsl,
+    command = simple_ggsave_repo(
+      npv_plot_2020ppx_bartik_non_age_vsl,
+      NULL,
+      "state_npv_fig_2020_ppx_bartik_non_age_vsl",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_2020ppx,
+    command = simple_ggsave_repo(
+      npv_plot_2020ppx,
+      NULL,
+      "state_npv_fig_2020_ppx",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_2020ppx_non_age_vsl,
+    command = simple_ggsave_repo(
+      npv_plot_non_age_vsl_result$fig3_plot_grid_ab_2020ppx,
+      NULL,
+      "state_npv_fig_2020_ppx_non_age_vsl",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_annual_vsl_base,
+    command = simple_ggsave_repo(
+      npv_plot_annual_vsl_base,
+      NULL,
+      "state_npv_fig_annual_vsl",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_ref_base,
+    command = simple_ggsave_repo(
+      npv_plot_ref_base,
+      NULL,
+      "state_npv_fig_ref",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_npv_fig_base,
+    command = simple_ggsave_repo(
+      npv_plot_base,
+      NULL,
+      "state_npv_fig",
+      width = 10,
+      height = 5,
+      dpi = 600,
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "extra",
+      extra_subfolder = "extra-figure-3"
+    ),
+    format = "file"
+  ),
+
   tar_target(
     name = save_npv_labor_fig,
     command = simple_ggsave_repo(
