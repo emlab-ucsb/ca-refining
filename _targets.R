@@ -3245,6 +3245,19 @@ list(
     format = "file"
   ),
 
+  # ---- Additional CSV file targets ----
+  tar_target(
+    name = save_avg_pm25_county_2019,
+    command = simple_fwrite_repo(
+      data = county_pm25_2019,
+      folder_path = NULL,
+      filename = "avg_pm25_county_2019.csv",
+      save_path = save_path,
+      file_type = "table"
+    ),
+    format = "file"
+  ),
+
   # ---- Legend file targets ----
   # Note: Legend PNG targets will be added after testing the current changes
 
