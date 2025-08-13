@@ -1,27 +1,27 @@
 demand_scenario,refining_scenario,product_scenario,demo_cat,demo_group,title,segment,metric,metric_desc,unit_desc,value
-BAU,historical exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4397250154.41573
+BAU,historical exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4397250154.41572
 BAU,historical exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),4029082183.86201
 BAU,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5457231516.24656
-BAU,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),4988195867.00269
-BAU,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8331117635.73074
+BAU,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),4988195867.00268
+BAU,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8331117635.73072
 BAU,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7622762016.43477
-BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1523364034.93161
+BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1523364034.9316
 BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1394516034.42983
-BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),18555011.881348
-BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),16948871.1234774
+BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),18555011.8813479
+BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),16948871.1234773
 BAU,historical exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1757612482.54908
 BAU,historical exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1607951902.36104
-BAU,historical exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),947803307.305129
-BAU,historical exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),867660674.551607
+BAU,historical exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),947803307.305133
+BAU,historical exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),867660674.551609
 BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),36845593.9003034
-BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),33700092.8533503
-BAU,historical exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4542702727.67284
+BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),33700092.8533501
+BAU,historical exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4542702727.67283
 BAU,historical exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),4160478686.21504
-BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),44847185.3236299
-BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),41018105.9485668
+BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),44847185.3236298
+BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),41018105.9485666
 BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),246056473.674927
-BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),224834730.239831
-BAU,historical exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2260058888.35529
+BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),224834730.23983
+BAU,historical exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2260058888.35528
 BAU,historical exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2064684987.57171
 BAU,historical production,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
 BAU,historical production,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
@@ -47,102 +47,102 @@ BAU,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic
 BAU,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
 BAU,historical production,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
 BAU,historical production,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
-BAU,low exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5983089755.85335
+BAU,low exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5983089755.85332
 BAU,low exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5483021213.23529
-BAU,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8527507398.88285
-BAU,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7787008597.29788
+BAU,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8527507398.88284
+BAU,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7787008597.29787
 BAU,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),12313805264.951
 BAU,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),11259219179.8316
-BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2196791889.78476
-BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2010810630.70177
-BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),30532443.8623823
-BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),27879509.3739957
+BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2196791889.78477
+BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2010810630.70176
+BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),30532443.8623822
+BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),27879509.3739956
 BAU,low exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2586968863.15424
-BAU,low exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2364084395.36571
+BAU,low exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2364084395.36572
 BAU,low exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1335882948.3463
 BAU,low exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1223713002.20515
-BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),57691067.5337649
-BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),52701599.8834875
-BAU,low exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),6380762660.08429
+BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),57691067.5337648
+BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),52701599.8834874
+BAU,low exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),6380762660.08426
 BAU,low exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5842270973.4895
 BAU,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),68793221.7090059
-BAU,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),62886840.4065016
-BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),394939489.473719
-BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),360662694.532403
-BAU,low exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3655026460.57253
-BAU,low exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3335830795.27643
-LC1,historical exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),7607112272.97714
-LC1,historical exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),6896033773.33403
+BAU,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),62886840.4065015
+BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),394939489.473718
+BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),360662694.532402
+BAU,low exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3655026460.57252
+BAU,low exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3335830795.27642
+LC1,historical exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),7607112272.97712
+LC1,historical exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),6896033773.33401
 LC1,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),10978039603.0451
-LC1,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),9929835050.18931
+LC1,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),9929835050.18929
 LC1,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),15750867789.8585
 LC1,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),14260044576.6366
-LC1,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2834284086.16323
+LC1,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2834284086.16322
 LC1,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2565824246.88666
-LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),40328743.4215961
-LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),36434573.8677678
+LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),40328743.4215959
+LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),36434573.8677676
 LC1,historical exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3287783558.05501
-LC1,historical exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2977556348.35684
+LC1,historical exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2977556348.35683
 LC1,historical exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1712410439.47943
 LC1,historical exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1550289161.05349
-LC1,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),74015268.0711963
+LC1,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),74015268.0711959
 LC1,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),67004920.6178563
 LC1,historical exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8120164355.54375
-LC1,historical exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7358631183.3499
-LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),88907529.1141441
-LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),80422317.7171424
+LC1,historical exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7358631183.34987
+LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),88907529.1141438
+LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),80422317.7171423
 LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),513360811.466402
-LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),464030186.698362
-LC1,historical exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4748181170.87045
-LC1,historical exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),4291500131.86213
-LC1,historical production,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-23432235.4083119
-LC1,historical production,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-20753973.715211
-LC1,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-37278600.1394506
-LC1,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-32747745.8075758
-LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-51351198.7463575
-LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-45235115.7472239
-LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-9359636.80140601
-LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-8266603.77556238
-LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-152796.995694701
-LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-134124.537035266
-LC1,historical production,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-10493022.8758139
-LC1,historical production,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-9262172.20117404
-LC1,historical production,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-5551474.86522394
-LC1,historical production,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-4883199.75864899
-LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-251913.840319816
-LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-221287.277462126
-LC1,historical production,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-25736080.2928213
-LC1,historical production,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-22782634.4043375
-LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-287661.632469432
-LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-250597.389629647
-LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-1802066.09906797
-LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-1576335.44167894
-LC1,historical production,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-16435818.9463521
-LC1,historical production,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-14391368.5128206
+LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),464030186.698361
+LC1,historical exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4748181170.87044
+LC1,historical exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),4291500131.86211
+LC1,historical production,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-23432235.4083124
+LC1,historical production,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-20753973.7152116
+LC1,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-37278600.1394518
+LC1,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-32747745.8075769
+LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-51351198.7463589
+LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-45235115.7472252
+LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-9359636.80140641
+LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-8266603.77556274
+LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-152796.995694706
+LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-134124.53703527
+LC1,historical production,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-10493022.875814
+LC1,historical production,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-9262172.20117411
+LC1,historical production,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-5551474.86522405
+LC1,historical production,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-4883199.7586491
+LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-251913.840319821
+LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-221287.27746213
+LC1,historical production,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-25736080.2928222
+LC1,historical production,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-22782634.4043384
+LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-287661.632469443
+LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-250597.389629656
+LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-1802066.09906801
+LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-1576335.44167897
+LC1,historical production,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-16435818.9463526
+LC1,historical production,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-14391368.5128211
 LC1,low exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),9540403455.38729
-LC1,low exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),8655713744.67631
+LC1,low exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),8655713744.6763
 LC1,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),13656126843.338
-LC1,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),12382423315.1442
+LC1,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),12382423315.1441
 LC1,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),19601015863.5591
 LC1,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),17778817964.254
-LC1,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3595514435.16529
+LC1,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3595514435.16528
 LC1,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3259319095.56624
-LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),51266800.6397825
-LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),46446868.2111884
+LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),51266800.6397824
+LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),46446868.2111882
 LC1,low exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3997903926.20146
 LC1,low exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3628728910.39221
 LC1,low exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2215400441.99614
 LC1,low exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2007225958.31998
-LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),90332928.3567523
-LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),82017260.1045677
+LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),90332928.3567522
+LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),82017260.1045675
 LC1,low exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),10091022133.6943
-LC1,low exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),9157093104.0716
-LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),112887704.334645
+LC1,low exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),9157093104.07158
+LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),112887704.334644
 LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),102316041.810558
-LC1,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),651398960.536315
+LC1,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),651398960.536311
 LC1,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),590245333.481153
-LC1,low exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5986317402.96598
-LC1,low exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5424063583.4291
+LC1,low exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5986317402.96596
+LC1,low exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5424063583.42908
 BAU,historical exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-718009705.683216
 BAU,historical exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-182066371.498971
 BAU,historical exports,changing prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-915279765.855675
@@ -575,17 +575,17 @@ LC1,historical production,changing prices,Race,white,white,labor,fte_job_years,j
 LC1,low exports,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-40157.8262523629
 BAU,historical production,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,0
 BAU,low exports,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-21154.7438192629
-BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-3.20761211855632
+BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-3.20761211855631
 BAU,historical exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-303.688065654184
-BAU,historical exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-161.91756504411
-BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-6.32765801155072
-BAU,historical exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-771.991831936936
+BAU,historical exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-161.917565044111
+BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-6.32765801155071
+BAU,historical exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-771.991831936937
 BAU,historical exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-945.929104185896
 BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-7.70727222074905
-BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-42.6005826279547
+BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-42.6005826279546
 BAU,historical exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-1431.09427935394
-BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-259.47165967227
-BAU,historical exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-393.125351412146
+BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-259.471659672269
+BAU,historical exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-393.125351412145
 BAU,historical production,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,0
 BAU,historical production,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,0
 BAU,historical production,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,0
@@ -597,53 +597,53 @@ BAU,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic
 BAU,historical production,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,0
 BAU,historical production,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,0
 BAU,historical production,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,0
-BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-5.27951537044139
-BAU,low exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-448.593087005611
-BAU,low exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-227.498234678683
-BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-9.94867902770335
-BAU,low exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-1085.50867551772
+BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-5.27951537044138
+BAU,low exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-448.593087005612
+BAU,low exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-227.498234678684
+BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-9.94867902770334
+BAU,low exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-1085.50867551771
 BAU,low exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-1482.60902058737
 BAU,low exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-11.844588191506
-BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-68.4795555324635
+BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-68.4795555324634
 BAU,low exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-2120.59788266755
-BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-374.256865773993
-BAU,low exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-637.702413117459
-LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-7.26907905797833
-LC1,historical exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-590.867865466447
+BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-374.256865773992
+BAU,low exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-637.702413117456
+LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-7.2690790579783
+LC1,historical exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-590.867865466449
 LC1,historical exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-305.832562710853
 LC1,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-13.2293259417881
 LC1,historical exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-1440.00465696808
 LC1,historical exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-1981.08900624017
 LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-15.964743208346
-LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-92.6753148487537
-LC1,historical exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-2821.68717083812
+LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-92.6753148487533
+LC1,historical exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-2821.68717083811
 LC1,historical exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-504.733904384131
-LC1,historical exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-860.577527019954
-LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,0.031237675852766
-LC1,historical production,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,2.09828984669103
-LC1,historical production,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,1.11763345915315
-LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,0.0511164034804432
-LC1,historical production,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,5.04737806081474
-LC1,historical production,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,7.6107517005187
-LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0.0602153780590986
-LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0.373173244047228
-LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,10.3272032231055
-LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,1.85507670518162
-LC1,historical production,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,3.40323586018882
-LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-9.13564986071691
-LC1,low exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-712.036614998204
+LC1,historical exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-860.577527019953
+LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,0.0312376758527668
+LC1,historical production,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,2.09828984669105
+LC1,historical production,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,1.11763345915317
+LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,0.0511164034804443
+LC1,historical production,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,5.04737806081489
+LC1,historical production,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,7.6107517005189
+LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0.0602153780591003
+LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0.373173244047235
+LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,10.3272032231057
+LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,1.85507670518168
+LC1,historical production,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,3.40323586018892
+LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-9.13564986071684
+LC1,low exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-712.036614998203
 LC1,low exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-394.355204520114
 LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-15.9554715862447
 LC1,low exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-1779.1939971211
-LC1,low exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-2439.98914953916
-LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-20.1072283845376
+LC1,low exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-2439.98914953915
+LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-20.1072283845375
 LC1,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-116.431422147127
 LC1,low exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-3484.6665479546
 LC1,low exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-636.635235835657
-LC1,low exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-1074.08619517218
+LC1,low exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-1074.08619517217
 BAU,historical exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-744.636834840305
 BAU,historical production,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,0
 BAU,low exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-1012.24572785421
 LC1,historical exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-1345.33206898204
-LC1,historical production,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,4.57152822776851
+LC1,historical production,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,4.5715282277686
 LC1,low exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-1681.31263425102
