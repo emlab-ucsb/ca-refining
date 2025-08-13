@@ -123,11 +123,11 @@ state_levels_pmil_fig.png,results/figures/extra/state-levels-fig,NO
 state_npv_fig_2020_ppx_annual_vsl.pdf,results/figures/extra/extra-figure-3,NO
 state_npv_fig_2020_ppx_annual_vsl.png,results/figures/extra/extra-figure-3,NO
 state_npv_fig_2020_ppx_bartik_annual_vsl.pdf,results/figures/extra/extra-figure-3,NO
-state_npv_fig_2020_ppx_bartik_annual_vsl.png,results/figures/extra/extra-figure-3,NO
+state_npv_fig_2020_ppx_bartik_annual_vsl.png,results/figures/extra/extra-figure-3,YES
 state_npv_fig_2020_ppx_bartik_non_age_vsl.pdf,results/figures/extra/extra-figure-3,NO
-state_npv_fig_2020_ppx_bartik_non_age_vsl.png,results/figures/extra/extra-figure-3,NO
+state_npv_fig_2020_ppx_bartik_non_age_vsl.png,results/figures/extra/extra-figure-3,YES
 state_npv_fig_2020_ppx_bartik_ref.pdf,results/figures/extra/extra-figure-3,NO
-state_npv_fig_2020_ppx_bartik_ref.png,results/figures/extra/extra-figure-3,NO
+state_npv_fig_2020_ppx_bartik_ref.png,results/figures/extra/extra-figure-3,YES
 state_npv_fig_2020_ppx_non_age_vsl.pdf,results/figures/extra/extra-figure-3,NO
 state_npv_fig_2020_ppx_non_age_vsl.png,results/figures/extra/extra-figure-3,NO
 state_npv_fig_2020_ppx_ref.pdf,results/figures/extra/extra-figure-3,NO
