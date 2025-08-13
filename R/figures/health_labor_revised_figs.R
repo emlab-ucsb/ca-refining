@@ -1715,9 +1715,11 @@ plot_npv_health_labor <- function(
   #   # rel_widths = c(1, 1),
   # )
 
-  # Return both plot and processed data
+  # Return both plots and processed data
   return(list(
-    plot = fig3_plot_grid_ab,
+    fig3_plot_grid_ab = fig3_plot_grid_ab,
+    fig3_plot_grid_ab_2020ppx = fig3_plot_grid_ab_2020ppx,
+    fig3_plot_grid_ab_2020ppx_bc = fig3_plot_grid_ab_2020ppx_bc,
     plot_data_health = plot_df_health,
     plot_data_labor = plot_df_labor
   ))
@@ -2720,7 +2722,12 @@ plot_npv_health_labor_ref <- function(
   #   # rel_widths = c(1, 1),
   # )
 
-  return(fig3_plot_grid_ab)
+  # Return both plots and processed data
+  return(list(
+    fig3_plot_grid_ab = fig3_plot_grid_ab,
+    fig3_plot_grid_ab_2020ppx = fig3_plot_grid_ab_2020ppx,
+    fig3_plot_grid_ab_2020ppx_bc = fig3_plot_grid_ab_2020ppx_bc
+  ))
 }
 
 
@@ -3723,7 +3730,12 @@ plot_npv_health_labor_annual_vsl <- function(
   #   # rel_widths = c(1, 1),
   # )
 
-  return(fig3_plot_grid_ab)
+  # Return both plots and processed data
+  return(list(
+    fig3_plot_grid_ab = fig3_plot_grid_ab,
+    fig3_plot_grid_ab_2020ppx = fig3_plot_grid_ab_2020ppx,
+    fig3_plot_grid_ab_2020ppx_bc = fig3_plot_grid_ab_2020ppx_bc
+  ))
 }
 
 
@@ -4733,7 +4745,12 @@ plot_npv_health_labor_non_age_vsl <- function(
   #   # rel_widths = c(1, 1),
   # )
 
-  return(fig3_plot_grid_ab)
+  # Return both plots and processed data
+  return(list(
+    fig3_plot_grid_ab = fig3_plot_grid_ab,
+    fig3_plot_grid_ab_2020ppx = fig3_plot_grid_ab_2020ppx,
+    fig3_plot_grid_ab_2020ppx_bc = fig3_plot_grid_ab_2020ppx_bc
+  ))
 }
 
 
