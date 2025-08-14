@@ -202,8 +202,8 @@ state_levels_fig_gaps_pm25_inputs.csv,tables/health,NO
 state_levels_pm25_inputs.csv,tables/health,NO
 state_levels_pmil_fig_inputs.csv,tables/health,NO
 state_npv_fig_inputs_health_annual_vsl.csv,tables/health,NO
-state_npv_fig_inputs_health_non_age_vsl.csv,tables/health,NO
-state_npv_fig_inputs_health_ref.csv,tables/health,NO
+state_npv_fig_inputs_health_non_age_vsl.csv,tables/health,YES
+state_npv_fig_inputs_health_ref.csv,tables/health,YES
 labor_county_outputs.csv,tables/labor,YES
 labor_high_low_annual_outputs.csv,tables/labor,YES
 state_labor_levels_fig_gaps_inputs.csv,tables/labor,NO
