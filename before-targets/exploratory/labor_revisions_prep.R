@@ -23,7 +23,8 @@ library(tigris)
 library(cowplot)
 library(janitor)
 
-PATH.CM <- '/Users/chrismalloy/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/labor/ncomms-revisions'
+#PATH.CM <- '/Users/chrismalloy/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/labor/ncomms-revisions'
+PATH.CM <- '~/Dropbox/ou/ncomms-revisions'
 setwd(PATH.CM)
 
 ### define function for "not in"
@@ -34,11 +35,13 @@ letters_only <- function(x) !grepl("[^A-Za-z*-]", x)
 
 
 # EMPLOYMENT MULTIPLIERS (FROM IMPLAN)
-rev.statewide <- fread('multipliers/statewide/output-value/20250402-statewide_ca_refining-Detail Economic Indicators.csv') %>% 
+#multipliers/statewide/output-value/
+rev.statewide <- fread('implan-multipliers/20250423-statewide_ca_refining-Detail Economic Indicators_2020dollars_OUTPUT.csv') %>% 
   dplyr::select(OriginRegion,DestinationRegion,IndustryCode,ImpactType,Employment,EmployeeCompensation) %>% 
   rename(emp.rev = Employment, 
          ec.rev = EmployeeCompensation)
-li.statewide <- fread('multipliers/statewide/labor-income/20250402-statewide_ca_refining-Detail Economic Indicators.csv') %>% 
+#multipliers/statewide/labor-income/
+li.statewide <- fread('implan-multipliers/20250423-statewide_ca_refining-Detail Economic Indicators_2020dollars_LI.csv') %>% 
   dplyr::select(OriginRegion,DestinationRegion,IndustryCode,ImpactType,Employment,EmployeeCompensation) %>% 
   rename(emp.li = Employment, 
          ec.li = EmployeeCompensation)
@@ -65,6 +68,7 @@ statewide <- left_join(statewide,fte,by=c("IndustryCode"="Implan546Index")) %>%
 df.tract <- fread('ca_od_main_JT02_2020.csv') %>%
   mutate(w_tract_geocode = substr(as.character(w_geocode),1,10), 
          h_tract_geocode = substr(as.character(h_geocode),1,10)) %>% 
+  filter(h_tract_geocode != "6037980004" & h_tract_geocode != "6037980030" & h_tract_geocode != "6111980000") %>% 
   dplyr::select(w_tract_geocode, h_tract_geocode,S000,SI01,SI02,SI03) %>%
   group_by(w_tract_geocode,h_tract_geocode) %>% 
   summarize(S000 = sum(S000,na.rm=TRUE),
@@ -160,6 +164,12 @@ statewide.indir.indu <- filter(statewide, ImpactType != "Direct") %>%
             emp.li = sum(emp.li),
             ec.li = sum(ec.li)) %>% 
   ungroup() 
+
+test <- group_by(wh.tract.share,
+                 w_tract_geocode,refinery_name) %>% 
+  summarize(S000_share = sum(S000_share),
+            SI01_share = sum(SI01_share))
+summary(test$SI01_share)
 
 # EXPORT FILES TO CSV FOR TRACEY 
 
