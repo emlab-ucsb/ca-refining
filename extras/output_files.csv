@@ -222,5 +222,6 @@ state_levels_fig_gaps_inputs.csv,tables/other,NO
 state_levels_fig_gaps_pmil_inputs.csv,tables/other,NO
 state_levels_fig_inputs.csv,tables/other,NO
 state_levels_pmil_fig_inputs.csv,tables/other,NO
+step_8_output_for_review.csv,tables/labor,NO
 targets_snapshot_full.R,,NO
 targets_snapshot_summary.md,,NO

@@ -694,13 +694,12 @@ calc_labor_all_impacts_outputs <- function(
     ungroup() %>%
     as.data.table()
 
-  ## save for review
-  # To save step outputs according to structure.md:
-  # simple_fwrite_repo(
-  #   data = state_out_refining_all_impacts,
-  #   folder_path = file.path(save_path, "tables", "labor"),
-  #   filename = "step_8_output_for_review.csv"
-  # )
+  # save for review
+  simple_fwrite_repo(
+    data = state_out_refining_all_impacts,
+    folder_path = file.path(save_path, "tables", "labor"),
+    filename = "step_8_output_for_review.csv"
+  )
 
   ## step 9: calc revised statewide indirect and induced impact that is equal to
   ## the indirect and induced impact from step 4 - direct and indirect impact from
