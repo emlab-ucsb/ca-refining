@@ -3231,18 +3231,18 @@ list(
     format = "file"
   ),
 
-  tar_target(
-    name = save_disaggregated_npv_pc_fig_inputs,
-    command = simple_fwrite_repo(
-      data = demographic_npv_df, # Demographic NPV per capita data (same source)
-      folder_path = NULL,
-      filename = "state_disaggregated_npv_pc_fig_inputs.csv",
-      save_path = save_path,
-      file_type = "figure",
-      figure_number = "figure-5"
-    ),
-    format = "file"
-  ),
+  # tar_target(
+  #   name = save_disaggregated_npv_pc_fig_inputs,
+  #   command = simple_fwrite_repo(
+  #     data = demographic_npv_df, # Demographic NPV per capita data (same source)
+  #     folder_path = NULL,
+  #     filename = "state_disaggregated_npv_pc_fig_inputs.csv",
+  #     save_path = save_path,
+  #     file_type = "figure",
+  #     figure_number = "figure-5"
+  #   ),
+  #   format = "file"
+  # ),
 
   # ---- Legend file targets ----
   # Note: Legend PNG targets will be added after testing the current changes
