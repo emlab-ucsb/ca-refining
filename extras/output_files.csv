@@ -196,6 +196,7 @@ cumulative_health_x_county.csv,tables/health,YES
 refining_mortality_2023.csv,tables/health,NO
 refining_mortality_2023_constant_vsl.csv,tables/health,NO
 refining_mortality_2023_ref.csv,tables/health,NO
+state_annual_labor_outputs.csv,intermediate/labor,YES
 refining_state_mortality.csv,tables/health,NO
 state_levels_fig_gaps_inputs.csv,tables/health,YES
 state_levels_fig_gaps_pm25_inputs.csv,tables/health,NO
