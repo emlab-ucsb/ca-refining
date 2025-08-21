@@ -620,13 +620,15 @@ calc_labor_all_impacts_outputs <- function(
     product_scenario,
     indirect_induced_scenario,
     year,
+    production_bbl,
+    revenue,
     state_comp_all_impacts
   )]
 
   setnames(
     state_out_refining_all_impacts_bau,
-    c("state_comp_all_impacts"),
-    c("state_comp_all_impacts_bau")
+    c("state_comp_all_impacts", "production_bbl", "revenue"),
+    c("state_comp_all_impacts_bau", "bau_production_bbl", "bau_revenue")
   )
 
   ## step 7: lag state_comp_all_impacts by one year.
@@ -670,16 +672,12 @@ calc_labor_all_impacts_outputs <- function(
       ),
       state_comp_all_impacts_l_relative = state_comp_all_impacts_l -
         state_comp_all_impacts_l_bau,
-      state_comp_all_impacts_l_relative_adj = ifelse(
-        state_comp_all_impacts_l_relative > 0,
-        NA,
-        state_comp_all_impacts_l_relative
-      ),
       prev_comp_l = ifelse(
         year == min(year),
         NA,
-        lag(state_comp_all_impacts_l_relative_adj)
+        lag(state_comp_all_impacts_l_relative)
       ),
+      prev_comp_l = ifelse(prev_comp_l > 0, 0, prev_comp_l),
       state_comp_emp_li = ifelse(
         year == min(year),
         NA,
