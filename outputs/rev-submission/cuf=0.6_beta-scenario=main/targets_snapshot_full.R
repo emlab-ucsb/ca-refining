@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-13 20:29:04 CEST
+# Targets snapshot created: 2025-08-14 09:00:56 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -1489,6 +1489,12 @@ list(
     )
   ),
 
+  # Shared data processing targets
+  tar_target(
+    name = health_gaps_processed,
+    command = process_health_gaps_data(health_grp)
+  ),
+
   # tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
   #                                                                health_weighted)),
   #
@@ -1575,6 +1581,12 @@ list(
       pop_ratios
     )
   ),
+
+  tar_target(
+    name = labor_gaps_processed,
+    command = process_labor_gaps_data(ref_labor_demog_yr)
+  ),
+
   # tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
   #   county_grp_pop_ratios,
   #   annual_labor,
@@ -1826,6 +1838,12 @@ list(
       state_ghg_output,
       dt_ghg_2019
     )
+  ),
+
+  # Process demographic NPV data for per-capita calculations
+  tar_target(
+    name = npv_pc_processed,
+    command = process_npv_pc_data(demographic_npv_df, refining_mortality, pop_ratios)
   ),
 
   # tar_target(name = county_health_labor, command = create_county_health_labor_df(main_path,
@@ -3200,7 +3218,7 @@ list(
   tar_target(
     name = save_labor_levels_fig_gaps_pmil_inputs,
     command = simple_fwrite_repo(
-      data = ref_labor_demog_yr, # Labor demographic data used for gaps analysis
+      data = labor_gaps_processed, # Processed labor gaps data
       folder_path = NULL,
       filename = "state_labor_levels_fig_gaps_pmil_inputs.csv",
       save_path = save_path,
@@ -3213,7 +3231,7 @@ list(
   tar_target(
     name = save_levels_fig_gaps_pmil_inputs,
     command = simple_fwrite_repo(
-      data = health_grp, # Health group data used for gaps analysis
+      data = health_gaps_processed, # Processed health gaps data
       folder_path = NULL,
       filename = "state_levels_fig_gaps_pmil_inputs.csv",
       save_path = save_path,
@@ -3239,12 +3257,25 @@ list(
   tar_target(
     name = save_disaggregated_npv_pc_fig_inputs,
     command = simple_fwrite_repo(
-      data = demographic_npv_df, # Demographic NPV per capita data (same source)
+      data = npv_pc_processed, # Demographic NPV per capita data (processed)
       folder_path = NULL,
       filename = "state_disaggregated_npv_pc_fig_inputs.csv",
       save_path = save_path,
       file_type = "figure",
       figure_number = "figure-5"
+    ),
+    format = "file"
+  ),
+
+  # ---- Additional CSV file targets ----
+  tar_target(
+    name = save_avg_pm25_county_2019,
+    command = simple_fwrite_repo(
+      data = county_pm25_2019,
+      folder_path = NULL,
+      filename = "avg_pm25_county_2019.csv",
+      save_path = save_path,
+      file_type = "table"
     ),
     format = "file"
   ),
