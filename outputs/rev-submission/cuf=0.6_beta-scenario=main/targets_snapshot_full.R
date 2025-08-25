@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-14 09:00:56 CEST
+# Targets snapshot created: 2025-08-13 12:51:10 PDT
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -1843,7 +1843,11 @@ list(
   # Process demographic NPV data for per-capita calculations
   tar_target(
     name = npv_pc_processed,
-    command = process_npv_pc_data(demographic_npv_df, refining_mortality, pop_ratios)
+    command = process_npv_pc_data(
+      demographic_npv_df,
+      refining_mortality,
+      pop_ratios
+    )
   ),
 
   # tar_target(name = county_health_labor, command = create_county_health_labor_df(main_path,

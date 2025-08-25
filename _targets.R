@@ -1839,7 +1839,11 @@ list(
   # Process demographic NPV data for per-capita calculations
   tar_target(
     name = npv_pc_processed,
-    command = process_npv_pc_data(demographic_npv_df, refining_mortality, pop_ratios)
+    command = process_npv_pc_data(
+      demographic_npv_df,
+      refining_mortality,
+      pop_ratios
+    )
   ),
 
   # tar_target(name = county_health_labor, command = create_county_health_labor_df(main_path,
@@ -2459,13 +2463,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_mortality_ref,
+    name = save_state_labor_annual,
     command = simple_fwrite_repo(
-      refining_mortality_ref,
+      annual_all_impacts_labor,
       NULL,
-      "refining_mortality_2023_ref.csv",
+      "state_annual_labor_outputs.csv",
       save_path = save_path,
-      file_type = "table"
+      file_type = "labor"
     ),
     format = "file"
   ),
@@ -2571,7 +2575,6 @@ list(
     ),
     format = "file"
   ),
-
   # Missing NPV figure save targets
   tar_target(
     name = save_npv_fig_2020ppx_bartik_ref,
