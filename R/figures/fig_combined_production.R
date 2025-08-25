@@ -103,9 +103,12 @@ plot_combined_production <- function(
   dt_demand[scenario == "LC1", scenario := "Low Carbon Demand"]
 
   # combine HDV and LDV fuels ------
-  dt_demand[fuel %in% c("LDV Electricity", "HDV Electricity"), fuel := "Electricity"]
+  dt_demand[
+    fuel %in% c("LDV Electricity", "HDV Electricity"),
+    fuel := "Electricity"
+  ]
   dt_demand[fuel %in% c("LDV Hydrogen", "HDV Hydrogen"), fuel := "Hydrogen"]
-  
+
   # aggregate combined fuels
   dt_demand <- dt_demand[,
     .(consumption_bge = sum(consumption_bge, na.rm = TRUE)),
@@ -519,7 +522,22 @@ plot_combined_production <- function(
 
   # production figures settings --------
 
-  coef <- 19
+  # Calculate optimal coefficient to bring GHG line closer to area chart
+  # Get max stacked fuel production value across all scenarios and years
+  # This represents the total height of the stacked area chart at its peak
+  max_stacked_production <- max(
+    prod_data[,
+      .(total_consumption = sum(consumption_bge / 1e6, na.rm = TRUE)),
+      by = .(demand_scenario_adj, refining_scenario_adj, year)
+    ][, total_consumption],
+    na.rm = TRUE
+  )
+
+  # Get max GHG emissions value across all scenarios
+  max_ghg_emissions <- max(ghg_data[, ghg_MtCO2], na.rm = TRUE)
+
+  # Calculate coefficient to make GHG line at the top of stacked area chart
+  coef <- max_stacked_production / max_ghg_emissions
 
   theme_prod <- theme_line +
     theme(
