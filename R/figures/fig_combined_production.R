@@ -459,7 +459,7 @@ plot_combined_production <- function(
       subtitle = NULL,
       x = NULL,
       y = "Fuel demand\n(Million bge)",
-      fill = "      ",
+      fill = "Fuels not produced by oil refineries",
       linetype = NULL
     ) +
     scale_x_continuous(
@@ -472,7 +472,10 @@ plot_combined_production <- function(
       breaks = seq(0, 700, 100),
       limits = c(0, 700)
     ) +
-    scale_fill_manual(values = pal_fuel, guide = guide_legend(nrow = 7)) +
+    scale_fill_manual(
+      values = pal_fuel,
+      guide = guide_legend(nrow = 7, title.position = "top")
+    ) +
     scale_linetype_manual(
       name = NULL,
       labels = c(
@@ -500,7 +503,7 @@ plot_combined_production <- function(
   theme_prod <- theme_line +
     theme(
       legend.position = "bottom",
-      legend.title = element_text(size = 20, vjust = 0.5),
+      legend.title = element_text(size = 22, vjust = 0.5),
       legend.text = element_text(size = 22, vjust = 0.5),
       axis.title.x = element_text(size = 25),
       axis.title.y = element_text(size = 25),
@@ -871,7 +874,7 @@ plot_combined_production <- function(
       title = "Low Carbon Demand\nLow Exports",
       x = NULL,
       y = "Million bge",
-      fill = NULL,
+      fill = "Fuels produced by oil refineries",
       linetype = NULL,
       color = NULL
     ) +
@@ -892,11 +895,11 @@ plot_combined_production <- function(
     ) +
     scale_fill_manual(
       values = pal_fuel_title,
-      guide = guide_legend(reverse = TRUE, nrow = 2)
+      guide = guide_legend(reverse = TRUE, nrow = 2, title.position = "top")
     ) +
     scale_color_manual(values = pal_label) +
     theme_prod +
-    guides(fill = guide_legend(ncol = 1)) +
+    guides(fill = guide_legend(ncol = 1, title.position = "top")) +
     theme(legend.key.width = unit(1, "cm"))
 
   grobs_prod <- ggplotGrob(f_prod_legend)$grobs
