@@ -492,9 +492,24 @@ plot_combined_production <- function(
     theme(legend.key.width = unit(1, "cm"))
 
   grobs_its <- ggplotGrob(f_its_legend)$grobs
-  legend_its <- grobs_its[[which(
+  legend_its_combined <- grobs_its[[which(
     sapply(grobs_its, function(x) x$name) == "guide-box"
   )]]
+
+  # Helper function to extract legend
+  g_legend <- function(a.gplot) {
+    tmp <- ggplot_gtable(ggplot_build(a.gplot))
+    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+    legend <- tmp$grobs[[leg]]
+    return(legend)
+  }
+
+  # Extract individual legends from the combined its legend
+  # The combined legend contains both fill (fuels not produced) and linetype (transportation lines)
+  legend_lines <- g_legend(f_its_legend + guides(fill = "none"))
+  legend_fuels_not_refinery <- g_legend(
+    f_its_legend + guides(linetype = "none")
+  )
 
   # production figures settings --------
 
@@ -902,10 +917,9 @@ plot_combined_production <- function(
     guides(fill = guide_legend(ncol = 1, title.position = "top")) +
     theme(legend.key.width = unit(1, "cm"))
 
-  grobs_prod <- ggplotGrob(f_prod_legend)$grobs
-  legend_prod <- grobs_prod[[which(
-    sapply(grobs_prod, function(x) x$name) == "guide-box"
-  )]]
+  # Extract individual legends from production plot
+  legend_ghg <- g_legend(f_prod_legend + guides(fill = "none"))
+  legend_fuels_refinery <- g_legend(f_prod_legend + guides(color = "none"))
 
   # arrange plots and legends --------
 
@@ -925,10 +939,12 @@ plot_combined_production <- function(
   )
 
   plots_legends <- plot_grid(
-    legend_its,
-    legend_prod,
-    ncol = 2,
-    rel_widths = c(0.5, 0.5),
+    legend_lines,
+    legend_ghg,
+    legend_fuels_not_refinery,
+    legend_fuels_refinery,
+    ncol = 4,
+    rel_widths = c(0.3, 0.2, 0.25, 0.25),
     axis = "cc"
   )
   # plots_legends
