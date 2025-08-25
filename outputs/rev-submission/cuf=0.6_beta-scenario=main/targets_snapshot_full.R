@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-25 15:59:45 CEST
+# Targets snapshot created: 2025-08-25 17:55:17 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -2511,7 +2511,7 @@ list(
       save_path = save_path,
       file_type = "figure",
       figure_number = "figure-2",
-      height = 13,
+      height = 15,
       dpi = 600
     ),
     format = "file"

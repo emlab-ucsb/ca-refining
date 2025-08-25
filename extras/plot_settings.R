@@ -41,7 +41,9 @@ pal_fuel <- c(
   "Renewable Diesel" = "#ABC7E3",
   "Diesel" = "#366BA1",
   "Renewable Gasoline" = "#A6BB8D",
-  "Gasoline" = "#3C6255"
+  "Gasoline" = "#3C6255",
+  "Hydrogen" = "#fbb4ae",
+  "Electricity" = "#ccebc5"
 )
 
 pal_fuel_title <- c(
