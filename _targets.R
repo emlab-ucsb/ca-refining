@@ -2507,7 +2507,7 @@ list(
       save_path = save_path,
       file_type = "figure",
       figure_number = "figure-2",
-      height = 13,
+      height = 15,
       dpi = 600
     ),
     format = "file"
