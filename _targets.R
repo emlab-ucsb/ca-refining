@@ -1485,43 +1485,10 @@ list(
     )
   ),
 
-  # Process health group data for gaps analysis
+  # Shared data processing targets
   tar_target(
-    name = health_gaps_df,
-    command = {
-      # Replicate the gaps processing from plot_health_levels_gaps()
-      gaps_df <- copy(health_grp)
-
-      # Change scenario names, factor
-      gaps_df[,
-        scenario := paste0(demand_scenario, " demand - ", refining_scenario)
-      ]
-      gaps_df[, scenario := gsub("LC1.", "Low ", scenario)]
-
-      # Refactor
-      gaps_df[, scenario_title := scenario]
-      gaps_df[, scenario_title := str_replace(scenario_title, " - ", "\n")]
-
-      # Calculate gaps (BAU - scenario)
-      bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
-      bau_gaps_df <- bau_gaps_df[, c(
-        "year",
-        "demo_cat",
-        "demo_group",
-        "title",
-        "mortality_level_dem"
-      )]
-      setnames(bau_gaps_df, "mortality_level_dem", "bau_mortality_level_dem")
-
-      gaps_df <- merge(
-        gaps_df,
-        bau_gaps_df,
-        by = c("year", "demo_cat", "demo_group", "title"),
-        all.x = TRUE
-      )
-
-      return(gaps_df)
-    }
+    name = health_gaps_processed,
+    command = process_health_gaps_data(health_grp)
   ),
 
   # tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
@@ -1611,51 +1578,9 @@ list(
     )
   ),
 
-  # Process labor demographic data for gaps analysis
   tar_target(
-    name = labor_gaps_df,
-    command = {
-      # Replicate the labor gaps processing from plot_labor_levels_gaps()
-      l_gaps_df <- copy(ref_labor_demog_yr)
-      l_gaps_df <- l_gaps_df[oil_price_scenario == "reference case", ]
-
-      # Change scenario names, factor
-      l_gaps_df[,
-        scenario := paste0(demand_scenario, " demand - ", refining_scenario)
-      ]
-      l_gaps_df[, scenario := gsub("LC1.", "Low ", scenario)]
-
-      # Refactor
-      l_gaps_df[, scenario_title := scenario]
-      l_gaps_df[, scenario_title := str_replace(scenario_title, " - ", "\n")]
-
-      # Additional processing from the original function
-      l_gaps_df[,
-        scenario := str_replace(scenario, "Low carbon", "Low C.")
-      ]
-
-      l_gaps_df[,
-        short_scen := str_replace(scenario, " demand.*", "")
-      ]
-
-      l_gaps_df[, scenario := str_replace(scenario, "historic", "historical")]
-      l_gaps_df[,
-        scenario_title := str_replace(scenario_title, "historic", "historical")
-      ]
-
-      # Factor scenario
-      l_gaps_df$scenario <- factor(
-        l_gaps_df$scenario,
-        levels = c(
-          "BAU demand - historical production",
-          "Low C. demand - historical production",
-          "BAU demand - low exports",
-          "Low C. demand - low exports"
-        )
-      )
-
-      return(l_gaps_df)
-    }
+    name = labor_gaps_processed,
+    command = process_labor_gaps_data(ref_labor_demog_yr)
   ),
 
   # tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
@@ -1913,49 +1838,8 @@ list(
 
   # Process demographic NPV data for per-capita calculations
   tar_target(
-    name = demographic_npv_pc_df,
-    command = {
-      # Replicate the per-capita processing from plot_hl_levels_pc()
-      plot_df_long <- copy(demographic_npv_df)
-
-      # Calculate 2020 population by demographic
-      pop_2020 <- refining_mortality %>%
-        filter(year == 2020) %>%
-        select(census_tract, year, pop) %>%
-        unique() %>%
-        left_join(pop_ratios) %>%
-        as.data.table()
-
-      pop_2020[, demo_pop := pop * pct]
-
-      # Summarize by demographic group
-      pop_2020 <- pop_2020[,
-        .(pop_2020 = sum(demo_pop)),
-        by = .(demo_group, demo_cat)
-      ]
-
-      # Merge population back with results
-      plot_df_long <- merge(
-        plot_df_long,
-        pop_2020,
-        by = c("demo_group", "demo_cat"),
-        all.x = TRUE
-      )
-
-      # Calculate per capita
-      plot_df_long[, value := value / pop_2020]
-
-      # Update labor segment title
-      plot_df_long[,
-        seg_title := fifelse(
-          seg_title == "Labor: forgone wages",
-          "Labor: forgone wages of directly employed workers",
-          seg_title
-        )
-      ]
-
-      return(plot_df_long)
-    }
+    name = npv_pc_processed,
+    command = process_npv_pc_data(demographic_npv_df, refining_mortality, pop_ratios)
   ),
 
   # tar_target(name = county_health_labor, command = create_county_health_labor_df(main_path,
@@ -3330,7 +3214,7 @@ list(
   tar_target(
     name = save_labor_levels_fig_gaps_pmil_inputs,
     command = simple_fwrite_repo(
-      data = ref_labor_demog_yr, # Labor demographic data used for gaps analysis
+      data = labor_gaps_processed, # Processed labor gaps data
       folder_path = NULL,
       filename = "state_labor_levels_fig_gaps_pmil_inputs.csv",
       save_path = save_path,
@@ -3343,7 +3227,7 @@ list(
   tar_target(
     name = save_levels_fig_gaps_pmil_inputs,
     command = simple_fwrite_repo(
-      data = health_gaps_df, # Processed health gaps data
+      data = health_gaps_processed, # Processed health gaps data
       folder_path = NULL,
       filename = "state_levels_fig_gaps_pmil_inputs.csv",
       save_path = save_path,
@@ -3369,7 +3253,7 @@ list(
   tar_target(
     name = save_disaggregated_npv_pc_fig_inputs,
     command = simple_fwrite_repo(
-      data = demographic_npv_pc_df, # Demographic NPV per capita data (processed)
+      data = npv_pc_processed, # Demographic NPV per capita data (processed)
       folder_path = NULL,
       filename = "state_disaggregated_npv_pc_fig_inputs.csv",
       save_path = save_path,

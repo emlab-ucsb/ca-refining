@@ -27,6 +27,178 @@ safe_write_file <- function(data, save_path, subdir, filename) {
   return(full_path)
 }
 
+## Shared Data Processing Functions
+## -----------------------------------------------------------------------------
+
+#' Process health gaps data
+#' Extracts and processes health gaps data used by multiple plot functions
+#' @param health_grp Raw health group data
+#' @return Processed health gaps data with scenarios and BAU baseline
+process_health_gaps_data <- function(health_grp) {
+  gaps_df <- copy(health_grp)
+
+  ## change scenario names, factor
+  gaps_df[,
+    scenario := paste0(demand_scenario, " demand - ", refining_scenario)
+  ]
+  gaps_df[, scenario := gsub("LC1.", "Low ", scenario)]
+
+  ## refactor
+  gaps_df[, scenario_title := scenario]
+  gaps_df[, scenario_title := str_replace(scenario_title, " - ", "\n")]
+
+  ## calculate gaps (BAU - scenario)
+  bau_gaps_df <- gaps_df[scen_id == "BAU historic production"]
+  bau_gaps_df <- bau_gaps_df[, c(
+    "year",
+    "demo_cat",
+    "demo_group",
+    "title",
+    "mortality_level_dem"
+  )]
+  setnames(bau_gaps_df, "mortality_level_dem", "bau_mortality_level_dem")
+
+  gaps_df <- merge(
+    gaps_df,
+    bau_gaps_df,
+    by = c("year", "demo_cat", "demo_group", "title"),
+    all.x = TRUE
+  )
+
+  return(gaps_df)
+}
+
+#' Process labor gaps data
+#' Extracts and processes labor gaps data used by multiple plot functions
+#' @param ref_labor_demog_yr Raw labor demographic data
+#' @return Processed labor gaps data with scenarios and employment gaps
+process_labor_gaps_data <- function(ref_labor_demog_yr) {
+  l_gaps_df <- copy(ref_labor_demog_yr)
+  l_gaps_df <- l_gaps_df[oil_price_scenario == "reference case", ]
+
+  ## change scenario names, factor
+  l_gaps_df[,
+    scenario := paste0(demand_scenario, " demand - ", refining_scenario)
+  ]
+  l_gaps_df[, scenario := gsub("LC1.", "Low ", scenario)]
+
+  ## refactor
+  l_gaps_df[, scenario_title := scenario]
+  l_gaps_df[, scenario_title := str_replace(scenario_title, " - ", "\n")]
+
+  ## additional processing
+  l_gaps_df[,
+    scenario := str_replace(scenario, "Low carbon", "Low C.")
+  ]
+
+  l_gaps_df[,
+    short_scen := str_replace(scenario, " demand.*", "")
+  ]
+
+  l_gaps_df[, scenario := str_replace(scenario, "historic", "historical")]
+  l_gaps_df[,
+    scenario_title := str_replace(scenario_title, "historic", "historical")
+  ]
+
+  ## factor scenario
+  l_gaps_df$scenario <- factor(
+    l_gaps_df$scenario,
+    levels = c(
+      "BAU demand - historical production",
+      "Low C. demand - historical production",
+      "BAU demand - low exports",
+      "Low C. demand - low exports"
+    )
+  )
+
+  l_gaps_df$scenario_title <- factor(
+    l_gaps_df$scenario_title,
+    levels = c(
+      "BAU demand\nhistorical production",
+      "BAU demand\nhistorical exports",
+      "BAU demand\nlow exports",
+      "Low demand\nhistorical exports",
+      "Low demand\nlow exports",
+      "Low demand\nhistorical production"
+    )
+  )
+
+  ## calculate gaps (BAU - scenario)
+  l_bau_gaps_df <- l_gaps_df[scenario == "BAU demand - historical production"]
+  l_bau_gaps_df <- l_bau_gaps_df[, c(
+    "product_scenario",
+    "year",
+    "demo_cat",
+    "demo_group",
+    "title",
+    "sum_demo_emp"
+  )]
+  setnames(l_bau_gaps_df, "sum_demo_emp", "bau_sum_demo_emp")
+
+  l_gaps_df <- merge(
+    l_gaps_df,
+    l_bau_gaps_df,
+    by = c("year", "demo_cat", "demo_group", "title", "product_scenario"),
+    all.x = TRUE
+  )
+
+  l_gaps_df[, gap_emp := sum_demo_emp - bau_sum_demo_emp]
+
+  return(l_gaps_df)
+}
+
+#' Process NPV per-capita data
+#' Extracts and processes NPV per-capita data used by plot functions
+#' @param demographic_npv_df Raw demographic NPV data
+#' @param refining_mortality Refining mortality data for population calculations
+#' @param pop_ratios Population ratios data
+#' @return Processed NPV data with per-capita calculations
+process_npv_pc_data <- function(demographic_npv_df, refining_mortality, pop_ratios) {
+  ## copy npv results
+  plot_df_long <- copy(demographic_npv_df)
+
+  ## add column for defining shapes
+  plot_df_long[, demo_grp_metric := paste0(demo_group, "_", metric)]
+
+  ## calc 2020 pop by demographic
+  pop_2020 <- refining_mortality %>%
+    filter(year == 2020) %>%
+    select(census_tract, year, pop) %>%
+    unique() %>%
+    left_join(pop_ratios) %>%
+    as.data.table()
+
+  pop_2020[, demo_pop := pop * pct]
+
+  ## summarize by demographic group
+  pop_2020 <- pop_2020[,
+    .(pop_2020 = sum(demo_pop)),
+    by = .(demo_group, demo_cat)
+  ]
+
+  ## merge population back with results
+  plot_df_long <- merge(
+    plot_df_long,
+    pop_2020,
+    by = c("demo_group", "demo_cat"),
+    all.x = TRUE
+  )
+
+  ## calculate per capita
+  plot_df_long[, value := value / pop_2020]
+
+  ## update labor segment title
+  plot_df_long[,
+    seg_title := fifelse(
+      seg_title == "Labor: forgone wages",
+      "Labor: forgone wages of directly employed workers",
+      seg_title
+    )
+  ]
+
+  return(plot_df_long)
+}
+
 ## labor SI figure
 ## -----------------------------------------------------------------------------
 
