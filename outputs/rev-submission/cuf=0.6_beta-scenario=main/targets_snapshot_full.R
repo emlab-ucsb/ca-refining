@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-13 12:51:10 PDT
+# Targets snapshot created: 2025-08-25 15:59:45 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -2467,13 +2467,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_mortality_ref,
+    name = save_state_labor_annual,
     command = simple_fwrite_repo(
-      refining_mortality_ref,
+      annual_all_impacts_labor,
       NULL,
-      "refining_mortality_2023_ref.csv",
+      "state_annual_labor_outputs.csv",
       save_path = save_path,
-      file_type = "table"
+      file_type = "labor"
     ),
     format = "file"
   ),
@@ -2579,7 +2579,6 @@ list(
     ),
     format = "file"
   ),
-
   # Missing NPV figure save targets
   tar_target(
     name = save_npv_fig_2020ppx_bartik_ref,

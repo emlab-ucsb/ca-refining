@@ -1,73 +1,73 @@
 scen_id,demand_scenario,refining_scenario,demo_group,demo_cat,title,cumul_mort_level,cumul_mort_delta
-BAU historic exports,BAU,historic exports,aialnative,Race,American Indian or Alaska Native,21.5783814261976,-3.20761211855635
+BAU historic exports,BAU,historic exports,aialnative,Race,American Indian or Alaska Native,21.5783814261977,-3.20761211855636
 BAU historic exports,BAU,historic exports,asian,Race,Asian,1467.25478053268,-303.688065654187
-BAU historic exports,BAU,historic exports,black,Race,Black,809.906657039566,-161.917565044107
-BAU historic exports,BAU,historic exports,dac,DAC,DAC,3224.89761476957,-744.636834840308
-BAU historic exports,BAU,historic exports,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,36.2198282163765,-6.32765801155067
-BAU historic exports,BAU,historic exports,hispanic,Race,Hispanic,3549.19789266128,-771.991831936934
-BAU historic exports,BAU,historic exports,non_dac,DAC,Non-DAC,5415.88931585624,-945.929104185893
-BAU historic exports,BAU,historic exports,nonh_other,Race,Other (Non-Hispanic),45.1158725363862,-7.70727222074909
-BAU historic exports,BAU,historic exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),268.248867834406,-42.6005826279553
-BAU historic exports,BAU,historic exports,total_above_poverty,Poverty,Above poverty line,7337.11506635881,-1431.09427935393
+BAU historic exports,BAU,historic exports,black,Race,Black,809.906657039564,-161.917565044107
+BAU historic exports,BAU,historic exports,dac,DAC,DAC,3224.89761476957,-744.636834840309
+BAU historic exports,BAU,historic exports,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,36.2198282163766,-6.32765801155068
+BAU historic exports,BAU,historic exports,hispanic,Race,Hispanic,3549.19789266129,-771.991831936934
+BAU historic exports,BAU,historic exports,non_dac,DAC,Non-DAC,5415.88931585625,-945.929104185893
+BAU historic exports,BAU,historic exports,nonh_other,Race,Other (Non-Hispanic),45.1158725363863,-7.7072722207491
+BAU historic exports,BAU,historic exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),268.248867834407,-42.6005826279554
+BAU historic exports,BAU,historic exports,total_above_poverty,Poverty,Above poverty line,7337.11506635882,-1431.09427935393
 BAU historic exports,BAU,historic exports,total_below_poverty,Poverty,Below poverty line,1303.67186426699,-259.471659672272
-BAU historic exports,BAU,historic exports,white,Race,white,2443.26465037892,-393.12535141216
-BAU historic production,BAU,historic production,aialnative,Race,American Indian or Alaska Native,24.8045390349464,0
+BAU historic exports,BAU,historic exports,white,Race,white,2443.26465037892,-393.125351412161
+BAU historic production,BAU,historic production,aialnative,Race,American Indian or Alaska Native,24.8045390349465,0
 BAU historic production,BAU,historic production,asian,Race,Asian,1772.37755117808,0
-BAU historic production,BAU,historic production,black,Race,Black,972.992445124862,0
+BAU historic production,BAU,historic production,black,Race,Black,972.99244512486,0
 BAU historic production,BAU,historic production,dac,DAC,DAC,3974.29081354984,0
 BAU historic production,BAU,historic production,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,42.6056088272568,0
-BAU historic production,BAU,historic production,hispanic,Race,Hispanic,4325.66457138122,0
-BAU historic production,BAU,historic production,non_dac,DAC,Non-DAC,6366.06433255782,0
-BAU historic production,BAU,historic production,nonh_other,Race,Other (Non-Hispanic),52.8621381974467,0
-BAU historic production,BAU,historic production,nonh_two_or_more,Race,Two or more races (Non-Hispanic),311.075733394809,0
-BAU historic production,BAU,historic production,total_above_poverty,Poverty,Above poverty line,8775.77474696377,0
-BAU historic production,BAU,historic production,total_below_poverty,Poverty,Below poverty line,1564.5803991439,0
-BAU historic production,BAU,historic production,white,Race,white,2837.97255896905,0
-BAU low exports,BAU,low exports,aialnative,Race,American Indian or Alaska Native,19.4966163946769,-5.27951537044155
+BAU historic production,BAU,historic production,hispanic,Race,Hispanic,4325.66457138123,0
+BAU historic production,BAU,historic production,non_dac,DAC,Non-DAC,6366.06433255784,0
+BAU historic production,BAU,historic production,nonh_other,Race,Other (Non-Hispanic),52.8621381974468,0
+BAU historic production,BAU,historic production,nonh_two_or_more,Race,Two or more races (Non-Hispanic),311.07573339481,0
+BAU historic production,BAU,historic production,total_above_poverty,Poverty,Above poverty line,8775.77474696378,0
+BAU historic production,BAU,historic production,total_below_poverty,Poverty,Below poverty line,1564.58039914391,0
+BAU historic production,BAU,historic production,white,Race,white,2837.97255896906,0
+BAU low exports,BAU,low exports,aialnative,Race,American Indian or Alaska Native,19.496616394677,-5.27951537044157
 BAU low exports,BAU,low exports,asian,Race,Asian,1321.64053198127,-448.593087005609
-BAU low exports,BAU,low exports,black,Race,Black,743.846820460675,-227.49823467868
+BAU low exports,BAU,low exports,black,Race,Black,743.846820460674,-227.498234678679
 BAU low exports,BAU,low exports,dac,DAC,DAC,2955.46064322439,-1012.2457278542
-BAU low exports,BAU,low exports,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,32.5717466331069,-9.94867902770328
+BAU low exports,BAU,low exports,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,32.571746633107,-9.94867902770329
 BAU low exports,BAU,low exports,hispanic,Race,Hispanic,3233.85961246846,-1085.50867551774
-BAU low exports,BAU,low exports,non_dac,DAC,Non-DAC,4876.89327769431,-1482.60902058739
-BAU low exports,BAU,low exports,nonh_other,Race,Other (Non-Hispanic),40.9562740199005,-11.8445881915057
-BAU low exports,BAU,low exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),242.240170590522,-68.4795555324637
-BAU low exports,BAU,low exports,total_above_poverty,Poverty,Above poverty line,6644.07851471402,-2120.5978826676
+BAU low exports,BAU,low exports,non_dac,DAC,Non-DAC,4876.89327769432,-1482.60902058739
+BAU low exports,BAU,low exports,nonh_other,Race,Other (Non-Hispanic),40.9562740199006,-11.8445881915058
+BAU low exports,BAU,low exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),242.240170590523,-68.4795555324639
+BAU low exports,BAU,low exports,total_above_poverty,Poverty,Above poverty line,6644.07851471403,-2120.5978826676
 BAU low exports,BAU,low exports,total_below_poverty,Poverty,Below poverty line,1188.27540620468,-374.256865773998
-BAU low exports,BAU,low exports,white,Race,white,2197.74214837009,-637.702413117454
-LC1 historic exports,LC1,historic exports,aialnative,Race,American Indian or Alaska Native,17.4984071684671,-7.26907905797844
+BAU low exports,BAU,low exports,white,Race,white,2197.74214837009,-637.702413117457
+LC1 historic exports,LC1,historic exports,aialnative,Race,American Indian or Alaska Native,17.4984071684671,-7.26907905797847
 LC1 historic exports,LC1,historic exports,asian,Race,Asian,1178.7314628337,-590.867865466434
-LC1 historic exports,LC1,historic exports,black,Race,Black,664.987099695746,-305.832562710858
+LC1 historic exports,LC1,historic exports,black,Race,Black,664.987099695745,-305.832562710858
 LC1 historic exports,LC1,historic exports,dac,DAC,DAC,2620.31100323532,-1345.33206898205
 LC1 historic exports,LC1,historic exports,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,29.2675592520745,-13.2293259417883
 LC1 historic exports,LC1,historic exports,hispanic,Race,Hispanic,2877.45118878698,-1440.0046569681
-LC1 historic exports,LC1,historic exports,non_dac,DAC,Non-DAC,4376.50526632716,-1981.08900624016
-LC1 historic exports,LC1,historic exports,nonh_other,Race,Other (Non-Hispanic),36.8164467843234,-15.964743208346
-LC1 historic exports,LC1,historic exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),217.935747342589,-92.6753148487511
-LC1 historic exports,LC1,historic exports,total_above_poverty,Poverty,Above poverty line,5939.65679692457,-2821.68717083809
+LC1 historic exports,LC1,historic exports,non_dac,DAC,Non-DAC,4376.50526632717,-1981.08900624017
+LC1 historic exports,LC1,historic exports,nonh_other,Race,Other (Non-Hispanic),36.8164467843235,-15.9647432083461
+LC1 historic exports,LC1,historic exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),217.93574734259,-92.6753148487514
+LC1 historic exports,LC1,historic exports,total_above_poverty,Poverty,Above poverty line,5939.65679692458,-2821.68717083809
 LC1 historic exports,LC1,historic exports,total_below_poverty,Poverty,Below poverty line,1057.15947263791,-504.733904384126
-LC1 historic exports,LC1,historic exports,white,Race,white,1974.1283576986,-860.577527019956
-LC1 historic production,LC1,historic production,aialnative,Race,American Indian or Alaska Native,24.835906349181,0.0312376758527659
-LC1 historic production,LC1,historic production,asian,Race,Asian,1774.48482522168,2.09828984669106
-LC1 historic production,LC1,historic production,black,Race,Black,974.116848507396,1.11763345915316
-LC1 historic production,LC1,historic production,dac,DAC,DAC,3978.88846852779,4.57152822776858
-LC1 historic production,LC1,historic production,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,42.6570671548742,0.0511164034804436
-LC1 historic production,LC1,historic production,hispanic,Race,Hispanic,4330.7376437236,5.04737806081479
-LC1 historic production,LC1,historic production,non_dac,DAC,Non-DAC,6373.70476707587,7.61075170051887
-LC1 historic production,LC1,historic production,nonh_other,Race,Other (Non-Hispanic),52.9226170700897,0.0602153780590996
-LC1 historic production,LC1,historic production,nonh_two_or_more,Race,Two or more races (Non-Hispanic),311.450542488159,0.373173244047235
-LC1 historic production,LC1,historic production,total_above_poverty,Poverty,Above poverty line,8786.14917443473,10.3272032231058
-LC1 historic production,LC1,historic production,total_below_poverty,Poverty,Below poverty line,1566.44406116892,1.85507670518169
-LC1 historic production,LC1,historic production,white,Race,white,2841.38778508868,3.4032358601889
-LC1 low exports,LC1,low exports,aialnative,Race,American Indian or Alaska Native,15.6249040486979,-9.1356498607168
+LC1 historic exports,LC1,historic exports,white,Race,white,1974.12835769861,-860.577527019959
+LC1 historic production,LC1,historic production,aialnative,Race,American Indian or Alaska Native,24.8359063491811,0.0312376758527652
+LC1 historic production,LC1,historic production,asian,Race,Asian,1774.48482522168,2.09828984669105
+LC1 historic production,LC1,historic production,black,Race,Black,974.116848507394,1.11763345915314
+LC1 historic production,LC1,historic production,dac,DAC,DAC,3978.88846852778,4.57152822776849
+LC1 historic production,LC1,historic production,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,42.6570671548742,0.0511164034804425
+LC1 historic production,LC1,historic production,hispanic,Race,Hispanic,4330.7376437236,5.04737806081465
+LC1 historic production,LC1,historic production,non_dac,DAC,Non-DAC,6373.70476707588,7.61075170051867
+LC1 historic production,LC1,historic production,nonh_other,Race,Other (Non-Hispanic),52.9226170700899,0.060215378059098
+LC1 historic production,LC1,historic production,nonh_two_or_more,Race,Two or more races (Non-Hispanic),311.45054248816,0.373173244047229
+LC1 historic production,LC1,historic production,total_above_poverty,Poverty,Above poverty line,8786.14917443474,10.3272032231055
+LC1 historic production,LC1,historic production,total_below_poverty,Poverty,Below poverty line,1566.44406116892,1.85507670518162
+LC1 historic production,LC1,historic production,white,Race,white,2841.38778508869,3.4032358601888
+LC1 low exports,LC1,low exports,aialnative,Race,American Indian or Alaska Native,15.624904048698,-9.13564986071685
 LC1 low exports,LC1,low exports,asian,Race,Asian,1057.10205929021,-712.036614998208
-LC1 low exports,LC1,low exports,black,Race,Black,575.965594328027,-394.355204520113
+LC1 low exports,LC1,low exports,black,Race,Black,575.965594328026,-394.355204520112
 LC1 low exports,LC1,low exports,dac,DAC,DAC,2282.5210776254,-1681.31263425102
 LC1 low exports,LC1,low exports,hawaiian_pacisl,Race,Hawaiian or Other Pacific Islander,26.5252019827368,-15.9554715862445
 LC1 low exports,LC1,low exports,hispanic,Race,Hispanic,2536.62732432026,-1779.19399712109
-LC1 low exports,LC1,low exports,non_dac,DAC,Non-DAC,3916.08955555349,-2439.98914953916
-LC1 low exports,LC1,low exports,nonh_other,Race,Other (Non-Hispanic),32.6569421319922,-20.1072283845374
-LC1 low exports,LC1,low exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),194.089199462063,-116.431422147129
-LC1 low exports,LC1,low exports,total_above_poverty,Poverty,Above poverty line,5273.92737658051,-3484.66654795455
-LC1 low exports,LC1,low exports,total_below_poverty,Poverty,Below poverty line,924.683256598373,-636.635235835636
+LC1 low exports,LC1,low exports,non_dac,DAC,Non-DAC,3916.08955555349,-2439.98914953917
+LC1 low exports,LC1,low exports,nonh_other,Race,Other (Non-Hispanic),32.6569421319923,-20.1072283845375
+LC1 low exports,LC1,low exports,nonh_two_or_more,Race,Two or more races (Non-Hispanic),194.089199462064,-116.431422147129
+LC1 low exports,LC1,low exports,total_above_poverty,Poverty,Above poverty line,5273.92737658052,-3484.66654795455
+LC1 low exports,LC1,low exports,total_below_poverty,Poverty,Below poverty line,924.683256598374,-636.635235835636
 LC1 low exports,LC1,low exports,white,Race,white,1760.01940761491,-1074.08619517215
