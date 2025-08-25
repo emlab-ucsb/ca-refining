@@ -326,6 +326,7 @@ plot_combined_production <- function(
       legend.position = "bottom",
       legend.title = element_text(size = 22, vjust = 0.5),
       legend.text = element_text(size = 22, vjust = 0.5),
+      legend.background = element_rect(fill = "white", color = "white"),
       axis.title.x = element_text(size = 25),
       axis.title.y = element_text(size = 25),
       axis.title.y.right = element_text(size = 25),
@@ -544,6 +545,7 @@ plot_combined_production <- function(
       legend.position = "bottom",
       legend.title = element_text(size = 22, vjust = 0.5),
       legend.text = element_text(size = 22, vjust = 0.5),
+      legend.background = element_rect(fill = "white", color = "white"),
       axis.title.x = element_text(size = 25),
       axis.title.y = element_text(size = 25),
       axis.title.y.right = element_text(size = 25),
@@ -971,6 +973,10 @@ plot_combined_production <- function(
     rel_widths = c(0.3, 0.2, 0.25, 0.25),
     axis = "cc"
   )
+  
+  # Add white background to the entire legend area
+  plots_legends <- ggdraw(plots_legends) + 
+    theme(plot.background = element_rect(fill = "white", color = "white"))
   # plots_legends
 
   plots_all <- plot_grid(
