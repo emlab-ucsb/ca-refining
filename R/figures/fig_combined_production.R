@@ -102,6 +102,16 @@ plot_combined_production <- function(
   dt_demand[scenario == "BAU", scenario := "BAU Demand"]
   dt_demand[scenario == "LC1", scenario := "Low Carbon Demand"]
 
+  # combine HDV and LDV fuels ------
+  dt_demand[fuel %in% c("LDV Electricity", "HDV Electricity"), fuel := "Electricity"]
+  dt_demand[fuel %in% c("LDV Hydrogen", "HDV Hydrogen"), fuel := "Hydrogen"]
+  
+  # aggregate combined fuels
+  dt_demand <- dt_demand[,
+    .(consumption_bge = sum(consumption_bge, na.rm = TRUE)),
+    by = .(scenario, year, fuel)
+  ]
+
   # reorder factor levels ------
 
   dt_demand[,
@@ -118,10 +128,8 @@ plot_combined_production <- function(
         "Ethanol",
         "Biodiesel",
         "Renewable Natural Gas",
-        "LDV Hydrogen",
-        "HDV Hydrogen",
-        "LDV Electricity",
-        "HDV Electricity"
+        "Hydrogen",
+        "Electricity"
       ))
     )
   ]
@@ -198,10 +206,8 @@ plot_combined_production <- function(
         "Ethanol",
         "Biodiesel",
         "Renewable Natural Gas",
-        "LDV Hydrogen",
-        "HDV Hydrogen",
-        "LDV Electricity",
-        "HDV Electricity"
+        "Hydrogen",
+        "Electricity"
       ))
     )
   ]
