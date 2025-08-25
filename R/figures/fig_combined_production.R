@@ -22,6 +22,7 @@ plot_combined_production <- function(
   # dt_intra <- copy(intra_data)
   # dt_jet <- copy(jet_data)
 
+  label_its = "Total intrastate transportation\nliquid fuels demand produced by oil refineries"
   label_all = "\nTotal transportation liquid fuels\ndemand including for interstate and military\naviation supplied by oil refineries\n"
 
   dt_its <- copy(its_data)
@@ -368,7 +369,7 @@ plot_combined_production <- function(
     scale_linetype_manual(
       name = NULL,
       labels = c(
-        "its" = "Total intrastate transportation\nliquid fuels demand supplied by oil refineries",
+        "its" = label_its,
         "all" = label_all
       ),
       values = c(
@@ -421,7 +422,7 @@ plot_combined_production <- function(
     scale_linetype_manual(
       name = NULL,
       labels = c(
-        "its" = "Total intrastate transportation\nliquid fuels demand supplied by oil refineries",
+        "its" = label_its,
         "all" = label_all
       ),
       values = c(
@@ -475,7 +476,7 @@ plot_combined_production <- function(
     scale_linetype_manual(
       name = NULL,
       labels = c(
-        "its" = "Total intrastate transportation\nliquid fuels demand supplied by oil refineries",
+        "its" = label_its,
         "all" = label_all
       ),
       values = c(
