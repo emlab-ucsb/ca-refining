@@ -605,7 +605,8 @@ calc_labor_all_impacts_outputs <- function(
     year,
     production_bbl,
     revenue,
-    state_comp_all_impacts
+    state_comp_all_impacts,
+    state_comp_h
   )]
 
   ## merge with BAU to compute relative impact and induced and indirect impacts
@@ -622,13 +623,14 @@ calc_labor_all_impacts_outputs <- function(
     year,
     production_bbl,
     revenue,
-    state_comp_all_impacts
+    state_comp_all_impacts,
+    state_comp_h
   )]
 
   setnames(
     state_out_refining_all_impacts_bau,
-    c("state_comp_all_impacts", "production_bbl", "revenue"),
-    c("state_comp_all_impacts_bau", "bau_production_bbl", "bau_revenue")
+    c("state_comp_all_impacts", "production_bbl", "revenue","state_comp_h"),
+    c("state_comp_all_impacts_bau", "bau_production_bbl", "bau_revenue","state_comp_h_bau")
   )
 
   ## step 7: lag state_comp_all_impacts by one year.
@@ -658,30 +660,30 @@ calc_labor_all_impacts_outputs <- function(
       oil_price_scenario
     ) %>%
     mutate(
-      prev_comp = ifelse(year == min(year), NA, lag(state_comp_all_impacts)),
-      prev_comp_bau = ifelse(year == min(year), NA, lag(state_comp_all_impacts_bau)),
-      state_comp_all_impacts_l = ifelse(
+      prev_comp = ifelse(year == min(year), NA, lag(state_comp_h)),
+      prev_comp_bau = ifelse(year == min(year), NA, lag(state_comp_h_bau)),
+      state_comp_l = ifelse(
         year == min(year),
-        state_comp_all_impacts,
-        state_comp_all_impacts - ((1 - alpha_comp) * prev_comp)
+        state_comp_h,
+        state_comp_h - ((1 - alpha_comp) * prev_comp)
       ),
-      state_comp_all_impacts_l_bau = ifelse(
+      state_comp_l_bau = ifelse(
         year == min(year),
-        state_comp_all_impacts_bau,
-        state_comp_all_impacts_bau - ((1 - alpha_comp) * prev_comp_bau)
+        state_comp_h_bau,
+        state_comp_h_bau - ((1 - alpha_comp) * prev_comp_bau)
       ),
-      state_comp_all_impacts_l_relative = state_comp_all_impacts_l -
-        state_comp_all_impacts_l_bau,
+      state_comp_l_relative = state_comp_l -
+        state_comp_l_bau,
       prev_comp_l = ifelse(
         year == min(year),
         NA,
-        lag(state_comp_all_impacts_l_relative)
+        lag(state_comp_l)
       ),
       prev_comp_l = ifelse(prev_comp_l > 0, 0, prev_comp_l),
       state_comp_emp_li = ifelse(
         year == min(year),
         NA,
-        (prev_comp_l / 1e6) * total_indir_induc_multipliers$emp.li[1]
+        ((0.8*prev_comp_l) / 1e6) * total_indir_induc_multipliers$emp.li[1]
       ),
       state_comp_emp_li = ifelse(
         indirect_induced_scenario == "bartik-corrected",
@@ -691,7 +693,7 @@ calc_labor_all_impacts_outputs <- function(
       state_comp_ec_li = ifelse(
         year == min(year),
         NA,
-        (prev_comp_l / 1e6) * total_indir_induc_multipliers$ec.li[1]
+        ((0.8*prev_comp_l) / 1e6) * total_indir_induc_multipliers$ec.li[1]
       ),
       state_comp_ec_li = ifelse(
         indirect_induced_scenario == "bartik-corrected",

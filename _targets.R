@@ -141,7 +141,7 @@ list(
   tar_target(name = gge_to_bbls, command = 42),
 
   # labor analysis parameters
-  tar_target(name = alpha_comp, command = 0.2), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
+  tar_target(name = alpha_comp, command = 0), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
   tar_target(name = alpha_emp, command = 0), # #0-1 representing the share of jobs lost over time when losing a job in refining sector
   tar_target(name = indirect_induced_mult, command = 0.741), # multiplier for indirect and induced effects
 
