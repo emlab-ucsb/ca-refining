@@ -1,9 +1,0 @@
-# Only specific files are tracked in this directory
-*
-!.gitignore
-!.gitkeep
-!cumulative_avoided_mortality.csv
-!cumulative_health_x_county.csv
-!state_levels_fig_gaps_inputs.csv
-!state_npv_fig_inputs_health_non_age_vsl.csv
-!state_npv_fig_inputs_health_ref.csv

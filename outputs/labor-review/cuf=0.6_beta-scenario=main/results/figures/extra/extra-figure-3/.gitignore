@@ -1,7 +1,0 @@
-# Only specific files are tracked in this directory
-*
-!.gitignore
-!.gitkeep
-!state_npv_fig_2020_ppx_bartik_annual_vsl.png
-!state_npv_fig_2020_ppx_bartik_non_age_vsl.png
-!state_npv_fig_2020_ppx_bartik_ref.png
