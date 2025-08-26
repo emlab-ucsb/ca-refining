@@ -1,3 +1,7 @@
+# Targets snapshot created: 2025-08-25 14:34:59 PDT
+# This is a complete copy of _targets.R as it was when this run was executed
+# Do not modify this file - it serves as a historical record
+
 # Load packages required to define the pipeline:
 library(targets)
 library(data.table)
@@ -2442,13 +2446,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_state_labor_annual,
+    name = save_mortality_ref,
     command = simple_fwrite_repo(
-      annual_all_impacts_labor,
+      refining_mortality_ref,
       NULL,
-      "state_annual_labor_outputs.csv",
+      "refining_mortality_2023_ref.csv",
       save_path = save_path,
-      file_type = "labor"
+      file_type = "table"
     ),
     format = "file"
   ),
@@ -2554,6 +2558,7 @@ list(
     ),
     format = "file"
   ),
+
   # Missing NPV figure save targets
   tar_target(
     name = save_npv_fig_2020ppx_bartik_ref,
@@ -3232,18 +3237,18 @@ list(
     format = "file"
   ),
 
-  # tar_target(
-  #   name = save_disaggregated_npv_pc_fig_inputs,
-  #   command = simple_fwrite_repo(
-  #     data = demographic_npv_df, # Demographic NPV per capita data (same source)
-  #     folder_path = NULL,
-  #     filename = "state_disaggregated_npv_pc_fig_inputs.csv",
-  #     save_path = save_path,
-  #     file_type = "figure",
-  #     figure_number = "figure-5"
-  #   ),
-  #   format = "file"
-  # ),
+  tar_target(
+    name = save_disaggregated_npv_pc_fig_inputs,
+    command = simple_fwrite_repo(
+      data = demographic_npv_df, # Demographic NPV per capita data (same source)
+      folder_path = NULL,
+      filename = "state_disaggregated_npv_pc_fig_inputs.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-5"
+    ),
+    format = "file"
+  ),
 
   # ---- Legend file targets ----
   # Note: Legend PNG targets will be added after testing the current changes

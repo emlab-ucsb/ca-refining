@@ -683,10 +683,20 @@ calc_labor_all_impacts_outputs <- function(
         NA,
         (prev_comp_l / 1e6) * total_indir_induc_multipliers$emp.li[1]
       ),
+      state_comp_emp_li = ifelse(
+        indirect_induced_scenario == "bartik-corrected",
+        state_comp_emp_li * indirect_induced_mult,
+        state_comp_emp_li
+      ),
       state_comp_ec_li = ifelse(
         year == min(year),
         NA,
         (prev_comp_l / 1e6) * total_indir_induc_multipliers$ec.li[1]
+      ),
+      state_comp_ec_li = ifelse(
+        indirect_induced_scenario == "bartik-corrected",
+        state_comp_ec_li * indirect_induced_mult,
+        state_comp_ec_li
       )
     ) %>%
     ungroup() %>%
