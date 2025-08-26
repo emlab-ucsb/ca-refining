@@ -629,8 +629,8 @@ calc_labor_all_impacts_outputs <- function(
 
   setnames(
     state_out_refining_all_impacts_bau,
-    c("state_comp_all_impacts", "production_bbl", "revenue","state_comp_h"),
-    c("state_comp_all_impacts_bau", "bau_production_bbl", "bau_revenue","state_comp_h_bau")
+    c("state_comp_all_impacts", "production_bbl", "revenue", "state_comp_h"),
+    c("state_comp_all_impacts_bau", "bau_production_bbl", "bau_revenue", "state_comp_h_bau")
   )
 
   ## step 7: lag state_comp_all_impacts by one year.
@@ -683,7 +683,7 @@ calc_labor_all_impacts_outputs <- function(
       state_comp_emp_li = ifelse(
         year == min(year),
         NA,
-        ((0.8*prev_comp_l) / 1e6) * total_indir_induc_multipliers$emp.li[1]
+        ((0.8 * prev_comp_l) / 1e6) * total_indir_induc_multipliers$emp.li[1]
       ),
       state_comp_emp_li = ifelse(
         indirect_induced_scenario == "bartik-corrected",
@@ -693,7 +693,7 @@ calc_labor_all_impacts_outputs <- function(
       state_comp_ec_li = ifelse(
         year == min(year),
         NA,
-        ((0.8*prev_comp_l) / 1e6) * total_indir_induc_multipliers$ec.li[1]
+        ((0.8 * prev_comp_l) / 1e6) * total_indir_induc_multipliers$ec.li[1]
       ),
       state_comp_ec_li = ifelse(
         indirect_induced_scenario == "bartik-corrected",
