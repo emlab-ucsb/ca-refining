@@ -22,8 +22,8 @@ plot_combined_production <- function(
   # dt_intra <- copy(intra_data)
   # dt_jet <- copy(jet_data)
 
-  label_its = "Total intrastate transportation\nliquid fuels demand produced by oil refineries"
-  label_all = "\nTotal transportation liquid fuels\ndemand including for interstate and military\naviation supplied by oil refineries\n"
+  label_its = "Total intrastate transportation\nliquid fuels"
+  label_all = "Total transportation liquid fuels\nincluding for interstate and military aviation"
 
   dt_its <- copy(its_data)
   dt_intra <- copy(intra_data)
@@ -377,7 +377,7 @@ plot_combined_production <- function(
     ) +
     scale_fill_manual(values = pal_fuel, guide = guide_legend(nrow = 7)) +
     scale_linetype_manual(
-      name = NULL,
+      name = "Demand produced by oil refineries",
       labels = c(
         "its" = label_its,
         "all" = label_all
@@ -386,7 +386,7 @@ plot_combined_production <- function(
         "its" = 3,
         "all" = 2
       ),
-      guide = guide_legend(nrow = 2)
+      guide = guide_legend(nrow = 2, title.position = "top")
     ) +
     theme_its +
     theme(legend.position = "none")
@@ -430,7 +430,7 @@ plot_combined_production <- function(
     ) +
     scale_fill_manual(values = pal_fuel, guide = guide_legend(nrow = 7)) +
     scale_linetype_manual(
-      name = NULL,
+      name = "Demand produced by oil refineries",
       labels = c(
         "its" = label_its,
         "all" = label_all
@@ -439,7 +439,7 @@ plot_combined_production <- function(
         "its" = 3,
         "all" = 2
       ),
-      guide = guide_legend(nrow = 2)
+      guide = guide_legend(nrow = 2, title.position = "top")
     ) +
     theme_its +
     theme(legend.position = "none")
@@ -487,7 +487,7 @@ plot_combined_production <- function(
       guide = guide_legend(nrow = 7, title.position = "top")
     ) +
     scale_linetype_manual(
-      name = NULL,
+      name = "Demand produced by oil refineries",
       labels = c(
         "its" = label_its,
         "all" = label_all
@@ -496,7 +496,7 @@ plot_combined_production <- function(
         "its" = 3,
         "all" = 2
       ),
-      guide = guide_legend(nrow = 2)
+      guide = guide_legend(nrow = 2, title.position = "top")
     ) +
     theme_its +
     theme(legend.key.width = unit(1, "cm"))
@@ -973,9 +973,9 @@ plot_combined_production <- function(
     rel_widths = c(0.3, 0.2, 0.25, 0.25),
     axis = "cc"
   )
-  
+
   # Add white background to the entire legend area
-  plots_legends <- ggdraw(plots_legends) + 
+  plots_legends <- ggdraw(plots_legends) +
     theme(plot.background = element_rect(fill = "white", color = "white"))
   # plots_legends
 
