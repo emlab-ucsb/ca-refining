@@ -47,11 +47,9 @@ fread("./cumulative_avoided_mortality.csv", stringsAsFactors = F)%>%
 fread("./cumulative_health_x_county.csv", stringsAsFactors = F)%>%
   filter(demo_cat%in%"DAC")%>%
   group_by(scen_id)%>%
-  summarise(mortality_pv = sum(mortality_pv_dem)/1000000000,
-            mortality_level = sum(mortality_level_dem)/1000000000)%>%
+  summarise(mortality_pv = sum(mortality_pv_dem)/1000000000)%>%
   ungroup()%>%
-  mutate(diff_pv = mortality_pv[scen_id == "BAU historic production"]-mortality_pv,
-         diff_level = mortality_level[scen_id == "BAU historic production"]-mortality_level)
+  mutate(diff_pv = mortality_pv[scen_id == "BAU historic production"]-mortality_pv)
 
   
 ## State-wide monetized mortality by county (new results)
@@ -60,8 +58,7 @@ fread("./cumulative_health_x_county.csv", stringsAsFactors = F)%>%
   filter(demo_cat%in%"DAC")%>%
   filter(scen_id %in% c("BAU historic production","LC1 low exports"))%>%
   group_by(scen_id,NAME)%>%
-  summarize(mortality_pv_dem = sum(mortality_pv_dem),
-         mortality_level_dem = sum(mortality_level_dem))%>%
+  summarize(mortality_pv_dem = sum(mortality_pv_dem))%>%
   ungroup()%>%  
   group_by(scen_id)%>%
   mutate(mortality_pv = sum(mortality_pv_dem))%>%
@@ -71,6 +68,37 @@ fread("./cumulative_health_x_county.csv", stringsAsFactors = F)%>%
   mutate(share_pv = (diff_pv/diff_pv_state))%>%
   #filter(scen_id %in% c("LC1 low exports"))%>%
   arrange(-share_pv)
+
+## By demographic
+
+fig5 <- fread("C:\\git\\ca-refining\\outputs\\rev-submission\\cuf=0.6_beta-scenario=main\\results\\figures\\figure-5\\state_disaggregated_npv_pc_fig_inputs.csv",
+              stringsAsFactors = F) 
+
+fread("C:\\git\\ca-refining\\outputs\\rev-submission\\cuf=0.6_beta-scenario=main\\results\\figures\\figure-5\\state_disaggregated_npv_pc_fig_inputs.csv",
+      stringsAsFactors = F)%>%
+  filter(scen_id %in% c("BAU historical production","LC1 low exports") & demo_cat %in% "DAC" & segment %in% "health")
+
+## Sensitivity analyses
+
+#Refinery-level
+fread("./state_npv_fig_inputs_health_ref.csv", stringsAsFactors = F)%>%
+  filter(unit_desc %in% "USD billion (2019 VSL)")%>%
+  #filter(scen_id %in% c("BAU historical production","LC1 low exports") & unit_desc %in% "USD billion (2019 VSL)")%>%
+  select(scen_id,value)%>%
+  distinct()
+  
+#Growing age-based VSL
+fread("C:\\git\\ca-refining\\outputs\\rev-submission\\cuf=0.6_beta-scenario=main\\results\\figures\\figure-3\\state_npv_fig_inputs_health.csv",
+      stringsAsFactors = F)%>%
+  filter(scen_id %in% c("BAU historical production","LC1 low exports") & unit_desc %in% "USD billion (annual VSL)")
+  
+#Constant VSL
+fread("./state_npv_fig_inputs_health_non_age_vsl.csv", stringsAsFactors = F)%>%
+  filter(scen_id %in% c("BAU historical production","LC1 low exports") & unit_desc %in% "USD billion (2019 VSL)")
+
+########################################################################################################################
+############# DEBUGGGING ########################################################################################################################
+########################################################################################################################
 
 
 fread("./cumulative_health_x_county.csv", stringsAsFactors = F)%>%
