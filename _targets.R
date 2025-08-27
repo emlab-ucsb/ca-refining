@@ -45,26 +45,15 @@ options(clustermq.scheduler = "multicore")
 tar_source()
 source("extras/plot_settings.R")
 
+# Load data path configuration (auto-detects or prompts user)
+source("setup_data_paths.R")
+
 # Replace the target list below with your own:
 list(
-  # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
-
-  # list paths
-  tar_target(
-    name = list_paths,
-    c(
-      "tracey-laptop" = "data",
-      "tracey-desktop" = "data",
-      "vincent" = "data",
-      "meas" = "data"
-    )
-  ),
-
-  # set main path
+  # data path (automatically configured)
   tar_target(
     name = main_path,
-    command = list_paths[user]
+    command = main_path
   ),
 
   ## set module settings for specific run (cuf and beta)
