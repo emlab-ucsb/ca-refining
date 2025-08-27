@@ -69,8 +69,7 @@ list(
   tar_target(name = ref_threshold, command = 0.6),
 
   # list save paths (UPDATE VERSION AS NEEDED)
-  # tar_target(name = version, command = "rev-submission"),
-  tar_target(name = version, command = "labor-review"),
+  tar_target(name = version, command = "rev-submission"),
   tar_target(
     name = iteration,
     command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)
