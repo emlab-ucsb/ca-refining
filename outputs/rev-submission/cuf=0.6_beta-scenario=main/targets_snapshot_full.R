@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-25 17:55:17 CEST
+# Targets snapshot created: 2025-08-27 13:58:16 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -49,26 +49,15 @@ options(clustermq.scheduler = "multicore")
 tar_source()
 source("extras/plot_settings.R")
 
+# Load data path configuration (auto-detects or prompts user)
+source("setup_data_paths.R")
+
 # Replace the target list below with your own:
 list(
-  # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
-
-  # list paths
-  tar_target(
-    name = list_paths,
-    c(
-      "tracey-laptop" = "data",
-      "tracey-desktop" = "data",
-      "vincent" = "data",
-      "meas" = "data"
-    )
-  ),
-
-  # set main path
+  # data path (automatically configured)
   tar_target(
     name = main_path,
-    command = list_paths[user]
+    command = main_path
   ),
 
   ## set module settings for specific run (cuf and beta)
@@ -144,7 +133,7 @@ list(
   tar_target(name = gge_to_bbls, command = 42),
 
   # labor analysis parameters
-  tar_target(name = alpha_comp, command = 0.2), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
+  tar_target(name = alpha_comp, command = 0), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
   tar_target(name = alpha_emp, command = 0), # #0-1 representing the share of jobs lost over time when losing a job in refining sector
   tar_target(name = indirect_induced_mult, command = 0.741), # multiplier for indirect and induced effects
 
