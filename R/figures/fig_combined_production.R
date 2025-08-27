@@ -538,7 +538,7 @@ plot_combined_production <- function(
   max_ghg_emissions <- max(ghg_data[, ghg_MtCO2], na.rm = TRUE)
 
   # Calculate coefficient to make GHG line at the top of stacked area chart
-  coef <- 1.05 * (max_stacked_production / max_ghg_emissions)
+  coef <- 1.06 * (max_stacked_production / max_ghg_emissions)
 
   theme_prod <- theme_line +
     theme(
