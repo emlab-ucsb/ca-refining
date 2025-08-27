@@ -784,6 +784,26 @@ extract_targets_parameters <- function(targets_content) {
 
     # Module settings
     params$user <- extract_single_value('tar_target\\(name = user', 'user')
+    params$data_path <- extract_single_value('tar_target\\(name = main_path', 'main_path')
+    
+    # Try to get the actual resolved data path value
+    if (is.na(params$data_path) || params$data_path == "main_path") {
+        # If we can't extract from targets, try to get the current value
+        if (exists("main_path", envir = .GlobalEnv)) {
+            params$data_path <- get("main_path", envir = .GlobalEnv)
+        } else if (file.exists("data_config.R")) {
+            # Try to source the data config to get the current path
+            tryCatch({
+                temp_env <- new.env()
+                source("data_config.R", local = temp_env)
+                if (exists("data_path", envir = temp_env)) {
+                    params$data_path <- get("data_path", envir = temp_env)
+                }
+            }, error = function(e) {
+                # Continue with whatever we have
+            })
+        }
+    }
     params$ref_threshold <- extract_single_value(
         'tar_target\\(name = ref_threshold',
         'ref_threshold'
@@ -906,6 +926,7 @@ write_targets_summary <- function(
         paste("**Generated:** ", format(timestamp, "%Y-%m-%d %H:%M:%S %Z")),
         paste("**Version:** ", version),
         paste("**Iteration:** ", iteration),
+        paste("**Data path:** ", params$data_path %||% "Not specified"),
         # paste("**User:** ", params$user %||% "Not specified"),
         "",
         "## Module Settings",
