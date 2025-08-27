@@ -469,7 +469,7 @@ plot_combined_production <- function(
       subtitle = NULL,
       x = NULL,
       y = "Fuel demand\n(Million bge)",
-      fill = "Fuels not produced by oil refineries",
+      fill = "Fuels not produced by oil refineries\n(Subfigures A and B only)",
       linetype = NULL
     ) +
     scale_x_continuous(
