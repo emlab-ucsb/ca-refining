@@ -362,7 +362,7 @@ plot_combined_production <- function(
       title = "BAU Demand\n(Only)",
       subtitle = NULL,
       x = NULL,
-      y = "Fuel demand\n(Million bge)",
+      y = "Fuel demand\n(Million bge per year)",
       fill = NULL
     ) +
     scale_x_continuous(
@@ -415,7 +415,7 @@ plot_combined_production <- function(
       title = "Low Carbon Demand\n(Only)",
       subtitle = NULL,
       x = NULL,
-      y = "Fuel demand\n(Million bge)",
+      y = "Fuel demand\n(Million bge per year)",
       fill = NULL
     ) +
     scale_x_continuous(
@@ -468,7 +468,7 @@ plot_combined_production <- function(
       title = NULL,
       subtitle = NULL,
       x = NULL,
-      y = "Fuel demand\n(Million bge)",
+      y = "Fuel demand\n(Million bge per year)",
       fill = "Fuels not produced by oil refineries\n(Subfigures A and B only)",
       linetype = NULL
     ) +
@@ -584,7 +584,7 @@ plot_combined_production <- function(
     labs(
       title = "BAU Demand\nHistorical Production",
       x = NULL,
-      y = "Million bge",
+      y = "Million bge per year",
       fill = NULL,
       linetype = NULL,
       color = NULL
@@ -595,7 +595,7 @@ plot_combined_production <- function(
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      name = "Fuel production\n(Million bge)",
+      name = "Fuel production\n(Million bge per year)",
       sec.axis = sec_axis(
         ~ . / coef,
         name = bquote(GHG ~ emissions ~ (MtCO[2]))
@@ -639,7 +639,7 @@ plot_combined_production <- function(
     labs(
       title = "BAU Demand\nHistorical Exports",
       x = NULL,
-      y = "Million bge",
+      y = "Million bge per year",
       fill = NULL,
       linetype = NULL,
       color = NULL
@@ -650,7 +650,7 @@ plot_combined_production <- function(
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      name = "Fuel production\n(Million bge)",
+      name = "Fuel production\n(Million bge per year)",
       sec.axis = sec_axis(
         ~ . / coef,
         name = bquote(GHG ~ emissions ~ (MtCO[2]))
@@ -694,7 +694,7 @@ plot_combined_production <- function(
     labs(
       title = "BAU Demand\nLow Exports",
       x = NULL,
-      y = "Million bge",
+      y = "Million bge per year",
       fill = NULL,
       linetype = NULL,
       color = NULL
@@ -705,7 +705,7 @@ plot_combined_production <- function(
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      name = "Fuel production\n(Million bge)",
+      name = "Fuel production\n(Million bge per year)",
       sec.axis = sec_axis(
         ~ . / coef,
         name = bquote(GHG ~ emissions ~ (MtCO[2]))
@@ -749,7 +749,7 @@ plot_combined_production <- function(
     labs(
       title = "Low Carbon Demand\nHistorical Production",
       x = NULL,
-      y = "Million bge",
+      y = "Million bge per year",
       fill = NULL,
       linetype = NULL,
       color = NULL
@@ -760,7 +760,7 @@ plot_combined_production <- function(
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      name = "Fuel production\n(Million bge)",
+      name = "Fuel production\n(Million bge per year)",
       sec.axis = sec_axis(
         ~ . / coef,
         name = bquote(GHG ~ emissions ~ (MtCO[2]))
@@ -804,7 +804,7 @@ plot_combined_production <- function(
     labs(
       title = "Low Carbon Demand\nHistorical Exports",
       x = NULL,
-      y = "Million bge",
+      y = "Million bge per year",
       fill = NULL,
       linetype = NULL,
       color = NULL
@@ -815,7 +815,7 @@ plot_combined_production <- function(
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      name = "Fuel production\n(Million bge)",
+      name = "Fuel production\n(Million bge per year)",
       sec.axis = sec_axis(
         ~ . / coef,
         name = bquote(GHG ~ emissions ~ (MtCO[2]))
@@ -859,7 +859,7 @@ plot_combined_production <- function(
     labs(
       title = "Low Carbon Demand\nLow Exports",
       x = NULL,
-      y = "Million bge",
+      y = "Million bge per year",
       fill = NULL,
       linetype = NULL,
       color = NULL
@@ -870,7 +870,7 @@ plot_combined_production <- function(
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      name = "Fuel production\n(Million bge)",
+      name = "Fuel production\n(Million bge per year)",
       sec.axis = sec_axis(
         ~ . / coef,
         name = bquote(GHG ~ emissions ~ (MtCO[2]))
@@ -914,7 +914,7 @@ plot_combined_production <- function(
     labs(
       title = "Low Carbon Demand\nLow Exports",
       x = NULL,
-      y = "Million bge",
+      y = "Million bge per year",
       fill = "Fuels produced by oil refineries",
       linetype = NULL,
       color = NULL
@@ -925,7 +925,7 @@ plot_combined_production <- function(
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      name = "Fuel production\n(Million bge)",
+      name = "Fuel production\n(Million bge per year)",
       sec.axis = sec_axis(
         ~ . / coef,
         name = bquote(GHG ~ emissions ~ (MtCO[2]))
