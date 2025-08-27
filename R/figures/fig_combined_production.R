@@ -966,12 +966,12 @@ plot_combined_production <- function(
 
   plots_legends <- plot_grid(
     legend_lines,
-    legend_ghg,
     legend_fuels_not_refinery,
     legend_fuels_refinery,
+    legend_ghg,
     ncol = 4,
-    rel_widths = c(0.3, 0.2, 0.25, 0.25),
-    axis = "cc"
+    rel_widths = c(0.3, 0.25, 0.25, 0.2),
+    axis = "lc"
   )
 
   # Add white background to the entire legend area
