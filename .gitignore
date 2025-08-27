@@ -41,8 +41,13 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
+# User-specific data configuration
+data_config.R
+
 # targets
 _targets/
+# But track the last data path for rebuild detection
+!_targets/.last_data_path
 
 # .DS_Store
 .DS_Store
