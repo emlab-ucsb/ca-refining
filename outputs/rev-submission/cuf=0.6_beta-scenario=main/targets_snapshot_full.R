@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-13 12:51:10 PDT
+# Targets snapshot created: 2025-08-27 15:34:27 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -49,26 +49,15 @@ options(clustermq.scheduler = "multicore")
 tar_source()
 source("extras/plot_settings.R")
 
+# Load data path configuration (auto-detects or prompts user)
+source("setup_data_paths.R")
+
 # Replace the target list below with your own:
 list(
-  # set user
-  tar_target(name = user, "meas"), # choose: tracey, vincent, meas (add users and paths as needed)
-
-  # list paths
-  tar_target(
-    name = list_paths,
-    c(
-      "tracey-laptop" = "data",
-      "tracey-desktop" = "data",
-      "vincent" = "data",
-      "meas" = "data"
-    )
-  ),
-
-  # set main path
+  # data path (automatically configured)
   tar_target(
     name = main_path,
-    command = list_paths[user]
+    command = main_path
   ),
 
   ## set module settings for specific run (cuf and beta)
@@ -144,7 +133,7 @@ list(
   tar_target(name = gge_to_bbls, command = 42),
 
   # labor analysis parameters
-  tar_target(name = alpha_comp, command = 0.2), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
+  tar_target(name = alpha_comp, command = 0), # #0-1 representing the share of each worker’s compensation that they lose when moving to a new job.
   tar_target(name = alpha_emp, command = 0), # #0-1 representing the share of jobs lost over time when losing a job in refining sector
   tar_target(name = indirect_induced_mult, command = 0.741), # multiplier for indirect and induced effects
 
@@ -1489,6 +1478,12 @@ list(
     )
   ),
 
+  # Shared data processing targets
+  tar_target(
+    name = health_gaps_processed,
+    command = process_health_gaps_data(health_grp)
+  ),
+
   # tar_target(name = health_pov, command = calculate_poverty_disp(raw_pop_poverty,
   #                                                                health_weighted)),
   #
@@ -1575,6 +1570,12 @@ list(
       pop_ratios
     )
   ),
+
+  tar_target(
+    name = labor_gaps_processed,
+    command = process_labor_gaps_data(ref_labor_demog_yr)
+  ),
+
   # tar_target(name = ref_labor_demog_yr, command = calculate_labor_x_demg_annual(
   #   county_grp_pop_ratios,
   #   annual_labor,
@@ -1825,6 +1826,16 @@ list(
       ref_labor_demog,
       state_ghg_output,
       dt_ghg_2019
+    )
+  ),
+
+  # Process demographic NPV data for per-capita calculations
+  tar_target(
+    name = npv_pc_processed,
+    command = process_npv_pc_data(
+      demographic_npv_df,
+      refining_mortality,
+      pop_ratios
     )
   ),
 
@@ -2445,13 +2456,13 @@ list(
     format = "file"
   ),
   tar_target(
-    name = save_mortality_ref,
+    name = save_state_labor_annual,
     command = simple_fwrite_repo(
-      refining_mortality_ref,
+      annual_all_impacts_labor,
       NULL,
-      "refining_mortality_2023_ref.csv",
+      "state_annual_labor_outputs.csv",
       save_path = save_path,
-      file_type = "table"
+      file_type = "labor"
     ),
     format = "file"
   ),
@@ -2489,7 +2500,7 @@ list(
       save_path = save_path,
       file_type = "figure",
       figure_number = "figure-2",
-      height = 13,
+      height = 15,
       dpi = 600
     ),
     format = "file"
@@ -2557,7 +2568,6 @@ list(
     ),
     format = "file"
   ),
-
   # Missing NPV figure save targets
   tar_target(
     name = save_npv_fig_2020ppx_bartik_ref,
@@ -3200,7 +3210,7 @@ list(
   tar_target(
     name = save_labor_levels_fig_gaps_pmil_inputs,
     command = simple_fwrite_repo(
-      data = ref_labor_demog_yr, # Labor demographic data used for gaps analysis
+      data = labor_gaps_processed, # Processed labor gaps data
       folder_path = NULL,
       filename = "state_labor_levels_fig_gaps_pmil_inputs.csv",
       save_path = save_path,
@@ -3213,7 +3223,7 @@ list(
   tar_target(
     name = save_levels_fig_gaps_pmil_inputs,
     command = simple_fwrite_repo(
-      data = health_grp, # Health group data used for gaps analysis
+      data = health_gaps_processed, # Processed health gaps data
       folder_path = NULL,
       filename = "state_levels_fig_gaps_pmil_inputs.csv",
       save_path = save_path,
@@ -3239,12 +3249,25 @@ list(
   tar_target(
     name = save_disaggregated_npv_pc_fig_inputs,
     command = simple_fwrite_repo(
-      data = demographic_npv_df, # Demographic NPV per capita data (same source)
+      data = npv_pc_processed, # Demographic NPV per capita data (processed)
       folder_path = NULL,
       filename = "state_disaggregated_npv_pc_fig_inputs.csv",
       save_path = save_path,
       file_type = "figure",
       figure_number = "figure-5"
+    ),
+    format = "file"
+  ),
+
+  # ---- Additional CSV file targets ----
+  tar_target(
+    name = save_avg_pm25_county_2019,
+    command = simple_fwrite_repo(
+      data = county_pm25_2019,
+      folder_path = NULL,
+      filename = "avg_pm25_county_2019.csv",
+      save_path = save_path,
+      file_type = "table"
     ),
     format = "file"
   ),

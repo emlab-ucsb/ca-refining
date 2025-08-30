@@ -1,25 +1,25 @@
 scen_id,demand_scenario,refining_scenario,ghg_perc_diff,metric,value,segment,unit_desc,title,scenario,unit
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086488,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086486,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.85448167066246,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254289,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254287,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,101.834888125902,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086488,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086486,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.85448167066246,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254289,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254287,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,101.834888125902,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086488,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086486,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.85448167066246,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254289,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254287,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,101.834888125902,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086488,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.01727805086486,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost,9.85448167066246,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - historical exports,NPV (2019 USD billion)
-BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254289,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,93.1833385254287,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 BAU historical exports,BAU,historical exports,-0.168394679004793,avoided_health_cost_ghg,101.834888125902,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
@@ -48,98 +48,98 @@ BAU historical production,BAU,historical production,0.00549319314029759,avoided_
 BAU historical production,BAU,historical production,0.00549319314029759,avoided_health_cost_ghg,,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,13.2700298105336,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547362,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045326,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547363,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045324,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.3330973008809,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
-(2019 USD million / MtCO2e)"
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,13.2700298105336,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547362,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045326,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
-(2019 USD million / MtCO2e)"
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.3330973008809,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.333097300881,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,13.2700298105336,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547362,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045326,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547363,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045324,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.3330973008809,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.333097300881,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,13.2700298105336,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547362,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045326,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547363,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045324,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.3330973008809,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.333097300881,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235233,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,13.2700298105336,health,USD billion (2019 VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost,14.5105971547363,health,USD billion (annual VSL),Health: avoided mortality,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,79.8666514045324,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU low exports,BAU,low exports,-0.304254909976136,avoided_health_cost_ghg,87.333097300881,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235234,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
 LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,18.5851518760222,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045885,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045889,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289258,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289259,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235233,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235234,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
 LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,18.5851518760222,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045885,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045889,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289258,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289259,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235233,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235234,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
 LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,18.5851518760222,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045885,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045889,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289258,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289259,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235233,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,16.8258688235234,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
 LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost,18.5851518760222,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical exports,NPV (2019 USD billion)
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045885,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,74.1688786045889,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289258,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+LC1 historical exports,LC1,historical exports,-0.550668351511017,avoided_health_cost_ghg,81.9238452289259,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227902,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477635,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640199,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227886,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477618,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640173,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917538,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917535,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227902,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477635,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640199,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227886,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477618,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640173,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917538,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917535,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227902,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477635,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640199,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227886,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477618,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640173,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917538,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917535,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227902,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477635,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640199,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0535017195227886,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost,-0.0607108355477618,health,USD billion (annual VSL),Health: avoided mortality,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,89.3736690640173,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917538,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+LC1 historical production,LC1,historical production,0.00820535705280947,avoided_health_cost_ghg,101.416368917535,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,21.0381370598205,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
 LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,23.1965302987252,health,USD billion (annual VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.8890791846897,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.88907918469,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317616,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
-(2019 USD million / MtCO2e)"
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,21.0381370598205,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,23.1965302987252,health,USD billion (annual VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.8890791846897,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
-(2019 USD million / MtCO2e)"
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317616,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317617,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,21.0381370598205,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
 LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,23.1965302987252,health,USD billion (annual VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.8890791846897,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.88907918469,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317616,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317617,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
 LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,21.0381370598205,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
 LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,23.1965302987252,health,USD billion (annual VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.8890791846897,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.88907918469,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
-LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317616,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317617,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,21.0381370598205,health,USD billion (2019 VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost,23.1965302987252,health,USD billion (annual VSL),Health: avoided mortality,Low demand - low exports,NPV (2019 USD billion)
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,70.88907918469,health,USD billion per GHG (2019 VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 low exports,LC1,low exports,-0.68652858248236,avoided_health_cost_ghg,78.1618956317617,health,USD billion per GHG (annual VSL),Health: avoided mortality per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
 (2019 USD million / MtCO2e)"
