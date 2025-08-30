@@ -382,9 +382,12 @@ simple_ggsave_repo <- function(
         }
     )
 
+    # Try cairo_pdf first, then check if file was actually created
+    pdf_created <- FALSE
+    
     tryCatch(
         {
-            # For PDF, make sure we're using the cairo_pdf device for best compatibility
+            # Try cairo_pdf first for best compatibility
             ggplot2::ggsave(
                 filename = pdf_path,
                 plot = plot,
@@ -393,12 +396,41 @@ simple_ggsave_repo <- function(
                 device = grDevices::cairo_pdf,
                 units = "in"
             )
-            message("Saved PDF: ", pdf_path)
+            # Check if file was actually created (cairo can fail silently)
+            if (file.exists(pdf_path)) {
+                message("Saved PDF: ", pdf_path)
+                pdf_created <- TRUE
+            }
         },
         error = function(e) {
-            warning("Failed to save PDF: ", e$message)
+            # Exception was thrown during cairo attempt
         }
     )
+    
+    # If cairo didn't create the file, try fallback
+    if (!pdf_created) {
+        tryCatch(
+            {
+                ggplot2::ggsave(
+                    filename = pdf_path,
+                    plot = plot,
+                    width = width,
+                    height = height,
+                    device = grDevices::pdf,
+                    units = "in"
+                )
+                message("Saved PDF (using default pdf device): ", pdf_path)
+                pdf_created <- TRUE
+            },
+            error = function(e2) {
+                warning("Failed to save PDF with both cairo_pdf and pdf devices: ", e2$message)
+            }
+        )
+    }
+    
+    if (!pdf_created) {
+        warning("Unable to create PDF file: ", pdf_path)
+    }
 
     # Return only the PNG path for targets compatibility
     # This is because targets requires a single value return, not a list
