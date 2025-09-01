@@ -191,7 +191,7 @@ process_npv_pc_data <- function(demographic_npv_df, refining_mortality, pop_rati
   plot_df_long[,
     seg_title := fifelse(
       seg_title == "Labor: forgone compensation",
-      "Labor: forgone compensation of directly employed workers",
+      "Labor: forgone compensation (direct impact only)",
       seg_title
     )
   ]
@@ -7159,7 +7159,7 @@ plot_labor_levels <- function(
 
   ## shared y lab
   yaxis_lab <- ggdraw() +
-    draw_label("Labor: FTE job-years (thousand)", size = 8, angle = 90)
+    draw_label("Labor: FTE direct job-years (thousand)", size = 8, angle = 90)
 
   # ## plot together
   # fig2l_a <- plot_grid(
@@ -7735,7 +7735,7 @@ plot_labor_levels_pmil <- function(
 
   ## shared y lab
   yaxis_lab <- ggdraw() +
-    draw_label("Labor: FTE job-years per million people", size = 8, angle = 90)
+    draw_label("Labor: FTE direct job-years per million people", size = 8, angle = 90)
 
   # ## plot together
   # fig2l_a <- plot_grid(
@@ -8243,7 +8243,7 @@ plot_labor_levels_gaps <- function(
   ## shared y lab
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE-jobs, difference from reference (thousand)",
+      "Labor: FTE direct job-years, difference from reference (thousand)",
       size = 8,
       angle = 90
     )
@@ -8736,7 +8736,7 @@ plot_labor_levels_gaps_pmil <- function(
   ## shared y lab
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE-jobs, difference from reference per million people",
+      "Labor: FTE direct job-years, difference from reference per million people",
       size = 8,
       angle = 90
     )
@@ -9730,11 +9730,28 @@ plot_hl_levels_pc <- function(
   plot_df_long[,
     seg_title := fifelse(
       seg_title == "Labor: forgone compensation",
-      "Labor: forgone compensation of directly employed workers",
+      "Labor: forgone compensation (direct impact only)",
       seg_title
     )
   ]
 
+  ## udpate scen title
+  plot_df_long[, scen_title_adj := str_replace_all(scen_title, "Historical", "historical")]
+  plot_df_long[, scen_title_adj := str_replace_all(scen_title_adj, "Low exports", "low exports")]
+  
+  plot_df_long$scen_title_adj <- factor(
+    plot_df_long$scen_title_adj,
+    levels = c(
+      "BAU demand\nhistorical production",
+      "BAU demand\nhistorical exports",
+      "BAU demand\nlow exports",
+      "Low demand\nhistorical exports",
+      "Low demand\nlow exports",
+      "Low demand\nhistorical production"
+    )
+  )
+  
+  
   ## save figure inputs
   ## Figure inputs will be saved by _targets.R pipeline
   # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv")
@@ -9765,7 +9782,7 @@ plot_hl_levels_pc <- function(
             levels = c("Black", "Hispanic", "Asian", "white")
           )
         ),
-      aes(x = scen_title, y = value, color = title),
+      aes(x = scen_title_adj, y = value, color = title),
       size = 3,
       alpha = 0.8
     ) +
@@ -9776,7 +9793,7 @@ plot_hl_levels_pc <- function(
       values = race_col_pal
     ) +
     labs(
-      y = "NPV per capita (USD)",
+      y = "NPV per capita (2019 USD)",
       x = NULL,
       color = NULL
     ) +
@@ -9810,7 +9827,7 @@ plot_hl_levels_pc <- function(
             levels = c("Black", "Hispanic", "Asian", "white")
           )
         ),
-      aes(x = scen_title, y = value, color = title, shape = metric),
+      aes(x = scen_title_adj, y = value, color = title, shape = metric),
       size = 3,
       alpha = 0.8
     ) +
@@ -9832,8 +9849,8 @@ plot_hl_levels_pc <- function(
     ) +
     # scale_y_continuous(label = comma, limits = c(-1000, 0)) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -9865,7 +9882,7 @@ plot_hl_levels_pc <- function(
             levels = c("Black", "Hispanic", "Asian", "white")
           )
         ),
-      aes(x = scen_title, y = value, color = title, shape = metric),
+      aes(x = scen_title_adj, y = value, color = title, shape = metric),
       size = 3,
       alpha = 0.8
     ) +
@@ -9886,8 +9903,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -12570,7 +12587,7 @@ fig4_hl <- function(
   # yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE job-years, difference from reference (thousand)",
+      "Labor: FTE direct job-years, difference from reference (thousand)",
       size = 8,
       angle = 90
     )
