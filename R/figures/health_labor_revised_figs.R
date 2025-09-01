@@ -13717,7 +13717,7 @@ fig4_hl_pmil <- function(
   # yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE direct employment per million people (difference from reference)",
+      "Labor: FTE direct job-years per million people (difference from reference)",
       size = fig_text_size,
       angle = 90
     )
