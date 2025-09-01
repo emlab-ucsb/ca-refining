@@ -190,8 +190,8 @@ process_npv_pc_data <- function(demographic_npv_df, refining_mortality, pop_rati
   ## update labor segment title
   plot_df_long[,
     seg_title := fifelse(
-      seg_title == "Labor: forgone wages",
-      "Labor: forgone wages of directly employed workers",
+      seg_title == "Labor: forgone compensation",
+      "Labor: forgone compensation of directly employed workers",
       seg_title
     )
   ]
@@ -418,14 +418,14 @@ plot_npv_labor_oilpx <- function(
     mutate(
       title = ifelse(
         metric == "forgone_wages_bil",
-        "Labor: forgone wages",
-        "Labor: forgone wages per avoided GHG"
+        "Labor: forgone compensation",
+        "Labor: forgone compensation per avoided GHG"
       )
     )
 
   plot_df_labor$title <- factor(
     plot_df_labor$title,
-    levels = c("Labor: forgone wages", "Labor: forgone wages per avoided GHG")
+    levels = c("Labor: forgone compensation", "Labor: forgone compensation per avoided GHG")
   )
 
   ## rename
@@ -591,7 +591,7 @@ plot_npv_labor_oilpx <- function(
     facet_wrap(~oil_px_label) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -668,7 +668,7 @@ plot_npv_labor_oilpx <- function(
     facet_wrap(~oil_px_label) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -745,7 +745,7 @@ plot_npv_labor_oilpx <- function(
     facet_wrap(~oil_px_label) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -1150,14 +1150,14 @@ plot_npv_health_labor <- function(
     mutate(
       title = ifelse(
         metric == "forgone_wages_bil",
-        "Labor: forgone wages",
-        "Labor: forgone wages per avoided GHG"
+        "Labor: forgone compensation",
+        "Labor: forgone compensation per avoided GHG"
       )
     )
 
   plot_df_labor$title <- factor(
     plot_df_labor$title,
-    levels = c("Labor: forgone wages", "Labor: forgone wages per avoided GHG")
+    levels = c("Labor: forgone compensation", "Labor: forgone compensation per avoided GHG")
   )
 
   ## rename
@@ -1375,7 +1375,7 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -1446,7 +1446,7 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -1518,7 +1518,7 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -1576,7 +1576,7 @@ plot_npv_health_labor <- function(
     #                                            metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.8) +
     labs(
       color = "with re-emp:",
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -1651,7 +1651,7 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = "no re-emp:",
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -6056,7 +6056,7 @@ plot_health_levels_gaps <- function(main_path, save_path, health_grp) {
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortalities, difference from reference",
+      "Avoided mortality, difference from reference",
       size = 8,
       angle = 90
     )
@@ -6373,7 +6373,7 @@ plot_health_levels_gaps_pmil <- function(
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortalities per million people, difference from reference",
+      "Avoided mortality per million people, difference from reference",
       size = 8,
       angle = 90
     )
@@ -9074,7 +9074,7 @@ plot_hl_levels_df <- function(
       seg_title = ifelse(
         segment == "health",
         "Health: avoided mortality",
-        "Labor: forgone wages"
+        "Labor: forgone compensation"
       )
     )
 
@@ -9729,8 +9729,8 @@ plot_hl_levels_pc <- function(
   ## udpate labor segment title
   plot_df_long[,
     seg_title := fifelse(
-      seg_title == "Labor: forgone wages",
-      "Labor: forgone wages of directly employed workers",
+      seg_title == "Labor: forgone compensation",
+      "Labor: forgone compensation of directly employed workers",
       seg_title
     )
   ]
@@ -11969,7 +11969,7 @@ fig4_hl <- function(
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortalities, difference from reference",
+      "Avoided mortality, difference from reference",
       size = 8,
       angle = 90
     )
@@ -13021,7 +13021,7 @@ fig4_hl_pmil <- function(
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Health: Avoided mortalities per million people (difference from reference)",
+      "Health: avoided mortality per million people (difference from reference)",
       size = fig_text_size,
       angle = 90
     )
