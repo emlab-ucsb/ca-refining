@@ -10169,9 +10169,7 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     theme_line +
-    scale_y_continuous(
-      limits = c(0, 2000)
-    ) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme(
       legend.position = "none",
       legend.title = element_blank(),
