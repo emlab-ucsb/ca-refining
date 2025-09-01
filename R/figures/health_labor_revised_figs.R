@@ -10039,8 +10039,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -10086,8 +10086,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -10208,8 +10208,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -10248,8 +10248,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
