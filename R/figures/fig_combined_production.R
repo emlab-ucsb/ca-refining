@@ -986,7 +986,43 @@ plot_combined_production <- function(
     rel_heights = c(0.8, 0.2)
   )
 
-  return(plots_all)
+  # Create fuel demand summary table for 2020-2045
+  demand_summary <- dt_demand2[
+    year >= 2020 & year <= 2045,
+    .(consumption_bge = sum(consumption_bge, na.rm = TRUE)),
+    by = .(scenario, year, fuel)
+  ]
+
+  # Calculate total demand by scenario and year for percentage calculations
+  total_by_scenario_year <- demand_summary[,
+    .(total_consumption = sum(consumption_bge, na.rm = TRUE)),
+    by = .(scenario, year)
+  ]
+
+  # Merge and calculate percentages
+  demand_summary <- demand_summary[
+    total_by_scenario_year,
+    on = .(scenario, year)
+  ]
+  demand_summary[, percentage := round(consumption_bge / total_consumption, 2)]
+  demand_summary[, consumption_million_bge := round(consumption_bge / 1e6, 3)]
+
+  # Create final formatted table
+  demand_table <- demand_summary[, .(
+    scenario,
+    year,
+    fuel = as.character(fuel),
+    consumption_million_bge,
+    percentage
+  )]
+
+  # Sort by scenario, year, and fuel
+  setorder(demand_table, scenario, year, fuel)
+
+  return(list(
+    plot = plots_all,
+    demand_table = demand_table
+  ))
 }
 
 # plots_all
