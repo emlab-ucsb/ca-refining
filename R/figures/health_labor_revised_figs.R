@@ -9991,7 +9991,7 @@ plot_hl_levels_pc <- function(
     scale_shape_manual(values = poverty_ptc_h) +
     facet_wrap(~seg_title) +
     labs(
-      y = "NPV per capita (USD)",
+      y = "NPV per capita (2019 USD)",
       x = NULL,
       color = NULL
     ) +
@@ -10164,7 +10164,7 @@ plot_hl_levels_pc <- function(
     scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     labs(
-      y = "NPV per capita (USD)",
+      y = "NPV per capita (2019 USD)",
       x = NULL,
       color = NULL
     ) +
