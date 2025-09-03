@@ -11984,7 +11984,7 @@ fig4_hl <- function(
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortality, difference from reference",
+      "Health: avoided mortality (difference from reference)",
       size = 8,
       angle = 90
     )
