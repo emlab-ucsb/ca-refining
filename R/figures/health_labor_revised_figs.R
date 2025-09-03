@@ -1300,8 +1300,8 @@ plot_npv_health_labor <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 40),
-      breaks = seq(0, 40, by = 10)
+      limits = c(0, 50),
+      breaks = seq(0, 50, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1380,8 +1380,8 @@ plot_npv_health_labor <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1451,8 +1451,8 @@ plot_npv_health_labor <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1523,8 +1523,8 @@ plot_npv_health_labor <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-40, 0),
-      breaks = seq(-40, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1580,7 +1580,7 @@ plot_npv_health_labor <- function(
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    ylim(-50, 0) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -1655,7 +1655,7 @@ plot_npv_health_labor <- function(
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    ylim(-50, 0) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2431,8 +2431,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 60),
-      breaks = seq(0, 60, by = 10)
+      limits = c(0, 40),
+      breaks = seq(0, 40, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2511,8 +2511,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2582,8 +2582,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2654,8 +2654,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2781,8 +2781,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3438,8 +3438,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 60),
-      breaks = seq(0, 60, by = 10)
+      limits = c(0, 40),
+      breaks = seq(0, 40, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3518,8 +3518,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3589,8 +3589,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3661,8 +3661,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3719,8 +3719,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4446,8 +4446,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 60),
-      breaks = seq(0, 60, by = 10)
+      limits = c(0, 40),
+      breaks = seq(0, 40, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4526,8 +4526,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4597,8 +4597,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4669,8 +4669,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4727,8 +4727,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4800,8 +4800,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -11985,7 +11985,7 @@ fig4_hl <- function(
   yaxis_lab <- ggdraw() +
     draw_label(
       "Health: avoided mortality (difference from reference)",
-      size = 8,
+      size = 10,
       angle = 90
     )
 
@@ -12586,7 +12586,7 @@ fig4_hl <- function(
   yaxis_lab <- ggdraw() +
     draw_label(
       "Labor: FTE direct job-years (difference from reference, thousands)",
-      size = 8,
+      size = 10,
       angle = 90
     )
 
