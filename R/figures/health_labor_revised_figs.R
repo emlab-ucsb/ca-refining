@@ -6056,7 +6056,7 @@ plot_health_levels_gaps <- function(main_path, save_path, health_grp) {
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortality, difference from reference",
+      "Health: avoided mortality (difference from reference)",
       size = 8,
       angle = 90
     )
@@ -12585,7 +12585,7 @@ fig4_hl <- function(
   # yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE direct job-years, difference from reference (thousand)",
+      "Labor: FTE direct job-years (difference from reference, thousands)",
       size = 8,
       angle = 90
     )
