@@ -1,4 +1,4 @@
-# Targets snapshot created: 2025-08-30 14:03:03 EDT
+# Targets snapshot created: 2025-09-05 17:16:16 CEST
 # This is a complete copy of _targets.R as it was when this run was executed
 # Do not modify this file - it serves as a historical record
 
@@ -2397,6 +2397,17 @@ list(
       filename = "ct_xwalk_2019_2020.csv",
       save_path = save_path,
       file_type = "health"
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_indiv_prod_out,
+    command = simple_fwrite_repo(
+      data = indiv_prod_output,
+      folder_path = NULL, # not used when save_path and file_type are provided
+      filename = "indiv_prod_output.csv",
+      save_path = save_path,
+      file_type = "table"
     ),
     format = "file"
   ),
