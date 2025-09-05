@@ -23,53 +23,53 @@ aialnative,Race,LC1 low exports,LC1,low exports,,American Indian or Alaska Nativ
 Low exports",aialnative_sum_cost_pv,96722.6985880788
 aialnative,Race,LC1 low exports,LC1,low exports,,American Indian or Alaska Native,-0.68652858248236,sum_cost_2019_pv,480.206496398489,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",aialnative_sum_cost_2019_pv,96722.6985880788
-aialnative,Race,BAU historical exports,BAU,historical exports,2020 prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_h,-52.1203844135804,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+aialnative,Race,BAU historical exports,BAU,historical exports,2020 prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_h,-52.1203844135804,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,BAU historical exports,BAU,historical exports,2020 prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_l,-3.86740425907943,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+aialnative,Race,BAU historical exports,BAU,historical exports,2020 prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_l,-3.86740425907943,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,BAU historical exports,BAU,historical exports,changing prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_h,-67.0255902213837,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+aialnative,Race,BAU historical exports,BAU,historical exports,changing prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_h,-67.0255902213837,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,BAU historical exports,BAU,historical exports,changing prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_l,-5.46430038761241,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+aialnative,Race,BAU historical exports,BAU,historical exports,changing prices,American Indian or Alaska Native,-0.168394679004793,forgone_wages_l,-5.46430038761241,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,BAU historical production,BAU,historical production,2020 prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+aialnative,Race,BAU historical production,BAU,historical production,2020 prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,BAU historical production,BAU,historical production,2020 prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+aialnative,Race,BAU historical production,BAU,historical production,2020 prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,BAU historical production,BAU,historical production,changing prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+aialnative,Race,BAU historical production,BAU,historical production,changing prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,BAU historical production,BAU,historical production,changing prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+aialnative,Race,BAU historical production,BAU,historical production,changing prices,American Indian or Alaska Native,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,BAU low exports,BAU,low exports,2020 prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_h,-97.8932684455132,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+aialnative,Race,BAU low exports,BAU,low exports,2020 prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_h,-97.8932684455132,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,BAU low exports,BAU,low exports,2020 prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_l,-7.02183554668398,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+aialnative,Race,BAU low exports,BAU,low exports,2020 prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_l,-7.02183554668398,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,BAU low exports,BAU,low exports,changing prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_h,-126.008657338316,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+aialnative,Race,BAU low exports,BAU,low exports,changing prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_h,-126.008657338316,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,BAU low exports,BAU,low exports,changing prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_l,-9.91689963209429,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+aialnative,Race,BAU low exports,BAU,low exports,changing prices,American Indian or Alaska Native,-0.304254909976136,forgone_wages_l,-9.91689963209429,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,LC1 historical exports,LC1,historical exports,2020 prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_h,-134.081328846102,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+aialnative,Race,LC1 historical exports,LC1,historical exports,2020 prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_h,-134.081328846102,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,LC1 historical exports,LC1,historical exports,2020 prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_l,-11.4361647174965,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+aialnative,Race,LC1 historical exports,LC1,historical exports,2020 prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_l,-11.4361647174965,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,LC1 historical exports,LC1,historical exports,changing prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_h,-178.917468591285,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+aialnative,Race,LC1 historical exports,LC1,historical exports,changing prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_h,-178.917468591285,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,LC1 historical exports,LC1,historical exports,changing prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_l,-16.5742777569414,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+aialnative,Race,LC1 historical exports,LC1,historical exports,changing prices,American Indian or Alaska Native,-0.550668351511017,forgone_wages_l,-16.5742777569414,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,LC1 historical production,LC1,historical production,2020 prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_h,-2.05724052303663,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+aialnative,Race,LC1 historical production,LC1,historical production,2020 prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_h,-2.05724052303663,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,LC1 historical production,LC1,historical production,2020 prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_l,-0.172540104007724,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+aialnative,Race,LC1 historical production,LC1,historical production,2020 prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_l,-0.172540104007724,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,LC1 historical production,LC1,historical production,changing prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_h,-2.4521953201566,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+aialnative,Race,LC1 historical production,LC1,historical production,changing prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_h,-2.4521953201566,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,LC1 historical production,LC1,historical production,changing prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_l,-0.219947487229506,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+aialnative,Race,LC1 historical production,LC1,historical production,changing prices,American Indian or Alaska Native,0.00820535705280947,forgone_wages_l,-0.219947487229506,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,LC1 low exports,LC1,low exports,2020 prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_h,-181.241050278222,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+aialnative,Race,LC1 low exports,LC1,low exports,2020 prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_h,-181.241050278222,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,LC1 low exports,LC1,low exports,2020 prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_l,-14.5180114058116,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+aialnative,Race,LC1 low exports,LC1,low exports,2020 prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_l,-14.5180114058116,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",aialnative_forgone_wages_l,96722.6985880788
-aialnative,Race,LC1 low exports,LC1,low exports,changing prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_h,-239.78661464952,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+aialnative,Race,LC1 low exports,LC1,low exports,changing prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_h,-239.78661464952,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",aialnative_forgone_wages_h,96722.6985880788
-aialnative,Race,LC1 low exports,LC1,low exports,changing prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_l,-21.0035329304981,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+aialnative,Race,LC1 low exports,LC1,low exports,changing prices,American Indian or Alaska Native,-0.68652858248236,forgone_wages_l,-21.0035329304981,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",aialnative_forgone_wages_l,96722.6985880788
 asian,Race,BAU historical exports,BAU,historical exports,,Asian,-0.168394679004793,sum_cost_pv,456.844885770456,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",asian_sum_cost_pv,3847285.01356629
@@ -95,53 +95,53 @@ asian,Race,LC1 low exports,LC1,low exports,,Asian,-0.68652858248236,sum_cost_pv,
 Low exports",asian_sum_cost_pv,3847285.01356629
 asian,Race,LC1 low exports,LC1,low exports,,Asian,-0.68652858248236,sum_cost_2019_pv,943.192120572454,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",asian_sum_cost_2019_pv,3847285.01356629
-asian,Race,BAU historical exports,BAU,historical exports,2020 prices,Asian,-0.168394679004793,forgone_wages_h,-99.0214663417428,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+asian,Race,BAU historical exports,BAU,historical exports,2020 prices,Asian,-0.168394679004793,forgone_wages_h,-99.0214663417428,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,BAU historical exports,BAU,historical exports,2020 prices,Asian,-0.168394679004793,forgone_wages_l,-6.99222864798003,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+asian,Race,BAU historical exports,BAU,historical exports,2020 prices,Asian,-0.168394679004793,forgone_wages_l,-6.99222864798003,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",asian_forgone_wages_l,3847285.01356629
-asian,Race,BAU historical exports,BAU,historical exports,changing prices,Asian,-0.168394679004793,forgone_wages_h,-126.81608489621,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+asian,Race,BAU historical exports,BAU,historical exports,changing prices,Asian,-0.168394679004793,forgone_wages_h,-126.81608489621,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,BAU historical exports,BAU,historical exports,changing prices,Asian,-0.168394679004793,forgone_wages_l,-9.81362958094751,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+asian,Race,BAU historical exports,BAU,historical exports,changing prices,Asian,-0.168394679004793,forgone_wages_l,-9.81362958094751,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",asian_forgone_wages_l,3847285.01356629
-asian,Race,BAU historical production,BAU,historical production,2020 prices,Asian,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+asian,Race,BAU historical production,BAU,historical production,2020 prices,Asian,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",asian_forgone_wages_h,3847285.01356629
-asian,Race,BAU historical production,BAU,historical production,2020 prices,Asian,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+asian,Race,BAU historical production,BAU,historical production,2020 prices,Asian,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",asian_forgone_wages_l,3847285.01356629
-asian,Race,BAU historical production,BAU,historical production,changing prices,Asian,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+asian,Race,BAU historical production,BAU,historical production,changing prices,Asian,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",asian_forgone_wages_h,3847285.01356629
-asian,Race,BAU historical production,BAU,historical production,changing prices,Asian,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+asian,Race,BAU historical production,BAU,historical production,changing prices,Asian,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",asian_forgone_wages_l,3847285.01356629
-asian,Race,BAU low exports,BAU,low exports,2020 prices,Asian,-0.304254909976136,forgone_wages_h,-161.926338907718,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+asian,Race,BAU low exports,BAU,low exports,2020 prices,Asian,-0.304254909976136,forgone_wages_h,-161.926338907718,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,BAU low exports,BAU,low exports,2020 prices,Asian,-0.304254909976136,forgone_wages_l,-11.3057369139731,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+asian,Race,BAU low exports,BAU,low exports,2020 prices,Asian,-0.304254909976136,forgone_wages_l,-11.3057369139731,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",asian_forgone_wages_l,3847285.01356629
-asian,Race,BAU low exports,BAU,low exports,changing prices,Asian,-0.304254909976136,forgone_wages_h,-207.708768748494,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+asian,Race,BAU low exports,BAU,low exports,changing prices,Asian,-0.304254909976136,forgone_wages_h,-207.708768748494,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,BAU low exports,BAU,low exports,changing prices,Asian,-0.304254909976136,forgone_wages_l,-15.8865023734118,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+asian,Race,BAU low exports,BAU,low exports,changing prices,Asian,-0.304254909976136,forgone_wages_l,-15.8865023734118,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",asian_forgone_wages_l,3847285.01356629
-asian,Race,LC1 historical exports,LC1,historical exports,2020 prices,Asian,-0.550668351511017,forgone_wages_h,-207.435774726415,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+asian,Race,LC1 historical exports,LC1,historical exports,2020 prices,Asian,-0.550668351511017,forgone_wages_h,-207.435774726415,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,LC1 historical exports,LC1,historical exports,2020 prices,Asian,-0.550668351511017,forgone_wages_l,-16.9481234545716,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+asian,Race,LC1 historical exports,LC1,historical exports,2020 prices,Asian,-0.550668351511017,forgone_wages_l,-16.9481234545716,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",asian_forgone_wages_l,3847285.01356629
-asian,Race,LC1 historical exports,LC1,historical exports,changing prices,Asian,-0.550668351511017,forgone_wages_h,-274.387178405836,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+asian,Race,LC1 historical exports,LC1,historical exports,changing prices,Asian,-0.550668351511017,forgone_wages_h,-274.387178405836,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,LC1 historical exports,LC1,historical exports,changing prices,Asian,-0.550668351511017,forgone_wages_l,-24.3484579565577,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+asian,Race,LC1 historical exports,LC1,historical exports,changing prices,Asian,-0.550668351511017,forgone_wages_l,-24.3484579565577,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",asian_forgone_wages_l,3847285.01356629
-asian,Race,LC1 historical production,LC1,historical production,2020 prices,Asian,0.00820535705280947,forgone_wages_h,-3.08768189917792,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+asian,Race,LC1 historical production,LC1,historical production,2020 prices,Asian,0.00820535705280947,forgone_wages_h,-3.08768189917792,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",asian_forgone_wages_h,3847285.01356629
-asian,Race,LC1 historical production,LC1,historical production,2020 prices,Asian,0.00820535705280947,forgone_wages_l,-0.279504386074835,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+asian,Race,LC1 historical production,LC1,historical production,2020 prices,Asian,0.00820535705280947,forgone_wages_l,-0.279504386074835,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",asian_forgone_wages_l,3847285.01356629
-asian,Race,LC1 historical production,LC1,historical production,changing prices,Asian,0.00820535705280947,forgone_wages_h,-3.74901704585878,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+asian,Race,LC1 historical production,LC1,historical production,changing prices,Asian,0.00820535705280947,forgone_wages_h,-3.74901704585878,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",asian_forgone_wages_h,3847285.01356629
-asian,Race,LC1 historical production,LC1,historical production,changing prices,Asian,0.00820535705280947,forgone_wages_l,-0.362158420796682,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+asian,Race,LC1 historical production,LC1,historical production,changing prices,Asian,0.00820535705280947,forgone_wages_l,-0.362158420796682,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",asian_forgone_wages_l,3847285.01356629
-asian,Race,LC1 low exports,LC1,low exports,2020 prices,Asian,-0.68652858248236,forgone_wages_h,-268.252818154692,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+asian,Race,LC1 low exports,LC1,low exports,2020 prices,Asian,-0.68652858248236,forgone_wages_h,-268.252818154692,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,LC1 low exports,LC1,low exports,2020 prices,Asian,-0.68652858248236,forgone_wages_l,-21.1413571331247,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+asian,Race,LC1 low exports,LC1,low exports,2020 prices,Asian,-0.68652858248236,forgone_wages_l,-21.1413571331247,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",asian_forgone_wages_l,3847285.01356629
-asian,Race,LC1 low exports,LC1,low exports,changing prices,Asian,-0.68652858248236,forgone_wages_h,-352.412919854293,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+asian,Race,LC1 low exports,LC1,low exports,changing prices,Asian,-0.68652858248236,forgone_wages_h,-352.412919854293,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",asian_forgone_wages_h,3847285.01356629
-asian,Race,LC1 low exports,LC1,low exports,changing prices,Asian,-0.68652858248236,forgone_wages_l,-30.3646007589587,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+asian,Race,LC1 low exports,LC1,low exports,changing prices,Asian,-0.68652858248236,forgone_wages_l,-30.3646007589587,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",asian_forgone_wages_l,3847285.01356629
 black,Race,BAU historical exports,BAU,historical exports,,Black,-0.168394679004793,sum_cost_pv,732.924760493952,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",black_sum_cost_pv,1293179.54364969
@@ -167,53 +167,53 @@ black,Race,LC1 low exports,LC1,low exports,,Black,-0.68652858248236,sum_cost_pv,
 Low exports",black_sum_cost_pv,1293179.54364969
 black,Race,LC1 low exports,LC1,low exports,,Black,-0.68652858248236,sum_cost_2019_pv,1552.16340080285,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",black_sum_cost_2019_pv,1293179.54364969
-black,Race,BAU historical exports,BAU,historical exports,2020 prices,Black,-0.168394679004793,forgone_wages_h,-118.485480666976,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+black,Race,BAU historical exports,BAU,historical exports,2020 prices,Black,-0.168394679004793,forgone_wages_h,-118.485480666976,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",black_forgone_wages_h,1293179.54364969
-black,Race,BAU historical exports,BAU,historical exports,2020 prices,Black,-0.168394679004793,forgone_wages_l,-8.55809886506422,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+black,Race,BAU historical exports,BAU,historical exports,2020 prices,Black,-0.168394679004793,forgone_wages_l,-8.55809886506422,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",black_forgone_wages_l,1293179.54364969
-black,Race,BAU historical exports,BAU,historical exports,changing prices,Black,-0.168394679004793,forgone_wages_h,-152.007055557902,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+black,Race,BAU historical exports,BAU,historical exports,changing prices,Black,-0.168394679004793,forgone_wages_h,-152.007055557902,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",black_forgone_wages_h,1293179.54364969
-black,Race,BAU historical exports,BAU,historical exports,changing prices,Black,-0.168394679004793,forgone_wages_l,-12.0355316511064,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+black,Race,BAU historical exports,BAU,historical exports,changing prices,Black,-0.168394679004793,forgone_wages_l,-12.0355316511064,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",black_forgone_wages_l,1293179.54364969
-black,Race,BAU historical production,BAU,historical production,2020 prices,Black,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+black,Race,BAU historical production,BAU,historical production,2020 prices,Black,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",black_forgone_wages_h,1293179.54364969
-black,Race,BAU historical production,BAU,historical production,2020 prices,Black,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+black,Race,BAU historical production,BAU,historical production,2020 prices,Black,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",black_forgone_wages_l,1293179.54364969
-black,Race,BAU historical production,BAU,historical production,changing prices,Black,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+black,Race,BAU historical production,BAU,historical production,changing prices,Black,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",black_forgone_wages_h,1293179.54364969
-black,Race,BAU historical production,BAU,historical production,changing prices,Black,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+black,Race,BAU historical production,BAU,historical production,changing prices,Black,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",black_forgone_wages_l,1293179.54364969
-black,Race,BAU low exports,BAU,low exports,2020 prices,Black,-0.304254909976136,forgone_wages_h,-203.074064420987,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+black,Race,BAU low exports,BAU,low exports,2020 prices,Black,-0.304254909976136,forgone_wages_h,-203.074064420987,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",black_forgone_wages_h,1293179.54364969
-black,Race,BAU low exports,BAU,low exports,2020 prices,Black,-0.304254909976136,forgone_wages_l,-14.463843143118,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+black,Race,BAU low exports,BAU,low exports,2020 prices,Black,-0.304254909976136,forgone_wages_l,-14.463843143118,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",black_forgone_wages_l,1293179.54364969
-black,Race,BAU low exports,BAU,low exports,changing prices,Black,-0.304254909976136,forgone_wages_h,-260.768436586198,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+black,Race,BAU low exports,BAU,low exports,changing prices,Black,-0.304254909976136,forgone_wages_h,-260.768436586198,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",black_forgone_wages_h,1293179.54364969
-black,Race,BAU low exports,BAU,low exports,changing prices,Black,-0.304254909976136,forgone_wages_l,-20.3553134482999,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+black,Race,BAU low exports,BAU,low exports,changing prices,Black,-0.304254909976136,forgone_wages_l,-20.3553134482999,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",black_forgone_wages_l,1293179.54364969
-black,Race,LC1 historical exports,LC1,historical exports,2020 prices,Black,-0.550668351511017,forgone_wages_h,-266.733750083583,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+black,Race,LC1 historical exports,LC1,historical exports,2020 prices,Black,-0.550668351511017,forgone_wages_h,-266.733750083583,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",black_forgone_wages_h,1293179.54364969
-black,Race,LC1 historical exports,LC1,historical exports,2020 prices,Black,-0.550668351511017,forgone_wages_l,-22.0396007493911,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+black,Race,LC1 historical exports,LC1,historical exports,2020 prices,Black,-0.550668351511017,forgone_wages_l,-22.0396007493911,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",black_forgone_wages_l,1293179.54364969
-black,Race,LC1 historical exports,LC1,historical exports,changing prices,Black,-0.550668351511017,forgone_wages_h,-353.917699406346,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+black,Race,LC1 historical exports,LC1,historical exports,changing prices,Black,-0.550668351511017,forgone_wages_h,-353.917699406346,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",black_forgone_wages_h,1293179.54364969
-black,Race,LC1 historical exports,LC1,historical exports,changing prices,Black,-0.550668351511017,forgone_wages_l,-31.7267299773404,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+black,Race,LC1 historical exports,LC1,historical exports,changing prices,Black,-0.550668351511017,forgone_wages_l,-31.7267299773404,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",black_forgone_wages_l,1293179.54364969
-black,Race,LC1 historical production,LC1,historical production,2020 prices,Black,0.00820535705280947,forgone_wages_h,-4.10361077031843,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+black,Race,LC1 historical production,LC1,historical production,2020 prices,Black,0.00820535705280947,forgone_wages_h,-4.10361077031843,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",black_forgone_wages_h,1293179.54364969
-black,Race,LC1 historical production,LC1,historical production,2020 prices,Black,0.00820535705280947,forgone_wages_l,-0.363288070413337,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+black,Race,LC1 historical production,LC1,historical production,2020 prices,Black,0.00820535705280947,forgone_wages_l,-0.363288070413337,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",black_forgone_wages_l,1293179.54364969
-black,Race,LC1 historical production,LC1,historical production,changing prices,Black,0.00820535705280947,forgone_wages_h,-4.95083996293771,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+black,Race,LC1 historical production,LC1,historical production,changing prices,Black,0.00820535705280947,forgone_wages_h,-4.95083996293771,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",black_forgone_wages_h,1293179.54364969
-black,Race,LC1 historical production,LC1,historical production,changing prices,Black,0.00820535705280947,forgone_wages_l,-0.468423256322307,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+black,Race,LC1 historical production,LC1,historical production,changing prices,Black,0.00820535705280947,forgone_wages_l,-0.468423256322307,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",black_forgone_wages_l,1293179.54364969
-black,Race,LC1 low exports,LC1,low exports,2020 prices,Black,-0.68652858248236,forgone_wages_h,-349.995327992631,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+black,Race,LC1 low exports,LC1,low exports,2020 prices,Black,-0.68652858248236,forgone_wages_h,-349.995327992631,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",black_forgone_wages_h,1293179.54364969
-black,Race,LC1 low exports,LC1,low exports,2020 prices,Black,-0.68652858248236,forgone_wages_l,-27.9830161470364,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+black,Race,LC1 low exports,LC1,low exports,2020 prices,Black,-0.68652858248236,forgone_wages_l,-27.9830161470364,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",black_forgone_wages_l,1293179.54364969
-black,Race,LC1 low exports,LC1,low exports,changing prices,Black,-0.68652858248236,forgone_wages_h,-460.83395828895,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+black,Race,LC1 low exports,LC1,low exports,changing prices,Black,-0.68652858248236,forgone_wages_h,-460.83395828895,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",black_forgone_wages_h,1293179.54364969
-black,Race,LC1 low exports,LC1,low exports,changing prices,Black,-0.68652858248236,forgone_wages_l,-40.2677168300851,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+black,Race,LC1 low exports,LC1,low exports,changing prices,Black,-0.68652858248236,forgone_wages_l,-40.2677168300851,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",black_forgone_wages_l,1293179.54364969
 dac,DAC,BAU historical exports,BAU,historical exports,,DAC,-0.168394679004793,sum_cost_pv,896.512090382469,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",dac_sum_cost_pv,4904842
@@ -239,53 +239,53 @@ dac,DAC,LC1 low exports,LC1,low exports,,DAC,-0.68652858248236,sum_cost_pv,1945.
 Low exports",dac_sum_cost_pv,4904842
 dac,DAC,LC1 low exports,LC1,low exports,,DAC,-0.68652858248236,sum_cost_2019_pv,1764.72835305935,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",dac_sum_cost_2019_pv,4904842
-dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,DAC,-0.168394679004793,forgone_wages_h,-146.078945215701,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,DAC,-0.168394679004793,forgone_wages_h,-146.078945215701,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",dac_forgone_wages_h,4904842
-dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,DAC,-0.168394679004793,forgone_wages_l,-9.78278130733793,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,DAC,-0.168394679004793,forgone_wages_l,-9.78278130733793,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",dac_forgone_wages_l,4904842
-dac,DAC,BAU historical exports,BAU,historical exports,changing prices,DAC,-0.168394679004793,forgone_wages_h,-186.214296012355,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+dac,DAC,BAU historical exports,BAU,historical exports,changing prices,DAC,-0.168394679004793,forgone_wages_h,-186.214296012355,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",dac_forgone_wages_h,4904842
-dac,DAC,BAU historical exports,BAU,historical exports,changing prices,DAC,-0.168394679004793,forgone_wages_l,-13.6547021944476,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+dac,DAC,BAU historical exports,BAU,historical exports,changing prices,DAC,-0.168394679004793,forgone_wages_l,-13.6547021944476,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",dac_forgone_wages_l,4904842
-dac,DAC,BAU historical production,BAU,historical production,2020 prices,DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+dac,DAC,BAU historical production,BAU,historical production,2020 prices,DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",dac_forgone_wages_h,4904842
-dac,DAC,BAU historical production,BAU,historical production,2020 prices,DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+dac,DAC,BAU historical production,BAU,historical production,2020 prices,DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",dac_forgone_wages_l,4904842
-dac,DAC,BAU historical production,BAU,historical production,changing prices,DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+dac,DAC,BAU historical production,BAU,historical production,changing prices,DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",dac_forgone_wages_h,4904842
-dac,DAC,BAU historical production,BAU,historical production,changing prices,DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+dac,DAC,BAU historical production,BAU,historical production,changing prices,DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",dac_forgone_wages_l,4904842
-dac,DAC,BAU low exports,BAU,low exports,2020 prices,DAC,-0.304254909976136,forgone_wages_h,-210.072297521081,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+dac,DAC,BAU low exports,BAU,low exports,2020 prices,DAC,-0.304254909976136,forgone_wages_h,-210.072297521081,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",dac_forgone_wages_h,4904842
-dac,DAC,BAU low exports,BAU,low exports,2020 prices,DAC,-0.304254909976136,forgone_wages_l,-13.9963128354222,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+dac,DAC,BAU low exports,BAU,low exports,2020 prices,DAC,-0.304254909976136,forgone_wages_l,-13.9963128354222,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",dac_forgone_wages_l,4904842
-dac,DAC,BAU low exports,BAU,low exports,changing prices,DAC,-0.304254909976136,forgone_wages_h,-268.518015993302,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+dac,DAC,BAU low exports,BAU,low exports,changing prices,DAC,-0.304254909976136,forgone_wages_h,-268.518015993302,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",dac_forgone_wages_h,4904842
-dac,DAC,BAU low exports,BAU,low exports,changing prices,DAC,-0.304254909976136,forgone_wages_l,-19.605197714093,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+dac,DAC,BAU low exports,BAU,low exports,changing prices,DAC,-0.304254909976136,forgone_wages_l,-19.605197714093,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",dac_forgone_wages_l,4904842
-dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,DAC,-0.550668351511017,forgone_wages_h,-265.560812775737,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,DAC,-0.550668351511017,forgone_wages_h,-265.560812775737,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",dac_forgone_wages_h,4904842
-dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,DAC,-0.550668351511017,forgone_wages_l,-19.6090954415376,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,DAC,-0.550668351511017,forgone_wages_l,-19.6090954415376,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",dac_forgone_wages_l,4904842
-dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,DAC,-0.550668351511017,forgone_wages_h,-349.092907842098,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,DAC,-0.550668351511017,forgone_wages_h,-349.092907842098,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",dac_forgone_wages_h,4904842
-dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,DAC,-0.550668351511017,forgone_wages_l,-28.0980930082829,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,DAC,-0.550668351511017,forgone_wages_l,-28.0980930082829,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",dac_forgone_wages_l,4904842
-dac,DAC,LC1 historical production,LC1,historical production,2020 prices,DAC,0.00820535705280947,forgone_wages_h,-3.61530367190214,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+dac,DAC,LC1 historical production,LC1,historical production,2020 prices,DAC,0.00820535705280947,forgone_wages_h,-3.61530367190214,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",dac_forgone_wages_h,4904842
-dac,DAC,LC1 historical production,LC1,historical production,2020 prices,DAC,0.00820535705280947,forgone_wages_l,-0.337876075405015,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+dac,DAC,LC1 historical production,LC1,historical production,2020 prices,DAC,0.00820535705280947,forgone_wages_l,-0.337876075405015,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",dac_forgone_wages_l,4904842
-dac,DAC,LC1 historical production,LC1,historical production,changing prices,DAC,0.00820535705280947,forgone_wages_h,-4.45016562730941,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+dac,DAC,LC1 historical production,LC1,historical production,changing prices,DAC,0.00820535705280947,forgone_wages_h,-4.45016562730941,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",dac_forgone_wages_h,4904842
-dac,DAC,LC1 historical production,LC1,historical production,changing prices,DAC,0.00820535705280947,forgone_wages_l,-0.442315390961189,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+dac,DAC,LC1 historical production,LC1,historical production,changing prices,DAC,0.00820535705280947,forgone_wages_l,-0.442315390961189,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",dac_forgone_wages_l,4904842
-dac,DAC,LC1 low exports,LC1,low exports,2020 prices,DAC,-0.68652858248236,forgone_wages_h,-328.367739353381,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+dac,DAC,LC1 low exports,LC1,low exports,2020 prices,DAC,-0.68652858248236,forgone_wages_h,-328.367739353381,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",dac_forgone_wages_h,4904842
-dac,DAC,LC1 low exports,LC1,low exports,2020 prices,DAC,-0.68652858248236,forgone_wages_l,-24.12011410547,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+dac,DAC,LC1 low exports,LC1,low exports,2020 prices,DAC,-0.68652858248236,forgone_wages_l,-24.12011410547,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",dac_forgone_wages_l,4904842
-dac,DAC,LC1 low exports,LC1,low exports,changing prices,DAC,-0.68652858248236,forgone_wages_h,-429.460001935541,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+dac,DAC,LC1 low exports,LC1,low exports,changing prices,DAC,-0.68652858248236,forgone_wages_h,-429.460001935541,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",dac_forgone_wages_h,4904842
-dac,DAC,LC1 low exports,LC1,low exports,changing prices,DAC,-0.68652858248236,forgone_wages_l,-34.6360902123236,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+dac,DAC,LC1 low exports,LC1,low exports,changing prices,DAC,-0.68652858248236,forgone_wages_l,-34.6360902123236,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",dac_forgone_wages_l,4904842
 hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,,Hawaiian or Other Pacific Islander,-0.168394679004793,sum_cost_pv,438.275327993037,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hawaiian_pacisl_sum_cost_pv,84069.5141773729
@@ -311,53 +311,53 @@ hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,,Hawaiian or Other Pacific 
 Low exports",hawaiian_pacisl_sum_cost_pv,84069.5141773729
 hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,,Hawaiian or Other Pacific Islander,-0.68652858248236,sum_cost_2019_pv,975.588605538088,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",hawaiian_pacisl_sum_cost_2019_pv,84069.5141773729
-hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_h,-114.387877975984,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_h,-114.387877975984,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_l,-8.34654344554654,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_l,-8.34654344554654,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_h,-146.951539083719,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_h,-146.951539083719,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_l,-11.7512358399511,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical exports,BAU,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.168394679004793,forgone_wages_l,-11.7512358399511,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,BAU historical production,BAU,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical production,BAU,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,BAU historical production,BAU,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical production,BAU,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,BAU historical production,BAU,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical production,BAU,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,BAU historical production,BAU,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU historical production,BAU,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,BAU low exports,BAU,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_h,-201.260579055566,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU low exports,BAU,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_h,-201.260579055566,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,BAU low exports,BAU,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_l,-14.5679839775546,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU low exports,BAU,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_l,-14.5679839775546,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,BAU low exports,BAU,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_h,-258.681983566809,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU low exports,BAU,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_h,-258.681983566809,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,BAU low exports,BAU,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_l,-20.5195710337658,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hawaiian_pacisl,Race,BAU low exports,BAU,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.304254909976136,forgone_wages_l,-20.5195710337658,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_h,-263.119891028647,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_h,-263.119891028647,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_l,-22.1564199717952,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_l,-22.1564199717952,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_h,-349.347954565934,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_h,-349.347954565934,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_l,-31.8523914241626,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical exports,LC1,historical exports,changing prices,Hawaiian or Other Pacific Islander,-0.550668351511017,forgone_wages_l,-31.8523914241626,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_h,-3.73854649842234,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_h,-3.73854649842234,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_l,-0.332788103662088,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,2020 prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_l,-0.332788103662088,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_h,-4.47065769236688,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_h,-4.47065769236688,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_l,-0.426052315847685,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 historical production,LC1,historical production,changing prices,Hawaiian or Other Pacific Islander,0.00820535705280947,forgone_wages_l,-0.426052315847685,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_h,-345.902408613103,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_h,-345.902408613103,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_l,-28.4748284520949,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,2020 prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_l,-28.4748284520949,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
-hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_h,-455.478724098229,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_h,-455.478724098229,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hawaiian_pacisl_forgone_wages_h,84069.5141773729
-hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_l,-40.8826218236358,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hawaiian_pacisl,Race,LC1 low exports,LC1,low exports,changing prices,Hawaiian or Other Pacific Islander,-0.68652858248236,forgone_wages_l,-40.8826218236358,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hawaiian_pacisl_forgone_wages_l,84069.5141773729
 hispanic,Race,BAU historical exports,BAU,historical exports,,Hispanic,-0.168394679004793,sum_cost_pv,538.996523986074,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hispanic_sum_cost_pv,8428074.2556147
@@ -383,53 +383,53 @@ hispanic,Race,LC1 low exports,LC1,low exports,,Hispanic,-0.68652858248236,sum_co
 Low exports",hispanic_sum_cost_pv,8428074.2556147
 hispanic,Race,LC1 low exports,LC1,low exports,,Hispanic,-0.68652858248236,sum_cost_2019_pv,1086.49886395712,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",hispanic_sum_cost_2019_pv,8428074.2556147
-hispanic,Race,BAU historical exports,BAU,historical exports,2020 prices,Hispanic,-0.168394679004793,forgone_wages_h,-108.097591044235,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hispanic,Race,BAU historical exports,BAU,historical exports,2020 prices,Hispanic,-0.168394679004793,forgone_wages_h,-108.097591044235,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,BAU historical exports,BAU,historical exports,2020 prices,Hispanic,-0.168394679004793,forgone_wages_l,-7.41320060525426,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hispanic,Race,BAU historical exports,BAU,historical exports,2020 prices,Hispanic,-0.168394679004793,forgone_wages_l,-7.41320060525426,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,BAU historical exports,BAU,historical exports,changing prices,Hispanic,-0.168394679004793,forgone_wages_h,-138.126897421783,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hispanic,Race,BAU historical exports,BAU,historical exports,changing prices,Hispanic,-0.168394679004793,forgone_wages_h,-138.126897421783,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,BAU historical exports,BAU,historical exports,changing prices,Hispanic,-0.168394679004793,forgone_wages_l,-10.3876437952239,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+hispanic,Race,BAU historical exports,BAU,historical exports,changing prices,Hispanic,-0.168394679004793,forgone_wages_l,-10.3876437952239,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,BAU historical production,BAU,historical production,2020 prices,Hispanic,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hispanic,Race,BAU historical production,BAU,historical production,2020 prices,Hispanic,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,BAU historical production,BAU,historical production,2020 prices,Hispanic,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hispanic,Race,BAU historical production,BAU,historical production,2020 prices,Hispanic,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,BAU historical production,BAU,historical production,changing prices,Hispanic,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hispanic,Race,BAU historical production,BAU,historical production,changing prices,Hispanic,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,BAU historical production,BAU,historical production,changing prices,Hispanic,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+hispanic,Race,BAU historical production,BAU,historical production,changing prices,Hispanic,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,BAU low exports,BAU,low exports,2020 prices,Hispanic,-0.304254909976136,forgone_wages_h,-167.343592505186,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hispanic,Race,BAU low exports,BAU,low exports,2020 prices,Hispanic,-0.304254909976136,forgone_wages_h,-167.343592505186,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,BAU low exports,BAU,low exports,2020 prices,Hispanic,-0.304254909976136,forgone_wages_l,-11.4506545856028,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hispanic,Race,BAU low exports,BAU,low exports,2020 prices,Hispanic,-0.304254909976136,forgone_wages_l,-11.4506545856028,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,BAU low exports,BAU,low exports,changing prices,Hispanic,-0.304254909976136,forgone_wages_h,-214.38253232245,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hispanic,Race,BAU low exports,BAU,low exports,changing prices,Hispanic,-0.304254909976136,forgone_wages_h,-214.38253232245,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,BAU low exports,BAU,low exports,changing prices,Hispanic,-0.304254909976136,forgone_wages_l,-16.0815590758012,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+hispanic,Race,BAU low exports,BAU,low exports,changing prices,Hispanic,-0.304254909976136,forgone_wages_l,-16.0815590758012,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hispanic,-0.550668351511017,forgone_wages_h,-216.02254856216,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hispanic,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hispanic,-0.550668351511017,forgone_wages_h,-216.02254856216,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hispanic,-0.550668351511017,forgone_wages_l,-16.7034940066261,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hispanic,Race,LC1 historical exports,LC1,historical exports,2020 prices,Hispanic,-0.550668351511017,forgone_wages_l,-16.7034940066261,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,LC1 historical exports,LC1,historical exports,changing prices,Hispanic,-0.550668351511017,forgone_wages_h,-285.295791621675,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hispanic,Race,LC1 historical exports,LC1,historical exports,changing prices,Hispanic,-0.550668351511017,forgone_wages_h,-285.295791621675,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,LC1 historical exports,LC1,historical exports,changing prices,Hispanic,-0.550668351511017,forgone_wages_l,-24.0332969653125,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+hispanic,Race,LC1 historical exports,LC1,historical exports,changing prices,Hispanic,-0.550668351511017,forgone_wages_l,-24.0332969653125,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,LC1 historical production,LC1,historical production,2020 prices,Hispanic,0.00820535705280947,forgone_wages_h,-2.93449273814825,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hispanic,Race,LC1 historical production,LC1,historical production,2020 prices,Hispanic,0.00820535705280947,forgone_wages_h,-2.93449273814825,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,LC1 historical production,LC1,historical production,2020 prices,Hispanic,0.00820535705280947,forgone_wages_l,-0.265977913820449,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hispanic,Race,LC1 historical production,LC1,historical production,2020 prices,Hispanic,0.00820535705280947,forgone_wages_l,-0.265977913820449,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,LC1 historical production,LC1,historical production,changing prices,Hispanic,0.00820535705280947,forgone_wages_h,-3.56991118433983,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hispanic,Race,LC1 historical production,LC1,historical production,changing prices,Hispanic,0.00820535705280947,forgone_wages_h,-3.56991118433983,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,LC1 historical production,LC1,historical production,changing prices,Hispanic,0.00820535705280947,forgone_wages_l,-0.344855976631225,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+hispanic,Race,LC1 historical production,LC1,historical production,changing prices,Hispanic,0.00820535705280947,forgone_wages_l,-0.344855976631225,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,LC1 low exports,LC1,low exports,2020 prices,Hispanic,-0.68652858248236,forgone_wages_h,-274.85492667084,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hispanic,Race,LC1 low exports,LC1,low exports,2020 prices,Hispanic,-0.68652858248236,forgone_wages_h,-274.85492667084,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,LC1 low exports,LC1,low exports,2020 prices,Hispanic,-0.68652858248236,forgone_wages_l,-20.7512542787723,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hispanic,Race,LC1 low exports,LC1,low exports,2020 prices,Hispanic,-0.68652858248236,forgone_wages_l,-20.7512542787723,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hispanic_forgone_wages_l,8428074.2556147
-hispanic,Race,LC1 low exports,LC1,low exports,changing prices,Hispanic,-0.68652858248236,forgone_wages_h,-360.802173203601,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hispanic,Race,LC1 low exports,LC1,low exports,changing prices,Hispanic,-0.68652858248236,forgone_wages_h,-360.802173203601,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hispanic_forgone_wages_h,8428074.2556147
-hispanic,Race,LC1 low exports,LC1,low exports,changing prices,Hispanic,-0.68652858248236,forgone_wages_l,-29.8723777711121,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+hispanic,Race,LC1 low exports,LC1,low exports,changing prices,Hispanic,-0.68652858248236,forgone_wages_l,-29.8723777711121,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",hispanic_forgone_wages_l,8428074.2556147
 non_dac,DAC,BAU historical exports,BAU,historical exports,,Non-DAC,-0.168394679004793,sum_cost_pv,284.261158938666,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",non_dac_sum_cost_pv,19197950
@@ -455,53 +455,53 @@ non_dac,DAC,LC1 low exports,LC1,low exports,,Non-DAC,-0.68652858248236,sum_cost_
 Low exports",non_dac_sum_cost_pv,19197950
 non_dac,DAC,LC1 low exports,LC1,low exports,,Non-DAC,-0.68652858248236,sum_cost_2019_pv,644.986746769533,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",non_dac_sum_cost_2019_pv,19197950
-non_dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,Non-DAC,-0.168394679004793,forgone_wages_h,-78.2273065393342,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+non_dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,Non-DAC,-0.168394679004793,forgone_wages_h,-78.2273065393342,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,Non-DAC,-0.168394679004793,forgone_wages_l,-5.66645604894953,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+non_dac,DAC,BAU historical exports,BAU,historical exports,2020 prices,Non-DAC,-0.168394679004793,forgone_wages_l,-5.66645604894953,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",non_dac_forgone_wages_l,19197950
-non_dac,DAC,BAU historical exports,BAU,historical exports,changing prices,Non-DAC,-0.168394679004793,forgone_wages_h,-100.429695315428,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+non_dac,DAC,BAU historical exports,BAU,historical exports,changing prices,Non-DAC,-0.168394679004793,forgone_wages_h,-100.429695315428,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,BAU historical exports,BAU,historical exports,changing prices,Non-DAC,-0.168394679004793,forgone_wages_l,-7.98342736783482,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+non_dac,DAC,BAU historical exports,BAU,historical exports,changing prices,Non-DAC,-0.168394679004793,forgone_wages_l,-7.98342736783482,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",non_dac_forgone_wages_l,19197950
-non_dac,DAC,BAU historical production,BAU,historical production,2020 prices,Non-DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+non_dac,DAC,BAU historical production,BAU,historical production,2020 prices,Non-DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",non_dac_forgone_wages_h,19197950
-non_dac,DAC,BAU historical production,BAU,historical production,2020 prices,Non-DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+non_dac,DAC,BAU historical production,BAU,historical production,2020 prices,Non-DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",non_dac_forgone_wages_l,19197950
-non_dac,DAC,BAU historical production,BAU,historical production,changing prices,Non-DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+non_dac,DAC,BAU historical production,BAU,historical production,changing prices,Non-DAC,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",non_dac_forgone_wages_h,19197950
-non_dac,DAC,BAU historical production,BAU,historical production,changing prices,Non-DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+non_dac,DAC,BAU historical production,BAU,historical production,changing prices,Non-DAC,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",non_dac_forgone_wages_l,19197950
-non_dac,DAC,BAU low exports,BAU,low exports,2020 prices,Non-DAC,-0.304254909976136,forgone_wages_h,-137.553848347999,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+non_dac,DAC,BAU low exports,BAU,low exports,2020 prices,Non-DAC,-0.304254909976136,forgone_wages_h,-137.553848347999,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,BAU low exports,BAU,low exports,2020 prices,Non-DAC,-0.304254909976136,forgone_wages_l,-9.80060216558086,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+non_dac,DAC,BAU low exports,BAU,low exports,2020 prices,Non-DAC,-0.304254909976136,forgone_wages_l,-9.80060216558086,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",non_dac_forgone_wages_l,19197950
-non_dac,DAC,BAU low exports,BAU,low exports,changing prices,Non-DAC,-0.304254909976136,forgone_wages_h,-176.785574758135,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+non_dac,DAC,BAU low exports,BAU,low exports,changing prices,Non-DAC,-0.304254909976136,forgone_wages_h,-176.785574758135,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,BAU low exports,BAU,low exports,changing prices,Non-DAC,-0.304254909976136,forgone_wages_l,-13.8047112143176,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+non_dac,DAC,BAU low exports,BAU,low exports,changing prices,Non-DAC,-0.304254909976136,forgone_wages_l,-13.8047112143176,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",non_dac_forgone_wages_l,19197950
-non_dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,Non-DAC,-0.550668351511017,forgone_wages_h,-180.931020817638,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+non_dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,Non-DAC,-0.550668351511017,forgone_wages_h,-180.931020817638,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,Non-DAC,-0.550668351511017,forgone_wages_l,-15.2125470839176,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+non_dac,DAC,LC1 historical exports,LC1,historical exports,2020 prices,Non-DAC,-0.550668351511017,forgone_wages_l,-15.2125470839176,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",non_dac_forgone_wages_l,19197950
-non_dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,Non-DAC,-0.550668351511017,forgone_wages_h,-240.361781424082,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+non_dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,Non-DAC,-0.550668351511017,forgone_wages_h,-240.361781424082,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,Non-DAC,-0.550668351511017,forgone_wages_l,-21.9482801836889,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+non_dac,DAC,LC1 historical exports,LC1,historical exports,changing prices,Non-DAC,-0.550668351511017,forgone_wages_l,-21.9482801836889,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",non_dac_forgone_wages_l,19197950
-non_dac,DAC,LC1 historical production,LC1,historical production,2020 prices,Non-DAC,0.00820535705280947,forgone_wages_h,-2.70256493429062,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+non_dac,DAC,LC1 historical production,LC1,historical production,2020 prices,Non-DAC,0.00820535705280947,forgone_wages_h,-2.70256493429062,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",non_dac_forgone_wages_h,19197950
-non_dac,DAC,LC1 historical production,LC1,historical production,2020 prices,Non-DAC,0.00820535705280947,forgone_wages_l,-0.236873911162811,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+non_dac,DAC,LC1 historical production,LC1,historical production,2020 prices,Non-DAC,0.00820535705280947,forgone_wages_l,-0.236873911162811,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",non_dac_forgone_wages_l,19197950
-non_dac,DAC,LC1 historical production,LC1,historical production,changing prices,Non-DAC,0.00820535705280947,forgone_wages_h,-3.24862799855987,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+non_dac,DAC,LC1 historical production,LC1,historical production,changing prices,Non-DAC,0.00820535705280947,forgone_wages_h,-3.24862799855987,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",non_dac_forgone_wages_h,19197950
-non_dac,DAC,LC1 historical production,LC1,historical production,changing prices,Non-DAC,0.00820535705280947,forgone_wages_l,-0.304288807193182,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+non_dac,DAC,LC1 historical production,LC1,historical production,changing prices,Non-DAC,0.00820535705280947,forgone_wages_l,-0.304288807193182,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",non_dac_forgone_wages_l,19197950
-non_dac,DAC,LC1 low exports,LC1,low exports,2020 prices,Non-DAC,-0.68652858248236,forgone_wages_h,-240.511831000813,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+non_dac,DAC,LC1 low exports,LC1,low exports,2020 prices,Non-DAC,-0.68652858248236,forgone_wages_h,-240.511831000813,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,LC1 low exports,LC1,low exports,2020 prices,Non-DAC,-0.68652858248236,forgone_wages_l,-19.2310339281437,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+non_dac,DAC,LC1 low exports,LC1,low exports,2020 prices,Non-DAC,-0.68652858248236,forgone_wages_l,-19.2310339281437,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",non_dac_forgone_wages_l,19197950
-non_dac,DAC,LC1 low exports,LC1,low exports,changing prices,Non-DAC,-0.68652858248236,forgone_wages_h,-317.146355930283,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+non_dac,DAC,LC1 low exports,LC1,low exports,changing prices,Non-DAC,-0.68652858248236,forgone_wages_h,-317.146355930283,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",non_dac_forgone_wages_h,19197950
-non_dac,DAC,LC1 low exports,LC1,low exports,changing prices,Non-DAC,-0.68652858248236,forgone_wages_l,-27.7186058370098,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+non_dac,DAC,LC1 low exports,LC1,low exports,changing prices,Non-DAC,-0.68652858248236,forgone_wages_l,-27.7186058370098,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",non_dac_forgone_wages_l,19197950
 nonh_other,Race,BAU historical exports,BAU,historical exports,,Other (Non-Hispanic),-0.168394679004793,sum_cost_pv,353.515138762179,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_other_sum_cost_pv,126860.720818522
@@ -527,53 +527,53 @@ nonh_other,Race,LC1 low exports,LC1,low exports,,Other (Non-Hispanic),-0.6865285
 Low exports",nonh_other_sum_cost_pv,126860.720818522
 nonh_other,Race,LC1 low exports,LC1,low exports,,Other (Non-Hispanic),-0.68652858248236,sum_cost_2019_pv,806.52262694395,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_other_sum_cost_2019_pv,126860.720818522
-nonh_other,Race,BAU historical exports,BAU,historical exports,2020 prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_h,-86.2541061832221,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_other,Race,BAU historical exports,BAU,historical exports,2020 prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_h,-86.2541061832221,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,BAU historical exports,BAU,historical exports,2020 prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_l,-6.21330673389269,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_other,Race,BAU historical exports,BAU,historical exports,2020 prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_l,-6.21330673389269,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,BAU historical exports,BAU,historical exports,changing prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_h,-110.599717519072,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_other,Race,BAU historical exports,BAU,historical exports,changing prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_h,-110.599717519072,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,BAU historical exports,BAU,historical exports,changing prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_l,-8.74069669148408,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_other,Race,BAU historical exports,BAU,historical exports,changing prices,Other (Non-Hispanic),-0.168394679004793,forgone_wages_l,-8.74069669148408,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,BAU historical production,BAU,historical production,2020 prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_other,Race,BAU historical production,BAU,historical production,2020 prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,BAU historical production,BAU,historical production,2020 prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_other,Race,BAU historical production,BAU,historical production,2020 prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,BAU historical production,BAU,historical production,changing prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_other,Race,BAU historical production,BAU,historical production,changing prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,BAU historical production,BAU,historical production,changing prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_other,Race,BAU historical production,BAU,historical production,changing prices,Other (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,BAU low exports,BAU,low exports,2020 prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_h,-149.142239045524,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_other,Race,BAU low exports,BAU,low exports,2020 prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_h,-149.142239045524,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,BAU low exports,BAU,low exports,2020 prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_l,-10.5807522516428,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_other,Race,BAU low exports,BAU,low exports,2020 prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_l,-10.5807522516428,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,BAU low exports,BAU,low exports,changing prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_h,-191.577121477046,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_other,Race,BAU low exports,BAU,low exports,changing prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_h,-191.577121477046,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,BAU low exports,BAU,low exports,changing prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_l,-14.8967002617913,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_other,Race,BAU low exports,BAU,low exports,changing prices,Other (Non-Hispanic),-0.304254909976136,forgone_wages_l,-14.8967002617913,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,LC1 historical exports,LC1,historical exports,2020 prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_h,-196.791426961654,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_other,Race,LC1 historical exports,LC1,historical exports,2020 prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_h,-196.791426961654,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,LC1 historical exports,LC1,historical exports,2020 prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_l,-16.457477541336,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_other,Race,LC1 historical exports,LC1,historical exports,2020 prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_l,-16.457477541336,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,LC1 historical exports,LC1,historical exports,changing prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_h,-261.241674365329,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_other,Race,LC1 historical exports,LC1,historical exports,changing prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_h,-261.241674365329,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,LC1 historical exports,LC1,historical exports,changing prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_l,-23.7293909291215,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_other,Race,LC1 historical exports,LC1,historical exports,changing prices,Other (Non-Hispanic),-0.550668351511017,forgone_wages_l,-23.7293909291215,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,LC1 historical production,LC1,historical production,2020 prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_h,-3.0897030090249,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_other,Race,LC1 historical production,LC1,historical production,2020 prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_h,-3.0897030090249,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,LC1 historical production,LC1,historical production,2020 prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.270177180268148,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_other,Race,LC1 historical production,LC1,historical production,2020 prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.270177180268148,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,LC1 historical production,LC1,historical production,changing prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_h,-3.73020718308876,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_other,Race,LC1 historical production,LC1,historical production,changing prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_h,-3.73020718308876,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,LC1 historical production,LC1,historical production,changing prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.348475644172243,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_other,Race,LC1 historical production,LC1,historical production,changing prices,Other (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.348475644172243,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,LC1 low exports,LC1,low exports,2020 prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_h,-259.659792948524,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_other,Race,LC1 low exports,LC1,low exports,2020 prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_h,-259.659792948524,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,LC1 low exports,LC1,low exports,2020 prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_l,-20.6727236937175,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_other,Race,LC1 low exports,LC1,low exports,2020 prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_l,-20.6727236937175,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_other_forgone_wages_l,126860.720818522
-nonh_other,Race,LC1 low exports,LC1,low exports,changing prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_h,-342.146718120021,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_other,Race,LC1 low exports,LC1,low exports,changing prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_h,-342.146718120021,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_other_forgone_wages_h,126860.720818522
-nonh_other,Race,LC1 low exports,LC1,low exports,changing prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_l,-29.7810411058389,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_other,Race,LC1 low exports,LC1,low exports,changing prices,Other (Non-Hispanic),-0.68652858248236,forgone_wages_l,-29.7810411058389,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_other_forgone_wages_l,126860.720818522
 nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,,Two or more races (Non-Hispanic),-0.168394679004793,sum_cost_pv,290.044012259092,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_two_or_more_sum_cost_pv,848341.849081609
@@ -599,53 +599,53 @@ nonh_two_or_more,Race,LC1 low exports,LC1,low exports,,Two or more races (Non-Hi
 Low exports",nonh_two_or_more_sum_cost_pv,848341.849081609
 nonh_two_or_more,Race,LC1 low exports,LC1,low exports,,Two or more races (Non-Hispanic),-0.68652858248236,sum_cost_2019_pv,695.763546405421,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_two_or_more_sum_cost_2019_pv,848341.849081609
-nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_h,-79.3032525463221,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_h,-79.3032525463221,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_l,-5.8889834732968,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_l,-5.8889834732968,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,changing prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_h,-102.012022093466,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,changing prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_h,-102.012022093466,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,changing prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_l,-8.30967768890787,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical exports,BAU,historical exports,changing prices,Two or more races (Non-Hispanic),-0.168394679004793,forgone_wages_l,-8.30967768890787,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,BAU historical production,BAU,historical production,2020 prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical production,BAU,historical production,2020 prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,BAU historical production,BAU,historical production,2020 prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical production,BAU,historical production,2020 prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,BAU historical production,BAU,historical production,changing prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical production,BAU,historical production,changing prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,BAU historical production,BAU,historical production,changing prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU historical production,BAU,historical production,changing prices,Two or more races (Non-Hispanic),0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,BAU low exports,BAU,low exports,2020 prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_h,-146.090167499927,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU low exports,BAU,low exports,2020 prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_h,-146.090167499927,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,BAU low exports,BAU,low exports,2020 prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_l,-10.5589412352385,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU low exports,BAU,low exports,2020 prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_l,-10.5589412352385,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,BAU low exports,BAU,low exports,changing prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_h,-187.942331591914,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU low exports,BAU,low exports,changing prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_h,-187.942331591914,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,BAU low exports,BAU,low exports,changing prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_l,-14.8858055869761,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+nonh_two_or_more,Race,BAU low exports,BAU,low exports,changing prices,Two or more races (Non-Hispanic),-0.304254909976136,forgone_wages_l,-14.8858055869761,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_h,-194.308508935708,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_h,-194.308508935708,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_l,-16.7756230993695,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,2020 prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_l,-16.7756230993695,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,changing prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_h,-258.692341457156,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,changing prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_h,-258.692341457156,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,changing prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_l,-24.2166617022981,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical exports,LC1,historical exports,changing prices,Two or more races (Non-Hispanic),-0.550668351511017,forgone_wages_l,-24.2166617022981,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,LC1 historical production,LC1,historical production,2020 prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_h,-2.9978462878001,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical production,LC1,historical production,2020 prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_h,-2.9978462878001,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,LC1 historical production,LC1,historical production,2020 prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.26034038172956,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical production,LC1,historical production,2020 prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.26034038172956,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,LC1 historical production,LC1,historical production,changing prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_h,-3.58801451901434,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical production,LC1,historical production,changing prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_h,-3.58801451901434,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,LC1 historical production,LC1,historical production,changing prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.333391014541907,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 historical production,LC1,historical production,changing prices,Two or more races (Non-Hispanic),0.00820535705280947,forgone_wages_l,-0.333391014541907,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,LC1 low exports,LC1,low exports,2020 prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_h,-261.784059463139,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 low exports,LC1,low exports,2020 prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_h,-261.784059463139,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,LC1 low exports,LC1,low exports,2020 prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_l,-21.4316127369439,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 low exports,LC1,low exports,2020 prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_l,-21.4316127369439,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_two_or_more_forgone_wages_l,848341.849081609
-nonh_two_or_more,Race,LC1 low exports,LC1,low exports,changing prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_h,-345.727557250485,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 low exports,LC1,low exports,changing prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_h,-345.727557250485,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_two_or_more_forgone_wages_h,848341.849081609
-nonh_two_or_more,Race,LC1 low exports,LC1,low exports,changing prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_l,-30.8958350434188,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+nonh_two_or_more,Race,LC1 low exports,LC1,low exports,changing prices,Two or more races (Non-Hispanic),-0.68652858248236,forgone_wages_l,-30.8958350434188,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",nonh_two_or_more_forgone_wages_l,848341.849081609
 total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,,Above poverty line,-0.168394679004793,sum_cost_pv,404.283770179953,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_above_poverty_sum_cost_pv,20607103.8469401
@@ -671,53 +671,53 @@ total_above_poverty,Poverty,LC1 low exports,LC1,low exports,,Above poverty line,
 Low exports",total_above_poverty_sum_cost_pv,20607103.8469401
 total_above_poverty,Poverty,LC1 low exports,LC1,low exports,,Above poverty line,-0.68652858248236,sum_cost_2019_pv,862.751898389347,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",total_above_poverty_sum_cost_2019_pv,20607103.8469401
-total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Above poverty line,-0.168394679004793,forgone_wages_h,-92.9148256210509,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Above poverty line,-0.168394679004793,forgone_wages_h,-92.9148256210509,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Above poverty line,-0.168394679004793,forgone_wages_l,-6.57828769766659,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Above poverty line,-0.168394679004793,forgone_wages_l,-6.57828769766659,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Above poverty line,-0.168394679004793,forgone_wages_h,-119.039934443734,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Above poverty line,-0.168394679004793,forgone_wages_h,-119.039934443734,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Above poverty line,-0.168394679004793,forgone_wages_l,-9.24368751065521,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Above poverty line,-0.168394679004793,forgone_wages_l,-9.24368751065521,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Above poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Above poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Above poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Above poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Above poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Above poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Above poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Above poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Above poverty line,-0.304254909976136,forgone_wages_h,-154.405937206887,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Above poverty line,-0.304254909976136,forgone_wages_h,-154.405937206887,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Above poverty line,-0.304254909976136,forgone_wages_l,-10.8209657689184,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Above poverty line,-0.304254909976136,forgone_wages_l,-10.8209657689184,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Above poverty line,-0.304254909976136,forgone_wages_h,-198.164295184982,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Above poverty line,-0.304254909976136,forgone_wages_h,-198.164295184982,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Above poverty line,-0.304254909976136,forgone_wages_l,-15.2198543692142,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_above_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Above poverty line,-0.304254909976136,forgone_wages_l,-15.2198543692142,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Above poverty line,-0.550668351511017,forgone_wages_h,-200.336946401517,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Above poverty line,-0.550668351511017,forgone_wages_h,-200.336946401517,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Above poverty line,-0.550668351511017,forgone_wages_l,-16.3551444226036,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Above poverty line,-0.550668351511017,forgone_wages_l,-16.3551444226036,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Above poverty line,-0.550668351511017,forgone_wages_h,-265.38012899274,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Above poverty line,-0.550668351511017,forgone_wages_h,-265.38012899274,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Above poverty line,-0.550668351511017,forgone_wages_l,-23.5505054884804,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Above poverty line,-0.550668351511017,forgone_wages_l,-23.5505054884804,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Above poverty line,0.00820535705280947,forgone_wages_h,-2.92543338007518,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Above poverty line,0.00820535705280947,forgone_wages_h,-2.92543338007518,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Above poverty line,0.00820535705280947,forgone_wages_l,-0.26124644106892,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Above poverty line,0.00820535705280947,forgone_wages_l,-0.26124644106892,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Above poverty line,0.00820535705280947,forgone_wages_h,-3.53748212195335,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Above poverty line,0.00820535705280947,forgone_wages_h,-3.53748212195335,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Above poverty line,0.00820535705280947,forgone_wages_l,-0.337283398790361,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Above poverty line,0.00820535705280947,forgone_wages_l,-0.337283398790361,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Above poverty line,-0.68652858248236,forgone_wages_h,-261.555606247326,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Above poverty line,-0.68652858248236,forgone_wages_h,-261.555606247326,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Above poverty line,-0.68652858248236,forgone_wages_l,-20.5603350504765,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Above poverty line,-0.68652858248236,forgone_wages_l,-20.5603350504765,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_above_poverty_forgone_wages_l,20607103.8469401
-total_above_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Above poverty line,-0.68652858248236,forgone_wages_h,-344.159475016414,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Above poverty line,-0.68652858248236,forgone_wages_h,-344.159475016414,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_above_poverty_forgone_wages_h,20607103.8469401
-total_above_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Above poverty line,-0.68652858248236,forgone_wages_l,-29.5978660340919,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_above_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Above poverty line,-0.68652858248236,forgone_wages_l,-29.5978660340919,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_above_poverty_forgone_wages_l,20607103.8469401
 total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,,Below poverty line,-0.168394679004793,sum_cost_pv,435.783733625718,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_below_poverty_sum_cost_pv,3495688.15305983
@@ -743,53 +743,53 @@ total_below_poverty,Poverty,LC1 low exports,LC1,low exports,,Below poverty line,
 Low exports",total_below_poverty_sum_cost_pv,3495688.15305983
 total_below_poverty,Poverty,LC1 low exports,LC1,low exports,,Below poverty line,-0.68652858248236,sum_cost_2019_pv,932.382681994473,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",total_below_poverty_sum_cost_2019_pv,3495688.15305983
-total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Below poverty line,-0.168394679004793,forgone_wages_h,-86.8477368690435,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Below poverty line,-0.168394679004793,forgone_wages_h,-86.8477368690435,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Below poverty line,-0.168394679004793,forgone_wages_l,-6.0668680638838,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,2020 prices,Below poverty line,-0.168394679004793,forgone_wages_l,-6.0668680638838,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Below poverty line,-0.168394679004793,forgone_wages_h,-111.087620303797,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Below poverty line,-0.168394679004793,forgone_wages_h,-111.087620303797,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Below poverty line,-0.168394679004793,forgone_wages_l,-8.51161959923266,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical exports,BAU,historical exports,changing prices,Below poverty line,-0.168394679004793,forgone_wages_l,-8.51161959923266,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Below poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Below poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Below poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical production,BAU,historical production,2020 prices,Below poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Below poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Below poverty line,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Below poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU historical production,BAU,historical production,changing prices,Below poverty line,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Below poverty line,-0.304254909976136,forgone_wages_h,-139.96218391955,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Below poverty line,-0.304254909976136,forgone_wages_h,-139.96218391955,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Below poverty line,-0.304254909976136,forgone_wages_l,-9.67260424278423,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU low exports,BAU,low exports,2020 prices,Below poverty line,-0.304254909976136,forgone_wages_l,-9.67260424278423,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Below poverty line,-0.304254909976136,forgone_wages_h,-179.468771362439,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Below poverty line,-0.304254909976136,forgone_wages_h,-179.468771362439,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Below poverty line,-0.304254909976136,forgone_wages_l,-13.6011655559058,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+total_below_poverty,Poverty,BAU low exports,BAU,low exports,changing prices,Below poverty line,-0.304254909976136,forgone_wages_l,-13.6011655559058,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Below poverty line,-0.550668351511017,forgone_wages_h,-185.278043100229,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Below poverty line,-0.550668351511017,forgone_wages_h,-185.278043100229,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Below poverty line,-0.550668351511017,forgone_wages_l,-14.6457782855235,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,2020 prices,Below poverty line,-0.550668351511017,forgone_wages_l,-14.6457782855235,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Below poverty line,-0.550668351511017,forgone_wages_h,-245.440412113888,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Below poverty line,-0.550668351511017,forgone_wages_h,-245.440412113888,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Below poverty line,-0.550668351511017,forgone_wages_l,-21.132028023054,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical exports,LC1,historical exports,changing prices,Below poverty line,-0.550668351511017,forgone_wages_l,-21.132028023054,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Below poverty line,0.00820535705280947,forgone_wages_h,-2.6694287087221,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Below poverty line,0.00820535705280947,forgone_wages_h,-2.6694287087221,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Below poverty line,0.00820535705280947,forgone_wages_l,-0.234915041482369,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical production,LC1,historical production,2020 prices,Below poverty line,0.00820535705280947,forgone_wages_l,-0.234915041482369,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Below poverty line,0.00820535705280947,forgone_wages_h,-3.23172297474935,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Below poverty line,0.00820535705280947,forgone_wages_h,-3.23172297474935,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Below poverty line,0.00820535705280947,forgone_wages_l,-0.303452236499542,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 historical production,LC1,historical production,changing prices,Below poverty line,0.00820535705280947,forgone_wages_l,-0.303452236499542,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Below poverty line,-0.68652858248236,forgone_wages_h,-239.730321758265,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Below poverty line,-0.68652858248236,forgone_wages_h,-239.730321758265,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Below poverty line,-0.68652858248236,forgone_wages_l,-18.2547224474819,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 low exports,LC1,low exports,2020 prices,Below poverty line,-0.68652858248236,forgone_wages_l,-18.2547224474819,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_below_poverty_forgone_wages_l,3495688.15305983
-total_below_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Below poverty line,-0.68652858248236,forgone_wages_h,-315.492472092592,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Below poverty line,-0.68652858248236,forgone_wages_h,-315.492472092592,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_below_poverty_forgone_wages_h,3495688.15305983
-total_below_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Below poverty line,-0.68652858248236,forgone_wages_l,-26.3463603939754,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+total_below_poverty,Poverty,LC1 low exports,LC1,low exports,changing prices,Below poverty line,-0.68652858248236,forgone_wages_l,-26.3463603939754,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",total_below_poverty_forgone_wages_l,3495688.15305983
 white,Race,BAU historical exports,BAU,historical exports,,white,-0.168394679004793,sum_cost_pv,240.98918913025,health,USD (annual VSL),avoided_health_cost,Health: avoided mortality,BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",white_sum_cost_pv,9378258.40450366
@@ -815,51 +815,51 @@ white,Race,LC1 low exports,LC1,low exports,,white,-0.68652858248236,sum_cost_pv,
 Low exports",white_sum_cost_pv,9378258.40450366
 white,Race,LC1 low exports,LC1,low exports,,white,-0.68652858248236,sum_cost_2019_pv,578.365763607488,health,USD (2019 VSL),avoided_health_cost,Health: avoided mortality,Low demand - low exports,Low demand,"Low demand
 Low exports",white_sum_cost_2019_pv,9378258.40450366
-white,Race,BAU historical exports,BAU,historical exports,2020 prices,white,-0.168394679004793,forgone_wages_h,-72.527373956933,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+white,Race,BAU historical exports,BAU,historical exports,2020 prices,white,-0.168394679004793,forgone_wages_h,-72.527373956933,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",white_forgone_wages_h,9378258.40450366
-white,Race,BAU historical exports,BAU,historical exports,2020 prices,white,-0.168394679004793,forgone_wages_l,-5.27392432894018,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+white,Race,BAU historical exports,BAU,historical exports,2020 prices,white,-0.168394679004793,forgone_wages_l,-5.27392432894018,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",white_forgone_wages_l,9378258.40450366
-white,Race,BAU historical exports,BAU,historical exports,changing prices,white,-0.168394679004793,forgone_wages_h,-93.1274526663997,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+white,Race,BAU historical exports,BAU,historical exports,changing prices,white,-0.168394679004793,forgone_wages_h,-93.1274526663997,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",white_forgone_wages_h,9378258.40450366
-white,Race,BAU historical exports,BAU,historical exports,changing prices,white,-0.168394679004793,forgone_wages_l,-7.4317731154592,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical exports,BAU demand,"BAU demand
+white,Race,BAU historical exports,BAU,historical exports,changing prices,white,-0.168394679004793,forgone_wages_l,-7.4317731154592,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical exports,BAU demand,"BAU demand
 Historical exports",white_forgone_wages_l,9378258.40450366
-white,Race,BAU historical production,BAU,historical production,2020 prices,white,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+white,Race,BAU historical production,BAU,historical production,2020 prices,white,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",white_forgone_wages_h,9378258.40450366
-white,Race,BAU historical production,BAU,historical production,2020 prices,white,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+white,Race,BAU historical production,BAU,historical production,2020 prices,white,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",white_forgone_wages_l,9378258.40450366
-white,Race,BAU historical production,BAU,historical production,changing prices,white,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+white,Race,BAU historical production,BAU,historical production,changing prices,white,0.00549319314029759,forgone_wages_h,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",white_forgone_wages_h,9378258.40450366
-white,Race,BAU historical production,BAU,historical production,changing prices,white,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - historical production,BAU demand,"BAU demand
+white,Race,BAU historical production,BAU,historical production,changing prices,white,0.00549319314029759,forgone_wages_l,0,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - historical production,BAU demand,"BAU demand
 Historical production",white_forgone_wages_l,9378258.40450366
-white,Race,BAU low exports,BAU,low exports,2020 prices,white,-0.304254909976136,forgone_wages_h,-128.585498185744,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+white,Race,BAU low exports,BAU,low exports,2020 prices,white,-0.304254909976136,forgone_wages_h,-128.585498185744,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",white_forgone_wages_h,9378258.40450366
-white,Race,BAU low exports,BAU,low exports,2020 prices,white,-0.304254909976136,forgone_wages_l,-9.15838490239154,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+white,Race,BAU low exports,BAU,low exports,2020 prices,white,-0.304254909976136,forgone_wages_l,-9.15838490239154,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",white_forgone_wages_l,9378258.40450366
-white,Race,BAU low exports,BAU,low exports,changing prices,white,-0.304254909976136,forgone_wages_h,-165.288024197983,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+white,Race,BAU low exports,BAU,low exports,changing prices,white,-0.304254909976136,forgone_wages_h,-165.288024197983,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",white_forgone_wages_h,9378258.40450366
-white,Race,BAU low exports,BAU,low exports,changing prices,white,-0.304254909976136,forgone_wages_l,-12.9022552461779,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,BAU demand - low exports,BAU demand,"BAU demand
+white,Race,BAU low exports,BAU,low exports,changing prices,white,-0.304254909976136,forgone_wages_l,-12.9022552461779,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),BAU demand - low exports,BAU demand,"BAU demand
 Low exports",white_forgone_wages_l,9378258.40450366
-white,Race,LC1 historical exports,LC1,historical exports,2020 prices,white,-0.550668351511017,forgone_wages_h,-169.273545526973,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+white,Race,LC1 historical exports,LC1,historical exports,2020 prices,white,-0.550668351511017,forgone_wages_h,-169.273545526973,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",white_forgone_wages_h,9378258.40450366
-white,Race,LC1 historical exports,LC1,historical exports,2020 prices,white,-0.550668351511017,forgone_wages_l,-14.3371434870328,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+white,Race,LC1 historical exports,LC1,historical exports,2020 prices,white,-0.550668351511017,forgone_wages_l,-14.3371434870328,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",white_forgone_wages_l,9378258.40450366
-white,Race,LC1 historical exports,LC1,historical exports,changing prices,white,-0.550668351511017,forgone_wages_h,-224.946281320136,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+white,Race,LC1 historical exports,LC1,historical exports,changing prices,white,-0.550668351511017,forgone_wages_h,-224.946281320136,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",white_forgone_wages_h,9378258.40450366
-white,Race,LC1 historical exports,LC1,historical exports,changing prices,white,-0.550668351511017,forgone_wages_l,-20.6952290835558,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical exports,Low demand,"Low demand
+white,Race,LC1 historical exports,LC1,historical exports,changing prices,white,-0.550668351511017,forgone_wages_l,-20.6952290835558,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical exports,Low demand,"Low demand
 Historical exports",white_forgone_wages_l,9378258.40450366
-white,Race,LC1 historical production,LC1,historical production,2020 prices,white,0.00820535705280947,forgone_wages_h,-2.58574014171695,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+white,Race,LC1 historical production,LC1,historical production,2020 prices,white,0.00820535705280947,forgone_wages_h,-2.58574014171695,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",white_forgone_wages_h,9378258.40450366
-white,Race,LC1 historical production,LC1,historical production,2020 prices,white,0.00820535705280947,forgone_wages_l,-0.225853505056594,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+white,Race,LC1 historical production,LC1,historical production,2020 prices,white,0.00820535705280947,forgone_wages_l,-0.225853505056594,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",white_forgone_wages_l,9378258.40450366
-white,Race,LC1 historical production,LC1,historical production,changing prices,white,0.00820535705280947,forgone_wages_h,-3.10835004569697,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+white,Race,LC1 historical production,LC1,historical production,changing prices,white,0.00820535705280947,forgone_wages_h,-3.10835004569697,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",white_forgone_wages_h,9378258.40450366
-white,Race,LC1 historical production,LC1,historical production,changing prices,white,0.00820535705280947,forgone_wages_l,-0.290195165494806,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - historical production,Low demand,"Low demand
+white,Race,LC1 historical production,LC1,historical production,changing prices,white,0.00820535705280947,forgone_wages_l,-0.290195165494806,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - historical production,Low demand,"Low demand
 Historical production",white_forgone_wages_l,9378258.40450366
-white,Race,LC1 low exports,LC1,low exports,2020 prices,white,-0.68652858248236,forgone_wages_h,-226.6032075538,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+white,Race,LC1 low exports,LC1,low exports,2020 prices,white,-0.68652858248236,forgone_wages_h,-226.6032075538,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",white_forgone_wages_h,9378258.40450366
-white,Race,LC1 low exports,LC1,low exports,2020 prices,white,-0.68652858248236,forgone_wages_l,-18.1785135192305,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+white,Race,LC1 low exports,LC1,low exports,2020 prices,white,-0.68652858248236,forgone_wages_l,-18.1785135192305,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",white_forgone_wages_l,9378258.40450366
-white,Race,LC1 low exports,LC1,low exports,changing prices,white,-0.68652858248236,forgone_wages_h,-299.007224938542,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+white,Race,LC1 low exports,LC1,low exports,changing prices,white,-0.68652858248236,forgone_wages_h,-299.007224938542,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",white_forgone_wages_h,9378258.40450366
-white,Race,LC1 low exports,LC1,low exports,changing prices,white,-0.68652858248236,forgone_wages_l,-26.2209564331281,labor,USD,forgone_wages,Labor: forgone wages of directly employed workers,Low demand - low exports,Low demand,"Low demand
+white,Race,LC1 low exports,LC1,low exports,changing prices,white,-0.68652858248236,forgone_wages_l,-26.2209564331281,labor,USD,forgone_wages,Labor: forgone compensation (direct impact only),Low demand - low exports,Low demand,"Low demand
 Low exports",white_forgone_wages_l,9378258.40450366

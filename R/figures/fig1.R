@@ -500,7 +500,7 @@ create_figure_1 <- function(
         min(ct_census_tract_pm25_2019_sp$total_pm25),
         max(ct_census_tract_pm25_2019_sp$total_pm25)
       ),
-      breaks = c(0, 1, 2),
+      breaks = c(0, 1, 2, 3),
       labels = function(x) format(x, big.mark = ",", scientific = FALSE)
     ) +
     facet_wrap(~cluster_title) +
@@ -963,7 +963,7 @@ create_figure_1 <- function(
         min(ct_census_tract_pm25_2019_sp$total_pm25),
         max(ct_census_tract_pm25_2019_sp$total_pm25)
       ),
-      breaks = c(0, 1, 2),
+      breaks = c(0, 1, 2, 3),
       labels = function(x) format(x, big.mark = ",", scientific = FALSE)
     ) +
     facet_wrap(~cluster_title) +
@@ -1059,7 +1059,7 @@ create_figure_1 <- function(
   health_legend_fig <- ggplot() +
     geom_sf(
       data = la_cluster_ct_cropped,
-      mapping = aes(geometry = geometry, fill = pop_x_pm25),
+      mapping = aes(geometry = geometry, fill = total_pm25),
       lwd = 0.0,
       color = "white",
       alpha = 1,
@@ -1071,22 +1071,16 @@ create_figure_1 <- function(
       space = "Lab",
       na.value = "grey50",
       limits = c(
-        min(ct_census_tract_pm25_2019_sp$pop_x_pm25),
-        max(ct_census_tract_pm25_2019_sp$pop_x_pm25)
+        min(ct_census_tract_pm25_2019_sp$total_pm25),
+        max(ct_census_tract_pm25_2019_sp$total_pm25)
       ),
-      breaks = c(0, 5000, 10000),
+      breaks = c(0, 1, 2, 3),
       labels = function(x) format(x, big.mark = ",", scientific = FALSE)
     ) +
+    facet_wrap(~cluster_title) +
     labs(
       # title = expression(bold(paste("D. PM"[2.5], " concentration of all refinery emissions"))),
-      fill = expression(paste(
-        "Population-weighted PM"[2.5],
-        " (",
-        mu,
-        "g/",
-        m^3,
-        ")"
-      )),
+      fill = expression(paste("PM"[2.5], " (", mu, "g/", m^3, ")")),
       color = NULL,
       shape = NULL,
       x = "Longitude",
