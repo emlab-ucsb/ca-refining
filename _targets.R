@@ -1236,7 +1236,7 @@ list(
 
   # paper figures
   tar_target(
-    name = fig_demand_ghg,
+    name = fig_demand_ghg_result,
     command = plot_combined_production(
       dt_its,
       dt_jet,
@@ -1244,6 +1244,14 @@ list(
       tot_fuel_demand_exports,
       state_ghg_output
     )
+  ),
+  tar_target(
+    name = fig_demand_ghg,
+    command = fig_demand_ghg_result$plot
+  ),
+  tar_target(
+    name = fuel_demand_table,
+    command = fig_demand_ghg_result$demand_table
   ),
   tar_target(
     name = fig_refinery_capacity,
@@ -2509,6 +2517,18 @@ list(
       figure_number = "figure-2",
       height = 15,
       dpi = 600
+    ),
+    format = "file"
+  ),
+  tar_target(
+    name = save_fuel_demand_table,
+    command = simple_fwrite_repo(
+      fuel_demand_table,
+      NULL,
+      "fuel_demand_summary_2020_2045.csv",
+      save_path = save_path,
+      file_type = "figure",
+      figure_number = "figure-2"
     ),
     format = "file"
   ),
