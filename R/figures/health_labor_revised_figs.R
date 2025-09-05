@@ -190,8 +190,8 @@ process_npv_pc_data <- function(demographic_npv_df, refining_mortality, pop_rati
   ## update labor segment title
   plot_df_long[,
     seg_title := fifelse(
-      seg_title == "Labor: forgone wages",
-      "Labor: forgone wages of directly employed workers",
+      seg_title == "Labor: forgone compensation",
+      "Labor: forgone compensation (direct impact only)",
       seg_title
     )
   ]
@@ -418,14 +418,14 @@ plot_npv_labor_oilpx <- function(
     mutate(
       title = ifelse(
         metric == "forgone_wages_bil",
-        "Labor: forgone wages",
-        "Labor: forgone wages per avoided GHG"
+        "Labor: forgone compensation",
+        "Labor: forgone compensation per avoided GHG"
       )
     )
 
   plot_df_labor$title <- factor(
     plot_df_labor$title,
-    levels = c("Labor: forgone wages", "Labor: forgone wages per avoided GHG")
+    levels = c("Labor: forgone compensation", "Labor: forgone compensation per avoided GHG")
   )
 
   ## rename
@@ -591,7 +591,7 @@ plot_npv_labor_oilpx <- function(
     facet_wrap(~oil_px_label) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -668,7 +668,7 @@ plot_npv_labor_oilpx <- function(
     facet_wrap(~oil_px_label) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -745,7 +745,7 @@ plot_npv_labor_oilpx <- function(
     facet_wrap(~oil_px_label) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = "NPV (2019 USD billion)",
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
@@ -1150,14 +1150,14 @@ plot_npv_health_labor <- function(
     mutate(
       title = ifelse(
         metric == "forgone_wages_bil",
-        "Labor: forgone wages",
-        "Labor: forgone wages per avoided GHG"
+        "Labor: forgone compensation",
+        "Labor: forgone compensation per avoided GHG"
       )
     )
 
   plot_df_labor$title <- factor(
     plot_df_labor$title,
-    levels = c("Labor: forgone wages", "Labor: forgone wages per avoided GHG")
+    levels = c("Labor: forgone compensation", "Labor: forgone compensation per avoided GHG")
   )
 
   ## rename
@@ -1300,8 +1300,8 @@ plot_npv_health_labor <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 40),
-      breaks = seq(0, 40, by = 10)
+      limits = c(0, 50),
+      breaks = seq(0, 50, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1375,13 +1375,13 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1446,13 +1446,13 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1518,13 +1518,13 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = NULL,
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-40, 0),
-      breaks = seq(-40, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -1576,11 +1576,11 @@ plot_npv_health_labor <- function(
     #                                            metric == "forgone_wages_bil"), aes(x = ghg_perc_diff * -100, y = high, color = scen_id), shape = 1, size = 3, alpha = 0.8) +
     labs(
       color = "with re-emp:",
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    ylim(-50, 0) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -1651,11 +1651,11 @@ plot_npv_health_labor <- function(
     ) +
     labs(
       color = "no re-emp:",
-      title = "Labor: forgone wages",
+      title = "Labor: forgone compensation",
       y = NULL,
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
-    ylim(-60, 0) +
+    ylim(-50, 0) +
     xlim(0, 80) +
     scale_color_manual(
       values = refin_colors,
@@ -2431,8 +2431,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 60),
-      breaks = seq(0, 60, by = 10)
+      limits = c(0, 40),
+      breaks = seq(0, 40, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2511,8 +2511,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2582,8 +2582,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2654,8 +2654,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -2781,8 +2781,8 @@ plot_npv_health_labor_ref <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3438,8 +3438,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 60),
-      breaks = seq(0, 60, by = 10)
+      limits = c(0, 40),
+      breaks = seq(0, 40, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3518,8 +3518,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3589,8 +3589,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3661,8 +3661,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -3719,8 +3719,8 @@ plot_npv_health_labor_annual_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4446,8 +4446,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(0, 60),
-      breaks = seq(0, 60, by = 10)
+      limits = c(0, 40),
+      breaks = seq(0, 40, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4526,8 +4526,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4597,8 +4597,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4669,8 +4669,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4727,8 +4727,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-50, 0),
+      breaks = seq(-50, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -4800,8 +4800,8 @@ plot_npv_health_labor_non_age_vsl <- function(
       x = "GHG emissions reduction (%, 2045 vs 2019)"
     ) +
     scale_y_continuous(
-      limits = c(-60, 0),
-      breaks = seq(-60, 0, by = 10)
+      limits = c(-40, 0),
+      breaks = seq(-40, 0, by = 10)
     ) +
     xlim(0, 80) +
     scale_color_manual(
@@ -6056,7 +6056,7 @@ plot_health_levels_gaps <- function(main_path, save_path, health_grp) {
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortalities, difference from reference",
+      "Health: avoided mortality (difference from reference)",
       size = 8,
       angle = 90
     )
@@ -6373,7 +6373,7 @@ plot_health_levels_gaps_pmil <- function(
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortalities per million people, difference from reference",
+      "Avoided mortality per million people, difference from reference",
       size = 8,
       angle = 90
     )
@@ -7159,7 +7159,7 @@ plot_labor_levels <- function(
 
   ## shared y lab
   yaxis_lab <- ggdraw() +
-    draw_label("Labor: FTE job-years (thousand)", size = 8, angle = 90)
+    draw_label("Labor: FTE direct job-years (thousand)", size = 8, angle = 90)
 
   # ## plot together
   # fig2l_a <- plot_grid(
@@ -7735,7 +7735,7 @@ plot_labor_levels_pmil <- function(
 
   ## shared y lab
   yaxis_lab <- ggdraw() +
-    draw_label("Labor: FTE job-years per million people", size = 8, angle = 90)
+    draw_label("Labor: FTE direct job-years per million people", size = 8, angle = 90)
 
   # ## plot together
   # fig2l_a <- plot_grid(
@@ -8243,7 +8243,7 @@ plot_labor_levels_gaps <- function(
   ## shared y lab
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE-jobs, difference from reference (thousand)",
+      "Labor: FTE direct job-years, difference from reference (thousand)",
       size = 8,
       angle = 90
     )
@@ -8736,7 +8736,7 @@ plot_labor_levels_gaps_pmil <- function(
   ## shared y lab
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE-jobs, difference from reference per million people",
+      "Labor: FTE direct job-years, difference from reference per million people",
       size = 8,
       angle = 90
     )
@@ -9074,7 +9074,7 @@ plot_hl_levels_df <- function(
       seg_title = ifelse(
         segment == "health",
         "Health: avoided mortality",
-        "Labor: forgone wages"
+        "Labor: forgone compensation"
       )
     )
 
@@ -9729,12 +9729,29 @@ plot_hl_levels_pc <- function(
   ## udpate labor segment title
   plot_df_long[,
     seg_title := fifelse(
-      seg_title == "Labor: forgone wages",
-      "Labor: forgone wages of directly employed workers",
+      seg_title == "Labor: forgone compensation",
+      "Labor: forgone compensation (direct impact only)",
       seg_title
     )
   ]
 
+  ## udpate scen title
+  plot_df_long[, scen_title_adj := str_replace_all(scen_title, "Historical", "historical")]
+  plot_df_long[, scen_title_adj := str_replace_all(scen_title_adj, "Low exports", "low exports")]
+  
+  plot_df_long$scen_title_adj <- factor(
+    plot_df_long$scen_title_adj,
+    levels = c(
+      "BAU demand\nhistorical production",
+      "BAU demand\nhistorical exports",
+      "BAU demand\nlow exports",
+      "Low demand\nhistorical exports",
+      "Low demand\nlow exports",
+      "Low demand\nhistorical production"
+    )
+  )
+  
+  
   ## save figure inputs
   ## Figure inputs will be saved by _targets.R pipeline
   # Old path, now removed: file.path(main_path, "outputs/academic-out/refining/figures/2024-08-beta-adj/fig-csv-files/", "state_disaggregated_npv_pc_fig_inputs.csv")
@@ -9765,7 +9782,7 @@ plot_hl_levels_pc <- function(
             levels = c("Black", "Hispanic", "Asian", "white")
           )
         ),
-      aes(x = scen_title, y = value, color = title),
+      aes(x = scen_title_adj, y = value, color = title),
       size = 3,
       alpha = 0.8
     ) +
@@ -9776,7 +9793,7 @@ plot_hl_levels_pc <- function(
       values = race_col_pal
     ) +
     labs(
-      y = "NPV per capita (USD)",
+      y = "NPV per capita (2019 USD)",
       x = NULL,
       color = NULL
     ) +
@@ -9810,7 +9827,7 @@ plot_hl_levels_pc <- function(
             levels = c("Black", "Hispanic", "Asian", "white")
           )
         ),
-      aes(x = scen_title, y = value, color = title, shape = metric),
+      aes(x = scen_title_adj, y = value, color = title, shape = metric),
       size = 3,
       alpha = 0.8
     ) +
@@ -9832,8 +9849,8 @@ plot_hl_levels_pc <- function(
     ) +
     # scale_y_continuous(label = comma, limits = c(-1000, 0)) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -9865,7 +9882,7 @@ plot_hl_levels_pc <- function(
             levels = c("Black", "Hispanic", "Asian", "white")
           )
         ),
-      aes(x = scen_title, y = value, color = title, shape = metric),
+      aes(x = scen_title_adj, y = value, color = title, shape = metric),
       size = 3,
       alpha = 0.8
     ) +
@@ -9886,8 +9903,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -9974,7 +9991,7 @@ plot_hl_levels_pc <- function(
     scale_shape_manual(values = poverty_ptc_h) +
     facet_wrap(~seg_title) +
     labs(
-      y = "NPV per capita (USD)",
+      y = "NPV per capita (2019 USD)",
       x = NULL,
       color = NULL
     ) +
@@ -10022,8 +10039,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -10069,8 +10086,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -10147,14 +10164,12 @@ plot_hl_levels_pc <- function(
     scale_shape_manual(values = dac_ptc) +
     facet_wrap(~seg_title) +
     labs(
-      y = "NPV per capita (USD)",
+      y = "NPV per capita (2019 USD)",
       x = NULL,
       color = NULL
     ) +
     theme_line +
-    scale_y_continuous(
-      limits = c(0, 2000)
-    ) +
+    scale_y_continuous(label = comma, limits = c(0, 2000)) +
     theme(
       legend.position = "none",
       legend.title = element_blank(),
@@ -10191,8 +10206,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -10231,8 +10246,8 @@ plot_hl_levels_pc <- function(
       color = NULL
     ) +
     scale_y_continuous(
-      limits = c(-1000, 0),
-      breaks = seq(-1000, 0, by = 500)
+      limits = c(-500, 0),
+      breaks = seq(-500, 0, by = 250)
     ) +
     theme_line +
     theme(
@@ -11969,8 +11984,8 @@ fig4_hl <- function(
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Avoided mortalities, difference from reference",
-      size = 8,
+      "Health: avoided mortality (difference from reference)",
+      size = 10,
       angle = 90
     )
 
@@ -12570,8 +12585,8 @@ fig4_hl <- function(
   # yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE job-years, difference from reference (thousand)",
-      size = 8,
+      "Labor: FTE direct job-years (difference from reference, thousands)",
+      size = 10,
       angle = 90
     )
 
@@ -13021,7 +13036,7 @@ fig4_hl_pmil <- function(
 
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Health: Avoided mortalities per million people (difference from reference)",
+      "Health: avoided mortality per million people (difference from reference)",
       size = fig_text_size,
       angle = 90
     )
@@ -13700,7 +13715,7 @@ fig4_hl_pmil <- function(
   # yaxis_lab <- ggdraw() + draw_label("Labor: FTE job-years, difference from reference", size = 8, angle = 90)
   yaxis_lab <- ggdraw() +
     draw_label(
-      "Labor: FTE direct employment per million people (difference from reference)",
+      "Labor: FTE direct job-years per million people (difference from reference)",
       size = fig_text_size,
       angle = 90
     )

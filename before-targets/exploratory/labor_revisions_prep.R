@@ -65,7 +65,7 @@ statewide <- left_join(statewide,fte,by=c("IndustryCode"="Implan546Index")) %>%
 
 ### ADD UP WORKERS FROM BLOCK TO TRACT LEVEL
 
-df.tract <- fread('ca_od_main_JT02_2020.csv') %>%
+df.tract <- fread('ca_od_main_JT02_2019.csv') %>%
   mutate(w_tract_geocode = substr(as.character(w_geocode),1,10), 
          h_tract_geocode = substr(as.character(h_geocode),1,10)) %>% 
   filter(h_tract_geocode != "6037980004" & h_tract_geocode != "6037980030" & h_tract_geocode != "6111980000") %>% 
@@ -173,8 +173,7 @@ summary(test$SI01_share)
 
 # EXPORT FILES TO CSV FOR TRACEY 
 
-fwrite(direct.multipliers,'direct_multipliers_tract.csv')
+fwrite(direct.multipliers,'direct_multipliers_tract_2019.csv')
 fwrite(statewide.indir.indu,'indirect_induced_multipliers_state.csv')
-
 
 

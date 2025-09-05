@@ -2397,6 +2397,17 @@ list(
     format = "file"
   ),
   tar_target(
+    name = save_indiv_prod_out,
+    command = simple_fwrite_repo(
+      data = indiv_prod_output,
+      folder_path = NULL, # not used when save_path and file_type are provided
+      filename = "indiv_prod_output.csv",
+      save_path = save_path,
+      file_type = "table"
+    ),
+    format = "file"
+  ),
+  tar_target(
     name = save_health_income,
     command = simple_fwrite_repo(
       refining_health_income,
