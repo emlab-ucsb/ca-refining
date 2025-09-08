@@ -1,0 +1,649 @@
+demand_scenario,refining_scenario,product_scenario,demo_cat,demo_group,title,segment,metric,metric_desc,unit_desc,value
+BAU,historical exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4083664441.82378
+BAU,historical exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3748361792.78687
+BAU,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5510028663.18377
+BAU,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5035415503.49368
+BAU,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8148494288.5699
+BAU,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7459170580.63939
+BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1445198816.43744
+BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1324606715.64109
+BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),18438622.2387831
+BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),16843816.974089
+BAU,historical exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1763758010.42067
+BAU,historical exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1613378375.74646
+BAU,historical exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),854497236.491301
+BAU,historical exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),784231799.187425
+BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),37181366.0446332
+BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),33991615.0147168
+BAU,historical exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4329292015.78123
+BAU,historical exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3969233808.31737
+BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),43015736.7169667
+BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),39381962.1510644
+BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),243695539.076153
+BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),222734113.039821
+BAU,historical exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2303814578.23784
+BAU,historical exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2103981805.84961
+BAU,historical production,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,historical production,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),0
+BAU,historical production,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),0
+BAU,low exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5628793976.95585
+BAU,low exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5155090966.25752
+BAU,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8579919147.73286
+BAU,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7835656412.5881
+BAU,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),12115535149.8429
+BAU,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),11075383904.8356
+BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2093177974.84582
+BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1915363474.0101
+BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),30503788.1954822
+BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),27850612.1097894
+BAU,low exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2616853371.24024
+BAU,low exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2390807639.76003
+BAU,low exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1210624769.89937
+BAU,low exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1108542964.50391
+BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),59516411.4478308
+BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),54351658.5948839
+BAU,low exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),6158022873.28258
+BAU,low exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5635670587.6463
+BAU,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),66133021.0315187
+BAU,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),60443419.466062
+BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),390034851.093409
+BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),356188130.098602
+BAU,low exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3677024038.49831
+BAU,low exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3356892366.66605
+LC1,historical exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),7493018254.67327
+LC1,historical exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),6788939888.22853
+LC1,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),10877939922.9589
+LC1,historical exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),9840689564.2092
+LC1,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),15574849740.7388
+LC1,historical exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),14099397587.7253
+LC1,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2796108436.89263
+LC1,historical exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2530231864.71252
+LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),40080980.0343379
+LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),36212518.6836114
+LC1,historical exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3279751882.92811
+LC1,historical exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),2970856497.66283
+LC1,historical exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),1652442354.90231
+LC1,historical exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1494714443.61441
+LC1,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),73840985.691142
+LC1,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),66868934.4386775
+LC1,historical exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),8039188620.01203
+LC1,historical exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),7282944211.59282
+LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),86739701.9039139
+LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),78440835.0833925
+LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),504330173.775855
+LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),455859199.252302
+LC1,historical exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),4694583478.38429
+LC1,historical exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),4243732812.10977
+LC1,historical production,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-23432235.4083119
+LC1,historical production,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-20753973.715211
+LC1,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-37278600.1394506
+LC1,historical production,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-32747745.8075758
+LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-51351198.7463575
+LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-45235115.7472239
+LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-9359636.80140601
+LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-8266603.77556238
+LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-152796.995694701
+LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-134124.537035266
+LC1,historical production,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-10493022.8758139
+LC1,historical production,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-9262172.20117404
+LC1,historical production,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-5551474.86522394
+LC1,historical production,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-4883199.75864899
+LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-251913.840319816
+LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-221287.277462126
+LC1,historical production,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-25736080.2928213
+LC1,historical production,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-22782634.4043375
+LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-287661.632469432
+LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-250597.389629647
+LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-1802066.09906797
+LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-1576335.44167894
+LC1,historical production,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),-16435818.9463521
+LC1,historical production,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),-14391368.5128206
+LC1,low exports,,DAC,dac,DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),9372129688.72777
+LC1,low exports,,DAC,dac,DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),8498233883.60547
+LC1,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),13448686538.583
+LC1,low exports,,DAC,non_dac,Non-DAC,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),12194790400.2156
+LC1,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),19283206591.7525
+LC1,low exports,,Poverty,total_above_poverty,Above poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),17487540387.3148
+LC1,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3537609635.55796
+LC1,low exports,,Poverty,total_below_poverty,Below poverty line,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3205483896.50573
+LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),50665257.3419619
+LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),45901348.5562768
+LC1,low exports,,Race,asian,Asian,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),3955774618.68774
+LC1,low exports,,Race,asian,Asian,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),3590916553.77418
+LC1,low exports,,Race,black,Black,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),2137228472.54808
+LC1,low exports,,Race,black,Black,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),1934541782.09065
+LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),89349449.1729248
+LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),81141867.9902417
+LC1,low exports,,Race,hispanic,Hispanic,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),9952998632.88056
+LC1,low exports,,Race,hispanic,Hispanic,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),9028819631.93609
+LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),109430128.131298
+LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),99141418.3994496
+LC1,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_pv,avoided_health_cost,USD (annual VSL),636160695.842083
+LC1,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),576341838.857088
+LC1,low exports,,Race,white,white,health,sum_cost_pv,avoided_health_cost,USD (annual VSL),5889208972.70617
+LC1,low exports,,Race,white,white,health,sum_cost_2019_pv,avoided_health_cost,USD (2019 VSL),5336219842.21691
+BAU,historical exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-701318024.358834
+BAU,historical exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-43483333.3040857
+BAU,historical exports,changing prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-892860010.007039
+BAU,historical exports,changing prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-60819216.9794454
+BAU,historical exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-1516980041.02765
+BAU,historical exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-102785868.23193
+BAU,historical exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-1948535959.2556
+BAU,historical exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-145193646.751216
+BAU,historical exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-1918737169.64452
+BAU,historical exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-126891544.666266
+BAU,historical exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-2458389928.07824
+BAU,historical exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-178726306.991781
+BAU,historical exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-299560895.741985
+BAU,historical exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-19377656.8697325
+BAU,historical exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-383006041.184315
+BAU,historical exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-27286556.7388622
+BAU,historical exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-5149313.53171501
+BAU,historical exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-346300.514902187
+BAU,historical exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-6628635.64399451
+BAU,historical exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-492882.485939403
+BAU,historical exports,2020 prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-379589214.217046
+BAU,historical exports,2020 prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-24970809.861743
+BAU,historical exports,changing prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-485885308.775164
+BAU,historical exports,changing prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-35078108.4050804
+BAU,historical exports,2020 prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-149826564.323904
+BAU,historical exports,2020 prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-10204418.7251647
+BAU,historical exports,changing prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-191994063.251256
+BAU,historical exports,changing prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-14370492.6207732
+BAU,historical exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-9669439.99628292
+BAU,historical exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-683309.134476836
+BAU,historical exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-12427291.0144524
+BAU,historical exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-964487.845594683
+BAU,historical exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-909510691.782639
+BAU,historical exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-58382993.79393
+BAU,historical exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-1162286957.7394
+BAU,historical exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-82086745.7627261
+BAU,historical exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-10893894.8404303
+BAU,historical exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-729380.349998726
+BAU,historical exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-13964522.0004976
+BAU,historical exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-1028315.39842828
+BAU,historical exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-67575645.0367433
+BAU,historical exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-4688354.3629107
+BAU,historical exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-86936267.2781441
+BAU,historical exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-6630090.49060345
+BAU,historical exports,2020 prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-686083301.657735
+BAU,historical exports,2020 prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-46263634.7928708
+BAU,historical exports,changing prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-881272923.559642
+BAU,historical exports,changing prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-65361740.7214962
+BAU,historical production,2020 prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,2020 prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,0
+BAU,historical production,changing prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,0
+BAU,low exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-1026271590.63886
+BAU,low exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-66277518.0656038
+BAU,low exports,changing prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-1313473652.08429
+BAU,low exports,changing prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-93825753.9140453
+BAU,low exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-2644851740.17152
+BAU,low exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-177009804.662139
+BAU,low exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-3397485415.44425
+BAU,low exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-250782527.884984
+BAU,low exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-3176852766.382
+BAU,low exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-211157778.373476
+BAU,low exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-4076387006.699
+BAU,low exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-298914969.413392
+BAU,low exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-494270564.428382
+BAU,low exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-32129544.3542582
+BAU,low exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-634572060.829486
+BAU,low exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-45693312.3856283
+BAU,low exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-9519110.27274065
+BAU,low exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-638477.098019101
+BAU,low exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-12246485.6034451
+BAU,low exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-909150.666255175
+BAU,low exports,2020 prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-614423341.072013
+BAU,low exports,2020 prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-41560001.0985659
+BAU,low exports,changing prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-787793523.167551
+BAU,low exports,changing prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-58710885.470139
+BAU,low exports,2020 prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-260696758.678572
+BAU,low exports,2020 prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-17665078.0139919
+BAU,low exports,changing prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-334891062.86372
+BAU,low exports,changing prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-25008239.3201915
+BAU,low exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-17031583.9097973
+BAU,low exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-1188974.8911487
+BAU,low exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-21891722.8821415
+BAU,low exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-1680527.5730594
+BAU,low exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-1424816373.08746
+BAU,low exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-92194121.3213519
+BAU,low exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-1826829111.95164
+BAU,low exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-130695405.887112
+BAU,low exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-18850479.5252432
+BAU,low exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-1278944.33084988
+BAU,low exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-24214906.9096797
+BAU,low exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-1813458.88547736
+BAU,low exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-123443306.126042
+BAU,low exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-8467815.39211048
+BAU,low exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-158727311.931448
+BAU,low exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-12000539.7878438
+BAU,low exports,2020 prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-1202342378.13851
+BAU,low exports,2020 prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-80293910.5816985
+BAU,low exports,changing prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-1544364942.21884
+BAU,low exports,changing prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-113790074.208946
+LC1,historical exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-1310482259.94386
+LC1,historical exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-94088912.5533355
+LC1,historical exports,changing prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-1723246462.47236
+LC1,historical exports,changing prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-135724438.324349
+LC1,historical exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-3464824433.00219
+LC1,historical exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-287137080.823958
+LC1,historical exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-4602456763.7099
+LC1,historical exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-416146303.713711
+LC1,historical exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-4119740371.81601
+LC1,historical exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-331077404.584453
+LC1,historical exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-5457088294.56813
+LC1,historical exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-479022445.8396
+LC1,historical exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-655566321.129974
+LC1,historical exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-50148588.792824
+LC1,historical exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-868614931.614039
+LC1,historical exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-72848296.1984434
+LC1,historical exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-13134968.5143158
+LC1,historical exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-1085780.82671721
+LC1,historical exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-17527566.2528382
+LC1,historical exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-1582864.79578049
+LC1,historical exports,2020 prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-791294244.890772
+LC1,historical exports,2020 prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-64122696.753139
+LC1,historical exports,changing prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-1046692321.18762
+LC1,historical exports,changing prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-92495399.4720608
+LC1,historical exports,2020 prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-342544391.299231
+LC1,historical exports,2020 prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-28002000.847182
+LC1,historical exports,changing prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-454620722.814323
+LC1,historical exports,changing prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-40492991.3931312
+LC1,historical exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-22087830.4547032
+LC1,historical exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-1842189.66548208
+LC1,historical exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-29322795.9183707
+LC1,historical exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-2655948.9950023
+LC1,historical exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-1839962809.04562
+LC1,historical exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-138101211.917231
+LC1,historical exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-2430114067.23571
+LC1,historical exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-199932630.783152
+LC1,historical exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-24884485.5323211
+LC1,historical exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-2051107.19362959
+LC1,historical exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-33034183.229509
+LC1,historical exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-2971310.64097931
+LC1,historical exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-163914904.559323
+LC1,historical exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-14001451.8124769
+LC1,historical exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-218225938.931139
+LC1,historical exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-20295036.2271708
+LC1,historical exports,2020 prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-1577483058.6497
+LC1,historical exports,2020 prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-132019554.36142
+LC1,historical exports,changing prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-2096165630.61265
+LC1,historical exports,changing prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-191444559.730767
+LC1,historical production,2020 prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-17732493.2926998
+LC1,historical production,2020 prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-1657228.76544169
+LC1,historical production,changing prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-21827359.2757835
+LC1,historical production,changing prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-2169487.10683286
+LC1,historical production,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-51883706.4802647
+LC1,historical production,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-4547493.50280809
+LC1,historical production,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-62366997.8849526
+LC1,historical production,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-5841721.30605435
+LC1,historical production,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-60284709.4605141
+LC1,historical production,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-5383532.54075074
+LC1,historical production,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-72897261.4437866
+LC1,historical production,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-6950434.02472186
+LC1,historical production,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-9331490.31251764
+LC1,historical production,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-821189.727485478
+LC1,historical production,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-11297095.7168026
+LC1,historical production,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-1060774.38815096
+LC1,historical production,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-198981.855032854
+LC1,historical production,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-16688.5444742949
+LC1,historical production,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-237182.948830605
+LC1,historical production,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-21273.9145125048
+LC1,historical production,2020 prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-11879192.2973671
+LC1,historical production,2020 prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-1075333.03577176
+LC1,historical production,changing prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-14423537.096137
+LC1,historical production,changing prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-1393326.66486791
+LC1,historical production,2020 prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-5306705.50327635
+LC1,historical production,2020 prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-469796.701110497
+LC1,historical production,changing prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-6402324.96395445
+LC1,historical production,changing prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-605755.372845784
+LC1,historical production,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-314297.787851885
+LC1,historical production,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-27977.3341988809
+LC1,historical production,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-375846.020250619
+LC1,historical production,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-35818.0112074595
+LC1,historical production,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-24732122.6996756
+LC1,historical production,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-2241681.60803223
+LC1,historical production,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-30087476.5475655
+LC1,historical production,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-2906471.77854049
+LC1,historical production,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-391961.950840056
+LC1,historical production,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-34274.8718375331
+LC1,historical production,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-473216.772049069
+LC1,historical production,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-44207.8714073896
+LC1,historical production,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-2543198.46305478
+LC1,historical production,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-220857.640827067
+LC1,historical production,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-3043862.87159228
+LC1,historical production,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-282829.549743675
+LC1,historical production,2020 prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-24249739.2159195
+LC1,historical production,2020 prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-2118112.53198361
+LC1,historical production,changing prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-29150909.940197
+LC1,historical production,changing prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-2721525.24974799
+LC1,low exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-1613997980.19772
+LC1,low exports,2020 prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-116054083.241051
+LC1,low exports,changing prices,DAC,dac,DAC,labor,forgone_wages_h,forgone_wages,USD,-2111130890.94676
+LC1,low exports,changing prices,DAC,dac,DAC,labor,forgone_wages_l,forgone_wages,USD,-167660297.074607
+LC1,low exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-4613651534.75703
+LC1,low exports,2020 prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-363913210.569621
+LC1,low exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_h,forgone_wages,USD,-6083503538.46712
+LC1,low exports,changing prices,DAC,non_dac,Non-DAC,labor,forgone_wages_l,forgone_wages,USD,-526700383.948866
+LC1,low exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-5381971934.32755
+LC1,low exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-417290452.221916
+LC1,low exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_h,forgone_wages,USD,-7081811415.88942
+LC1,low exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,forgone_wages_l,forgone_wages,USD,-603351704.027158
+LC1,low exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-845677580.627203
+LC1,low exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-62676841.5887567
+LC1,low exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_h,forgone_wages,USD,-1112823013.52441
+LC1,low exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,forgone_wages_l,forgone_wages,USD,-91008976.9963152
+LC1,low exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-17771102.7481361
+LC1,low exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-1382693.78559166
+LC1,low exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_h,forgone_wages,USD,-23505239.3672006
+LC1,low exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,forgone_wages_l,forgone_wages,USD,-2011399.30290589
+LC1,low exports,2020 prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-1023065146.64995
+LC1,low exports,2020 prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-80090356.4248729
+LC1,low exports,changing prices,Race,asian,Asian,labor,forgone_wages_h,forgone_wages,USD,-1344204467.24324
+LC1,low exports,changing prices,Race,asian,Asian,labor,forgone_wages_l,forgone_wages,USD,-115476272.689498
+LC1,low exports,2020 prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-450485239.967816
+LC1,low exports,2020 prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-35676065.5726607
+LC1,low exports,changing prices,Race,black,Black,labor,forgone_wages_h,forgone_wages,USD,-593321563.544166
+LC1,low exports,changing prices,Race,black,Black,labor,forgone_wages_l,forgone_wages,USD,-51541609.7420341
+LC1,low exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-29162857.6525284
+LC1,low exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-2374831.43505267
+LC1,low exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_h,forgone_wages,USD,-38400373.0383767
+LC1,low exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,forgone_wages_l,forgone_wages,USD,-3418241.94334272
+LC1,low exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-2334589329.49668
+LC1,low exports,2020 prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-172053052.93108
+LC1,low exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_h,forgone_wages,USD,-3064048178.88034
+LC1,low exports,changing prices,Race,hispanic,Hispanic,labor,forgone_wages_l,forgone_wages,USD,-249036962.718734
+LC1,low exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-32793213.5851642
+LC1,low exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-2581161.37833469
+LC1,low exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-43212077.3793576
+LC1,low exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-3734687.42242609
+LC1,low exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-221616238.913049
+LC1,low exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-17942139.2157689
+LC1,low exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_h,forgone_wages,USD,-292714075.302086
+LC1,low exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,forgone_wages_l,forgone_wages,USD,-25962385.6720342
+LC1,low exports,2020 prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-2118166385.94144
+LC1,low exports,2020 prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-167866993.067317
+LC1,low exports,changing prices,Race,white,white,labor,forgone_wages_h,forgone_wages,USD,-2795228454.65906
+LC1,low exports,changing prices,Race,white,white,labor,forgone_wages_l,forgone_wages,USD,-243179121.532505
+BAU,historical exports,2020 prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-9171.56618427319
+LC1,historical exports,2020 prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-18301.311722827
+BAU,historical production,2020 prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,low exports,2020 prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-22304.4666877215
+LC1,historical production,2020 prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-251.498773568346
+BAU,low exports,2020 prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-13571.5834734539
+BAU,historical exports,2020 prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-20258.6464984967
+LC1,low exports,2020 prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-64866.352246377
+LC1,historical exports,2020 prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-49448.0643705775
+BAU,historical production,2020 prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,historical production,2020 prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-709.812881424354
+BAU,low exports,2020 prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-35286.6155445887
+BAU,historical production,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,historical exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-58448.3728087672
+BAU,low exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-42274.5027772953
+LC1,low exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-75339.3873951688
+LC1,historical production,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-832.635263212258
+BAU,historical exports,2020 prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-25470.7529745257
+LC1,historical exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-9301.0032846378
+BAU,historical production,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,historical exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-3959.45970824413
+LC1,historical production,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-128.676391781009
+BAU,low exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-6583.69624074656
+LC1,low exports,2020 prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-11831.4315389301
+LC1,historical production,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-2.67520469780993
+BAU,historical exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-69.1439874448609
+BAU,low exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-127.460300551112
+LC1,historical exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-189.154839175834
+LC1,low exports,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-251.300435521602
+BAU,historical production,2020 prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,historical exports,2020 prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-5027.42316870398
+LC1,low exports,2020 prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-14282.6557643483
+LC1,historical exports,2020 prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-11196.0386408938
+LC1,historical production,2020 prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-165.046595448999
+BAU,historical production,2020 prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,2020 prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-8163.78560317081
+LC1,low exports,2020 prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-6319.8903311056
+LC1,historical exports,2020 prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-4880.13949586737
+BAU,historical production,2020 prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,historical production,2020 prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-72.8830795287795
+BAU,low exports,2020 prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-3478.72952329423
+BAU,historical exports,2020 prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-1991.37679899069
+LC1,historical exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-314.779618058505
+BAU,historical production,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-227.508425372138
+LC1,historical production,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-4.29306125771723
+LC1,low exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-408.872312070994
+BAU,historical exports,2020 prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-129.293358893918
+BAU,low exports,2020 prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-18917.9232112105
+LC1,historical production,2020 prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-345.188405295659
+LC1,historical exports,2020 prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-25930.5598358716
+BAU,historical exports,2020 prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-11998.2378513929
+BAU,historical production,2020 prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,low exports,2020 prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-32487.515699269
+LC1,historical exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-354.684129315835
+BAU,historical exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-144.872969319535
+LC1,historical production,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-5.37199783075266
+LC1,low exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-460.482059390479
+BAU,low exports,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-251.538725652368
+BAU,historical production,2020 prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,0
+LC1,low exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-3127.16066231258
+LC1,historical exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-2350.56712346789
+BAU,historical exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-906.101483104259
+LC1,historical production,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-34.5445363981398
+BAU,historical production,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,2020 prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-1651.04393351859
+LC1,historical exports,2020 prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-22533.4524107543
+BAU,historical production,2020 prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,historical exports,2020 prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-9163.76306491959
+BAU,low exports,2020 prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-16040.2092952721
+LC1,low exports,2020 prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-29832.9416700804
+LC1,historical production,2020 prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-331.308774535326
+BAU,historical exports,changing prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-11937.977356317
+LC1,low exports,changing prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-29713.3572217451
+LC1,historical production,changing prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-314.409451723011
+LC1,historical exports,changing prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-24491.1457749456
+BAU,historical production,changing prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,changing prices,DAC,dac,DAC,labor,fte_job_years,job_loss,fte-jobs,-17752.6679437459
+BAU,historical exports,changing prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-26634.8000558252
+LC1,low exports,changing prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-87072.6838443453
+LC1,historical exports,changing prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-66781.2662342295
+BAU,historical production,changing prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,changing prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-46342.3113779214
+LC1,historical production,changing prices,DAC,non_dac,Non-DAC,labor,fte_job_years,job_loss,fte-jobs,-870.116498771386
+LC1,historical exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-78740.8390650275
+LC1,low exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-100938.386050262
+BAU,historical production,changing prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-55454.4537492101
+LC1,historical production,changing prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-1025.74792237574
+BAU,historical exports,changing prices,Poverty,total_above_poverty,Above poverty line,labor,fte_job_years,job_loss,fte-jobs,-33391.8091338094
+LC1,historical exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-12531.572944148
+BAU,historical production,changing prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-8640.52557245748
+LC1,low exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-15847.6550158288
+LC1,historical production,changing prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-158.77802811758
+BAU,historical exports,changing prices,Poverty,total_below_poverty,Below poverty line,labor,fte_job_years,job_loss,fte-jobs,-5180.96827833351
+BAU,low exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-167.680836479222
+BAU,historical exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-91.1481129459489
+LC1,historical exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-256.445399842027
+BAU,historical production,changing prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,low exports,changing prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-338.169363563994
+LC1,historical production,changing prices,Race,aialnative,American Indian or Alaska Native,labor,fte_job_years,job_loss,fte-jobs,-3.25753630961776
+BAU,historical exports,changing prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-6583.51809559473
+LC1,low exports,changing prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-19111.3125178673
+LC1,historical exports,changing prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-15064.9372240045
+BAU,historical production,changing prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,historical production,changing prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-203.958146701174
+BAU,low exports,changing prices,Race,asian,Asian,labor,fte_job_years,job_loss,fte-jobs,-10701.9961359991
+BAU,historical production,changing prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,low exports,changing prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-8474.05188764649
+LC1,historical exports,changing prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-6585.39331377897
+BAU,low exports,changing prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-4569.31678338963
+LC1,historical production,changing prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-89.5898592311059
+BAU,historical exports,changing prices,Race,black,Black,labor,fte_job_years,job_loss,fte-jobs,-2612.71922119133
+BAU,historical production,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,0
+LC1,historical exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-424.80504354501
+BAU,low exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-298.958631475669
+BAU,historical exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-170.085329103689
+LC1,historical production,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-5.23644608227937
+LC1,low exports,changing prices,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,labor,fte_job_years,job_loss,fte-jobs,-548.092584853501
+LC1,historical production,changing prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-427.570544038506
+BAU,historical production,changing prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,historical exports,changing prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-15682.4176217553
+BAU,low exports,changing prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-24790.4822860306
+LC1,historical exports,changing prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-34837.1575462298
+LC1,low exports,changing prices,Race,hispanic,Hispanic,labor,fte_job_years,job_loss,fte-jobs,-43414.3095324804
+BAU,historical exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-190.116975411192
+LC1,low exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-617.73647422157
+LC1,historical production,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-6.60935444866959
+LC1,historical exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-478.744783597646
+BAU,historical production,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,changing prices,Race,nonh_other,Other (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-330.400875263008
+LC1,low exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-4204.13941642239
+LC1,historical exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-3180.74743777219
+BAU,historical exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-1193.63608474847
+BAU,historical production,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,0
+LC1,historical production,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-42.1776974192562
+BAU,low exports,changing prices,Race,nonh_two_or_more,Two or more races (Non-Hispanic),labor,fte_job_years,job_loss,fte-jobs,-2170.90273480403
+LC1,historical exports,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-30444.1812604054
+BAU,historical exports,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-12049.1359713925
+LC1,historical production,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-406.126366262732
+LC1,low exports,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-40078.2292890354
+BAU,historical production,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,0
+BAU,low exports,changing prices,Race,white,white,labor,fte_job_years,job_loss,fte-jobs,-21065.2410382263
+BAU,historical exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-3.18731019206935
+BAU,historical exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-304.917382822969
+BAU,historical exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-144.397977038248
+BAU,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-6.39863584868388
+BAU,historical exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-732.743941773152
+BAU,historical exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-956.198048396651
+BAU,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-7.36370864888138
+BAU,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-42.1547871605842
+BAU,historical exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-1397.5484601307
+BAU,historical exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-244.987369927597
+BAU,historical exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-401.372086573731
+BAU,historical production,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,0
+BAU,historical production,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,0
+BAU,low exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-5.27786287302109
+BAU,low exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-454.272355931906
+BAU,low exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-206.470461545685
+BAU,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-10.2790244480387
+BAU,low exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-1050.13141951301
+BAU,low exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-1491.46198287029
+BAU,low exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-11.3982025753448
+BAU,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-67.6375206981714
+BAU,low exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-2089.1393478227
+BAU,low exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-357.235501619316
+BAU,low exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-640.908001856798
+LC1,historical exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-7.22293238556802
+LC1,historical exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-589.048484731278
+LC1,historical exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-296.084256050867
+LC1,historical exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-13.1835903811946
+LC1,historical exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-1427.45581662951
+LC1,historical exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-1962.0259214228
+LC1,historical exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-15.5916550940732
+LC1,historical exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-91.0571491914033
+LC1,historical exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-2791.32283559415
+LC1,historical exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-498.71915153994
+LC1,historical exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-850.398102670229
+LC1,historical production,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,0.031237675852766
+LC1,historical production,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,2.09828984669103
+LC1,historical production,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,1.11763345915315
+LC1,historical production,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,0.0511164034804432
+LC1,historical production,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,5.04737806081474
+LC1,historical production,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,7.6107517005187
+LC1,historical production,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0.0602153780590986
+LC1,historical production,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,0.373173244047228
+LC1,historical production,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,10.3272032231055
+LC1,historical production,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,1.85507670518162
+LC1,historical production,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,3.40323586018882
+LC1,low exports,,Race,aialnative,American Indian or Alaska Native,health,avoided_mortality,avoided_mortality,persons,-9.02849493874694
+LC1,low exports,,Race,asian,Asian,health,avoided_mortality,avoided_mortality,persons,-704.259041790698
+LC1,low exports,,Race,black,Black,health,avoided_mortality,avoided_mortality,persons,-381.84187074
+LC1,low exports,,Race,hawaiian_pacisl,Hawaiian or Other Pacific Islander,health,avoided_mortality,avoided_mortality,persons,-15.769687140797
+LC1,low exports,,Race,hispanic,Hispanic,health,avoided_mortality,avoided_mortality,persons,-1757.24384340738
+LC1,low exports,,DAC,non_dac,Non-DAC,health,avoided_mortality,avoided_mortality,persons,-2402.55461737433
+LC1,low exports,,Race,nonh_other,Other (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-19.5218738063932
+LC1,low exports,,Race,nonh_two_or_more,Two or more races (Non-Hispanic),health,avoided_mortality,avoided_mortality,persons,-113.779696485224
+LC1,low exports,,Poverty,total_above_poverty,Above poverty line,health,avoided_mortality,avoided_mortality,persons,-3430.57301252281
+LC1,low exports,,Poverty,total_below_poverty,Below poverty line,health,avoided_mortality,avoided_mortality,persons,-627.404740925881
+LC1,low exports,,Race,white,white,health,avoided_mortality,avoided_mortality,persons,-1056.53324513941
+BAU,historical exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-686.337781661674
+BAU,historical production,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,0
+BAU,low exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-954.912866571674
+LC1,historical exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-1328.01606571133
+LC1,historical production,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,4.57152822776851
+LC1,low exports,,DAC,dac,DAC,health,avoided_mortality,avoided_mortality,persons,-1655.42313607422
