@@ -69,7 +69,7 @@ list(
   tar_target(name = ref_threshold, command = 0.6),
 
   # list save paths (UPDATE VERSION AS NEEDED)
-  tar_target(name = version, command = "rev-submission"),
+  tar_target(name = version, command = "labor-2019-direct-mult"),
   tar_target(
     name = iteration,
     command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)
@@ -439,10 +439,18 @@ list(
     name = file_direct_multipliers,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"
+      "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract_2019.csv"
     ),
     format = "file"
   ),
+  # tar_target(
+  #   name = file_direct_multipliers,
+  #   command = file.path(
+  #     main_path,
+  #     "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"
+  #   ),
+  #   format = "file"
+  # ),
   tar_target(
     name = file_indirect_state_multipliers,
     command = file.path(
