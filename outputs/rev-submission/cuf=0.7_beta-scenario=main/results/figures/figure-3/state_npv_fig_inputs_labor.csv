@@ -1,0 +1,73 @@
+scen_id,demand_scenario,refining_scenario,product_scenario,indirect_induced_scenario,ghg_perc_diff,segment,metric,unit_desc,high,low,title,scenario,unit
+BAU historical exports,BAU,historical exports,2020 prices,bartik-corrected,-0.168394679004793,labor,forgone_wages_bil,USD billion,-11.245752387862,-0.782423722601445,Labor: forgone compensation,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,2020 prices,bartik-corrected,-0.168394679004793,labor,forgone_wages_ghg,USD billion per GHG,-116.212092587162,-8.08546151091612,Labor: forgone compensation per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU historical exports,BAU,historical exports,2020 prices,baseline,-0.168394679004793,labor,forgone_wages_bil,USD billion,-14.4010974209539,-1.00477732713039,Labor: forgone compensation,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,2020 prices,baseline,-0.168394679004793,labor,forgone_wages_ghg,USD billion per GHG,-148.819003755321,-10.3832337528604,Labor: forgone compensation per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU historical exports,BAU,historical exports,changing prices,bartik-corrected,-0.168394679004793,labor,forgone_wages_bil,USD billion,-14.4045725886833,-1.10888219355985,Labor: forgone compensation,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,changing prices,bartik-corrected,-0.168394679004793,labor,forgone_wages_ghg,USD billion per GHG,-148.854915671215,-11.459039440111,Labor: forgone compensation per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU historical exports,BAU,historical exports,changing prices,baseline,-0.168394679004793,labor,forgone_wages_bil,USD billion,-18.4462227161192,-1.42446000250151,Labor: forgone compensation,BAU demand - historical exports,NPV (2019 USD billion)
+BAU historical exports,BAU,historical exports,changing prices,baseline,-0.168394679004793,labor,forgone_wages_ghg,USD billion per GHG,-190.620784473507,-14.7201780715079,Labor: forgone compensation per avoided GHG,BAU demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU historical production,BAU,historical production,2020 prices,bartik-corrected,0.00549319314029759,labor,forgone_wages_bil,USD billion,0,0,Labor: forgone compensation,BAU demand - historical production,NPV (2019 USD billion)
+BAU historical production,BAU,historical production,2020 prices,bartik-corrected,0.00549319314029759,labor,forgone_wages_ghg,USD billion per GHG,,,Labor: forgone compensation per avoided GHG,BAU demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU historical production,BAU,historical production,2020 prices,baseline,0.00549319314029759,labor,forgone_wages_bil,USD billion,0,0,Labor: forgone compensation,BAU demand - historical production,NPV (2019 USD billion)
+BAU historical production,BAU,historical production,2020 prices,baseline,0.00549319314029759,labor,forgone_wages_ghg,USD billion per GHG,,,Labor: forgone compensation per avoided GHG,BAU demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU historical production,BAU,historical production,changing prices,bartik-corrected,0.00549319314029759,labor,forgone_wages_bil,USD billion,0,0,Labor: forgone compensation,BAU demand - historical production,NPV (2019 USD billion)
+BAU historical production,BAU,historical production,changing prices,bartik-corrected,0.00549319314029759,labor,forgone_wages_ghg,USD billion per GHG,,,Labor: forgone compensation per avoided GHG,BAU demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU historical production,BAU,historical production,changing prices,baseline,0.00549319314029759,labor,forgone_wages_bil,USD billion,0,0,Labor: forgone compensation,BAU demand - historical production,NPV (2019 USD billion)
+BAU historical production,BAU,historical production,changing prices,baseline,0.00549319314029759,labor,forgone_wages_ghg,USD billion per GHG,,,Labor: forgone compensation per avoided GHG,BAU demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU low exports,BAU,low exports,2020 prices,bartik-corrected,-0.304254909976136,labor,forgone_wages_bil,USD billion,-18.6109092406404,-1.31084405702485,Labor: forgone compensation,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,2020 prices,bartik-corrected,-0.304254909976136,labor,forgone_wages_ghg,USD billion per GHG,-112.011127470395,-7.88941146650648,Labor: forgone compensation per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU low exports,BAU,low exports,2020 prices,baseline,-0.304254909976136,labor,forgone_wages_bil,USD billion,-23.8327777300411,-1.68398466995731,Labor: forgone compensation,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,2020 prices,baseline,-0.304254909976136,labor,forgone_wages_ghg,USD billion per GHG,-143.439327427582,-10.1351857174651,Labor: forgone compensation per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU low exports,BAU,low exports,changing prices,bartik-corrected,-0.304254909976136,labor,forgone_wages_bil,USD billion,-23.8823988576791,-1.86696295549819,Labor: forgone compensation,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,changing prices,bartik-corrected,-0.304254909976136,labor,forgone_wages_ghg,USD billion per GHG,-143.737975837566,-11.2364540005471,Labor: forgone compensation per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+BAU low exports,BAU,low exports,changing prices,baseline,-0.304254909976136,labor,forgone_wages_bil,USD billion,-30.5833474482985,-2.3990680303809,Labor: forgone compensation,BAU demand - low exports,NPV (2019 USD billion)
+BAU low exports,BAU,low exports,changing prices,baseline,-0.304254909976136,labor,forgone_wages_ghg,USD billion per GHG,-184.068128279414,-14.4389675693189,Labor: forgone compensation per avoided GHG,BAU demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical exports,LC1,historical exports,2020 prices,bartik-corrected,-0.550668351511017,labor,forgone_wages_bil,USD billion,-24.208611765441,-2.09359375185807,Labor: forgone compensation,Low demand - historical exports,NPV (2019 USD billion)
+LC1 historical exports,LC1,historical exports,2020 prices,bartik-corrected,-0.550668351511017,labor,forgone_wages_ghg,USD billion per GHG,-106.732144655417,-9.23034139000004,Labor: forgone compensation per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical exports,LC1,historical exports,2020 prices,baseline,-0.550668351511017,labor,forgone_wages_bil,USD billion,-31.0010895168258,-2.69211365664419,Labor: forgone compensation,Low demand - historical exports,NPV (2019 USD billion)
+LC1 historical exports,LC1,historical exports,2020 prices,baseline,-0.550668351511017,labor,forgone_wages_ghg,USD billion per GHG,-136.679162062026,-11.8691260372045,Labor: forgone compensation per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical exports,LC1,historical exports,changing prices,bartik-corrected,-0.550668351511017,labor,forgone_wages_bil,USD billion,-32.0684101342124,-3.03027048691375,Labor: forgone compensation,Low demand - historical exports,NPV (2019 USD billion)
+LC1 historical exports,LC1,historical exports,changing prices,bartik-corrected,-0.550668351511017,labor,forgone_wages_ghg,USD billion per GHG,-141.384818860209,-13.3600088715548,Labor: forgone compensation per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical exports,LC1,historical exports,changing prices,baseline,-0.550668351511017,labor,forgone_wages_bil,USD billion,-41.0661983787195,-3.89653976346275,Labor: forgone compensation,Low demand - historical exports,NPV (2019 USD billion)
+LC1 historical exports,LC1,historical exports,changing prices,baseline,-0.550668351511017,labor,forgone_wages_ghg,USD billion per GHG,-181.054720042337,-17.1792604102639,Labor: forgone compensation per avoided GHG,Low demand - historical exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical production,LC1,historical production,2020 prices,bartik-corrected,0.00820535705280947,labor,forgone_wages_bil,USD billion,-0.352922160032013,-0.0304078317758303,Labor: forgone compensation,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,2020 prices,bartik-corrected,0.00820535705280947,labor,forgone_wages_ghg,USD billion per GHG,589.550179272729,50.7957411150085,Labor: forgone compensation per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical production,LC1,historical production,2020 prices,baseline,0.00820535705280947,labor,forgone_wages_bil,USD billion,-0.45194543089183,-0.0388674881354361,Labor: forgone compensation,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,2020 prices,baseline,0.00820535705280947,labor,forgone_wages_ghg,USD billion per GHG,754.966788652774,64.9274463129447,Labor: forgone compensation per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical production,LC1,historical production,changing prices,bartik-corrected,0.00820535705280947,labor,forgone_wages_bil,USD billion,-0.426826722638123,-0.0400015263595505,Labor: forgone compensation,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,changing prices,bartik-corrected,0.00820535705280947,labor,forgone_wages_ghg,USD billion per GHG,713.006434129472,66.8218369578057,Labor: forgone compensation per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 historical production,LC1,historical production,changing prices,baseline,0.00820535705280947,labor,forgone_wages_bil,USD billion,-0.546586213405518,-0.0511830275042057,Labor: forgone compensation,Low demand - historical production,NPV (2019 USD billion)
+LC1 historical production,LC1,historical production,changing prices,baseline,0.00820535705280947,labor,forgone_wages_ghg,USD billion per GHG,913.062529346401,85.5003353659866,Labor: forgone compensation per avoided GHG,Low demand - historical production,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 low exports,LC1,low exports,2020 prices,bartik-corrected,-0.68652858248236,labor,forgone_wages_bil,USD billion,-31.5713228516779,-2.62368182881452,Labor: forgone compensation,Low demand - low exports,NPV (2019 USD billion)
+LC1 low exports,LC1,low exports,2020 prices,bartik-corrected,-0.68652858248236,labor,forgone_wages_ghg,USD billion per GHG,-106.386317000346,-8.84105642514994,Labor: forgone compensation per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 low exports,LC1,low exports,2020 prices,baseline,-0.68652858248236,labor,forgone_wages_bil,USD billion,-40.4296378236229,-3.37296936534084,Labor: forgone compensation,Low demand - low exports,NPV (2019 USD billion)
+LC1 low exports,LC1,low exports,2020 prices,baseline,-0.68652858248236,labor,forgone_wages_ghg,USD billion per GHG,-136.23630171976,-11.3659408514311,Labor: forgone compensation per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 low exports,LC1,low exports,changing prices,bartik-corrected,-0.68652858248236,labor,forgone_wages_bil,USD billion,-41.5430329855965,-3.78214850294703,Labor: forgone compensation,Low demand - low exports,NPV (2019 USD billion)
+LC1 low exports,LC1,low exports,changing prices,bartik-corrected,-0.68652858248236,labor,forgone_wages_ghg,USD billion per GHG,-139.988124575104,-12.7447573694405,Labor: forgone compensation per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"
+LC1 low exports,LC1,low exports,changing prices,baseline,-0.68652858248236,labor,forgone_wages_bil,USD billion,-53.1992208750045,-4.86141577133867,Labor: forgone compensation,Low demand - low exports,NPV (2019 USD billion)
+LC1 low exports,LC1,low exports,changing prices,baseline,-0.68652858248236,labor,forgone_wages_ghg,USD billion per GHG,-179.266139805696,-16.3815789965428,Labor: forgone compensation per avoided GHG,Low demand - low exports,"NPV per avoided GHG MtCO2e
+(2019 USD million / MtCO2e)"

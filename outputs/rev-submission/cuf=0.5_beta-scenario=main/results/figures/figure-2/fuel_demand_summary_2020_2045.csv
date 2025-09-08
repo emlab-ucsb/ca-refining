@@ -1,0 +1,573 @@
+scenario,year,fuel,consumption_million_bge,percentage
+BAU Demand,2020,Biodiesel,5.021,0.01
+BAU Demand,2020,Diesel,67.011,0.12
+BAU Demand,2020,Electricity,1.528,0
+BAU Demand,2020,Ethanol,27.353,0.05
+BAU Demand,2020,Gasoline,323.947,0.6
+BAU Demand,2020,Hydrogen,0.039,0
+BAU Demand,2020,Jet Fuel,95.203,0.17
+BAU Demand,2020,Renewable Diesel,16.667,0.03
+BAU Demand,2020,Renewable Gasoline,1.285,0
+BAU Demand,2020,Renewable Natural Gas,5.512,0.01
+BAU Demand,2020,Sustainable Aviation Fuel,0.595,0
+BAU Demand,2021,Biodiesel,4.971,0.01
+BAU Demand,2021,Diesel,63.801,0.12
+BAU Demand,2021,Electricity,2.02,0
+BAU Demand,2021,Ethanol,27.08,0.05
+BAU Demand,2021,Gasoline,319.915,0.59
+BAU Demand,2021,Hydrogen,0.052,0
+BAU Demand,2021,Jet Fuel,95.677,0.18
+BAU Demand,2021,Renewable Diesel,19.048,0.04
+BAU Demand,2021,Renewable Gasoline,2.174,0
+BAU Demand,2021,Renewable Natural Gas,5.649,0.01
+BAU Demand,2021,Sustainable Aviation Fuel,1.19,0
+BAU Demand,2022,Biodiesel,4.93,0.01
+BAU Demand,2022,Diesel,60.225,0.11
+BAU Demand,2022,Electricity,2.549,0
+BAU Demand,2022,Ethanol,26.629,0.05
+BAU Demand,2022,Gasoline,314.285,0.59
+BAU Demand,2022,Hydrogen,0.067,0
+BAU Demand,2022,Jet Fuel,96.363,0.18
+BAU Demand,2022,Renewable Diesel,21.944,0.04
+BAU Demand,2022,Renewable Gasoline,2.499,0
+BAU Demand,2022,Renewable Natural Gas,5.71,0.01
+BAU Demand,2022,Sustainable Aviation Fuel,1.786,0
+BAU Demand,2023,Biodiesel,4.891,0.01
+BAU Demand,2023,Diesel,59.671,0.11
+BAU Demand,2023,Electricity,3.125,0.01
+BAU Demand,2023,Ethanol,26.118,0.05
+BAU Demand,2023,Gasoline,308.244,0.58
+BAU Demand,2023,Hydrogen,0.084,0
+BAU Demand,2023,Jet Fuel,97.363,0.18
+BAU Demand,2023,Renewable Diesel,21.842,0.04
+BAU Demand,2023,Renewable Gasoline,2.486,0
+BAU Demand,2023,Renewable Natural Gas,5.738,0.01
+BAU Demand,2023,Sustainable Aviation Fuel,2.381,0
+BAU Demand,2024,Biodiesel,4.831,0.01
+BAU Demand,2024,Diesel,58.762,0.11
+BAU Demand,2024,Electricity,3.724,0.01
+BAU Demand,2024,Ethanol,25.579,0.05
+BAU Demand,2024,Gasoline,301.649,0.57
+BAU Demand,2024,Hydrogen,0.101,0
+BAU Demand,2024,Jet Fuel,98.278,0.19
+BAU Demand,2024,Renewable Diesel,21.758,0.04
+BAU Demand,2024,Renewable Gasoline,2.714,0.01
+BAU Demand,2024,Renewable Natural Gas,5.714,0.01
+BAU Demand,2024,Sustainable Aviation Fuel,3.571,0.01
+BAU Demand,2025,Biodiesel,4.754,0.01
+BAU Demand,2025,Diesel,57.544,0.11
+BAU Demand,2025,Electricity,4.366,0.01
+BAU Demand,2025,Ethanol,25.006,0.05
+BAU Demand,2025,Gasoline,294.546,0.57
+BAU Demand,2025,Hydrogen,0.12,0
+BAU Demand,2025,Jet Fuel,98.983,0.19
+BAU Demand,2025,Renewable Diesel,21.69,0.04
+BAU Demand,2025,Renewable Gasoline,3.064,0.01
+BAU Demand,2025,Renewable Natural Gas,5.613,0.01
+BAU Demand,2025,Sustainable Aviation Fuel,4.762,0.01
+BAU Demand,2026,Biodiesel,4.655,0.01
+BAU Demand,2026,Diesel,55.932,0.11
+BAU Demand,2026,Electricity,5.013,0.01
+BAU Demand,2026,Ethanol,24.45,0.05
+BAU Demand,2026,Gasoline,287.429,0.56
+BAU Demand,2026,Hydrogen,0.135,0
+BAU Demand,2026,Jet Fuel,99.676,0.19
+BAU Demand,2026,Renewable Diesel,21.644,0.04
+BAU Demand,2026,Renewable Gasoline,3.654,0.01
+BAU Demand,2026,Renewable Natural Gas,5.502,0.01
+BAU Demand,2026,Sustainable Aviation Fuel,5.952,0.01
+BAU Demand,2027,Biodiesel,4.552,0.01
+BAU Demand,2027,Diesel,54.275,0.11
+BAU Demand,2027,Electricity,5.729,0.01
+BAU Demand,2027,Ethanol,23.888,0.05
+BAU Demand,2027,Gasoline,280.24,0.55
+BAU Demand,2027,Hydrogen,0.151,0
+BAU Demand,2027,Jet Fuel,100.53,0.2
+BAU Demand,2027,Renewable Diesel,21.598,0.04
+BAU Demand,2027,Renewable Gasoline,4.245,0.01
+BAU Demand,2027,Renewable Natural Gas,5.411,0.01
+BAU Demand,2027,Sustainable Aviation Fuel,7.143,0.01
+BAU Demand,2028,Biodiesel,4.457,0.01
+BAU Demand,2028,Diesel,52.731,0.1
+BAU Demand,2028,Electricity,6.506,0.01
+BAU Demand,2028,Ethanol,23.354,0.05
+BAU Demand,2028,Gasoline,273.387,0.54
+BAU Demand,2028,Hydrogen,0.166,0
+BAU Demand,2028,Jet Fuel,101.675,0.2
+BAU Demand,2028,Renewable Diesel,21.544,0.04
+BAU Demand,2028,Renewable Gasoline,4.833,0.01
+BAU Demand,2028,Renewable Natural Gas,5.346,0.01
+BAU Demand,2028,Sustainable Aviation Fuel,8.333,0.02
+BAU Demand,2029,Biodiesel,4.38,0.01
+BAU Demand,2029,Diesel,51.535,0.1
+BAU Demand,2029,Electricity,7.338,0.01
+BAU Demand,2029,Ethanol,22.834,0.05
+BAU Demand,2029,Gasoline,266.173,0.54
+BAU Demand,2029,Hydrogen,0.181,0
+BAU Demand,2029,Jet Fuel,102.571,0.21
+BAU Demand,2029,Renewable Diesel,21.47,0.04
+BAU Demand,2029,Renewable Gasoline,6.016,0.01
+BAU Demand,2029,Renewable Natural Gas,5.307,0.01
+BAU Demand,2029,Sustainable Aviation Fuel,9.524,0.02
+BAU Demand,2030,Biodiesel,4.31,0.01
+BAU Demand,2030,Diesel,50.45,0.1
+BAU Demand,2030,Electricity,8.22,0.02
+BAU Demand,2030,Ethanol,22.309,0.05
+BAU Demand,2030,Gasoline,258.896,0.52
+BAU Demand,2030,Hydrogen,0.197,0
+BAU Demand,2030,Jet Fuel,103.37,0.21
+BAU Demand,2030,Renewable Diesel,21.387,0.04
+BAU Demand,2030,Renewable Gasoline,7.199,0.01
+BAU Demand,2030,Renewable Natural Gas,5.3,0.01
+BAU Demand,2030,Sustainable Aviation Fuel,11.905,0.02
+BAU Demand,2031,Biodiesel,4.244,0.01
+BAU Demand,2031,Diesel,49.426,0.1
+BAU Demand,2031,Electricity,9.033,0.02
+BAU Demand,2031,Ethanol,21.757,0.04
+BAU Demand,2031,Gasoline,251.304,0.51
+BAU Demand,2031,Hydrogen,0.213,0
+BAU Demand,2031,Jet Fuel,104.172,0.21
+BAU Demand,2031,Renewable Diesel,21.3,0.04
+BAU Demand,2031,Renewable Gasoline,8.382,0.02
+BAU Demand,2031,Renewable Natural Gas,5.314,0.01
+BAU Demand,2031,Sustainable Aviation Fuel,14.696,0.03
+BAU Demand,2032,Biodiesel,4.183,0.01
+BAU Demand,2032,Diesel,48.517,0.1
+BAU Demand,2032,Electricity,9.784,0.02
+BAU Demand,2032,Ethanol,21.396,0.04
+BAU Demand,2032,Gasoline,245.965,0.51
+BAU Demand,2032,Hydrogen,0.23,0
+BAU Demand,2032,Jet Fuel,105.03,0.22
+BAU Demand,2032,Renewable Diesel,21.204,0.04
+BAU Demand,2032,Renewable Gasoline,9.564,0.02
+BAU Demand,2032,Renewable Natural Gas,5.345,0.01
+BAU Demand,2032,Sustainable Aviation Fuel,14.852,0.03
+BAU Demand,2033,Biodiesel,4.088,0.01
+BAU Demand,2033,Diesel,46.997,0.1
+BAU Demand,2033,Electricity,10.478,0.02
+BAU Demand,2033,Ethanol,20.958,0.04
+BAU Demand,2033,Gasoline,240.783,0.5
+BAU Demand,2033,Hydrogen,0.247,0
+BAU Demand,2033,Jet Fuel,105.889,0.22
+BAU Demand,2033,Renewable Diesel,21.141,0.04
+BAU Demand,2033,Renewable Gasoline,9.558,0.02
+BAU Demand,2033,Renewable Natural Gas,5.318,0.01
+BAU Demand,2033,Sustainable Aviation Fuel,15.01,0.03
+BAU Demand,2034,Biodiesel,4.002,0.01
+BAU Demand,2034,Diesel,45.632,0.1
+BAU Demand,2034,Electricity,11.117,0.02
+BAU Demand,2034,Ethanol,20.563,0.04
+BAU Demand,2034,Gasoline,236.117,0.5
+BAU Demand,2034,Hydrogen,0.266,0
+BAU Demand,2034,Jet Fuel,106.748,0.22
+BAU Demand,2034,Renewable Diesel,21.069,0.04
+BAU Demand,2034,Renewable Gasoline,9.551,0.02
+BAU Demand,2034,Renewable Natural Gas,5.305,0.01
+BAU Demand,2034,Sustainable Aviation Fuel,15.17,0.03
+BAU Demand,2035,Biodiesel,3.924,0.01
+BAU Demand,2035,Diesel,44.415,0.09
+BAU Demand,2035,Electricity,11.686,0.02
+BAU Demand,2035,Ethanol,20.211,0.04
+BAU Demand,2035,Gasoline,231.945,0.49
+BAU Demand,2035,Hydrogen,0.285,0
+BAU Demand,2035,Jet Fuel,107.607,0.23
+BAU Demand,2035,Renewable Diesel,20.986,0.04
+BAU Demand,2035,Renewable Gasoline,9.543,0.02
+BAU Demand,2035,Renewable Natural Gas,5.307,0.01
+BAU Demand,2035,Sustainable Aviation Fuel,15.332,0.03
+BAU Demand,2036,Biodiesel,3.858,0.01
+BAU Demand,2036,Diesel,43.173,0.09
+BAU Demand,2036,Electricity,12.198,0.03
+BAU Demand,2036,Ethanol,19.899,0.04
+BAU Demand,2036,Gasoline,228.231,0.49
+BAU Demand,2036,Hydrogen,0.302,0
+BAU Demand,2036,Jet Fuel,108.465,0.23
+BAU Demand,2036,Renewable Diesel,21.13,0.05
+BAU Demand,2036,Renewable Gasoline,9.562,0.02
+BAU Demand,2036,Renewable Natural Gas,5.319,0.01
+BAU Demand,2036,Sustainable Aviation Fuel,15.253,0.03
+BAU Demand,2037,Biodiesel,3.8,0.01
+BAU Demand,2037,Diesel,42.073,0.09
+BAU Demand,2037,Electricity,12.684,0.03
+BAU Demand,2037,Ethanol,19.633,0.04
+BAU Demand,2037,Gasoline,225.046,0.48
+BAU Demand,2037,Hydrogen,0.32,0
+BAU Demand,2037,Jet Fuel,109.324,0.24
+BAU Demand,2037,Renewable Diesel,21.266,0.05
+BAU Demand,2037,Renewable Gasoline,9.581,0.02
+BAU Demand,2037,Renewable Natural Gas,5.339,0.01
+BAU Demand,2037,Sustainable Aviation Fuel,15.175,0.03
+BAU Demand,2038,Biodiesel,3.747,0.01
+BAU Demand,2038,Diesel,41.059,0.09
+BAU Demand,2038,Electricity,13.125,0.03
+BAU Demand,2038,Ethanol,19.4,0.04
+BAU Demand,2038,Gasoline,222.262,0.48
+BAU Demand,2038,Hydrogen,0.336,0
+BAU Demand,2038,Jet Fuel,110.183,0.24
+BAU Demand,2038,Renewable Diesel,21.396,0.05
+BAU Demand,2038,Renewable Gasoline,9.599,0.02
+BAU Demand,2038,Renewable Natural Gas,5.37,0.01
+BAU Demand,2038,Sustainable Aviation Fuel,15.097,0.03
+BAU Demand,2039,Biodiesel,3.699,0.01
+BAU Demand,2039,Diesel,40.134,0.09
+BAU Demand,2039,Electricity,13.524,0.03
+BAU Demand,2039,Ethanol,19.197,0.04
+BAU Demand,2039,Gasoline,219.84,0.48
+BAU Demand,2039,Hydrogen,0.35,0
+BAU Demand,2039,Jet Fuel,111.042,0.24
+BAU Demand,2039,Renewable Diesel,21.521,0.05
+BAU Demand,2039,Renewable Gasoline,9.616,0.02
+BAU Demand,2039,Renewable Natural Gas,5.411,0.01
+BAU Demand,2039,Sustainable Aviation Fuel,15.02,0.03
+BAU Demand,2040,Biodiesel,3.655,0.01
+BAU Demand,2040,Diesel,39.275,0.09
+BAU Demand,2040,Electricity,13.885,0.03
+BAU Demand,2040,Ethanol,19.022,0.04
+BAU Demand,2040,Gasoline,217.745,0.48
+BAU Demand,2040,Hydrogen,0.364,0
+BAU Demand,2040,Jet Fuel,111.9,0.24
+BAU Demand,2040,Renewable Diesel,21.644,0.05
+BAU Demand,2040,Renewable Gasoline,9.633,0.02
+BAU Demand,2040,Renewable Natural Gas,5.457,0.01
+BAU Demand,2040,Sustainable Aviation Fuel,14.94,0.03
+BAU Demand,2041,Biodiesel,3.613,0.01
+BAU Demand,2041,Diesel,38.454,0.08
+BAU Demand,2041,Electricity,14.211,0.03
+BAU Demand,2041,Ethanol,18.871,0.04
+BAU Demand,2041,Gasoline,215.932,0.47
+BAU Demand,2041,Hydrogen,0.376,0
+BAU Demand,2041,Jet Fuel,112.759,0.25
+BAU Demand,2041,Renewable Diesel,21.763,0.05
+BAU Demand,2041,Renewable Gasoline,9.65,0.02
+BAU Demand,2041,Renewable Natural Gas,5.515,0.01
+BAU Demand,2041,Sustainable Aviation Fuel,14.864,0.03
+BAU Demand,2042,Biodiesel,3.569,0.01
+BAU Demand,2042,Diesel,37.596,0.08
+BAU Demand,2042,Electricity,14.506,0.03
+BAU Demand,2042,Ethanol,18.714,0.04
+BAU Demand,2042,Gasoline,214.049,0.47
+BAU Demand,2042,Hydrogen,0.388,0
+BAU Demand,2042,Jet Fuel,113.618,0.25
+BAU Demand,2042,Renewable Diesel,21.883,0.05
+BAU Demand,2042,Renewable Gasoline,9.666,0.02
+BAU Demand,2042,Renewable Natural Gas,5.585,0.01
+BAU Demand,2042,Sustainable Aviation Fuel,14.788,0.03
+BAU Demand,2043,Biodiesel,3.527,0.01
+BAU Demand,2043,Diesel,36.784,0.08
+BAU Demand,2043,Electricity,14.77,0.03
+BAU Demand,2043,Ethanol,18.577,0.04
+BAU Demand,2043,Gasoline,212.413,0.47
+BAU Demand,2043,Hydrogen,0.398,0
+BAU Demand,2043,Jet Fuel,114.477,0.25
+BAU Demand,2043,Renewable Diesel,22,0.05
+BAU Demand,2043,Renewable Gasoline,9.682,0.02
+BAU Demand,2043,Renewable Natural Gas,5.673,0.01
+BAU Demand,2043,Sustainable Aviation Fuel,14.712,0.03
+BAU Demand,2044,Biodiesel,3.488,0.01
+BAU Demand,2044,Diesel,36.023,0.08
+BAU Demand,2044,Electricity,15.004,0.03
+BAU Demand,2044,Ethanol,18.458,0.04
+BAU Demand,2044,Gasoline,210.985,0.47
+BAU Demand,2044,Hydrogen,0.407,0
+BAU Demand,2044,Jet Fuel,115.335,0.26
+BAU Demand,2044,Renewable Diesel,22.114,0.05
+BAU Demand,2044,Renewable Gasoline,9.696,0.02
+BAU Demand,2044,Renewable Natural Gas,5.779,0.01
+BAU Demand,2044,Sustainable Aviation Fuel,14.636,0.03
+BAU Demand,2045,Biodiesel,3.452,0.01
+BAU Demand,2045,Diesel,35.302,0.08
+BAU Demand,2045,Electricity,15.213,0.03
+BAU Demand,2045,Ethanol,18.354,0.04
+BAU Demand,2045,Gasoline,209.729,0.46
+BAU Demand,2045,Hydrogen,0.415,0
+BAU Demand,2045,Jet Fuel,116.194,0.26
+BAU Demand,2045,Renewable Diesel,22.227,0.05
+BAU Demand,2045,Renewable Gasoline,9.711,0.02
+BAU Demand,2045,Renewable Natural Gas,5.901,0.01
+BAU Demand,2045,Sustainable Aviation Fuel,14.559,0.03
+Low Carbon Demand,2020,Biodiesel,5.021,0.01
+Low Carbon Demand,2020,Diesel,67.011,0.12
+Low Carbon Demand,2020,Electricity,1.518,0
+Low Carbon Demand,2020,Ethanol,27.41,0.05
+Low Carbon Demand,2020,Gasoline,324.322,0.6
+Low Carbon Demand,2020,Hydrogen,0.039,0
+Low Carbon Demand,2020,Jet Fuel,95.203,0.17
+Low Carbon Demand,2020,Renewable Diesel,16.667,0.03
+Low Carbon Demand,2020,Renewable Gasoline,1.625,0
+Low Carbon Demand,2020,Renewable Natural Gas,4.884,0.01
+Low Carbon Demand,2020,Sustainable Aviation Fuel,0.595,0
+Low Carbon Demand,2021,Biodiesel,4.965,0.01
+Low Carbon Demand,2021,Diesel,63.702,0.12
+Low Carbon Demand,2021,Electricity,2.014,0
+Low Carbon Demand,2021,Ethanol,27.085,0.05
+Low Carbon Demand,2021,Gasoline,319.976,0.59
+Low Carbon Demand,2021,Hydrogen,0.077,0
+Low Carbon Demand,2021,Jet Fuel,95.677,0.18
+Low Carbon Demand,2021,Renewable Diesel,19.048,0.04
+Low Carbon Demand,2021,Renewable Gasoline,0,0
+Low Carbon Demand,2021,Renewable Natural Gas,5.157,0.01
+Low Carbon Demand,2021,Sustainable Aviation Fuel,1.19,0
+Low Carbon Demand,2022,Biodiesel,4.913,0.01
+Low Carbon Demand,2022,Diesel,59.915,0.11
+Low Carbon Demand,2022,Electricity,2.553,0
+Low Carbon Demand,2022,Ethanol,26.59,0.05
+Low Carbon Demand,2022,Gasoline,313.818,0.59
+Low Carbon Demand,2022,Hydrogen,0.141,0
+Low Carbon Demand,2022,Jet Fuel,96.363,0.18
+Low Carbon Demand,2022,Renewable Diesel,21.961,0.04
+Low Carbon Demand,2022,Renewable Gasoline,0,0
+Low Carbon Demand,2022,Renewable Natural Gas,5.396,0.01
+Low Carbon Demand,2022,Sustainable Aviation Fuel,1.786,0
+Low Carbon Demand,2023,Biodiesel,4.857,0.01
+Low Carbon Demand,2023,Diesel,59.066,0.11
+Low Carbon Demand,2023,Electricity,3.182,0.01
+Low Carbon Demand,2023,Ethanol,26.02,0.05
+Low Carbon Demand,2023,Gasoline,307.08,0.58
+Low Carbon Demand,2023,Hydrogen,0.251,0
+Low Carbon Demand,2023,Jet Fuel,97.363,0.18
+Low Carbon Demand,2023,Renewable Diesel,21.876,0.04
+Low Carbon Demand,2023,Renewable Gasoline,0,0
+Low Carbon Demand,2023,Renewable Natural Gas,5.558,0.01
+Low Carbon Demand,2023,Sustainable Aviation Fuel,2.381,0
+Low Carbon Demand,2024,Biodiesel,4.776,0.01
+Low Carbon Demand,2024,Diesel,57.781,0.11
+Low Carbon Demand,2024,Electricity,3.873,0.01
+Low Carbon Demand,2024,Ethanol,25.394,0.05
+Low Carbon Demand,2024,Gasoline,299.657,0.57
+Low Carbon Demand,2024,Hydrogen,0.402,0
+Low Carbon Demand,2024,Jet Fuel,98.278,0.19
+Low Carbon Demand,2024,Renewable Diesel,21.814,0.04
+Low Carbon Demand,2024,Renewable Gasoline,0,0
+Low Carbon Demand,2024,Renewable Natural Gas,5.663,0.01
+Low Carbon Demand,2024,Sustainable Aviation Fuel,4.762,0.01
+Low Carbon Demand,2025,Biodiesel,4.673,0.01
+Low Carbon Demand,2025,Diesel,56.118,0.11
+Low Carbon Demand,2025,Electricity,4.651,0.01
+Low Carbon Demand,2025,Ethanol,24.715,0.05
+Low Carbon Demand,2025,Gasoline,291.618,0.57
+Low Carbon Demand,2025,Hydrogen,0.597,0
+Low Carbon Demand,2025,Jet Fuel,98.983,0.19
+Low Carbon Demand,2025,Renewable Diesel,21.771,0.04
+Low Carbon Demand,2025,Renewable Gasoline,0,0
+Low Carbon Demand,2025,Renewable Natural Gas,5.757,0.01
+Low Carbon Demand,2025,Sustainable Aviation Fuel,7.143,0.01
+Low Carbon Demand,2026,Biodiesel,4.532,0.01
+Low Carbon Demand,2026,Diesel,53.775,0.11
+Low Carbon Demand,2026,Electricity,5.788,0.01
+Low Carbon Demand,2026,Ethanol,23.795,0.05
+Low Carbon Demand,2026,Gasoline,279.843,0.55
+Low Carbon Demand,2026,Hydrogen,0.896,0
+Low Carbon Demand,2026,Jet Fuel,99.676,0.2
+Low Carbon Demand,2026,Renewable Diesel,21.766,0.04
+Low Carbon Demand,2026,Renewable Gasoline,0.974,0
+Low Carbon Demand,2026,Renewable Natural Gas,5.824,0.01
+Low Carbon Demand,2026,Sustainable Aviation Fuel,9.524,0.02
+Low Carbon Demand,2027,Biodiesel,4.373,0.01
+Low Carbon Demand,2027,Diesel,51.11,0.1
+Low Carbon Demand,2027,Electricity,7.306,0.01
+Low Carbon Demand,2027,Ethanol,22.882,0.05
+Low Carbon Demand,2027,Gasoline,267.161,0.54
+Low Carbon Demand,2027,Hydrogen,1.294,0
+Low Carbon Demand,2027,Jet Fuel,100.53,0.2
+Low Carbon Demand,2027,Renewable Diesel,21.777,0.04
+Low Carbon Demand,2027,Renewable Gasoline,3.063,0.01
+Low Carbon Demand,2027,Renewable Natural Gas,5.834,0.01
+Low Carbon Demand,2027,Sustainable Aviation Fuel,11.905,0.02
+Low Carbon Demand,2028,Biodiesel,4.206,0.01
+Low Carbon Demand,2028,Diesel,48.301,0.1
+Low Carbon Demand,2028,Electricity,9.194,0.02
+Low Carbon Demand,2028,Ethanol,21.921,0.04
+Low Carbon Demand,2028,Gasoline,254.113,0.52
+Low Carbon Demand,2028,Hydrogen,1.882,0
+Low Carbon Demand,2028,Jet Fuel,101.675,0.21
+Low Carbon Demand,2028,Renewable Diesel,21.795,0.04
+Low Carbon Demand,2028,Renewable Gasoline,4.92,0.01
+Low Carbon Demand,2028,Renewable Natural Gas,5.766,0.01
+Low Carbon Demand,2028,Sustainable Aviation Fuel,14.236,0.03
+Low Carbon Demand,2029,Biodiesel,4.045,0.01
+Low Carbon Demand,2029,Diesel,45.607,0.1
+Low Carbon Demand,2029,Electricity,11.421,0.02
+Low Carbon Demand,2029,Ethanol,20.861,0.04
+Low Carbon Demand,2029,Gasoline,240.128,0.5
+Low Carbon Demand,2029,Hydrogen,2.649,0.01
+Low Carbon Demand,2029,Jet Fuel,102.571,0.22
+Low Carbon Demand,2029,Renewable Diesel,21.805,0.05
+Low Carbon Demand,2029,Renewable Gasoline,6.508,0.01
+Low Carbon Demand,2029,Renewable Natural Gas,5.648,0.01
+Low Carbon Demand,2029,Sustainable Aviation Fuel,14.387,0.03
+Low Carbon Demand,2030,Biodiesel,3.878,0.01
+Low Carbon Demand,2030,Diesel,42.813,0.09
+Low Carbon Demand,2030,Electricity,13.961,0.03
+Low Carbon Demand,2030,Ethanol,19.734,0.04
+Low Carbon Demand,2030,Gasoline,225.598,0.49
+Low Carbon Demand,2030,Hydrogen,3.585,0.01
+Low Carbon Demand,2030,Jet Fuel,103.37,0.22
+Low Carbon Demand,2030,Renewable Diesel,21.819,0.05
+Low Carbon Demand,2030,Renewable Gasoline,7.816,0.02
+Low Carbon Demand,2030,Renewable Natural Gas,5.486,0.01
+Low Carbon Demand,2030,Sustainable Aviation Fuel,14.541,0.03
+Low Carbon Demand,2031,Biodiesel,3.701,0.01
+Low Carbon Demand,2031,Diesel,39.846,0.09
+Low Carbon Demand,2031,Electricity,16.614,0.04
+Low Carbon Demand,2031,Ethanol,27.25,0.06
+Low Carbon Demand,2031,Gasoline,203.81,0.46
+Low Carbon Demand,2031,Hydrogen,4.678,0.01
+Low Carbon Demand,2031,Jet Fuel,104.172,0.23
+Low Carbon Demand,2031,Renewable Diesel,21.842,0.05
+Low Carbon Demand,2031,Renewable Gasoline,5.386,0.01
+Low Carbon Demand,2031,Renewable Natural Gas,5.277,0.01
+Low Carbon Demand,2031,Sustainable Aviation Fuel,14.696,0.03
+Low Carbon Demand,2032,Biodiesel,3.519,0.01
+Low Carbon Demand,2032,Diesel,36.788,0.08
+Low Carbon Demand,2032,Electricity,19.423,0.04
+Low Carbon Demand,2032,Ethanol,25.403,0.06
+Low Carbon Demand,2032,Gasoline,184.567,0.43
+Low Carbon Demand,2032,Hydrogen,5.919,0.01
+Low Carbon Demand,2032,Jet Fuel,105.03,0.24
+Low Carbon Demand,2032,Renewable Diesel,21.868,0.05
+Low Carbon Demand,2032,Renewable Gasoline,11.374,0.03
+Low Carbon Demand,2032,Renewable Natural Gas,5.033,0.01
+Low Carbon Demand,2032,Sustainable Aviation Fuel,14.852,0.03
+Low Carbon Demand,2033,Biodiesel,3.292,0.01
+Low Carbon Demand,2033,Diesel,32.936,0.08
+Low Carbon Demand,2033,Electricity,22.357,0.05
+Low Carbon Demand,2033,Ethanol,23.538,0.06
+Low Carbon Demand,2033,Gasoline,165.959,0.4
+Low Carbon Demand,2033,Hydrogen,7.324,0.02
+Low Carbon Demand,2033,Jet Fuel,105.889,0.25
+Low Carbon Demand,2033,Renewable Diesel,21.937,0.05
+Low Carbon Demand,2033,Renewable Gasoline,16.439,0.04
+Low Carbon Demand,2033,Renewable Natural Gas,4.786,0.01
+Low Carbon Demand,2033,Sustainable Aviation Fuel,15.01,0.04
+Low Carbon Demand,2034,Biodiesel,3.065,0.01
+Low Carbon Demand,2034,Diesel,29.082,0.07
+Low Carbon Demand,2034,Electricity,25.4,0.06
+Low Carbon Demand,2034,Ethanol,21.707,0.05
+Low Carbon Demand,2034,Gasoline,148.359,0.37
+Low Carbon Demand,2034,Hydrogen,8.878,0.02
+Low Carbon Demand,2034,Jet Fuel,106.748,0.26
+Low Carbon Demand,2034,Renewable Diesel,22.005,0.05
+Low Carbon Demand,2034,Renewable Gasoline,20.614,0.05
+Low Carbon Demand,2034,Renewable Natural Gas,4.535,0.01
+Low Carbon Demand,2034,Sustainable Aviation Fuel,15.17,0.04
+Low Carbon Demand,2035,Biodiesel,2.839,0.01
+Low Carbon Demand,2035,Diesel,25.238,0.06
+Low Carbon Demand,2035,Electricity,28.535,0.07
+Low Carbon Demand,2035,Ethanol,19.914,0.05
+Low Carbon Demand,2035,Gasoline,131.782,0.34
+Low Carbon Demand,2035,Hydrogen,10.562,0.03
+Low Carbon Demand,2035,Jet Fuel,107.607,0.27
+Low Carbon Demand,2035,Renewable Diesel,22.071,0.06
+Low Carbon Demand,2035,Renewable Gasoline,23.919,0.06
+Low Carbon Demand,2035,Renewable Natural Gas,4.209,0.01
+Low Carbon Demand,2035,Sustainable Aviation Fuel,15.332,0.04
+Low Carbon Demand,2036,Biodiesel,2.615,0.01
+Low Carbon Demand,2036,Diesel,21.207,0.06
+Low Carbon Demand,2036,Electricity,31.761,0.08
+Low Carbon Demand,2036,Ethanol,17.989,0.05
+Low Carbon Demand,2036,Gasoline,108.969,0.29
+Low Carbon Demand,2036,Hydrogen,12.333,0.03
+Low Carbon Demand,2036,Jet Fuel,108.465,0.29
+Low Carbon Demand,2036,Renewable Diesel,22.373,0.06
+Low Carbon Demand,2036,Renewable Gasoline,33.4,0.09
+Low Carbon Demand,2036,Renewable Natural Gas,3.881,0.01
+Low Carbon Demand,2036,Sustainable Aviation Fuel,15.253,0.04
+Low Carbon Demand,2037,Biodiesel,2.39,0.01
+Low Carbon Demand,2037,Diesel,17.166,0.05
+Low Carbon Demand,2037,Electricity,35.061,0.1
+Low Carbon Demand,2037,Ethanol,16.145,0.04
+Low Carbon Demand,2037,Gasoline,88.461,0.24
+Low Carbon Demand,2037,Hydrogen,14.177,0.04
+Low Carbon Demand,2037,Jet Fuel,109.324,0.3
+Low Carbon Demand,2037,Renewable Diesel,22.675,0.06
+Low Carbon Demand,2037,Renewable Gasoline,40.881,0.11
+Low Carbon Demand,2037,Renewable Natural Gas,3.553,0.01
+Low Carbon Demand,2037,Sustainable Aviation Fuel,15.175,0.04
+Low Carbon Demand,2038,Biodiesel,2.163,0.01
+Low Carbon Demand,2038,Diesel,13.076,0.04
+Low Carbon Demand,2038,Electricity,38.406,0.11
+Low Carbon Demand,2038,Ethanol,14.373,0.04
+Low Carbon Demand,2038,Gasoline,70.154,0.2
+Low Carbon Demand,2038,Hydrogen,16.126,0.05
+Low Carbon Demand,2038,Jet Fuel,110.183,0.31
+Low Carbon Demand,2038,Renewable Diesel,22.98,0.07
+Low Carbon Demand,2038,Renewable Gasoline,46.398,0.13
+Low Carbon Demand,2038,Renewable Natural Gas,3.235,0.01
+Low Carbon Demand,2038,Sustainable Aviation Fuel,15.097,0.04
+Low Carbon Demand,2039,Biodiesel,1.935,0.01
+Low Carbon Demand,2039,Diesel,8.957,0.03
+Low Carbon Demand,2039,Electricity,41.784,0.12
+Low Carbon Demand,2039,Ethanol,12.673,0.04
+Low Carbon Demand,2039,Gasoline,54.006,0.16
+Low Carbon Demand,2039,Hydrogen,18.17,0.05
+Low Carbon Demand,2039,Jet Fuel,111.042,0.33
+Low Carbon Demand,2039,Renewable Diesel,23.286,0.07
+Low Carbon Demand,2039,Renewable Gasoline,50.006,0.15
+Low Carbon Demand,2039,Renewable Natural Gas,2.926,0.01
+Low Carbon Demand,2039,Sustainable Aviation Fuel,15.02,0.04
+Low Carbon Demand,2040,Biodiesel,1.704,0.01
+Low Carbon Demand,2040,Diesel,4.804,0.01
+Low Carbon Demand,2040,Electricity,45.182,0.14
+Low Carbon Demand,2040,Ethanol,11.045,0.03
+Low Carbon Demand,2040,Gasoline,39.972,0.12
+Low Carbon Demand,2040,Hydrogen,20.296,0.06
+Low Carbon Demand,2040,Jet Fuel,111.9,0.34
+Low Carbon Demand,2040,Renewable Diesel,23.595,0.07
+Low Carbon Demand,2040,Renewable Gasoline,51.765,0.16
+Low Carbon Demand,2040,Renewable Natural Gas,2.631,0.01
+Low Carbon Demand,2040,Sustainable Aviation Fuel,14.94,0.05
+Low Carbon Demand,2041,Biodiesel,1.491,0
+Low Carbon Demand,2041,Diesel,0.962,0
+Low Carbon Demand,2041,Electricity,48.248,0.15
+Low Carbon Demand,2041,Ethanol,9.613,0.03
+Low Carbon Demand,2041,Gasoline,28.713,0.09
+Low Carbon Demand,2041,Hydrogen,22.444,0.07
+Low Carbon Demand,2041,Jet Fuel,112.759,0.36
+Low Carbon Demand,2041,Renewable Diesel,23.885,0.08
+Low Carbon Demand,2041,Renewable Gasoline,52.009,0.16
+Low Carbon Demand,2041,Renewable Natural Gas,2.348,0.01
+Low Carbon Demand,2041,Sustainable Aviation Fuel,14.864,0.05
+Low Carbon Demand,2042,Biodiesel,1.292,0
+Low Carbon Demand,2042,Diesel,0,0
+Low Carbon Demand,2042,Electricity,51.02,0.17
+Low Carbon Demand,2042,Ethanol,8.309,0.03
+Low Carbon Demand,2042,Gasoline,19.328,0.06
+Low Carbon Demand,2042,Hydrogen,24.606,0.08
+Low Carbon Demand,2042,Jet Fuel,113.618,0.37
+Low Carbon Demand,2042,Renewable Diesel,21.527,0.07
+Low Carbon Demand,2042,Renewable Gasoline,51.495,0.17
+Low Carbon Demand,2042,Renewable Natural Gas,2.078,0.01
+Low Carbon Demand,2042,Sustainable Aviation Fuel,14.788,0.05
+Low Carbon Demand,2043,Biodiesel,1.112,0
+Low Carbon Demand,2043,Diesel,0,0
+Low Carbon Demand,2043,Electricity,53.487,0.18
+Low Carbon Demand,2043,Ethanol,7.153,0.02
+Low Carbon Demand,2043,Gasoline,11.671,0.04
+Low Carbon Demand,2043,Hydrogen,26.623,0.09
+Low Carbon Demand,2043,Jet Fuel,114.477,0.38
+Low Carbon Demand,2043,Renewable Diesel,18.531,0.06
+Low Carbon Demand,2043,Renewable Gasoline,50.35,0.17
+Low Carbon Demand,2043,Renewable Natural Gas,1.83,0.01
+Low Carbon Demand,2043,Sustainable Aviation Fuel,14.712,0.05
+Low Carbon Demand,2044,Biodiesel,0.951,0
+Low Carbon Demand,2044,Diesel,0,0
+Low Carbon Demand,2044,Electricity,55.665,0.19
+Low Carbon Demand,2044,Ethanol,6.13,0.02
+Low Carbon Demand,2044,Gasoline,5.503,0.02
+Low Carbon Demand,2044,Hydrogen,28.493,0.1
+Low Carbon Demand,2044,Jet Fuel,115.335,0.39
+Low Carbon Demand,2044,Renewable Diesel,15.844,0.05
+Low Carbon Demand,2044,Renewable Gasoline,48.616,0.17
+Low Carbon Demand,2044,Renewable Natural Gas,1.603,0.01
+Low Carbon Demand,2044,Sustainable Aviation Fuel,14.636,0.05
+Low Carbon Demand,2045,Biodiesel,0.806,0
+Low Carbon Demand,2045,Diesel,0,0
+Low Carbon Demand,2045,Electricity,57.567,0.2
+Low Carbon Demand,2045,Ethanol,5.227,0.02
+Low Carbon Demand,2045,Gasoline,0.609,0
+Low Carbon Demand,2045,Hydrogen,30.21,0.11
+Low Carbon Demand,2045,Jet Fuel,116.194,0.41
+Low Carbon Demand,2045,Renewable Diesel,13.44,0.05
+Low Carbon Demand,2045,Renewable Gasoline,46.429,0.16
+Low Carbon Demand,2045,Renewable Natural Gas,1.398,0
+Low Carbon Demand,2045,Sustainable Aviation Fuel,14.559,0.05
