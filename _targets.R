@@ -533,14 +533,6 @@ list(
     ),
     format = "file"
   ),
-  tar_target(
-    name = file_labor_2019,
-    command = file.path(
-      main_path,
-      "/data-files/labor/implan/20241010-census_regions_2019-Detail Economic Indicators.csv"
-    ),
-    format = "file"
-  ),
 
   # read in raw data files
   tar_target(
@@ -782,7 +774,6 @@ list(
     ),
     format = "file"
   ),
-  tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
   # GHG factor calculation targets
   tar_target(
@@ -2027,7 +2018,6 @@ list(
       raw_ct_2019,
       health_weighted,
       refining_mortality,
-      labor_2019,
       ca_regions,
       raw_pop_income_2021,
       cpi2020,
