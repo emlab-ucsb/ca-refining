@@ -439,7 +439,7 @@ list(
     name = file_direct_multipliers,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract_2019.csv"
+      "confidential-data/direct_multipliers_tract_2019.csv"
     ),
     format = "file"
   ),
