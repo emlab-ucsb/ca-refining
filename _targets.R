@@ -1,5 +1,6 @@
 # Load packages required to define the pipeline:
 library(targets)
+library(tarchetypes)
 library(data.table)
 library(tidyr)
 library(tidyverse)
@@ -50,6 +51,12 @@ source("setup_data_paths.R")
 
 # Replace the target list below with your own:
 list(
+  
+  ## indicate if you have access to confidential data (data/confidential-data folder)
+  ## TRUE indicates access, FALSE indicates that user does not have access
+  tar_target(name = confidential_data_access,
+             command = FALSE),
+  
   # data path (automatically configured)
   tar_target(
     name = main_path,
@@ -65,11 +72,13 @@ list(
       0.00422068,
       ifelse(beta_scenario == "high", 0.00737932, 0.00582)
     )
-  ), # Coefficient from Krewski et al (2009) for mortality impact
+  ), 
+  
+  # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = ref_threshold, command = 0.6),
 
   # list save paths (UPDATE VERSION AS NEEDED)
-  tar_target(name = version, command = "rev-submission"),
+  tar_target(name = version, command = "test-no-conf-data"),
   tar_target(
     name = iteration,
     command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)
@@ -221,7 +230,7 @@ list(
     name = file_raw_its,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/raw/Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx"
+      "data-files/stocks-flows/raw/Study 1 - Preliminary Fuel Volumes BAU & LC1.xlsx"
     ),
     format = "file"
   ),
@@ -229,7 +238,7 @@ list(
     name = file_raw_avgas,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/raw/Distillates 10-10.xlsx"
+      "data-files/stocks-flows/raw/Distillates 10-10.xlsx"
     ),
     format = "file"
   ),
@@ -237,7 +246,7 @@ list(
     name = file_raw_cec_jet,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/raw/5-20 Jet Fuel Demand.xlsx"
+      "data-files/stocks-flows/raw/5-20 Jet Fuel Demand.xlsx"
     ),
     format = "file"
   ),
@@ -245,7 +254,7 @@ list(
     name = file_raw_mil_jet,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/raw/California Transportion Fuel Consumption - Summary 2020-06-01 GDS_rename.xlsx"
+      "data-files/stocks-flows/raw/California Transportion Fuel Consumption - Summary 2020-06-01 GDS_rename.xlsx"
     ),
     format = "file"
   ),
@@ -253,7 +262,7 @@ list(
     name = file_raw_fpm,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/raw/Finished_Products_Movements.xlsx"
+      "data-files/stocks-flows/raw/Finished_Products_Movements.xlsx"
     ),
     format = "file"
   ),
@@ -261,7 +270,7 @@ list(
     name = file_refcap,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/processed/refinery_loc_cap_manual.csv"
+      "data-files/stocks-flows/processed/refinery_loc_cap_manual.csv"
     ),
     format = "file"
   ), # this is a manually created file
@@ -269,7 +278,7 @@ list(
     name = file_rediesel,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"
+      "data-files/stocks-flows/processed/CARB_RE_fuels_CA_imports_figure10_053120.xlsx"
     ),
     format = "file"
   ),
@@ -277,7 +286,7 @@ list(
     name = file_renref,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/processed/renewable_refinery_capacity.xlsx"
+      "data-files/stocks-flows/processed/renewable_refinery_capacity.xlsx"
     ),
     format = "file"
   ), # this is a manually created file
@@ -285,7 +294,7 @@ list(
     name = file_altair,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/raw/altair_refinery_capacity.xlsx"
+      "data-files/stocks-flows/raw/altair_refinery_capacity.xlsx"
     ),
     format = "file"
   ), # this is a manually created file
@@ -294,7 +303,7 @@ list(
     name = file_raw_ces,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/raw/ces3results.xlsx"
+      "data-files/health/raw/ces3results.xlsx"
     ),
     format = "file"
   ),
@@ -302,7 +311,7 @@ list(
     name = file_raw_dac,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"
+      "data-files/health/raw/SB535DACresultsdatadictionary_F_2022/SB535DACresultsdatadictionary_F_2022.xlsx"
     ),
     format = "file"
   ),
@@ -310,7 +319,7 @@ list(
     name = file_raw_income_house,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/Census/ca-median-house-income.csv"
+      "data-files/Census/ca-median-house-income.csv"
     ),
     format = "file"
   ), # remove from workflow
@@ -318,7 +327,7 @@ list(
     name = file_raw_income_county,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/Census/ca-median-house-income-county.csv"
+      "data-files/Census/ca-median-house-income-county.csv"
     ),
     format = "file"
   ), # remove from workflow
@@ -326,14 +335,14 @@ list(
     name = file_inmap_re,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/source_receptor_matrix/inmap_processed_srm/refining"
+      "data-files/health/source_receptor_matrix/inmap_processed_srm/refining"
     )
   ), # these were created upstream
   tar_target(
     name = file_dt_ef,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/processed/ref_emission_factor.csv"
+      "data-files/health/processed/ref_emission_factor.csv"
     ),
     format = "file"
   ), #cluster-level emission factors
@@ -341,7 +350,7 @@ list(
     name = file_dt_ef_ref,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/processed/refinery_emission_factor.csv"
+      "data-files/health/processed/refinery_emission_factor.csv"
     ),
     format = "file"
   ), #refinery-level emission factors
@@ -349,7 +358,7 @@ list(
     name = file_dt_age_vsl,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/processed/age_based_VSL_2019.csv"
+      "data-files/health/processed/age_based_VSL_2019.csv"
     ),
     format = "file"
   ),
@@ -357,7 +366,7 @@ list(
     name = file_dt_ct_inc_pop,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/processed/ct_inc_45_2020.csv"
+      "data-files/health/processed/ct_inc_45_2020.csv"
     ),
     format = "file"
   ),
@@ -365,7 +374,7 @@ list(
     name = file_dt_growth_cap_rate,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/benmap/processed/growth_per_cap.csv"
+      "data-files/benmap/processed/growth_per_cap.csv"
     ),
     format = "file"
   ),
@@ -373,7 +382,7 @@ list(
     name = file_dt_health_income,
     command = file.path(
       main_path,
-      "outputs-staged-for-deletion/refining-2023/health/refining_health_income_2023.csv"
+      "output-files/refining-2023/health/refining_health_income_2023.csv"
     ),
     format = "file"
   ),
@@ -381,7 +390,7 @@ list(
     name = file_raw_ct_2019,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"
+      "data-files/GIS/raw/ct-cartographic-boundaries/cb_2019_06_tract_500k/cb_2019_06_tract_500k.shp"
     ),
     format = "file"
   ),
@@ -389,7 +398,7 @@ list(
     name = file_raw_ct_2020,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"
+      "data-files/GIS/raw/ct-cartographic-boundaries/nhgis0030_shapefile_tl2020_us_tract_2020/US_tract_2020.shp"
     ),
     format = "file"
   ),
@@ -397,7 +406,7 @@ list(
     name = file_raw_census_2020,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"
+      "data-files/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds249_20205_tract.csv"
     ),
     format = "file"
   ),
@@ -405,7 +414,7 @@ list(
     name = file_raw_census_2021,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"
+      "data-files/Census/nhgis_2020/nhgis0024_csv/nhgis0024_ds254_20215_tract.csv"
     ),
     format = "file"
   ),
@@ -413,7 +422,7 @@ list(
     name = file_raw_ct_race,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/Census/nhgis0039_csv/nhgis0039_ds258_2020_tract.csv"
+      "data-files/Census/nhgis0039_csv/nhgis0039_ds258_2020_tract.csv"
     ),
     format = "file"
   ),
@@ -421,7 +430,7 @@ list(
     name = file_raw_census_poverty,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"
+      "data-files/Census/nhgis_2020/nhgis0029_csv/nhgis0029_csv/nhgis0029_ds254_20215_tract.csv"
     ),
     format = "file"
   ),
@@ -429,33 +438,52 @@ list(
     name = file_df_ca_regions,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/labor/raw/ca_regions.csv"
+      "data-files/labor/raw/ca_regions.csv"
     ),
     format = "file"
   ),
-  # tar_target(name = file_df_labor, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/ica_multipliers_v2.xlsx"), format = "file"),
-  # tar_target(name = file_df_labor_dest, command = file.path(main_path, "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240524-1million_la-Detail Economic Indicators.csv"), format = "file"),
   tar_target(
     name = file_direct_multipliers,
-    command = file.path(
-      main_path,
-      "data-staged-for-deletion/labor/ncomms-revisions/direct_multipliers_tract.csv"
+    command =  { 
+      if (!isTRUE(confidential_data_access)) {
+        file.path(main_path,
+                  "intermediate-outputs/direct_multipliers_tract_blank.csv")
+      } else {
+      file.path(
+        main_path,
+        "confidential-data/direct_multipliers_tract.csv")
+       }
+      },
+      format = "file"
     ),
-    format = "file"
-  ),
   tar_target(
     name = file_indirect_state_multipliers,
-    command = file.path(
-      main_path,
-      "data-staged-for-deletion/labor/ncomms-revisions/indirect_induced_multipliers_state.csv"
-    ),
-    format = "file"
-  ),
+    command = {
+      if (!isTRUE(confidential_data_access)) {
+        file.path(
+          main_path,
+          "intermediate-outputs/indirect_induced_multipliers_state_blank.csv")
+      } else {
+      file.path(
+        main_path,
+        "confidential-data/indirect_induced_multipliers_state.csv")
+       }
+      },
+      format = "file"
+   ),
+  # tar_target(
+  #   name = file_indirect_state_multipliers,
+  #   command = file.path(
+  #     main_path,
+  #     "confidential-data/indirect_induced_multipliers_state.csv"
+  #   ),
+  #   format = "file"
+  # ),
   tar_target(
     name = file_df_labor_dest,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/20240623-census_regions-Detail Economic Indicators.csv"
+      "data-files/labor/processed/implan-results/academic-paper-multipliers/processed/20240623-census_regions-Detail Economic Indicators.csv"
     ),
     format = "file"
   ),
@@ -463,7 +491,7 @@ list(
     name = file_df_labor_fte,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/labor/processed/implan-results/academic-paper-multipliers/processed/Emp_FTE and W&S_EC_546 Industry Scheme.xlsx"
+      "data-files/labor/processed/implan-results/academic-paper-multipliers/processed/Emp_FTE and W&S_EC_546 Industry Scheme.xlsx"
     ),
     format = "file"
   ),
@@ -471,7 +499,7 @@ list(
     name = file_oil_px,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/processed/oil_price_projections_revised.xlsx"
+      "data-files/stocks-flows/processed/oil_price_projections_revised.xlsx"
     ),
     format = "file"
   ),
@@ -479,7 +507,7 @@ list(
     name = file_ca_counties_sp,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"
+      "data-files/GIS/raw/CA_counties_noislands/CA_Counties_TIGER2016_noislands.shp"
     ),
     format = "file"
   ),
@@ -487,7 +515,7 @@ list(
     name = file_refin_locs_orig,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/GIS/raw/Petroleum_Refineries_US_EIA/Petroleum_Refineries_US_2019_v2.shp"
+      "data-files/GIS/raw/Petroleum_Refineries_US_EIA/Petroleum_Refineries_US_2019_v2.shp"
     ),
     format = "file"
   ),
@@ -495,7 +523,7 @@ list(
     name = file_refin_locs,
     command = file.path(
       main_path,
-      "/data-staged-for-deletion/stocks-flows/processed/refinery_lat_long_revised.csv"
+      "/data-files/stocks-flows/processed/refinery_lat_long_revised.csv"
     ),
     format = "file"
   ),
@@ -503,15 +531,7 @@ list(
     name = file_refin_locs_ct,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/labor/ncomms-revisions/refinery_cluster_tract.csv"
-    ),
-    format = "file"
-  ),
-  tar_target(
-    name = file_labor_2019,
-    command = file.path(
-      main_path,
-      "/data-staged-for-deletion/labor/implan/20241010-census_regions_2019-Detail Economic Indicators.csv"
+      "data-files/labor/ncomms-revisions/refinery_cluster_tract.csv"
     ),
     format = "file"
   ),
@@ -692,12 +712,34 @@ list(
   ),
   tar_target(
     name = dt_direct_multipliers,
-    command = read_labor_direct_mult_inputs(file_direct_multipliers)
+    command =  { 
+      if (!isTRUE(confidential_data_access)) {
+        fread(file_direct_multipliers)
+      } else {
+      
+      read_labor_direct_mult_inputs(file_direct_multipliers)
+      }
+    }
   ),
   tar_target(
     name = dt_indirect_state_multipliers,
-    command = read_labor_indirect_mult_inputs(file_indirect_state_multipliers)
+    command =  { 
+      if (!isTRUE(confidential_data_access)) {
+        fread(file_indirect_state_multipliers)
+      } else {
+      
+      read_labor_indirect_mult_inputs(file_indirect_state_multipliers)
+      }
+    }
   ),
+  # tar_target(
+  #   name = dt_direct_multipliers,
+  #   command = read_labor_direct_mult_inputs(file_direct_multipliers)
+  # ),
+  # tar_target(
+  #   name = dt_indirect_state_multipliers,
+  #   command = read_labor_indirect_mult_inputs(file_indirect_state_multipliers)
+  # ),
   tar_target(
     name = proc_oil_px_df,
     command = read_oil_px(
@@ -722,7 +764,7 @@ list(
     name = file_ghg_emissions,
     command = file.path(
       main_path,
-      "outputs-staged-for-deletion/stocks-flows/refinery_ghg_emissions.csv"
+      "output-files/stocks-flows/refinery_ghg_emissions.csv"
     ),
     format = "file"
   ),
@@ -730,11 +772,10 @@ list(
     file_hydrogen_facilities,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/raw/hydrogen_facilities_list.xlsx"
+      "data-files/stocks-flows/raw/hydrogen_facilities_list.xlsx"
     ),
     format = "file"
   ),
-  tar_target(name = labor_2019, command = fread(file_labor_2019)),
 
   # GHG factor calculation targets
   tar_target(
@@ -845,7 +886,7 @@ list(
     command = read_and_bind_csv_files(
       file.path(
         main_path,
-        'data-staged-for-deletion/stocks-flows/processed/ghg_mrr'
+        'data-files/stocks-flows/processed/ghg_mrr'
       ),
       ".csv"
     )
@@ -862,7 +903,7 @@ list(
     name = file_fpm,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/processed/finished_product_movements_weekly_cec.csv"
+      "data-files/stocks-flows/processed/finished_product_movements_weekly_cec.csv"
     ),
     format = "file"
   ),
@@ -870,7 +911,7 @@ list(
     name = file_fw,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/stocks-flows/processed/fuel_watch_data.csv"
+      "data-files/stocks-flows/processed/fuel_watch_data.csv"
     ),
     format = "file"
   ),
@@ -878,7 +919,7 @@ list(
     name = file_processed_ces3,
     command = file.path(
       main_path,
-      "data-staged-for-deletion/health/processed/ces3_data.csv"
+      "data-files/health/processed/ces3_data.csv"
     ),
     format = "file"
   ),
@@ -1526,45 +1567,85 @@ list(
       save_path
     )
   ),
+  
   tar_target(
     name = annual_direct_labor,
-    command = calc_labor_outputs(
-      main_path,
-      save_path,
-      indiv_prod_output,
-      dt_refcap,
-      product_px,
-      cpi2019,
-      cpi2020,
-      discount_rate,
-      alpha_comp,
-      alpha_emp,
-      refin_locs_ct,
-      dt_direct_multipliers
-    )
+    command = {
+      
+      if (!isTRUE(confidential_data_access)) {
+        
+        fread('data/intermediate-outputs/annual_labor_outputs.csv',
+              colClasses = list(character = "census_tract"))
+      } else {
+        
+        calc_labor_outputs(
+          main_path,
+          save_path,
+          indiv_prod_output,
+          dt_refcap,
+          product_px,
+          cpi2019,
+          cpi2020,
+          discount_rate,
+          alpha_comp,
+          alpha_emp,
+          refin_locs_ct,
+          dt_direct_multipliers) 
+      }
+    } 
   ),
+  
   tar_target(
     name = state_annual_direct_impacts,
     command = calc_state_direct_impacts(annual_direct_labor)
   ),
+  
   tar_target(
     name = annual_all_impacts_labor,
-    command = calc_labor_all_impacts_outputs(
-      main_path,
-      save_path,
-      state_annual_direct_impacts,
-      indiv_prod_output,
-      dt_refcap,
-      product_px,
-      cpi2019,
-      cpi2020,
-      discount_rate,
-      alpha_comp,
-      alpha_emp,
-      dt_indirect_state_multipliers,
-      indirect_induced_mult
-    )
+    command = {
+      
+      if (!isTRUE(confidential_data_access)) {
+        
+        fread('data/intermediate-outputs/state_annual_labor_outputs.csv')
+      } else {
+        
+        calc_labor_all_impacts_outputs(
+          main_path,
+          save_path,
+          state_annual_direct_impacts,
+          indiv_prod_output,
+          dt_refcap,
+          product_px,
+          cpi2019,
+          cpi2020,
+          discount_rate,
+          alpha_comp,
+          alpha_emp,
+          dt_indirect_state_multipliers,
+          indirect_induced_mult
+        )
+      }
+    } 
   ),
+  # tar_target(
+  #   name = annual_all_impacts_labor,
+  #   command = calc_labor_all_impacts_outputs(
+  #     main_path,
+  #     save_path,
+  #     state_annual_direct_impacts,
+  #     indiv_prod_output,
+  #     dt_refcap,
+  #     product_px,
+  #     cpi2019,
+  #     cpi2020,
+  #     discount_rate,
+  #     alpha_comp,
+  #     alpha_emp,
+  #     dt_indirect_state_multipliers,
+  #     indirect_induced_mult
+  #   )
+  # ),
+  
   tar_target(
     ref_labor_demog_yr,
     command = calculate_labor_x_demg_annual(
@@ -1939,7 +2020,6 @@ list(
       raw_ct_2019,
       health_weighted,
       refining_mortality,
-      labor_2019,
       ca_regions,
       raw_pop_income_2021,
       cpi2020,
@@ -2472,13 +2552,18 @@ list(
   ),
   tar_target(
     name = save_state_labor_annual,
-    command = simple_fwrite_repo(
+    command = {
+      
+      if (!isTRUE(confidential_data_access)) targets::tar_cancel()
+      
+      simple_fwrite_repo(
       annual_all_impacts_labor,
       NULL,
       "state_annual_labor_outputs.csv",
       save_path = save_path,
       file_type = "labor"
-    ),
+     )
+    },
     format = "file"
   ),
   tar_target(
@@ -3040,6 +3125,8 @@ list(
   tar_target(
     save_annual_direct_labor,
     command = {
+      if (!isTRUE(confidential_data_access)) targets::tar_cancel()
+      {
       simple_fwrite_repo(
         data = annual_direct_labor,
         folder_path = NULL,
@@ -3047,6 +3134,7 @@ list(
         save_path = save_path,
         file_type = "labor"
       )
+     }
     },
     format = "file"
   ),
