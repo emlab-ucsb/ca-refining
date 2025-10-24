@@ -72,7 +72,9 @@ list(
       0.00422068,
       ifelse(beta_scenario == "high", 0.00737932, 0.00582)
     )
-  ), # Coefficient from Krewski et al (2009) for mortality impact
+  ), 
+  
+  # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = ref_threshold, command = 0.6),
 
   # list save paths (UPDATE VERSION AS NEEDED)
