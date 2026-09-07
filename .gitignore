@@ -71,3 +71,7 @@ _targets/
 # data
 /data/*
 /data-meas/*
+
+# local test runs (duplicate rev-submission results; not versioned)
+/outputs/test-conf-data/
+/outputs/test-no-conf-data/
