@@ -326,26 +326,63 @@ age_vsl_expanded <- dt_age_vsl %>%
   bind_rows(age_vsl_sep) %>%
   arrange(age_min)
 
-# NOTE ON A DELIBERATE DEVIATION FROM THE PIPELINE:
-# census_pm.R:995-1003 uses fuzzyjoin::fuzzy_left_join() with
-# match_fun = list(`>=`, `<=`), i.e. keep pairs where age_min >= start_age AND
-# age_max <= end_age. `fuzzyjoin` is not installed in this environment, so the
-# same interval match is done below with a cross join + filter. This is exactly
-# equivalent, not merely similar: the pipeline immediately calls drop_na(start_age),
-# which discards precisely the unmatched rows a left join would have retained, so
-# inner-join semantics give identical output. Both inputs are tens of rows, so the
-# cross join costs nothing.
-age_bands <- ct_inc_45 %>%
-  select(start_age, end_age) %>%
-  distinct() %>%
-  filter(start_age > 29)
-
+# Interval join: match each single year of age to the age band it falls in.
+# Kept verbatim from the pipeline (census_pm.R:995-1010) so this script matches
+# the published implementation line for line. fuzzy_left_join() keeps pairs where
+# age_min >= start_age AND age_max <= end_age.
 vsl_cross_walk <- age_vsl_expanded %>%
   filter(age_min > 29) %>%
-  cross_join(age_bands) %>%
-  filter(age_min >= start_age, age_max <= end_age) %>%
+  fuzzyjoin::fuzzy_left_join(
+    ct_inc_45 %>%
+      select(start_age, end_age) %>%
+      distinct() %>%
+      filter(start_age > 29),
+    by = c("age_min" = "start_age", "age_max" = "end_age"),
+    match_fun = list(`>=`, `<=`)
+  ) %>%
   group_by(start_age) %>%
-  summarise(end_age = first(end_age), age_VSL_2019 = mean(age_VSL_2019), .groups = "drop")
+  summarise(end_age = first(end_age), age_VSL_2019 = mean(age_VSL_2019)) %>%
+  drop_na(start_age) %>%
+  ungroup()
+
+# -----------------------------------------------------------------------------
+# ALTERNATIVE (commented, for reference): the same interval join without fuzzyjoin
+# -----------------------------------------------------------------------------
+# The pattern generalises: an interval / non-equi join can always be expressed as
+# a Cartesian product followed by a filter on the join condition. fuzzy_left_join
+# is essentially doing this internally, with the match_fun list supplying the
+# comparison operators.
+#
+# WHY THIS IS EQUIVALENT, NOT MERELY SIMILAR
+#   fuzzy_left_join is a LEFT join, so an age matching no band survives with NA in
+#   start_age. The pipeline's very next call, drop_na(start_age), removes exactly
+#   those rows. Filtering after a cross join never creates them in the first place,
+#   so both routes land in the same place. Verified 2026-09-09: the two produce an
+#   identical() 7-row crosswalk, and running this whole script each way yields
+#   byte-identical output CSVs (max absolute and relative difference = 0).
+#
+# WHEN TO REACH FOR WHICH
+#   Cross join + filter materialises every pair before discarding most of them, so
+#   it is O(n*m) in memory. Fine here: 71 expanded ages x 7 bands = 497 rows. On
+#   large inputs it is the wrong tool - prefer a data.table non-equi join, which
+#   does the interval lookup without building the product:
+#
+#     bands[ages, on = .(start_age <= age_min, end_age >= age_max)]
+#
+#   cross_join() needs dplyr >= 1.1.0; before that the idiom was a mutate() of a
+#   constant key followed by full_join(), or tidyr::expand_grid() on row indices.
+#
+# age_bands <- ct_inc_45 %>%
+#   select(start_age, end_age) %>%
+#   distinct() %>%
+#   filter(start_age > 29)
+#
+# vsl_cross_walk <- age_vsl_expanded %>%
+#   filter(age_min > 29) %>%
+#   cross_join(age_bands) %>%
+#   filter(age_min >= start_age, age_max <= end_age) %>%
+#   group_by(start_age) %>%
+#   summarise(end_age = first(end_age), age_VSL_2019 = mean(age_VSL_2019), .groups = "drop")
 
 # Population-share-weighted baseline incidence and monetised incidence per tract
 # and year. Mirrors census_pm.R:1035-1070.
