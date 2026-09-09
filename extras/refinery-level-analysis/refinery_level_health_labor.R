@@ -255,6 +255,19 @@ site_emissions <- site_cons_ghg %>%
   ) %>%
   as.data.table()
 
+# CRITICAL JOIN FIX: the emissions data and the source-receptor matrix use
+# different site_id conventions for two facilities. The pipeline reconciles them
+# before joining (census_pm.R:398-400):
+#     refining[, site_id := ifelse(site_id == "t-800",  "800",   site_id)]
+#     refining[, site_id := ifelse(site_id == "342-2", "34222", site_id)]
+# Without this, AltAir Paramount ("t-800" vs "800") and the Phillips 66 Separate
+# Unit ("342-2" vs "34222") fail to match any SRM row and drop out of the join
+# silently - no warning, just two fewer refineries. In the Reference scenario
+# they are 0.47% of statewide crude, which is exactly the size of the gap this
+# produced against the pipeline's own statewide mortality.
+site_emissions[, site_id := fifelse(site_id == "t-800", "800", site_id)]
+site_emissions[, site_id := fifelse(site_id == "342-2", "34222", site_id)]
+
 # Join emissions to the source-receptor weights and form tract concentrations.
 # Cartesian by construction: 2 sites x 8,057 tracts x 26 years.
 site_pm25 <- merge(
