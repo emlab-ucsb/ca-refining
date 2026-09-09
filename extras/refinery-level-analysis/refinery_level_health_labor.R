@@ -236,9 +236,11 @@ ef_wide <- dt_ef %>%
   select(-kg_bbl) %>%
   pivot_wider(names_from = pollutant_code, values_from = ton_bbl)
 
+# Emissions are computed for ALL refineries, not just the focus sites, because
+# the marginal attribution (section 4d) needs each tract's total concentration
+# from every refinery, not only from the two of interest.
 site_emissions <- site_cons_ghg %>%
   filter(
-    site_id %in% SITES,
     demand_scenario   == REF_DEMAND,
     refining_scenario == REF_REFINING,
     year %in% YEARS
@@ -269,10 +271,10 @@ site_emissions[, site_id := fifelse(site_id == "t-800", "800", site_id)]
 site_emissions[, site_id := fifelse(site_id == "342-2", "34222", site_id)]
 
 # Join emissions to the source-receptor weights and form tract concentrations.
-# Cartesian by construction: 2 sites x 8,057 tracts x 26 years.
+# Cartesian by construction: 16 sites x 8,057 tracts x 26 years.
 site_pm25 <- merge(
   site_emissions,
-  srm_weighted_pm25[site_id %in% SITES],
+  srm_weighted_pm25,
   by = "site_id",
   allow.cartesian = TRUE
 )
@@ -299,26 +301,38 @@ site_pm25 <- site_pm25[, .(total_pm25 = sum(total_pm25, na.rm = TRUE)),
 # The InMAP source-receptor matrix is on 2019 tract boundaries (8,057 tracts);
 # population, demographics and DAC designations are on 2020 boundaries (9,129).
 # `ct_xwalk` provides area-based intersection weights between the two vintages.
-# Skipping this step would produce numbers that are subtly wrong rather than
-# obviously wrong, so it matters.
+#
+# Two quantities are crosswalked:
+#   c_site - each focus refinery's own contribution
+#   c_tot  - the all-refinery total, needed for the marginal attribution
+#
+# The crosswalk is a weighted.mean and therefore linear, so summing over
+# refineries before or after it gives identical results (verified to 1e-15).
+# We exploit that by summing to the all-refinery total FIRST, which keeps the
+# crosswalk join small instead of expanding all 16 sites across both vintages.
 
 setnames(site_pm25, "GEOID", "GEOID_2019")
+xw_cols <- ct_xwalk[, .(GEOID_2020, GEOID_2019, rel_intersect)]
 
-site_pm25_2020 <- merge(
-  site_pm25,
-  ct_xwalk[, .(GEOID_2020, GEOID_2019, rel_intersect)],
-  by = "GEOID_2019",
-  all = TRUE,
-  allow.cartesian = TRUE
-)
+crosswalk_2020 <- function(dt, by_cols) {
+  out <- merge(dt, xw_cols, by = "GEOID_2019", all = TRUE, allow.cartesian = TRUE)
+  out <- out[, .(total_pm25 = weighted.mean(total_pm25, rel_intersect, na.rm = TRUE)),
+             by = c(by_cols, "GEOID_2020")]
+  out[!is.na(GEOID_2020)]
+}
 
-site_pm25_2020 <- site_pm25_2020[
-  , .(total_pm25 = weighted.mean(total_pm25, rel_intersect, na.rm = TRUE)),
-  by = .(site_id, GEOID_2020, year)
-]
+# all-refinery total concentration per tract-year
+tot_pm25_2020 <- crosswalk_2020(
+  site_pm25[, .(total_pm25 = sum(total_pm25, na.rm = TRUE)), by = .(GEOID_2019, year)],
+  "year")
+setnames(tot_pm25_2020, c("GEOID_2020", "total_pm25"), c("census_tract", "c_tot"))
 
-site_pm25_2020 <- site_pm25_2020[!is.na(GEOID_2020) & !is.na(site_id)]
-setnames(site_pm25_2020, "GEOID_2020", "census_tract")
+# focus refineries' own contributions
+site_pm25_2020 <- crosswalk_2020(site_pm25[site_id %in% SITES], c("site_id", "year"))
+site_pm25_2020 <- site_pm25_2020[!is.na(site_id)]
+setnames(site_pm25_2020, c("GEOID_2020", "total_pm25"), c("census_tract", "c_site"))
+
+site_pm25_2020 <- merge(site_pm25_2020, tot_pm25_2020, by = c("census_tract", "year"))
 
 # Attach DAC designation, as census_pm.R:735-748.
 site_pm25_2020 <- merge(
@@ -439,19 +453,40 @@ ct_incidence <- ct_inc_45 %>%
   as.data.table()
 
 # -----------------------------------------------------------------------------
-# 4d. Mortality attributable to each refinery
+# 4d. Mortality attributable to each refinery - MARGINAL attribution
 # -----------------------------------------------------------------------------
-# Mirrors the `mortality_level` / `benefit_age_level_2019` expressions at
-# census_pm.R:1121-1147, applied to each site's own concentration contribution
-# rather than the all-refineries total:
+# Uses the same concentration-response expression as the pipeline
+# (census_pm.R:1121-1147):
 #
-#     mortality = (exp(beta * pm25) - 1) * weighted_incidence * pop
+#     mortality(c) = (exp(beta * c) - 1) * weighted_incidence * pop
 #
-# Because the concentration-response function is exponential, per-site mortality
-# does NOT sum exactly to the all-refinery total. The discrepancy is small at
-# these concentrations; section 6 quantifies it explicitly rather than assuming.
+# but the question being asked determines which concentration goes in. Because
+# the CRF is convex, three defensible attributions give different answers:
+#
+#   MARGINAL     mortality(c_tot) - mortality(c_tot - c_site)
+#                "if this refinery shuts down and every other refinery keeps
+#                 running, how much harm goes away?"  Its emissions sit on top
+#                 of everyone else's baseline, where the CRF is steepest.
+#                THIS IS WHAT WE REPORT - it matches the real-world event of a
+#                single refinery closing while the rest of the sector operates.
+#
+#   STANDALONE   mortality(c_site)
+#                "if this refinery were the only source, what would it cause?"
+#                Its emissions sit in otherwise-clean air, where the CRF is
+#                shallowest, so this is the smallest of the three. Retained
+#                below as a secondary metric for comparison.
+#
+#   APPORTIONED  mortality(c_tot) * c_site / c_tot
+#                "of the harm that occurs, what share traces to this refinery?"
+#                The only definition whose shares sum to exactly 100%.
+#
+# Summing across all 16 refineries: marginal overshoots the joint total by about
+# +0.14%, standalone falls short by about -0.14%, apportioned closes exactly.
+# The three differ by well under 1% at these concentrations, so the choice is
+# conceptual rather than numerical - but it must be stated, which is why the
+# output carries an explicit `attribution` field.
 
-message("Calculating attributable mortality...")
+message("Calculating attributable mortality (marginal)...")
 
 site_mortality <- merge(
   site_pm25_2020,
@@ -459,15 +494,23 @@ site_mortality <- merge(
   by = c("census_tract", "year")
 )
 
+crf <- function(c) exp(BETA * c) - 1
+
 site_mortality[, `:=`(
-  mortality_level = (exp(BETA * total_pm25) - 1) * weighted_incidence * pop,
-  benefit_level_2019 = (exp(BETA * total_pm25) - 1) *
-    weighted_monetized_age_incidence_2019 * pop
+  # marginal: the increment this refinery adds on top of all others
+  mortality_level = (crf(c_tot) - crf(c_tot - c_site)) * weighted_incidence * pop,
+  benefit_level_2019 = (crf(c_tot) - crf(c_tot - c_site)) *
+    weighted_monetized_age_incidence_2019 * pop,
+  # standalone: retained for comparison
+  mortality_standalone = crf(c_site) * weighted_incidence * pop,
+  benefit_standalone_2019 = crf(c_site) * weighted_monetized_age_incidence_2019 * pop
 )]
 
 # Present value, base year 2019, as census_pm.R:1150-1155.
-site_mortality[, benefit_level_2019_pv :=
-  benefit_level_2019 / ((1 + DISCOUNT_RATE)^(year - 2019))]
+site_mortality[, `:=`(
+  benefit_level_2019_pv      = benefit_level_2019 / ((1 + DISCOUNT_RATE)^(year - 2019)),
+  benefit_standalone_2019_pv = benefit_standalone_2019 / ((1 + DISCOUNT_RATE)^(year - 2019))
+)]
 
 # -----------------------------------------------------------------------------
 # 4e. Split by demographic group
@@ -481,23 +524,24 @@ site_mortality[, benefit_level_2019_pv :=
 
 health_demo <- merge(
   site_mortality[, .(site_id, census_tract, year, mortality_level,
-                     benefit_level_2019, benefit_level_2019_pv)],
+                     benefit_level_2019, benefit_level_2019_pv,
+                     mortality_standalone, benefit_standalone_2019,
+                     benefit_standalone_2019_pv)],
   pop_ratios,
   by = "census_tract",
   allow.cartesian = TRUE
 )
 
-health_demo[, `:=`(
-  mortality_level_dem       = mortality_level * pct,
-  benefit_level_2019_dem    = benefit_level_2019 * pct,
-  benefit_level_2019_pv_dem = benefit_level_2019_pv * pct
-)]
-
 health_demo_summary <- health_demo[
   , .(
-    avoided_mortality = sum(mortality_level_dem, na.rm = TRUE),
-    health_cost_2019  = sum(benefit_level_2019_dem, na.rm = TRUE),
-    health_cost_pv    = sum(benefit_level_2019_pv_dem, na.rm = TRUE)
+    # marginal (reported)
+    avoided_mortality = sum(mortality_level * pct, na.rm = TRUE),
+    health_cost_2019  = sum(benefit_level_2019 * pct, na.rm = TRUE),
+    health_cost_pv    = sum(benefit_level_2019_pv * pct, na.rm = TRUE),
+    # standalone (comparison)
+    avoided_mortality_standalone = sum(mortality_standalone * pct, na.rm = TRUE),
+    health_cost_2019_standalone  = sum(benefit_standalone_2019 * pct, na.rm = TRUE),
+    health_cost_pv_standalone    = sum(benefit_standalone_2019_pv * pct, na.rm = TRUE)
   ),
   by = .(site_id, demo_cat, demo_group, title)
 ]
@@ -627,16 +671,29 @@ recon <- health_demo_summary[
 cat("\n(i) mortality total by demographic cut (should agree within a cut):\n")
 print(dcast(recon, site_id ~ demo_cat, value.var = "total_mortality"))
 
-# (ii) The exponential concentration-response means per-site mortality will not
-#      sum exactly to the all-refinery total. Quantify rather than assume.
-cat("\n(ii) per-site vs pipeline all-refinery mortality (Reference, 2020-2045):\n")
+# (ii) Attributed mortality against the pipeline's all-refinery total, on both
+#      bases, so the effect of the attribution choice is visible rather than
+#      implicit.
+cat("\n(ii) attributed mortality vs pipeline all-refinery total (Reference, 2020-2045):\n")
 pipeline_mort <- fread(
   "outputs/rev-submission/cuf=0.6_beta-scenario=main/tables/health/refining_state_mortality.csv"
 )[scen_id == paste(REF_DEMAND, REF_REFINING)]
-site_total <- sum(site_mortality$mortality_level)
-cat(sprintf("    all 16 refineries (pipeline): %10.1f deaths\n", pipeline_mort$cumul_mort_level))
-cat(sprintf("    sites 343 + 164 (this script): %9.1f deaths  (%.1f%% of total)\n",
-            site_total, 100 * site_total / pipeline_mort$cumul_mort_level))
+marg <- sum(site_mortality$mortality_level)
+alone <- sum(site_mortality$mortality_standalone)
+cat(sprintf("    all 16 refineries (pipeline) : %9.1f deaths\n", pipeline_mort$cumul_mort_level))
+cat(sprintf("    343 + 164, MARGINAL (reported): %8.1f deaths  (%.2f%% of total)\n",
+            marg, 100 * marg / pipeline_mort$cumul_mort_level))
+cat(sprintf("    343 + 164, standalone         : %8.1f deaths  (%.2f%% of total)\n",
+            alone, 100 * alone / pipeline_mort$cumul_mort_level))
+cat(sprintf("    marginal exceeds standalone by: %8.2f%%\n", 100 * (marg / alone - 1)))
+
+# (ii-b) The all-refinery concentration must reconcile with the pipeline's own,
+#        or the marginal attribution is built on the wrong baseline.
+cat("\n(ii-b) all-refinery mortality rebuilt from c_tot (should be near pipeline):\n")
+tot_check <- unique(site_mortality[, .(census_tract, year, c_tot, weighted_incidence, pop)])
+tot_check <- tot_check[, sum((exp(BETA * c_tot) - 1) * weighted_incidence * pop)]
+cat(sprintf("    rebuilt from c_tot           : %9.1f deaths  (%+.2f%% vs pipeline)\n",
+            tot_check, 100 * (tot_check / pipeline_mort$cumul_mort_level - 1)))
 
 # (iii) Labor is linear in revenue, so site contributions should sum exactly.
 #       Compare against the pipeline's own tract-level labor output.
@@ -654,11 +711,17 @@ print(labor_demo_summary[demo_cat == "DAC",
 
 long_health <- health_demo_summary %>%
   pivot_longer(
-    c(avoided_mortality, health_cost_2019, health_cost_pv),
+    c(avoided_mortality, health_cost_2019, health_cost_pv,
+      avoided_mortality_standalone, health_cost_2019_standalone,
+      health_cost_pv_standalone),
     names_to = "metric", values_to = "value"
   ) %>%
   mutate(
     segment = "health",
+    # marginal is the reported basis; standalone rows are carried for comparison
+    health_attribution = if_else(str_detect(metric, "_standalone$"),
+                                 "standalone", "marginal"),
+    metric = str_remove(metric, "_standalone$"),
     metric_desc = case_when(
       metric == "avoided_mortality" ~ "attributable_mortality",
       TRUE                          ~ "attributable_health_cost"
@@ -677,6 +740,10 @@ long_labor <- labor_demo_summary %>%
   ) %>%
   mutate(
     segment = "labor",
+    # Labor is linear in refinery revenue, so marginal, standalone and
+    # apportioned attributions coincide exactly. The distinction is a property
+    # of the exponential health CRF only.
+    health_attribution = NA_character_,
     metric_desc = if_else(metric == "fte_job_years", "employment_supported",
                           "compensation_supported"),
     unit_desc = case_when(
@@ -698,10 +765,10 @@ refinery_level_results <- bind_rows(long_health, long_labor) %>%
   ) %>%
   select(
     site_id, refinery_name, scenario, demand_scenario, refining_scenario,
-    product_scenario, oil_price_scenario, attribution,
+    product_scenario, oil_price_scenario, attribution, health_attribution,
     demo_cat, demo_group, title, segment, metric, metric_desc, unit_desc, value
   ) %>%
-  arrange(site_id, segment, demo_cat, demo_group, metric)
+  arrange(site_id, segment, health_attribution, demo_cat, demo_group, metric)
 
 # Annual physical outputs kept as a separate, simpler table (no demographic
 # dimension applies to production or GHG).

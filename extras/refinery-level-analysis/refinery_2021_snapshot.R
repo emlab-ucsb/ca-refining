@@ -272,15 +272,36 @@ ct_incidence <- ct_inc_45 %>%
   mutate(census_tract = str_remove(GEO_ID, "US")) %>%
   select(-GEO_ID) %>% as.data.table()
 
-# mortality = (exp(beta * pm25) - 1) * baseline incidence * population
-# (census_pm.R:1121-1147)
+# Concentration-response as in the pipeline (census_pm.R:1121-1147):
+#     mortality(c) = (exp(beta * c) - 1) * baseline incidence * population
+#
+# MARGINAL ATTRIBUTION (what we report):
+#     mortality(c_tot) - mortality(c_tot - c_site)
+# i.e. "if this refinery shuts down and the rest of the sector keeps running,
+# how much harm goes away?" - which is the real-world event these two refineries
+# went through. Because the CRF is convex its slope is steepest at high
+# concentrations, so a refinery's emissions do more damage stacked on top of
+# other pollution than they would in clean air.
+#
+# The standalone alternative, mortality(c_site), asks instead what the refinery
+# would cause as the only source. It is retained below for comparison. The two
+# differ by well under 1% here, but the definition must be stated.
 health <- merge(site_pm, ct_incidence, by = "census_tract")
+health[, c_tot := sum(total_pm25, na.rm = TRUE), by = census_tract]  # all 16 refineries
+
+crf <- function(c) exp(BETA * c) - 1
+
 health[, `:=`(
-  mortality = (exp(BETA * total_pm25) - 1) * weighted_incidence * pop,
-  mortality_usd = (exp(BETA * total_pm25) - 1) * weighted_monetized_age_incidence_2019 * pop
+  mortality     = (crf(c_tot) - crf(c_tot - total_pm25)) * weighted_incidence * pop,
+  mortality_usd = (crf(c_tot) - crf(c_tot - total_pm25)) * weighted_monetized_age_incidence_2019 * pop,
+  mortality_standalone     = crf(total_pm25) * weighted_incidence * pop,
+  mortality_usd_standalone = crf(total_pm25) * weighted_monetized_age_incidence_2019 * pop
 )]
 
-health_site <- health[, .(mortality = sum(mortality), mortality_usd = sum(mortality_usd)),
+health_site <- health[, .(mortality = sum(mortality),
+                          mortality_usd = sum(mortality_usd),
+                          mortality_standalone = sum(mortality_standalone),
+                          mortality_usd_standalone = sum(mortality_usd_standalone)),
                       by = site_id]
 
 # =============================================================================
@@ -311,11 +332,17 @@ message("\n--- validation ---")
 rm_all <- as.data.table(tar_read_raw("refining_mortality", store = STORE))
 pipeline_2021 <- rm_all[scen_id == paste(REF_DEMAND, REF_REFINING) & year == YEAR,
                         sum(mortality_level, na.rm = TRUE)]
-sum_sites <- sum(health_site$mortality)
-cat(sprintf("\nmortality %d, Reference:\n  pipeline (all refineries at once): %8.2f deaths\n", YEAR, pipeline_2021))
-cat(sprintf("  sum of 16 per-site estimates    : %8.2f deaths\n", sum_sites))
-cat(sprintf("  difference from exponential CRF : %8.2f deaths (%+.2f%%)\n",
-            sum_sites - pipeline_2021, 100 * (sum_sites / pipeline_2021 - 1)))
+baseline <- unique(health[, .(census_tract, c_tot, weighted_incidence, pop)])[
+  , sum(crf(c_tot) * weighted_incidence * pop)]
+cat(sprintf("\nmortality %d, Reference:\n", YEAR))
+cat(sprintf("  pipeline (all refineries at once) : %8.2f deaths\n", pipeline_2021))
+cat(sprintf("  rebuilt here from c_tot           : %8.2f deaths  (%+.2f%% vs pipeline)\n",
+            baseline, 100 * (baseline / pipeline_2021 - 1)))
+cat(sprintf("  sum of 16 sites, MARGINAL         : %8.2f deaths  (%+.2f%% vs pipeline)\n",
+            sum(health_site$mortality), 100 * (sum(health_site$mortality) / pipeline_2021 - 1)))
+cat(sprintf("  sum of 16 sites, standalone       : %8.2f deaths  (%+.2f%% vs pipeline)\n",
+            sum(health_site$mortality_standalone),
+            100 * (sum(health_site$mortality_standalone) / pipeline_2021 - 1)))
 
 cat("\nrevenue share of the two focus refineries:",
     sprintf("%.1f%%\n", 100 * sum(metrics[site_id %in% FOCUS, revenue]) / statewide$revenue))
@@ -346,13 +373,20 @@ long <- metrics %>%
                        TRUE ~ NA_character_),
     unit = case_when(str_starts(metric, "emp_") ~ "FTE job-years",
                      str_starts(metric, "comp_") ~ "USD 2019",
-                     metric == "mortality" ~ "deaths",
-                     metric == "mortality_usd" ~ "USD 2019 (age-based VSL)",
+                     str_starts(metric, "mortality_usd") ~ "USD 2019 (age-based VSL)",
+                     str_starts(metric, "mortality") ~ "deaths",
                      metric == "revenue" ~ "USD 2020"),
+    # Health uses the marginal attribution; standalone rows are carried for
+    # comparison. Labor is linear in revenue, so the distinction does not apply.
+    health_attribution = case_when(
+      !str_starts(metric, "mortality")     ~ NA_character_,
+      str_detect(metric, "_standalone$")   ~ "standalone",
+      TRUE                                 ~ "marginal"),
+    metric = str_remove(metric, "_standalone$"),
     year = YEAR, scenario = "Reference") %>%
   select(year, scenario, site_id, refinery, segment, effect, metric, unit,
-         value, statewide_total, share_of_statewide) %>%
-  arrange(site_id, segment, effect)
+         health_attribution, value, statewide_total, share_of_statewide) %>%
+  arrange(site_id, segment, health_attribution, effect)
 
 fwrite(long, file.path(OUT_DIR, "refinery_2021_snapshot.csv"))
 
@@ -397,7 +431,8 @@ ggsave(file.path(OUT_DIR, "fig_2021_labor.png"), fig1, width = 9, height = 5, dp
 # shares that does not exist. The effect split is informative for magnitudes
 # (Figure 1) but not for shares.
 fig2_dat <- long %>%
-  filter(effect == "total" | metric %in% c("mortality", "mortality_usd")) %>%
+  filter(effect == "total" |
+         (metric %in% c("mortality", "mortality_usd") & health_attribution == "marginal")) %>%
   mutate(lab = case_when(
     segment == "labor: employment"   ~ "Employment (FTE job-years)",
     segment == "labor: compensation" ~ "Compensation (2019 USD)",
@@ -428,7 +463,7 @@ ggsave(file.path(OUT_DIR, "fig_2021_shares.png"), fig2, width = 9, height = 4.5,
 
 # Figure 3 - health levels
 fig3_dat <- long %>%
-  filter(metric %in% c("mortality", "mortality_usd")) %>%
+  filter(metric %in% c("mortality", "mortality_usd"), health_attribution == "marginal") %>%
   mutate(plot_val = if_else(metric == "mortality_usd", value / 1e6, value),
          panel = if_else(metric == "mortality_usd",
                          "Monetized mortality (2019 USD, millions)", "Premature mortality (deaths)"))
@@ -440,7 +475,8 @@ fig3 <- ggplot(fig3_dat, aes(refinery, plot_val, fill = refinery)) +
   scale_fill_manual(values = c("P66 Wilmington" = "#c1666b", "Valero Benicia" = "#4281a4")) +
   scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
   labs(title = paste0("Health impacts attributable to each refinery, ", YEAR),
-       subtitle = "Premature mortality from PM2.5, and its monetized value using the 2019 age-based VSL.",
+       subtitle = paste("Premature mortality from PM2.5 and its monetized value (2019 age-based VSL).",
+                        "\nMarginal attribution: harm avoided if the refinery closes while the rest of the sector operates."),
        x = NULL, y = NULL) +
   theme_ref
 
