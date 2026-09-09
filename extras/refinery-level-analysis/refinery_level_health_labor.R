@@ -107,6 +107,7 @@ pop_ratios        <- as.data.table(tar_read_raw("pop_ratios", store = STORE))
 ct_inc_45         <- as.data.table(tar_read_raw("ct_inc_45", store = STORE))
 dt_age_vsl        <- as.data.table(tar_read_raw("dt_age_vsl", store = STORE))
 indiv_prod_output <- as.data.table(tar_read_raw("indiv_prod_output", store = STORE))
+indiv_prod_output_bge <- as.data.table(tar_read_raw("indiv_prod_output_bge", store = STORE))
 product_px        <- as.data.table(tar_read_raw("product_px", store = STORE))
 refin_locs_ct     <- tar_read_raw("refin_locs_ct", store = STORE)
 
@@ -126,7 +127,8 @@ stopifnot(!all(is.na(dt_direct_multipliers$emp.rev)))
 # are the usual symptom.
 srm_weighted_pm25[, site_id := as.character(site_id)]
 site_cons_ghg[,     site_id := as.character(site_id)]
-indiv_prod_output[, site_id := as.character(site_id)]
+indiv_prod_output[,     site_id := as.character(site_id)]
+indiv_prod_output_bge[, site_id := as.character(site_id)]
 refin_locs_ct[,     site_id := as.character(site_id)]
 
 # =============================================================================
@@ -136,7 +138,17 @@ refin_locs_ct[,     site_id := as.character(site_id)]
 # refinery level and writes to tables/other/indiv_prod_output.csv. No derivation.
 # =============================================================================
 
-production <- indiv_prod_output %>%
+# NOTE ON UNITS: gasoline, diesel, jet and the renewable fuels have different
+# energy contents, so adding their volumes in raw barrels does not give a
+# meaningful physical total. The pipeline handles this with `indiv_prod_output_bge`,
+# which converts each fuel to barrels of gasoline equivalent using the energy
+# conversion factors in Methods 6.2. We therefore report:
+#   production_bge - the energy-consistent total across fuels (use this)
+#   crude_bbl      - crude throughput, a single commodity, so a plain sum is valid
+# Per-fuel volumes in barrels are reported separately below, where summing is not
+# involved and barrels are the natural unit.
+
+production <- indiv_prod_output_bge %>%
   filter(
     site_id %in% SITES,
     demand_scenario   == REF_DEMAND,
@@ -144,6 +156,17 @@ production <- indiv_prod_output %>%
     year %in% YEARS
   ) %>%
   group_by(site_id, year) %>%
+  summarise(production_bge = sum(value, na.rm = TRUE), .groups = "drop")
+
+# Per-fuel volumes in barrels, kept long so no cross-fuel addition occurs.
+production_by_fuel <- indiv_prod_output %>%
+  filter(
+    site_id %in% SITES,
+    demand_scenario   == REF_DEMAND,
+    refining_scenario == REF_REFINING,
+    year %in% YEARS
+  ) %>%
+  group_by(site_id, year, fuel) %>%
   summarise(production_bbl = sum(value, na.rm = TRUE), .groups = "drop")
 
 # =============================================================================
@@ -672,8 +695,13 @@ refinery_level_results <- bind_rows(long_health, long_labor) %>%
 refinery_annual_physical <- production %>%
   full_join(ghg, by = c("site_id", "year")) %>%
   mutate(refinery_name = SITE_LABELS[site_id]) %>%
-  select(site_id, refinery_name, year, production_bbl, crude_bbl, ghg_mtco2e) %>%
+  select(site_id, refinery_name, year, production_bge, crude_bbl, ghg_mtco2e) %>%
   arrange(site_id, year)
+
+refinery_annual_production_by_fuel <- production_by_fuel %>%
+  mutate(refinery_name = SITE_LABELS[site_id]) %>%
+  select(site_id, refinery_name, year, fuel, production_bbl) %>%
+  arrange(site_id, year, fuel)
 
 # -----------------------------------------------------------------------------
 # 8. WRITE
@@ -683,9 +711,13 @@ fwrite(refinery_level_results,
        file.path(OUT_DIR, "refinery_level_health_labor.csv"))
 fwrite(refinery_annual_physical,
        file.path(OUT_DIR, "refinery_level_production_ghg.csv"))
+fwrite(refinery_annual_production_by_fuel,
+       file.path(OUT_DIR, "refinery_level_production_by_fuel.csv"))
 
 message("\nWrote:")
 message("  ", file.path(OUT_DIR, "refinery_level_health_labor.csv"),
         "  (", nrow(refinery_level_results), " rows)")
 message("  ", file.path(OUT_DIR, "refinery_level_production_ghg.csv"),
         "  (", nrow(refinery_annual_physical), " rows)")
+message("  ", file.path(OUT_DIR, "refinery_level_production_by_fuel.csv"),
+        "  (", nrow(refinery_annual_production_by_fuel), " rows)")
