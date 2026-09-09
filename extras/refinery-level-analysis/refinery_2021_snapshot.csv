@@ -1,0 +1,23 @@
+year,scenario,site_id,refinery,segment,effect,metric,unit,value,statewide_total,share_of_statewide
+2021,Reference,164,Valero Benicia,health,,mortality,deaths,6.57595593636387,285.665363216458,0.0230197874265248
+2021,Reference,164,Valero Benicia,health,,mortality_usd,USD 2019 (age-based VSL),58109337.9304985,2525585130.99713,0.0230082673584462
+2021,Reference,164,Valero Benicia,labor: compensation,direct,comp_direct,USD 2019,91735936.3646494,1265606906.72499,0.0724837513742988
+2021,Reference,164,Valero Benicia,labor: compensation,indirect,comp_indirect,USD 2019,255638299.397511,3526835939.78766,0.0724837513742992
+2021,Reference,164,Valero Benicia,labor: compensation,induced,comp_induced,USD 2019,117684829.799331,1623602911.93563,0.0724837513742992
+2021,Reference,164,Valero Benicia,labor: compensation,total,comp_total,USD 2019,465059065.561491,6416045758.44828,0.0724837513742991
+2021,Reference,164,Valero Benicia,labor: employment,direct,emp_direct,FTE job-years,771.269088415251,10640.5790786475,0.0724837513742988
+2021,Reference,164,Valero Benicia,labor: employment,indirect,emp_indirect,FTE job-years,3589.70058647775,49524.2108530073,0.0724837513742992
+2021,Reference,164,Valero Benicia,labor: employment,induced,emp_induced,FTE job-years,1964.12439119738,27097.4439644387,0.0724837513742992
+2021,Reference,164,Valero Benicia,labor: employment,total,emp_total,FTE job-years,6325.09406609038,87262.2338960935,0.0724837513742991
+2021,Reference,164,Valero Benicia,output,,revenue,USD 2020,3635854950.56051,50160965480.1847,0.0724837513742992
+2021,Reference,343,P66 Wilmington,health,,mortality,deaths,27.4273246033752,285.665363216458,0.0960120761388651
+2021,Reference,343,P66 Wilmington,health,,mortality_usd,USD 2019 (age-based VSL),242230799.994219,2525585130.99713,0.0959107642111367
+2021,Reference,343,P66 Wilmington,labor: compensation,direct,comp_direct,USD 2019,97060717.009961,1265606906.72499,0.0766910456115675
+2021,Reference,343,P66 Wilmington,labor: compensation,indirect,comp_indirect,USD 2019,270476735.922774,3526835939.78766,0.0766910456115684
+2021,Reference,343,P66 Wilmington,labor: compensation,induced,comp_induced,USD 2019,124515804.974331,1623602911.93563,0.0766910456115684
+2021,Reference,343,P66 Wilmington,labor: compensation,total,comp_total,USD 2019,492053257.907066,6416045758.44828,0.0766910456115682
+2021,Reference,343,P66 Wilmington,labor: employment,direct,emp_direct,FTE job-years,816.037135454057,10640.5790786475,0.0766910456115685
+2021,Reference,343,P66 Wilmington,labor: employment,indirect,emp_indirect,FTE job-years,3798.06351340492,49524.2108530073,0.0766910456115684
+2021,Reference,343,P66 Wilmington,labor: employment,induced,emp_induced,FTE job-years,2078.13131103368,27097.4439644387,0.0766910456115684
+2021,Reference,343,P66 Wilmington,labor: employment,total,emp_total,FTE job-years,6692.23195989266,87262.2338960935,0.0766910456115684
+2021,Reference,343,P66 Wilmington,output,,revenue,USD 2020,3846896891.56115,50160965480.1847,0.0766910456115684
