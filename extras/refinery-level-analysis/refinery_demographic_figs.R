@@ -147,29 +147,90 @@ theme_ref <- theme_minimal(base_size = 11) +
         plot.subtitle = element_text(colour = "grey30", size = 9),
         plot.caption = element_text(colour = "grey40", size = 8, hjust = 0),
         strip.text = element_text(face = "bold", size = 9),
-        legend.position = "bottom")
+        legend.position = "bottom",
+        legend.box = "vertical",
+        legend.margin = margin(t = 0, b = 0))
 
-# Colour carries the demographic CUT, so the three blocks of groups stay visually
-# separate within each panel. Faceting is by refinery, which puts each refinery's
-# full demographic profile in one column and makes the within-refinery comparison
-# the primary read - rather than the across-refinery comparison the earlier
-# grouped-bar version emphasised.
-CAT_COL <- c("DAC" = "#2a6f97", "Poverty" = "#e09f3e", "Race" = "#7a4988")
+# -----------------------------------------------------------------------------
+# Palettes and shapes, taken from the project's own plot settings so these
+# figures match the rest of the paper's visual vocabulary.
+#   extras/plot_settings.R:
+#     race_col_pal    Black #002147, Hispanic #721817, Asian #40826D, white #FFBA00
+#     dac_ptc         DAC = 15 (solid square),  Non-DAC = 18 (solid diamond)
+#     poverty_ptc_h   Above poverty = 19 (solid circle), Below = 17 (solid triangle)
+#
+# The solid shapes above have no separate border, so we use their outlined
+# equivalents - the same glyphs, in the fillable variants the repo already uses
+# in its dac_hl_ptc / poverty_pt_share_l scales - which lets the marker be filled
+# black or white with a black stroke:
+#     15 square   -> 22        18 diamond -> 23
+#     19 circle   -> 21        17 triangle-> 24
+#
+# NOTE ON RACE GROUPS: race_col_pal defines only the four groups the paper
+# reports (Black, Hispanic, Asian, white), so race is restricted to those four
+# here. The other four - Two or more races, Other, American Indian or Alaska
+# Native, Hawaiian or Other Pacific Islander - are each under 0.9% of the
+# population and are dropped from the figure rather than given invented colours.
+# They remain in the fig-inputs CSV.
+RACE_KEEP <- c("Black", "Hispanic", "Asian", "white")
 
-# Order groups by cut, then by population within cut (largest at the top).
-grp_order <- unique(plot_dat[order(demo_cat, pop_2020), .(demo_cat, title)])
-plot_dat[, grp := factor(title, levels = grp_order$title)]
+FILL_PAL <- c(
+  # race: project palette
+  "Black" = "#002147", "Hispanic" = "#721817",
+  "Asian" = "#40826D", "white"    = "#FFBA00",
+  # DAC and poverty: black / white, outlined
+  "DAC" = "black", "Non-DAC" = "white",
+  "Below poverty line" = "black", "Above poverty line" = "white"
+)
+
+SHAPE_PAL <- c(
+  "DAC" = 22, "Non-DAC" = 23,               # square / diamond, per dac_ptc
+  "Below poverty line" = 24,                 # triangle, per poverty_ptc_h
+  "Above poverty line" = 21                  # circle,   per poverty_ptc_h
+)
+
+# Keep an unfiltered copy so the saved CSV retains all eight race groups even
+# though the figure shows four - the comment above promises exactly that.
+plot_dat_all <- copy(plot_dat)
+plot_dat <- plot_dat[demo_cat != "Race" | title %in% RACE_KEEP]
+
+# Order: DAC block, then Poverty, then Race; within each, largest population at
+# the top. coord_flip reverses, so build the factor bottom-up.
+grp_order <- unique(plot_dat[order(-as.integer(demo_cat), pop_2020), title])
+plot_dat[, grp := factor(title, levels = grp_order)]
+
+# Marker outline: a black-filled marker sitting on a black bar needs a white
+# stroke to read at all, and vice versa on the white bars.
+STROKE_PAL <- c("DAC" = "white", "Non-DAC" = "black",
+                "Below poverty line" = "white", "Above poverty line" = "black")
 
 make_fig <- function(dat, yvar, title, subtitle, xlab, caption) {
-  ggplot(dat, aes(grp, .data[[yvar]], fill = demo_cat)) +
-    geom_col(width = 0.72) +
+  pts <- dat[demo_cat %in% c("DAC", "Poverty")]
+  ggplot(dat, aes(grp, .data[[yvar]])) +
+    geom_col(aes(fill = title), colour = "grey20", linewidth = 0.3, width = 0.68) +
+    # Repo shape markers sitting at the bar end, for the DAC and poverty groups.
+    geom_point(data = pts, aes(shape = title, fill = title, colour = title),
+               size = 2.8, stroke = 0.7) +
     coord_flip() +
-    facet_grid(demo_cat ~ refinery + seg_lab, scales = "free", space = "free_y") +
-    scale_fill_manual(values = CAT_COL, name = NULL) +
+    # scales = "free_x" in facet_grid frees the axis per COLUMN, so health shares
+    # one scale across both refineries and labor shares another. That is what
+    # makes the two refinery rows directly comparable within a metric.
+    facet_grid(refinery ~ seg_lab, scales = "free_x") +
+    # Two legends rather than one: race is carried by FILL, while DAC and poverty
+    # are carried by SHAPE. Putting all eight in a single fill legend produced two
+    # identical black swatches (DAC, Below poverty) and two identical white ones.
+    scale_fill_manual(values = FILL_PAL, name = NULL, breaks = RACE_KEEP) +
+    scale_colour_manual(values = STROKE_PAL, guide = "none") +
+    scale_shape_manual(values = SHAPE_PAL, name = NULL, breaks = names(SHAPE_PAL)) +
     scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.08))) +
     labs(title = title, subtitle = subtitle, x = NULL, y = xlab, caption = caption) +
-    theme_ref +
-    theme(strip.text.x = element_text(size = 8.5))
+    guides(
+      fill  = guide_legend(order = 1, nrow = 1, override.aes = list(shape = NA, colour = "grey20")),
+      shape = guide_legend(order = 2, nrow = 1,
+                           override.aes = list(fill = unname(FILL_PAL[names(SHAPE_PAL)]),
+                                               colour = "black", size = 3, stroke = 0.6))
+    ) +
+    theme_ref
 }
 
 cap <- paste(
@@ -183,13 +244,13 @@ cap <- paste(
 fig_tot <- make_fig(plot_dat, "value",
   paste0("Health and labor impacts by demographic group, ", period_lab),
   paste0("Totals. Larger groups show larger totals partly because they are larger; see the per-capita figure.",
-         "\nNote: each panel has its own x-axis, so compare bars WITHIN a panel, not across refineries."),
+         "\nEach metric shares one x-axis across both refineries, so the two rows are directly comparable."),
   period_axis, cap)
 
 fig_pc <- make_fig(plot_dat, "per_million",
   paste0("Health and labor impacts per million people, by demographic group, ", period_lab),
   paste0("Normalized by ", pop_year, " group population aged 30+, which removes the group-size effect and isolates disparity.",
-         "\nNote: each panel has its own x-axis, so compare bars WITHIN a panel, not across refineries."),
+         "\nEach metric shares one x-axis across both refineries, so the two rows are directly comparable."),
   paste0("Per million people aged 30+ in group, ", tolower(period_axis)), cap)
 
 ggsave(file.path(OUT_DIR, paste0("fig_demographics_totals_", gsub("[^0-9a-z]+","_",period_lab), ".png")),     fig_tot, width = 10, height = 8, dpi = 300)
@@ -198,12 +259,18 @@ ggsave(file.path(OUT_DIR, paste0("fig_demographics_per_capita_", gsub("[^0-9a-z]
 # -----------------------------------------------------------------------------
 # 4. Underlying data
 # -----------------------------------------------------------------------------
-plot_dat[, overall_pc := sum(value) / sum(pop_2020) * 1e6, by = .(refinery, segment, demo_cat)]
-plot_dat[, disparity := per_million / overall_pc]
+# Written from the unfiltered data: all eight race groups, not just the four
+# plotted. The disparity index is computed across the full set, so its
+# denominator is every group in the cut.
+plot_dat_all[, overall_pc := sum(value) / sum(pop_2020) * 1e6,
+             by = .(refinery, segment, demo_cat)]
+plot_dat_all[, disparity := per_million / overall_pc]
+plot_dat_all[, in_figure := demo_cat != "Race" | title %in% RACE_KEEP]
 
-out <- plot_dat[, .(site_id, refinery, period = period_lab, segment, demo_cat,
-                    demo_group, title, value, pop_2020, per_million,
-                    overall_per_million = overall_pc, disparity_index = disparity)]
+out <- plot_dat_all[, .(site_id, refinery, period = period_lab, segment, demo_cat,
+                        demo_group, title, value, pop_2020, per_million,
+                        overall_per_million = overall_pc, disparity_index = disparity,
+                        in_figure)]
 setorder(out, site_id, segment, demo_cat, -value)
 fwrite(out, file.path(OUT_DIR, paste0("refinery_demographics_fig_inputs_", gsub("[^0-9a-z]+","_",period_lab), ".csv")))
 
@@ -218,10 +285,10 @@ print(dcast(plot_dat[, .(v = sum(value)), by = .(refinery, segment, demo_cat)],
             , lapply(.SD, function(x) if (is.numeric(x)) round(x, 1) else x)])
 
 cat("\nwithin-refinery spread of the disparity index (max/min across groups):\n")
-print(dcast(plot_dat[, .(spread = round(max(disparity) / min(disparity), 2)),
-                     by = .(refinery, segment, demo_cat)],
+print(dcast(plot_dat_all[, .(spread = round(max(disparity) / min(disparity), 2)),
+                         by = .(refinery, segment, demo_cat)],
             segment + demo_cat ~ refinery, value.var = "spread"))
 
 message("\nWrote:")
-message("  fig_demographics_{totals,per_capita,disparity}_", gsub("[^0-9a-z]+","_",period_lab), ".png")
+message("  fig_demographics_{totals,per_capita}_", gsub("[^0-9a-z]+","_",period_lab), ".png")
 message("  refinery_demographics_fig_inputs_", gsub("[^0-9a-z]+","_",period_lab), ".csv (", nrow(out), " rows)")
