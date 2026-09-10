@@ -38,7 +38,7 @@
 
 suppressPackageStartupMessages({
   library(targets); library(data.table); library(dplyr); library(tidyr)
-  library(stringr); library(ggplot2); library(scales)
+  library(stringr); library(ggplot2); library(scales); library(grid)
 })
 options(scipen = 999)
 
@@ -149,7 +149,10 @@ theme_ref <- theme_minimal(base_size = 11) +
         strip.text = element_text(face = "bold", size = 9),
         legend.position = "bottom",
         legend.box = "vertical",
-        legend.margin = margin(t = 0, b = 0))
+        legend.margin = margin(t = 0, b = 0),
+        # extra breathing room between the two refinery rows
+        panel.spacing.y = unit(1.6, "lines"),
+        panel.spacing.x = unit(1, "lines"))
 
 # -----------------------------------------------------------------------------
 # Palettes and shapes, taken from the project's own plot settings so these
@@ -178,9 +181,9 @@ FILL_PAL <- c(
   # race: project palette
   "Black" = "#002147", "Hispanic" = "#721817",
   "Asian" = "#40826D", "white"    = "#FFBA00",
-  # DAC and poverty: black / white, outlined
-  "DAC" = "black", "Non-DAC" = "white",
-  "Below poverty line" = "black", "Above poverty line" = "white"
+  # DAC and poverty: black / grey, outlined
+  "DAC" = "black", "Non-DAC" = "grey75",
+  "Below poverty line" = "black", "Above poverty line" = "grey75"
 )
 
 SHAPE_PAL <- c(
@@ -200,14 +203,14 @@ grp_order <- unique(plot_dat[order(-as.integer(demo_cat), pop_2020), title])
 plot_dat[, grp := factor(title, levels = grp_order)]
 
 # Marker outline: a black-filled marker sitting on a black bar needs a white
-# stroke to read at all, and vice versa on the white bars.
+# stroke to read at all; on the grey bars a black stroke gives the contrast.
 STROKE_PAL <- c("DAC" = "white", "Non-DAC" = "black",
                 "Below poverty line" = "white", "Above poverty line" = "black")
 
 make_fig <- function(dat, yvar, title, subtitle, xlab, caption) {
   pts <- dat[demo_cat %in% c("DAC", "Poverty")]
   ggplot(dat, aes(grp, .data[[yvar]])) +
-    geom_col(aes(fill = title), colour = "grey20", linewidth = 0.3, width = 0.68) +
+    geom_col(aes(fill = title), colour = "grey20", linewidth = 0.3, width = 0.5) +
     # Repo shape markers sitting at the bar end, for the DAC and poverty groups.
     geom_point(data = pts, aes(shape = title, fill = title, colour = title),
                size = 2.8, stroke = 0.7) +
