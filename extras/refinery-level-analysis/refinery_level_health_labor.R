@@ -352,8 +352,12 @@ site_pm25_2020[, disadvantaged := fifelse(is.na(disadvantaged), "No", disadvanta
 # reports (`weighted_monetized_age_incidence_2019`). The growing-VSL and
 # constant-VSL variants are SI sensitivities and are skipped here.
 #
-# beta applies to adults over 29 (Krewski et al. 2009), so the population base is
-# restricted to start_age > 29 exactly as the pipeline does.
+# The population base is restricted to start_age > 29, exactly as the pipeline
+# does (census_pm.R:996, 1001, 1013). This is the paper's restriction, not one
+# introduced here - Methods 6.7: "Because the beta term ... applies to only
+# adults older than 29 years old, we restrict our sample to individuals above 29
+# years" (beta from Krewski et al. 2009). Note ct_inc_45 itself spans all ages
+# from 0; the filter is what narrows it to the 30+ population.
 
 message("Building incidence and VSL weights...")
 

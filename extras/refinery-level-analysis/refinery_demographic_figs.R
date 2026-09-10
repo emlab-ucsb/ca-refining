@@ -110,13 +110,22 @@ pop_2020[, demo_pop := pop * pct]
 pop_2020 <- pop_2020[, .(pop_2020 = sum(demo_pop, na.rm = TRUE)), by = .(demo_cat, demo_group)]
 
 # NOTE ON THE PER-CAPITA DENOMINATOR: this is the population aged 30 and over
-# (~24.1 million), not California's total population (~39 million). The Krewski
-# concentration-response function applies to adults over 29, so ct_inc_45 - and
-# therefore refining_mortality$pop - carries only that age range. Using it keeps
-# the numerator and denominator on the same base, and matches what the pipeline
-# does in process_npv_pc_data(), so these per-capita values are comparable to the
-# paper's Figure 5. Read them as "per million people aged 30+", not per million
-# residents.
+# (~24.3 million), not California's total population (~39.7 million).
+#
+# The restriction is the PAPER'S, not a choice made here. Methods 6.7 states:
+#   "Because the beta term ... adopted in this study from [47] applies to only
+#    adults older than 29 years old, we restrict our sample to individuals above
+#    29 years."
+# where [47] is Krewski et al. (2009). It is implemented in the pipeline as
+# filter(start_age > 29) at R/health/census_pm.R:996, 1001 and 1013.
+#
+# ct_inc_45 itself contains every age band from 0 upward (39,705,100 people in
+# 2021); it is the pipeline that filters to 30+ (24,288,937). Because
+# refining_mortality$pop is built downstream of that filter, it already carries
+# only the 30+ population - which is why using it keeps numerator and denominator
+# on the same base and matches process_npv_pc_data(). These per-capita values are
+# therefore comparable to the paper's Figure 5. Read them as "per million people
+# aged 30+", not per million residents.
 
 plot_dat <- merge(impacts, pop_2020, by = c("demo_cat", "demo_group"))
 plot_dat[, per_million := value / (pop_2020 / 1e6)]
