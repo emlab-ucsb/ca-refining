@@ -124,9 +124,15 @@ plot_dat[, per_million := value / (pop_2020 / 1e6)]
 # Order groups within each cut by population, largest at the top of the bars.
 plot_dat[, grp := factor(title, levels = unique(title[order(pop_2020)]))]
 
-plot_dat[, seg_lab := fifelse(segment == "health",
-                              "Health: premature mortality (deaths)",
-                              "Labor: direct employment (FTE job-years)")]
+# Panel labels. The labor label states the DIRECT-ONLY scope explicitly, and the
+# share of the full impact it represents, because that is the single easiest
+# thing to misread here: the 2021 snapshot's headline labor figure is direct +
+# indirect + induced, roughly 8x larger than what can be shown by demographic
+# group. Comparing this panel against that total will look like a mismatch.
+plot_dat[, seg_lab := fifelse(
+  segment == "health",
+  "Health: premature mortality (deaths)",
+  "Labor: DIRECT employment only (FTE job-years)")]
 plot_dat[, demo_cat := factor(demo_cat, levels = c("DAC", "Poverty", "Race"))]
 
 # -----------------------------------------------------------------------------
@@ -155,7 +161,9 @@ make_fig <- function(dat, yvar, title, subtitle, xlab, caption) {
 cap <- paste(
   paste0("Reference scenario (BAU demand, historic production), ", period_lab, "."),
   "Health is the marginal attribution: harm avoided if the refinery closes while the rest of the sector operates.",
-  "Labor is direct impacts only - indirect and induced effects cannot be assigned to demographic groups.",
+  paste0("Labor is DIRECT impacts only (~12% of the full labor effect). Indirect and induced jobs cannot be assigned to ",
+         "demographic groups,\nso these bars are ~8x smaller than the direct+indirect+induced totals in the 2021 snapshot. ",
+         "They are not directly comparable."),
   sep = "\n")
 
 fig_tot <- make_fig(plot_dat, "value",
