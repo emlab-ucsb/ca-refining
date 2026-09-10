@@ -42,9 +42,24 @@ suppressPackageStartupMessages({
 })
 options(scipen = 999)
 
+# PERIOD selects what the figures show:
+#   a single year (e.g. 2021) - a snapshot of one year's impacts
+#   "cumulative"              - the 2020-2045 total
+# 2021 is the default, matching the snapshot period used elsewhere in this
+# folder. In the Reference scenario production is pinned to historical levels,
+# so modelled 2021 is not COVID-depressed and represents normal-year conditions.
+# Override from the command line, e.g.
+#   Rscript refinery_demographic_figs.R cumulative
+#   Rscript refinery_demographic_figs.R 2030
+PERIOD <- 2021
+.args <- commandArgs(trailingOnly = TRUE)
+if (length(.args) >= 1 && nzchar(.args[1])) {
+  PERIOD <- if (identical(.args[1], "cumulative")) "cumulative" else as.integer(.args[1])
+}
+
 STORE   <- "_targets"
 OUT_DIR <- "extras/refinery-level-analysis"
-IN_CSV  <- file.path(OUT_DIR, "refinery_level_health_labor.csv")
+IN_CSV  <- file.path(OUT_DIR, "refinery_level_health_labor_annual.csv")
 
 REF_LAB <- c("343" = "P66 Wilmington", "164" = "Valero Benicia")
 REF_COL <- c("P66 Wilmington" = "#c1666b", "Valero Benicia" = "#4281a4")
@@ -55,10 +70,20 @@ REF_COL <- c("P66 Wilmington" = "#c1666b", "Valero Benicia" = "#4281a4")
 stopifnot(file.exists(IN_CSV))
 res <- fread(IN_CSV)[, site_id := as.character(site_id)]
 
+if (!identical(PERIOD, "cumulative")) {
+  stopifnot(PERIOD %in% unique(res$year))
+  res <- res[year == PERIOD]
+  period_lab  <- as.character(PERIOD)
+  period_axis <- paste0("Total in ", PERIOD)
+} else {
+  period_lab  <- "cumulative 2020-2045"
+  period_axis <- "Cumulative total, 2020-2045"
+}
+
 impacts <- res[
   (segment == "health" & metric == "avoided_mortality" & health_attribution == "marginal") |
   (segment == "labor"  & metric == "fte_job_years"),
-  .(site_id, demo_cat, demo_group, title, segment, value)
+  .(value = sum(value)), by = .(site_id, demo_cat, demo_group, title, segment)
 ]
 impacts[, refinery := REF_LAB[site_id]]
 
@@ -73,8 +98,12 @@ impacts[, refinery := REF_LAB[site_id]]
 message("Building 2020 group populations...")
 
 pop_ratios <- as.data.table(tar_read_raw("pop_ratios", store = STORE))
+# Population is taken in the same year the impacts are measured, so numerator
+# and denominator refer to the same population. For the cumulative view we use
+# 2020, matching the pipeline's own convention in process_npv_pc_data().
+pop_year <- if (identical(PERIOD, "cumulative")) 2020 else PERIOD
 rm_2020 <- as.data.table(tar_read_raw("refining_mortality", store = STORE))
-rm_2020 <- unique(rm_2020[year == 2020, .(census_tract, pop)])
+rm_2020 <- unique(rm_2020[year == pop_year, .(census_tract, pop)])
 
 pop_2020 <- merge(rm_2020, pop_ratios, by = "census_tract", allow.cartesian = TRUE)
 pop_2020[, demo_pop := pop * pct]
@@ -124,31 +153,31 @@ make_fig <- function(dat, yvar, title, subtitle, xlab, caption) {
 }
 
 cap <- paste(
-  "Reference scenario (BAU demand, historic production), cumulative 2020-2045.",
+  paste0("Reference scenario (BAU demand, historic production), ", period_lab, "."),
   "Health is the marginal attribution: harm avoided if the refinery closes while the rest of the sector operates.",
   "Labor is direct impacts only - indirect and induced effects cannot be assigned to demographic groups.",
   sep = "\n")
 
 fig_tot <- make_fig(plot_dat, "value",
-  "Health and labor impacts by demographic group",
+  paste0("Health and labor impacts by demographic group, ", period_lab),
   "Totals. Larger groups show larger totals partly because they are larger; see the per-capita figure.",
-  "Cumulative total, 2020-2045", cap)
+  period_axis, cap)
 
 fig_pc <- make_fig(plot_dat, "per_million",
-  "Health and labor impacts per million people, by demographic group",
-  "Normalized by 2020 group population aged 30+, which removes the group-size effect and isolates disparity.",
-  "Per million people aged 30+ in group, cumulative 2020-2045", cap)
+  paste0("Health and labor impacts per million people, by demographic group, ", period_lab),
+  paste0("Normalized by ", pop_year, " group population aged 30+, which removes the group-size effect and isolates disparity."),
+  paste0("Per million people aged 30+ in group, ", tolower(period_axis)), cap)
 
-ggsave(file.path(OUT_DIR, "fig_demographics_totals.png"),     fig_tot, width = 10, height = 8, dpi = 300)
-ggsave(file.path(OUT_DIR, "fig_demographics_per_capita.png"), fig_pc,  width = 10, height = 8, dpi = 300)
+ggsave(file.path(OUT_DIR, paste0("fig_demographics_totals_", gsub("[^0-9a-z]+","_",period_lab), ".png")),     fig_tot, width = 10, height = 8, dpi = 300)
+ggsave(file.path(OUT_DIR, paste0("fig_demographics_per_capita_", gsub("[^0-9a-z]+","_",period_lab), ".png")), fig_pc,  width = 10, height = 8, dpi = 300)
 
 # -----------------------------------------------------------------------------
 # 4. Underlying data
 # -----------------------------------------------------------------------------
-out <- plot_dat[, .(site_id, refinery, segment, demo_cat, demo_group, title,
-                    value, pop_2020, per_million)]
+out <- plot_dat[, .(site_id, refinery, period = period_lab, segment, demo_cat,
+                    demo_group, title, value, pop_2020, per_million)]
 setorder(out, site_id, segment, demo_cat, -value)
-fwrite(out, file.path(OUT_DIR, "refinery_demographics_fig_inputs.csv"))
+fwrite(out, file.path(OUT_DIR, paste0("refinery_demographics_fig_inputs_", gsub("[^0-9a-z]+","_",period_lab), ".csv")))
 
 message("\n--- validation ---")
 cat("\ngroup populations (millions), should be internally consistent per cut:\n")
@@ -161,5 +190,5 @@ print(dcast(plot_dat[, .(v = sum(value)), by = .(refinery, segment, demo_cat)],
             , lapply(.SD, function(x) if (is.numeric(x)) round(x, 1) else x)])
 
 message("\nWrote:")
-message("  fig_demographics_totals.png / fig_demographics_per_capita.png")
-message("  ", file.path(OUT_DIR, "refinery_demographics_fig_inputs.csv"), " (", nrow(out), " rows)")
+message("  fig_demographics_totals_", gsub("[^0-9a-z]+","_",period_lab), ".png / fig_demographics_per_capita_", gsub("[^0-9a-z]+","_",period_lab), ".png")
+message("  refinery_demographics_fig_inputs_", gsub("[^0-9a-z]+","_",period_lab), ".csv (", nrow(out), " rows)")

@@ -532,6 +532,20 @@ health_demo <- merge(
   allow.cartesian = TRUE
 )
 
+# Annual version, retaining `year`, so downstream work can look at a single year
+# (e.g. a 2021 snapshot) rather than only the 2020-2045 cumulative total.
+health_demo_annual <- health_demo[
+  , .(
+    avoided_mortality = sum(mortality_level * pct, na.rm = TRUE),
+    health_cost_2019  = sum(benefit_level_2019 * pct, na.rm = TRUE),
+    health_cost_pv    = sum(benefit_level_2019_pv * pct, na.rm = TRUE),
+    avoided_mortality_standalone = sum(mortality_standalone * pct, na.rm = TRUE),
+    health_cost_2019_standalone  = sum(benefit_standalone_2019 * pct, na.rm = TRUE),
+    health_cost_pv_standalone    = sum(benefit_standalone_2019_pv * pct, na.rm = TRUE)
+  ),
+  by = .(site_id, year, demo_cat, demo_group, title)
+]
+
 health_demo_summary <- health_demo[
   , .(
     # marginal (reported)
@@ -643,6 +657,15 @@ labor_demo[, `:=`(
   demo_comp_usd19 = total_comp_usd19 * pct,
   demo_comp_pv    = total_comp_pv * pct
 )]
+
+labor_demo_annual <- labor_demo[
+  , .(
+    fte_job_years   = sum(demo_emp, na.rm = TRUE),
+    compensation    = sum(demo_comp_usd19, na.rm = TRUE),
+    compensation_pv = sum(demo_comp_pv, na.rm = TRUE)
+  ),
+  by = .(site_id, year, demo_cat, demo_group, title)
+]
 
 labor_demo_summary <- labor_demo[
   , .(
@@ -794,6 +817,28 @@ fwrite(refinery_annual_physical,
 fwrite(refinery_annual_production_by_fuel,
        file.path(OUT_DIR, "refinery_level_production_by_fuel.csv"))
 
+# Annual health + labor by demographic group, long form.
+annual_long <- rbind(
+  melt(health_demo_annual,
+       id.vars = c("site_id", "year", "demo_cat", "demo_group", "title"),
+       variable.name = "metric", value.name = "value")[
+    , `:=`(segment = "health",
+           health_attribution = fifelse(grepl("_standalone$", metric),
+                                        "standalone", "marginal"),
+           metric = sub("_standalone$", "", metric))],
+  melt(labor_demo_annual,
+       id.vars = c("site_id", "year", "demo_cat", "demo_group", "title"),
+       variable.name = "metric", value.name = "value")[
+    , `:=`(segment = "labor", health_attribution = NA_character_)],
+  use.names = TRUE)
+
+annual_long[, refinery_name := SITE_LABELS[site_id]]
+setcolorder(annual_long, c("site_id", "refinery_name", "year", "segment",
+                           "health_attribution", "demo_cat", "demo_group",
+                           "title", "metric", "value"))
+setorder(annual_long, site_id, segment, year, demo_cat, demo_group, metric)
+fwrite(annual_long, file.path(OUT_DIR, "refinery_level_health_labor_annual.csv"))
+
 message("\nWrote:")
 message("  ", file.path(OUT_DIR, "refinery_level_health_labor.csv"),
         "  (", nrow(refinery_level_results), " rows)")
@@ -801,3 +846,5 @@ message("  ", file.path(OUT_DIR, "refinery_level_production_ghg.csv"),
         "  (", nrow(refinery_annual_physical), " rows)")
 message("  ", file.path(OUT_DIR, "refinery_level_production_by_fuel.csv"),
         "  (", nrow(refinery_annual_production_by_fuel), " rows)")
+message("  ", file.path(OUT_DIR, "refinery_level_health_labor_annual.csv"),
+        "  (", nrow(annual_long), " rows)")
