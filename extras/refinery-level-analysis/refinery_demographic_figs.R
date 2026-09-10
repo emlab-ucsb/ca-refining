@@ -179,11 +179,58 @@ fig_pc <- make_fig(plot_dat, "per_million",
 ggsave(file.path(OUT_DIR, paste0("fig_demographics_totals_", gsub("[^0-9a-z]+","_",period_lab), ".png")),     fig_tot, width = 10, height = 8, dpi = 300)
 ggsave(file.path(OUT_DIR, paste0("fig_demographics_per_capita_", gsub("[^0-9a-z]+","_",period_lab), ".png")), fig_pc,  width = 10, height = 8, dpi = 300)
 
+# --- Figure 3: within-refinery disparity index -------------------------------
+# The totals and per-capita figures above compare refineries against each other.
+# This one instead asks a within-refinery question: relative to how the exposed
+# population is composed, is this refinery's burden falling evenly?
+#
+#   disparity index = group per-capita impact / that refinery's overall per-capita
+#                   = group's share of impact / group's share of population
+#
+# The two formulations are algebraically identical. An index of 1.0 means the
+# group bears exactly its population share; above 1.0 means disproportionately
+# more. Because each refinery is normalised to its OWN overall rate, the index is
+# dimensionless and the two refineries' internal spreads are directly comparable
+# even though their absolute impacts differ by 4x.
+#
+# Point area is proportional to group population, because the index is noisy for
+# small groups: Hawaiian or Other Pacific Islander (84k), American Indian or
+# Alaska Native (97k) and Other (127k) are each under 0.6% of the population, so
+# a handful of tracts can move them a long way. The large points are the ones
+# carrying real weight.
+
+plot_dat[, overall_pc := sum(value) / sum(pop_2020) * 1e6, by = .(refinery, segment, demo_cat)]
+plot_dat[, disparity := per_million / overall_pc]
+
+fig_disp <- ggplot(plot_dat, aes(disparity, grp, colour = refinery)) +
+  geom_vline(xintercept = 1, linetype = "22", colour = "grey45", linewidth = 0.4) +
+  geom_linerange(aes(xmin = 1, xmax = disparity),
+                 position = position_dodge(width = 0.6), linewidth = 0.5, alpha = 0.7) +
+  geom_point(aes(size = pop_2020), position = position_dodge(width = 0.6)) +
+  facet_grid(demo_cat ~ seg_lab, scales = "free_y", space = "free_y") +
+  scale_colour_manual(values = REF_COL, name = NULL) +
+  scale_size_area(max_size = 5.5, guide = "none") +
+  scale_x_continuous(breaks = scales::pretty_breaks(6)) +
+  labs(
+    title = paste0("Is each refinery's burden falling evenly across groups? ", period_lab),
+    subtitle = paste0(
+      "Disparity index: a group's share of the refinery's impact divided by its share of population. ",
+      "1.0 = proportional.\nEach refinery is normalised to its own overall rate, so the two are comparable ",
+      "despite differing ~4x in absolute impact.\nPoint size is group population - small groups swing widely ",
+      "on few tracts."),
+    x = "Disparity index (1.0 = proportional to population)", y = NULL,
+    caption = cap) +
+  theme_ref + theme(panel.grid.major.y = element_line(colour = "grey93", linewidth = 0.3))
+
+ggsave(file.path(OUT_DIR, paste0("fig_demographics_disparity_", gsub("[^0-9a-z]+", "_", period_lab), ".png")),
+       fig_disp, width = 10, height = 8, dpi = 300)
+
 # -----------------------------------------------------------------------------
 # 4. Underlying data
 # -----------------------------------------------------------------------------
 out <- plot_dat[, .(site_id, refinery, period = period_lab, segment, demo_cat,
-                    demo_group, title, value, pop_2020, per_million)]
+                    demo_group, title, value, pop_2020, per_million,
+                    overall_per_million = overall_pc, disparity_index = disparity)]
 setorder(out, site_id, segment, demo_cat, -value)
 fwrite(out, file.path(OUT_DIR, paste0("refinery_demographics_fig_inputs_", gsub("[^0-9a-z]+","_",period_lab), ".csv")))
 
@@ -197,6 +244,11 @@ print(dcast(plot_dat[, .(v = sum(value)), by = .(refinery, segment, demo_cat)],
             refinery + segment ~ demo_cat, value.var = "v")[
             , lapply(.SD, function(x) if (is.numeric(x)) round(x, 1) else x)])
 
+cat("\nwithin-refinery spread of the disparity index (max/min across groups):\n")
+print(dcast(plot_dat[, .(spread = round(max(disparity) / min(disparity), 2)),
+                     by = .(refinery, segment, demo_cat)],
+            segment + demo_cat ~ refinery, value.var = "spread"))
+
 message("\nWrote:")
-message("  fig_demographics_totals_", gsub("[^0-9a-z]+","_",period_lab), ".png / fig_demographics_per_capita_", gsub("[^0-9a-z]+","_",period_lab), ".png")
+message("  fig_demographics_{totals,per_capita,disparity}_", gsub("[^0-9a-z]+","_",period_lab), ".png")
 message("  refinery_demographics_fig_inputs_", gsub("[^0-9a-z]+","_",period_lab), ".csv (", nrow(out), " rows)")
