@@ -125,12 +125,14 @@ p <- ggplot() +
   geom_sf_text(data = host_lab, aes(label = NAME, geometry = geometry),
                stat = "sf_coordinates", nudge_x = host_lab$nx, nudge_y = host_lab$ny,
                size = 5, colour = "grey30", fontface = "italic") +
-  # the other fourteen modelled refineries, sized by capacity
+  # the other fourteen modelled refineries, sized by capacity. alpha 0.6 so the
+  # tightly packed Bay Area and LA basin clusters read as overlapping points
+  # rather than as one opaque blob.
   geom_sf(data = others, aes(size = capacity_bpd), shape = 21,
-          fill = "white", colour = "grey40", stroke = 0.7) +
+          fill = "white", colour = "grey40", stroke = 0.7, alpha = 0.6) +
   # the two of interest
   geom_sf(data = focus, aes(size = capacity_bpd, fill = lab), shape = 21,
-          colour = "black", stroke = 1.1) +
+          colour = "black", stroke = 1.1, alpha = 0.6) +
   geom_label_repel(
     data = focus,
     aes(label = lab, geometry = geometry, colour = lab),
@@ -142,13 +144,14 @@ p <- ggplot() +
     nudge_x = c(-420000, -420000), nudge_y = c(-140000, 210000),
     show.legend = FALSE) +
   scale_size_area(
-    max_size = 16, name = "Capacity\n(barrels per day)",
+    max_size = 11, name = "Capacity\n(barrels per day)",
     breaks = c(25000, 100000, 200000, 363000),
     labels = scales::comma) +
   scale_fill_manual(values = FOCUS_COL, guide = "none") +
   scale_colour_manual(values = FOCUS_COL, guide = "none") +
   labs(title = "Phillips 66 Wilmington and Valero Benicia") +
-  guides(size = guide_legend(override.aes = list(fill = "white", colour = "grey40"))) +
+  guides(size = guide_legend(
+    override.aes = list(fill = "white", colour = "grey40", alpha = 0.6))) +
   theme_void(base_size = 15) +
   theme(
     plot.title = element_text(face = "bold", size = 20, hjust = 0.02,
