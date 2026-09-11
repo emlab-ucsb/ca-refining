@@ -96,11 +96,21 @@ host <- counties %>%
 # Label anchors: county centroids, nudged clear of the refinery points. Solano is
 # small and sits beside the Bay Area cluster, so its label is pushed north-east;
 # Los Angeles county is large enough that its centroid sits inland of the coast.
-# st_point_on_surface rather than st_centroid: guaranteed to fall inside the
-# polygon, and it does not warn about attributes being assumed constant.
+# st_point_on_surface rather than st_centroid: the result is guaranteed to fall
+# inside the polygon, which matters for an L-shaped county.
+#
+# st_agr(...) <- "constant" declares that each attribute is constant over its
+# geometry, which is true here - the only attribute is NAME and the geometries
+# are unions of that county's parts. Without it sf emits "assumes attributes are
+# constant over geometries" on every geometric operation. Declaring the
+# relationship is the idiomatic fix; suppressWarnings would hide the same
+# message in cases where it is a real problem.
 host_lab <- host %>%
   group_by(NAME) %>%
-  summarise(geometry = st_union(geometry), .groups = "drop") %>%
+  summarise(geometry = st_union(geometry), .groups = "drop")
+st_agr(host_lab) <- "constant"
+
+host_lab <- host_lab %>%
   st_point_on_surface() %>%
   mutate(
     nx = if_else(NAME == "Solano",  62000, 95000),
