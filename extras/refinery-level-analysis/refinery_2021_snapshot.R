@@ -97,6 +97,21 @@ site_names <- unique(indiv_prod_output[, .(site_id, refinery_name)])
 # Mirrors calc_labor_outputs() (labor_functions_product_px.R:60-230) for the
 # direct effect and calc_state_all_impacts() (same file, 535-575) for indirect
 # and induced, keeping site_id throughout instead of collapsing to the state.
+#
+# REEMPLOYMENT BASIS: these are jobs and compensation SUPPORTED at a point in
+# time, matching the pipeline's no-reemployment "_h" columns. Verified: summed
+# across all 16 refineries this reproduces the pipeline's Reference 2021
+# total_emp = 10,640.6 FTE and total_comp_usd19_h = $1,265,606,907 exactly.
+#
+# The "_l" / total_emp_revised variants are NOT the same quantity under a
+# different assumption - they are year-over-year differences,
+# total_emp - (1 - alpha) * prev_emp, and with flat Reference production they
+# come to just 46.9 FTE statewide. The reemployment assumption concerns what
+# happens to DISPLACED workers; no refinery declines in the Reference scenario,
+# so nothing is displaced and the assumption is not engaged.
+#
+# Consequently these levels are not comparable to the paper's headline labor
+# figures, which are reemployment-adjusted LOSSES measured against Reference.
 
 message("Calculating labor...")
 
@@ -371,8 +386,8 @@ long <- metrics %>%
                        str_detect(metric, "_induced")  ~ "induced",
                        str_detect(metric, "_total")    ~ "total",
                        TRUE ~ NA_character_),
-    unit = case_when(str_starts(metric, "emp_") ~ "FTE job-years",
-                     str_starts(metric, "comp_") ~ "USD 2019",
+    unit = case_when(str_starts(metric, "emp_") ~ "FTE job-years (supported; no-reemployment basis)",
+                     str_starts(metric, "comp_") ~ "USD 2019 (supported; no-reemployment basis)",
                      str_starts(metric, "mortality_usd") ~ "USD 2019 (age-based VSL)",
                      str_starts(metric, "mortality") ~ "deaths",
                      metric == "revenue" ~ "USD 2020"),

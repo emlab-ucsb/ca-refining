@@ -774,9 +774,9 @@ long_labor <- labor_demo_summary %>%
     metric_desc = if_else(metric == "fte_job_years", "employment_supported",
                           "compensation_supported"),
     unit_desc = case_when(
-      metric == "fte_job_years"   ~ "fte-job-years",
-      metric == "compensation"    ~ "USD 2019",
-      metric == "compensation_pv" ~ "USD PV 2019"
+      metric == "fte_job_years"   ~ "fte-job-years (supported; no-reemployment basis)",
+      metric == "compensation"    ~ "USD 2019 (supported; no-reemployment basis)",
+      metric == "compensation_pv" ~ "USD PV 2019 (supported; no-reemployment basis)"
     )
   )
 

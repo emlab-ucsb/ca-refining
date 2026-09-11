@@ -251,6 +251,9 @@ cap <- paste(
   paste0("Labor is DIRECT impacts only (~12% of the full labor effect). Indirect and induced jobs cannot be assigned to ",
          "demographic groups,\nso these bars are ~8x smaller than the direct+indirect+induced totals in the 2021 snapshot. ",
          "They are not directly comparable."),
+  paste0("Labor is jobs and compensation SUPPORTED at a point in time (the pipeline's no-reemployment '_h' columns), not ",
+         "losses.\nThe reemployment assumption applies only to displaced workers; no refinery declines in the Reference ",
+         "scenario, so it is not engaged here.\nThese are not comparable to the paper's reemployment-adjusted loss figures."),
   sep = "\n")
 
 fig_tot <- make_fig(plot_dat, "value",
