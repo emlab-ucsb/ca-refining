@@ -14,6 +14,14 @@
 #     - compensation    : direct / indirect / induced / total  (2019 USD)
 #     - health          : premature mortality (deaths) and monetized mortality
 #
+#   Statewide columns in the output CSV:
+#     statewide_total           all 16 refineries, summed on the same basis as
+#                               the row; shares against it are additive
+#     statewide_total_pipeline  the joint sector total (identical to the above
+#                               for labor and revenue, which are linear; ~0.14%
+#                               different for health - see section 4)
+#     share_of_statewide        value / statewide_total
+#
 # WHY 2021
 #   The model's prediction window is 2020-2045 (`pred_years`), so 2019 is not a
 #   modelled year - it exists only as a historical crude-throughput anchor. In the
@@ -329,12 +337,35 @@ metrics <- merge(
             comp_direct, comp_indirect, comp_induced, comp_total)],
   health_site, by = "site_id", all = TRUE)
 
-# Statewide denominator = all 16 modelled refineries.
+# Statewide denominator = all 16 modelled refineries, each metric summed on its
+# own basis (so the marginal and standalone mortality columns get marginal and
+# standalone denominators respectively). Shares against this sum to exactly 100%
+# across refineries, which is what makes `share_of_statewide` additive.
 statewide <- metrics[, lapply(.SD, sum, na.rm = TRUE), .SDcols = setdiff(names(metrics), "site_id")]
 
 shares <- copy(metrics)
 for (v in setdiff(names(metrics), "site_id"))
   shares[[v]] <- metrics[[v]] / statewide[[v]]
+
+# SECOND DENOMINATOR: the joint sector total. Because the CRF is exponential,
+# summing 16 marginal contributions is not the same as evaluating the CRF once
+# at the combined concentration - the former overshoots by ~0.14%, the latter is
+# the harm actually occurring and is the number the published pipeline reports
+# (tables/health/refining_state_mortality.csv). Carrying both as separate
+# columns puts that gap in the data instead of leaving it in a console message.
+#
+# Labor and revenue are linear, so for those metrics the two denominators
+# coincide exactly and `statewide_total_pipeline` simply repeats `statewide_total`.
+ct_joint <- unique(health[, .(census_tract, c_tot, weighted_incidence,
+                              weighted_monetized_age_incidence_2019, pop)])
+
+statewide_joint <- copy(statewide)
+statewide_joint[, `:=`(
+  mortality     = ct_joint[, sum(crf(c_tot) * weighted_incidence * pop)],
+  mortality_usd = ct_joint[, sum(crf(c_tot) * weighted_monetized_age_incidence_2019 * pop)]
+)]
+statewide_joint[, `:=`(mortality_standalone     = mortality,
+                       mortality_usd_standalone = mortality_usd)]
 
 # =============================================================================
 # 5. VALIDATION
@@ -375,6 +406,9 @@ long <- metrics %>%
     by = c("site_id", "metric")) %>%
   left_join(statewide %>% pivot_longer(everything(), names_to = "metric",
                                        values_to = "statewide_total"), by = "metric") %>%
+  left_join(statewide_joint %>% pivot_longer(everything(), names_to = "metric",
+                                             values_to = "statewide_total_pipeline"),
+            by = "metric") %>%
   mutate(
     refinery = FOCUS_LABEL[site_id],
     segment = case_when(str_starts(metric, "emp_")  ~ "labor: employment",
@@ -400,8 +434,11 @@ long <- metrics %>%
     metric = str_remove(metric, "_standalone$"),
     year = YEAR, scenario = "Reference") %>%
   select(year, scenario, site_id, refinery, segment, effect, metric, unit,
-         health_attribution, value, statewide_total, share_of_statewide) %>%
+         health_attribution, value, statewide_total, statewide_total_pipeline,
+         share_of_statewide) %>%
   arrange(site_id, segment, health_attribution, effect)
+
+stopifnot(!anyNA(long$statewide_total), !anyNA(long$statewide_total_pipeline))
 
 fwrite(long, file.path(OUT_DIR, "refinery_2021_snapshot.csv"))
 

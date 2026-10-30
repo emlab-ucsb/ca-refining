@@ -25,6 +25,30 @@
 #   differences relative to the Reference scenario. Here the Reference scenario is
 #   the object of interest itself.
 #
+# STATEWIDE CONTEXT
+#   Every output also carries the corresponding all-16-refinery total, so a
+#   refinery's level can be read as a share of the California refining sector
+#   rather than as a bare number. Columns added to each file:
+#
+#     refinery_level_health_labor.csv, ..._annual.csv
+#       statewide_total           all 16 refineries, SAME basis as the row and
+#                                 at the SAME demographic grain (so the DAC row
+#                                 is divided by the statewide DAC total, not by
+#                                 the statewide total across all groups)
+#       statewide_total_pipeline  the joint sector total; see section 4f for why
+#                                 health has two denominators and labor one
+#       share_of_statewide        value / statewide_total
+#
+#     refinery_level_production_ghg.csv
+#       statewide_{production_bge, crude_bbl, ghg_mtco2e} and the matching
+#       share_of_statewide_* columns
+#
+#     refinery_level_production_by_fuel.csv
+#       statewide_production_bbl, share_of_statewide
+#
+#   Section 6 checks (iv) and (v) verify these denominators against the
+#   pipeline's own published state tables before anything is written.
+#
 # WHAT THIS SCRIPT DOES NOT CHANGE
 #   Nothing in `_targets.R` or `R/` is modified. Inputs are read from the existing
 #   targets store via tar_read(), plus two files read directly from disk. Output is
@@ -148,9 +172,15 @@ refin_locs_ct[,     site_id := as.character(site_id)]
 # Per-fuel volumes in barrels are reported separately below, where summing is not
 # involved and barrels are the natural unit.
 
-production <- indiv_prod_output_bge %>%
+# STATEWIDE DENOMINATOR: every quantity below is also computed for all 16
+# modelled refineries, so each focus refinery can be reported as a share of the
+# California refining sector rather than as a bare level. Production, crude and
+# GHG are all plain sums over sites, so the statewide total is simply the
+# unfiltered aggregate - no attribution question arises (unlike health, section
+# 4f). Filtering to SITES is therefore deferred until after the sector total.
+
+production_all <- indiv_prod_output_bge %>%
   filter(
-    site_id %in% SITES,
     demand_scenario   == REF_DEMAND,
     refining_scenario == REF_REFINING,
     year %in% YEARS
@@ -158,16 +188,31 @@ production <- indiv_prod_output_bge %>%
   group_by(site_id, year) %>%
   summarise(production_bge = sum(value, na.rm = TRUE), .groups = "drop")
 
+stopifnot(n_distinct(production_all$site_id) == 16)
+
+production <- production_all %>% filter(site_id %in% SITES)
+
+production_statewide <- production_all %>%
+  group_by(year) %>%
+  summarise(statewide_production_bge = sum(production_bge, na.rm = TRUE),
+            .groups = "drop")
+
 # Per-fuel volumes in barrels, kept long so no cross-fuel addition occurs.
-production_by_fuel <- indiv_prod_output %>%
+production_by_fuel_all <- indiv_prod_output %>%
   filter(
-    site_id %in% SITES,
     demand_scenario   == REF_DEMAND,
     refining_scenario == REF_REFINING,
     year %in% YEARS
   ) %>%
   group_by(site_id, year, fuel) %>%
   summarise(production_bbl = sum(value, na.rm = TRUE), .groups = "drop")
+
+production_by_fuel <- production_by_fuel_all %>% filter(site_id %in% SITES)
+
+production_by_fuel_statewide <- production_by_fuel_all %>%
+  group_by(year, fuel) %>%
+  summarise(statewide_production_bbl = sum(production_bbl, na.rm = TRUE),
+            .groups = "drop")
 
 # =============================================================================
 # 3. GHG EMISSIONS  (Reference scenario)
@@ -187,9 +232,8 @@ production_by_fuel <- indiv_prod_output %>%
 # the 2020-2045 study window); filtering to YEARS removes those rows.
 # =============================================================================
 
-ghg <- site_cons_ghg %>%
+ghg_all <- site_cons_ghg %>%
   filter(
-    site_id %in% SITES,
     demand_scenario   == REF_DEMAND,
     refining_scenario == REF_REFINING,
     year %in% YEARS
@@ -201,7 +245,17 @@ ghg <- site_cons_ghg %>%
     ghg_mtco2e = ghg_kg / 1e9   # kg -> million tonnes
   )
 
-stopifnot(!anyNA(ghg$ghg_mtco2e))
+# No site may carry an NA inside the study window, or the statewide sum below
+# would silently drop a refinery from the denominator.
+stopifnot(!anyNA(ghg_all$ghg_mtco2e), n_distinct(ghg_all$site_id) == 16)
+
+ghg <- ghg_all %>% filter(site_id %in% SITES)
+
+ghg_statewide <- ghg_all %>%
+  group_by(year) %>%
+  summarise(statewide_crude_bbl  = sum(crude_bbl, na.rm = TRUE),
+            statewide_ghg_mtco2e = sum(ghg_mtco2e, na.rm = TRUE),
+            .groups = "drop")
 
 # =============================================================================
 # 4. HEALTH
@@ -564,6 +618,115 @@ health_demo_summary <- health_demo[
   by = .(site_id, demo_cat, demo_group, title)
 ]
 
+# -----------------------------------------------------------------------------
+# 4f. Statewide health totals - the denominator for `share_of_statewide`
+# -----------------------------------------------------------------------------
+# Because the concentration-response function is exponential, "the statewide
+# total" is not a single number, and the output carries BOTH definitions:
+#
+#   statewide_total           sum over all 16 refineries on the SAME attribution
+#                             basis as the row (marginal rows get the sum of 16
+#                             marginal contributions, standalone rows the sum of
+#                             16 standalone ones). Shares defined against this
+#                             sum to exactly 100% across refineries, which is
+#                             what makes `share_of_statewide` interpretable.
+#                             This is the convention refinery_2021_snapshot.csv
+#                             already uses.
+#
+#   statewide_total_pipeline  the joint all-refinery total, mortality(c_tot),
+#                             i.e. the harm actually occurring with every
+#                             refinery running. This is the published pipeline
+#                             number (tables/health/refining_state_mortality.csv)
+#                             and is reproduced to within 0.001% in section 6.
+#
+# The two differ because marginal attribution double-counts the convexity of the
+# CRF: summing the 16 marginal increments overshoots the joint total by ~0.14%,
+# and summing the 16 standalone effects undershoots it by ~0.14%. Reporting both
+# puts that gap in the data rather than leaving it in a console message.
+#
+# Computing the per-site marginal effect for all 16 refineries needs each site's
+# own concentration on 2020 tract boundaries, which section 4b deliberately
+# avoided building (it crosswalked the all-refinery SUM instead, to keep the join
+# small). The marginal expression is not linear in c_site, so there is no way
+# around it - but it costs ~10s and ~0.3 GB, so we simply build it here and
+# collapse over site_id immediately, before the demographic split multiplies the
+# row count twelvefold.
+
+message("Building statewide health totals (all 16 refineries)...")
+
+all_pm25_2020 <- crosswalk_2020(site_pm25, c("site_id", "year"))
+all_pm25_2020 <- all_pm25_2020[!is.na(site_id)]
+setnames(all_pm25_2020, c("GEOID_2020", "total_pm25"), c("census_tract", "c_site"))
+all_pm25_2020 <- merge(all_pm25_2020, tot_pm25_2020, by = c("census_tract", "year"))
+all_pm25_2020 <- merge(all_pm25_2020, ct_incidence, by = c("census_tract", "year"))
+
+stopifnot(uniqueN(all_pm25_2020$site_id) == 16)
+
+all_pm25_2020[, `:=`(
+  mortality_level         = (crf(c_tot) - crf(c_tot - c_site)) * weighted_incidence * pop,
+  benefit_level_2019      = (crf(c_tot) - crf(c_tot - c_site)) *
+    weighted_monetized_age_incidence_2019 * pop,
+  mortality_standalone    = crf(c_site) * weighted_incidence * pop,
+  benefit_standalone_2019 = crf(c_site) * weighted_monetized_age_incidence_2019 * pop
+)]
+
+# Collapse over refineries first: the tract-year grid is 9,109 x 26 instead of
+# 16 x that, and everything downstream is linear from here.
+state_mort_tract <- all_pm25_2020[
+  , .(mortality_level         = sum(mortality_level),
+      benefit_level_2019      = sum(benefit_level_2019),
+      mortality_standalone    = sum(mortality_standalone),
+      benefit_standalone_2019 = sum(benefit_standalone_2019)),
+  by = .(census_tract, year)
+]
+
+# The joint basis: one row per tract-year, evaluated at the combined
+# concentration rather than summed over sites.
+state_mort_tract_joint <- unique(all_pm25_2020[
+  , .(census_tract, year, c_tot, weighted_incidence,
+      weighted_monetized_age_incidence_2019, pop)
+])
+state_mort_tract_joint[, `:=`(
+  mortality_joint    = crf(c_tot) * weighted_incidence * pop,
+  benefit_joint_2019 = crf(c_tot) * weighted_monetized_age_incidence_2019 * pop
+)]
+
+state_mort_tract <- merge(
+  state_mort_tract,
+  state_mort_tract_joint[, .(census_tract, year, mortality_joint, benefit_joint_2019)],
+  by = c("census_tract", "year")
+)
+
+# Present value, base year 2019, as in section 4d.
+state_mort_tract[, `:=`(
+  benefit_level_2019_pv      = benefit_level_2019      / ((1 + DISCOUNT_RATE)^(year - 2019)),
+  benefit_standalone_2019_pv = benefit_standalone_2019 / ((1 + DISCOUNT_RATE)^(year - 2019)),
+  benefit_joint_2019_pv      = benefit_joint_2019      / ((1 + DISCOUNT_RATE)^(year - 2019))
+)]
+
+# Same demographic split as section 4e, applied to the sector total.
+state_health_demo <- merge(state_mort_tract, pop_ratios, by = "census_tract",
+                           allow.cartesian = TRUE)
+
+state_health_metrics <- function(dt, by_cols) {
+  dt[, .(
+    avoided_mortality = sum(mortality_level * pct, na.rm = TRUE),
+    health_cost_2019  = sum(benefit_level_2019 * pct, na.rm = TRUE),
+    health_cost_pv    = sum(benefit_level_2019_pv * pct, na.rm = TRUE),
+    avoided_mortality_standalone = sum(mortality_standalone * pct, na.rm = TRUE),
+    health_cost_2019_standalone  = sum(benefit_standalone_2019 * pct, na.rm = TRUE),
+    health_cost_pv_standalone    = sum(benefit_standalone_2019_pv * pct, na.rm = TRUE),
+    avoided_mortality_joint = sum(mortality_joint * pct, na.rm = TRUE),
+    health_cost_2019_joint  = sum(benefit_joint_2019 * pct, na.rm = TRUE),
+    health_cost_pv_joint    = sum(benefit_joint_2019_pv * pct, na.rm = TRUE)
+  ), by = by_cols]
+}
+
+state_health_demo_annual  <- state_health_metrics(state_health_demo,
+                                                  c("year", "demo_cat", "demo_group", "title"))
+state_health_demo_summary <- state_health_metrics(state_health_demo,
+                                                  c("demo_cat", "demo_group", "title"))
+
 # =============================================================================
 # 5. LABOR
 # =============================================================================
@@ -587,9 +750,12 @@ health_demo_summary <- health_demo[
 message("Calculating labor impacts...")
 
 # Map fuels to the three priced products, as labor_functions_product_px.R:63-71.
-site_revenue <- indiv_prod_output %>%
+# Computed for ALL 16 refineries; the focus subset is taken afterwards. The
+# statewide branch (section 5b) needs the full set, and unlike health there is no
+# attribution subtlety here - equation 11 is linear in revenue, so the sector
+# total is exactly the sum of its parts.
+site_revenue_all <- indiv_prod_output %>%
   filter(
-    site_id %in% SITES,
     demand_scenario   == REF_DEMAND,
     refining_scenario == REF_REFINING,
     year %in% YEARS
@@ -610,7 +776,7 @@ px_2020 <- product_px %>%
   filter(year == 2020, oil_price_scenario == OIL_PRICE_SCENARIO) %>%
   select(product, product_price)
 
-site_revenue <- site_revenue %>%
+site_revenue_all <- site_revenue_all %>%
   left_join(px_2020, by = "product") %>%
   mutate(revenue = value * product_price) %>%
   group_by(site_id, year) %>%
@@ -619,13 +785,20 @@ site_revenue <- site_revenue %>%
 
 # Attach each refinery's work tract (11-digit tract from the 15-digit block
 # geocode), as labor_functions_product_px.R:146-158.
-site_work_tract <- refin_locs_ct[
-  site_id %in% SITES, .(site_id, w_tract_geocode = substr(GEOID, 1, 11))
-] %>% distinct()
+all_work_tract <- unique(
+  refin_locs_ct[, .(site_id, w_tract_geocode = substr(GEOID, 1, 11))]
+)
 
-stopifnot(uniqueN(site_work_tract$w_tract_geocode) == length(SITES))
+site_revenue_all <- merge(site_revenue_all, all_work_tract, by = "site_id")
+stopifnot(!anyNA(site_revenue_all$w_tract_geocode))
 
-site_revenue <- merge(site_revenue, site_work_tract, by = "site_id")
+site_revenue <- site_revenue_all[site_id %in% SITES]
+
+# Each FOCUS refinery occupies its own work tract, which is what makes the
+# per-site split valid. Not true sector-wide: 99999/271 share 06029000507 and
+# 342/342-2 share 06013358000, which is why the statewide branch below goes
+# through the work tract rather than through site_id.
+stopifnot(uniqueN(site_revenue$w_tract_geocode) == length(SITES))
 
 # Apply IMPLAN direct multipliers per $1M of output value, distributed to worker
 # home tracts by LODES commute shares (Methods eq. 11).
@@ -680,6 +853,68 @@ labor_demo_summary <- labor_demo[
   by = .(site_id, demo_cat, demo_group, title)
 ]
 
+# -----------------------------------------------------------------------------
+# 5b. Statewide labor totals - the denominator for `share_of_statewide`
+# -----------------------------------------------------------------------------
+# The same four steps, run over all 16 refineries. Revenue is aggregated to the
+# WORK tract before the multiplier join, exactly as the pipeline does at
+# labor_functions_product_px.R:149-176, which is what makes shared work tracts
+# (99999/271, 342/342-2) harmless here: the join is by tract, not by site.
+#
+# Labor is linear throughout, so there is no marginal-vs-joint distinction as
+# there is for health - the sector total IS the sum of the refinery parts. The
+# `statewide_total_pipeline` column therefore carries the same value as
+# `statewide_total` for labor rows, and section 6 check (iv) confirms both
+# reproduce the pipeline's own published state table.
+
+message("Calculating statewide labor impacts (all 16 refineries)...")
+
+state_revenue_wt <- site_revenue_all[
+  , .(revenue = sum(revenue, na.rm = TRUE)), by = .(w_tract_geocode, year)
+]
+
+state_labor_direct <- merge(
+  state_revenue_wt,
+  dt_direct_multipliers[, .(w_tract_geocode, h_tract_geocode, emp.rev, ec.rev)],
+  by = "w_tract_geocode",
+  allow.cartesian = TRUE
+)
+
+state_labor_direct[, `:=`(
+  total_emp  = (revenue / 1e6) * emp.rev,
+  total_comp = (revenue / 1e6) * ec.rev
+)]
+
+state_labor_direct <- state_labor_direct[
+  , .(total_emp = sum(total_emp), total_comp = sum(total_comp)),
+  by = .(census_tract = h_tract_geocode, year)
+]
+
+state_labor_direct[, total_comp_usd19 := total_comp * CPI2019 / CPI2020]
+state_labor_direct[, total_comp_pv := total_comp_usd19 / ((1 + DISCOUNT_RATE)^(year - 2019))]
+
+state_labor_demo <- merge(state_labor_direct, pop_ratios, by = "census_tract",
+                          allow.cartesian = TRUE)
+
+state_labor_demo[, `:=`(
+  demo_emp        = total_emp * pct,
+  demo_comp_usd19 = total_comp_usd19 * pct,
+  demo_comp_pv    = total_comp_pv * pct
+)]
+
+state_labor_metrics <- function(dt, by_cols) {
+  dt[, .(
+    fte_job_years   = sum(demo_emp, na.rm = TRUE),
+    compensation    = sum(demo_comp_usd19, na.rm = TRUE),
+    compensation_pv = sum(demo_comp_pv, na.rm = TRUE)
+  ), by = by_cols]
+}
+
+state_labor_demo_annual  <- state_labor_metrics(state_labor_demo,
+                                                c("year", "demo_cat", "demo_group", "title"))
+state_labor_demo_summary <- state_labor_metrics(state_labor_demo,
+                                                c("demo_cat", "demo_group", "title"))
+
 # =============================================================================
 # 6. VALIDATION
 # -----------------------------------------------------------------------------
@@ -729,12 +964,100 @@ print(labor_demo_summary[demo_cat == "DAC",
   .(fte_job_years = round(sum(fte_job_years)),
     compensation_pv_musd = round(sum(compensation_pv) / 1e6)), by = site_id])
 
+# (iv) The statewide labor denominator must reproduce the pipeline's own
+#      published state table, or every `share_of_statewide` on a labor row is
+#      wrong. This is an exact check, not an approximate one: both sides run the
+#      same linear multiplier chain, so agreement should be to floating point.
+cat("\n(iv) statewide labor vs pipeline's published state table:\n")
+pipeline_labor <- fread(
+  "outputs/rev-submission/cuf=0.6_beta-scenario=main/intermediate/labor/state_labor_direct_impacts_demo_annual.csv"
+)[demand_scenario == REF_DEMAND & refining_scenario == REF_REFINING &
+  product_scenario == PRODUCT_SCENARIO & oil_price_scenario == OIL_PRICE_SCENARIO]
+
+labor_check <- merge(
+  state_labor_demo_annual,
+  pipeline_labor[, .(year, demo_cat, demo_group, title,
+                     p_emp = sum_demo_emp, p_comp = sum_demo_usd19_h,
+                     p_pv = sum_demo_comp_pv_h)],
+  by = c("year", "demo_cat", "demo_group", "title")
+)
+stopifnot(nrow(labor_check) == nrow(pipeline_labor))
+cat(sprintf("    rows matched: %d\n", nrow(labor_check)))
+cat(sprintf("    max relative difference - employment  : %.2e\n",
+            max(abs(labor_check$fte_job_years / labor_check$p_emp - 1))))
+cat(sprintf("    max relative difference - compensation: %.2e\n",
+            max(abs(labor_check$compensation / labor_check$p_comp - 1))))
+cat(sprintf("    max relative difference - comp (PV)   : %.2e\n",
+            max(abs(labor_check$compensation_pv / labor_check$p_pv - 1))))
+stopifnot(max(abs(labor_check$fte_job_years / labor_check$p_emp - 1)) < 1e-8)
+
+# (v) The two statewide health bases, side by side, so the size of the
+#     attribution gap carried in the output columns is explicit.
+cat("\n(v) statewide health denominators, cumulative 2020-2045:\n")
+state_dac <- state_health_demo_summary[demo_cat == "DAC"]
+cat(sprintf("    joint, mortality(c_tot)  [statewide_total_pipeline]: %9.1f deaths\n",
+            sum(state_dac$avoided_mortality_joint)))
+cat(sprintf("    sum of 16, marginal      [statewide_total]         : %9.1f deaths (%+.3f%%)\n",
+            sum(state_dac$avoided_mortality),
+            100 * (sum(state_dac$avoided_mortality) /
+                     sum(state_dac$avoided_mortality_joint) - 1)))
+cat(sprintf("    sum of 16, standalone    [statewide_total]         : %9.1f deaths (%+.3f%%)\n",
+            sum(state_dac$avoided_mortality_standalone),
+            100 * (sum(state_dac$avoided_mortality_standalone) /
+                     sum(state_dac$avoided_mortality_joint) - 1)))
+cat(sprintf("    pipeline CSV                                       : %9.1f deaths\n",
+            pipeline_mort$cumul_mort_level))
+
 # =============================================================================
 # 7. ASSEMBLE TIDY LONG OUTPUT
 # -----------------------------------------------------------------------------
 # Schema deliberately matches tables/health-and-labor/state_health_labor_ouputs.csv
 # so these rows can sit alongside the published state-level table.
+#
+# THREE STATEWIDE COLUMNS are attached to every row:
+#   statewide_total           all 16 refineries on the same basis as the row
+#   statewide_total_pipeline  the joint sector total (= statewide_total for
+#                             labor, which is linear; smaller than the marginal
+#                             sum and larger than the standalone sum for health)
+#   share_of_statewide        value / statewide_total, so shares are additive
+#                             across refineries
 # =============================================================================
+
+# Statewide health, reshaped to the same long key. The `_joint` columns become
+# statewide_total_pipeline; the marginal and standalone columns become
+# statewide_total on their respective attribution bases.
+state_long_health <- state_health_demo_summary %>%
+  pivot_longer(
+    -c(demo_cat, demo_group, title),
+    names_to = "metric", values_to = "statewide_total"
+  ) %>%
+  mutate(
+    basis  = case_when(str_detect(metric, "_standalone$") ~ "standalone",
+                       str_detect(metric, "_joint$")      ~ "joint",
+                       TRUE                               ~ "marginal"),
+    metric = str_remove(metric, "_(standalone|joint)$")
+  )
+
+state_health_cols <- state_long_health %>%
+  filter(basis != "joint") %>%
+  rename(health_attribution = basis) %>%
+  left_join(
+    state_long_health %>%
+      filter(basis == "joint") %>%
+      select(demo_cat, demo_group, title, metric,
+             statewide_total_pipeline = statewide_total),
+    by = c("demo_cat", "demo_group", "title", "metric")
+  )
+
+# Statewide labor. No attribution basis applies, and the linear multiplier chain
+# makes the joint total identical to the sum of refineries - verified against the
+# pipeline's own state table in check (iv).
+state_labor_cols <- state_labor_demo_summary %>%
+  pivot_longer(
+    c(fte_job_years, compensation, compensation_pv),
+    names_to = "metric", values_to = "statewide_total"
+  ) %>%
+  mutate(statewide_total_pipeline = statewide_total)
 
 long_health <- health_demo_summary %>%
   pivot_longer(
@@ -758,7 +1081,10 @@ long_health <- health_demo_summary %>%
       metric == "health_cost_2019"  ~ "USD (2019 age-based VSL)",
       metric == "health_cost_pv"    ~ "USD PV 2019 (2019 age-based VSL)"
     )
-  )
+  ) %>%
+  inner_join(state_health_cols,
+             by = c("demo_cat", "demo_group", "title", "metric",
+                    "health_attribution"))
 
 long_labor <- labor_demo_summary %>%
   pivot_longer(
@@ -778,7 +1104,8 @@ long_labor <- labor_demo_summary %>%
       metric == "compensation"    ~ "USD 2019 (supported; no-reemployment basis)",
       metric == "compensation_pv" ~ "USD PV 2019 (supported; no-reemployment basis)"
     )
-  )
+  ) %>%
+  inner_join(state_labor_cols, by = c("demo_cat", "demo_group", "title", "metric"))
 
 refinery_level_results <- bind_rows(long_health, long_labor) %>%
   mutate(
@@ -788,26 +1115,46 @@ refinery_level_results <- bind_rows(long_health, long_labor) %>%
     scenario          = "Reference",
     product_scenario  = PRODUCT_SCENARIO,
     oil_price_scenario = OIL_PRICE_SCENARIO,
-    attribution       = "level"     # not a difference vs Reference
+    attribution       = "level",    # not a difference vs Reference
+    share_of_statewide = value / statewide_total
   ) %>%
   select(
     site_id, refinery_name, scenario, demand_scenario, refining_scenario,
     product_scenario, oil_price_scenario, attribution, health_attribution,
-    demo_cat, demo_group, title, segment, metric, metric_desc, unit_desc, value
+    demo_cat, demo_group, title, segment, metric, metric_desc, unit_desc, value,
+    statewide_total, statewide_total_pipeline, share_of_statewide
   ) %>%
   arrange(site_id, segment, health_attribution, demo_cat, demo_group, metric)
+
+# Every row must have found a statewide denominator; a silent join failure here
+# would show up as a missing share rather than an error.
+stopifnot(!anyNA(refinery_level_results$statewide_total),
+          !anyNA(refinery_level_results$share_of_statewide))
 
 # Annual physical outputs kept as a separate, simpler table (no demographic
 # dimension applies to production or GHG).
 refinery_annual_physical <- production %>%
   full_join(ghg, by = c("site_id", "year")) %>%
-  mutate(refinery_name = SITE_LABELS[site_id]) %>%
-  select(site_id, refinery_name, year, production_bge, crude_bbl, ghg_mtco2e) %>%
+  inner_join(production_statewide, by = "year") %>%
+  inner_join(ghg_statewide, by = "year") %>%
+  mutate(
+    refinery_name = SITE_LABELS[site_id],
+    share_of_statewide_production_bge = production_bge / statewide_production_bge,
+    share_of_statewide_crude_bbl      = crude_bbl / statewide_crude_bbl,
+    share_of_statewide_ghg_mtco2e     = ghg_mtco2e / statewide_ghg_mtco2e
+  ) %>%
+  select(site_id, refinery_name, year, production_bge, crude_bbl, ghg_mtco2e,
+         statewide_production_bge, statewide_crude_bbl, statewide_ghg_mtco2e,
+         share_of_statewide_production_bge, share_of_statewide_crude_bbl,
+         share_of_statewide_ghg_mtco2e) %>%
   arrange(site_id, year)
 
 refinery_annual_production_by_fuel <- production_by_fuel %>%
-  mutate(refinery_name = SITE_LABELS[site_id]) %>%
-  select(site_id, refinery_name, year, fuel, production_bbl) %>%
+  inner_join(production_by_fuel_statewide, by = c("year", "fuel")) %>%
+  mutate(refinery_name = SITE_LABELS[site_id],
+         share_of_statewide = production_bbl / statewide_production_bbl) %>%
+  select(site_id, refinery_name, year, fuel, production_bbl,
+         statewide_production_bbl, share_of_statewide) %>%
   arrange(site_id, year, fuel)
 
 # -----------------------------------------------------------------------------
@@ -822,25 +1169,67 @@ fwrite(refinery_annual_production_by_fuel,
        file.path(OUT_DIR, "refinery_level_production_by_fuel.csv"))
 
 # Annual health + labor by demographic group, long form.
+# The same three statewide columns as the cumulative table, but keyed on year as
+# well, so a single-year share (e.g. 2021) can be read straight off a row.
+ANN_ID <- c("year", "demo_cat", "demo_group", "title")
+
+state_health_annual <- melt(
+  state_health_demo_annual, id.vars = ANN_ID,
+  variable.name = "metric", value.name = "statewide_total")
+state_health_annual[, basis := fifelse(grepl("_standalone$", metric), "standalone",
+                                fifelse(grepl("_joint$", metric), "joint", "marginal"))]
+state_health_annual[, metric := sub("_(standalone|joint)$", "", as.character(metric))]
+
+state_health_annual <- merge(
+  state_health_annual[basis != "joint"][, .(year, demo_cat, demo_group, title, metric,
+                                            health_attribution = basis, statewide_total)],
+  state_health_annual[basis == "joint"][, .(year, demo_cat, demo_group, title, metric,
+                                            statewide_total_pipeline = statewide_total)],
+  by = c(ANN_ID, "metric"))
+state_health_annual[, segment := "health"]
+
+state_labor_annual <- melt(
+  state_labor_demo_annual, id.vars = ANN_ID,
+  variable.name = "metric", value.name = "statewide_total")
+state_labor_annual[, `:=`(metric = as.character(metric),
+                          statewide_total_pipeline = statewide_total,
+                          health_attribution = NA_character_,
+                          segment = "labor")]
+
 annual_long <- rbind(
-  melt(health_demo_annual,
-       id.vars = c("site_id", "year", "demo_cat", "demo_group", "title"),
-       variable.name = "metric", value.name = "value")[
-    , `:=`(segment = "health",
-           health_attribution = fifelse(grepl("_standalone$", metric),
-                                        "standalone", "marginal"),
-           metric = sub("_standalone$", "", metric))],
-  melt(labor_demo_annual,
-       id.vars = c("site_id", "year", "demo_cat", "demo_group", "title"),
-       variable.name = "metric", value.name = "value")[
-    , `:=`(segment = "labor", health_attribution = NA_character_)],
+  merge(
+    melt(health_demo_annual,
+         id.vars = c("site_id", "year", "demo_cat", "demo_group", "title"),
+         variable.name = "metric", value.name = "value")[
+      , `:=`(segment = "health",
+             health_attribution = fifelse(grepl("_standalone$", metric),
+                                          "standalone", "marginal"),
+             metric = sub("_standalone$", "", metric))],
+    state_health_annual,
+    by = c(ANN_ID, "metric", "segment", "health_attribution")),
+  merge(
+    melt(labor_demo_annual,
+         id.vars = c("site_id", "year", "demo_cat", "demo_group", "title"),
+         variable.name = "metric", value.name = "value")[
+      , `:=`(segment = "labor", health_attribution = NA_character_,
+             metric = as.character(metric))],
+    state_labor_annual[, -"health_attribution"],
+    by = c(ANN_ID, "metric", "segment")),
   use.names = TRUE)
 
 annual_long[, refinery_name := SITE_LABELS[site_id]]
+annual_long[, share_of_statewide := value / statewide_total]
 setcolorder(annual_long, c("site_id", "refinery_name", "year", "segment",
                            "health_attribution", "demo_cat", "demo_group",
-                           "title", "metric", "value"))
+                           "title", "metric", "value",
+                           "statewide_total", "statewide_total_pipeline",
+                           "share_of_statewide"))
 setorder(annual_long, site_id, segment, year, demo_cat, demo_group, metric)
+
+stopifnot(nrow(annual_long) ==
+            nrow(health_demo_annual) * 6 + nrow(labor_demo_annual) * 3,
+          !anyNA(annual_long$statewide_total))
+
 fwrite(annual_long, file.path(OUT_DIR, "refinery_level_health_labor_annual.csv"))
 
 message("\nWrote:")

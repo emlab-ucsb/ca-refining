@@ -34,6 +34,19 @@
 #     this way.
 #   - Reference scenario (BAU demand, historic production); levels, not
 #     differences against Reference.
+#
+# STATEWIDE CONTEXT
+#   The figures are unchanged, but the written fig-input CSV also carries the
+#   all-16-refinery total for the same group and period, so each refinery can be
+#   placed against the sector:
+#     statewide_value                sector impact on this demographic group
+#     statewide_per_million          the same, on the same 30+ population base
+#     statewide_overall_per_million  sector impact per million across the cut
+#     statewide_disparity_index      statewide_per_million / the above, i.e. the
+#                                    sector-wide equity pattern the refinery's
+#                                    own disparity_index can be compared against
+#     share_of_statewide             this refinery's slice of the sector impact
+#                                    on this group (NOT a population share)
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -80,12 +93,22 @@ if (!identical(PERIOD, "cumulative")) {
   period_axis <- "Cumulative total, 2020-2045"
 }
 
-impacts <- res[
-  (segment == "health" & metric == "avoided_mortality" & health_attribution == "marginal") |
-  (segment == "labor"  & metric == "fte_job_years"),
-  .(value = sum(value)), by = .(site_id, demo_cat, demo_group, title, segment)
-]
+keep <- (res$segment == "health" & res$metric == "avoided_mortality" &
+           res$health_attribution == "marginal") |
+        (res$segment == "labor" & res$metric == "fte_job_years")
+
+impacts <- res[keep, .(value = sum(value)),
+               by = .(site_id, demo_cat, demo_group, title, segment)]
 impacts[, refinery := REF_LAB[site_id]]
+
+# Statewide denominator for the same groups and period. `statewide_total` is
+# carried on every row of the input and is identical across the two refineries,
+# so it must be de-duplicated to one row per year before summing over years -
+# otherwise the cumulative total would be double-counted.
+state_impacts <- unique(
+  res[keep, .(year, demo_cat, demo_group, title, segment, statewide_total)]
+)[, .(statewide_value = sum(statewide_total)),
+  by = .(demo_cat, demo_group, title, segment)]
 
 # -----------------------------------------------------------------------------
 # 2. Group populations (2020)
@@ -129,6 +152,18 @@ pop_2020 <- pop_2020[, .(pop_2020 = sum(demo_pop, na.rm = TRUE)), by = .(demo_ca
 
 plot_dat <- merge(impacts, pop_2020, by = c("demo_cat", "demo_group"))
 plot_dat[, per_million := value / (pop_2020 / 1e6)]
+
+# Attach the statewide refining-sector total for the same group, on the same
+# population base, so a refinery's per-capita bar can be read against the
+# sector's. `share_of_statewide` is the refinery's slice of the sector impact on
+# that group; it is NOT comparable to a population share.
+plot_dat <- merge(plot_dat, state_impacts,
+                  by = c("demo_cat", "demo_group", "title", "segment"))
+plot_dat[, `:=`(
+  statewide_per_million = statewide_value / (pop_2020 / 1e6),
+  share_of_statewide    = value / statewide_value
+)]
+stopifnot(!anyNA(plot_dat$statewide_value))
 
 # Order groups within each cut by population, largest at the top of the bars.
 plot_dat[, grp := factor(title, levels = unique(title[order(pop_2020)]))]
@@ -282,9 +317,22 @@ plot_dat_all[, overall_pc := sum(value) / sum(pop_2020) * 1e6,
 plot_dat_all[, disparity := per_million / overall_pc]
 plot_dat_all[, in_figure := demo_cat != "Race" | title %in% RACE_KEEP]
 
+# The same disparity index computed on the statewide sector total, so each
+# refinery's disparity can be read against the sector-wide pattern rather than in
+# isolation. Grouping matches `overall_pc` above - one row per demographic group
+# within a (refinery, segment, cut) - so these are plain sums over groups. The
+# result is identical for both refineries by construction.
+plot_dat_all[, statewide_overall_pc := sum(statewide_value) / sum(pop_2020) * 1e6,
+             by = .(refinery, segment, demo_cat)]
+plot_dat_all[, statewide_disparity := statewide_per_million / statewide_overall_pc]
+
 out <- plot_dat_all[, .(site_id, refinery, period = period_lab, segment, demo_cat,
                         demo_group, title, value, pop_2020, per_million,
                         overall_per_million = overall_pc, disparity_index = disparity,
+                        statewide_value, statewide_per_million,
+                        statewide_overall_per_million = statewide_overall_pc,
+                        statewide_disparity_index = statewide_disparity,
+                        share_of_statewide,
                         in_figure)]
 setorder(out, site_id, segment, demo_cat, -value)
 fwrite(out, file.path(OUT_DIR, paste0("refinery_demographics_fig_inputs_", gsub("[^0-9a-z]+","_",period_lab), ".csv")))
@@ -298,6 +346,15 @@ cat("\nimpact totals by cut (should also agree):\n")
 print(dcast(plot_dat[, .(v = sum(value)), by = .(refinery, segment, demo_cat)],
             refinery + segment ~ demo_cat, value.var = "v")[
             , lapply(.SD, function(x) if (is.numeric(x)) round(x, 1) else x)])
+
+cat("\nstatewide totals by cut (should agree across cuts, and across refineries):\n")
+print(dcast(plot_dat[, .(v = sum(statewide_value)), by = .(refinery, segment, demo_cat)],
+            refinery + segment ~ demo_cat, value.var = "v")[
+            , lapply(.SD, function(x) if (is.numeric(x)) round(x, 1) else x)])
+
+cat("\nboth refineries' combined share of the statewide total, by segment:\n")
+print(plot_dat[demo_cat == "DAC", .(share = round(sum(value) /
+        sum(statewide_value[!duplicated(title)]), 4)), by = segment])
 
 cat("\nwithin-refinery spread of the disparity index (max/min across groups):\n")
 print(dcast(plot_dat_all[, .(spread = round(max(disparity) / min(disparity), 2)),
