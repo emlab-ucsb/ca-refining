@@ -1,10 +1,10 @@
 # Refinery-level analysis: Phillips 66 Wilmington and Valero Benicia
 
-This folder supports an analysis adjacent to the paper. It breaks the paper's
+These outputs break the paper's
 sector-wide health and labor results down to two individual refineries that have
 since closed. Their retirements were announced after the paper's analysis was
 completed, so the paper does not model them; in the paper's scenarios both keep
-operating (SI Table 2, notes).
+operating.
 
 | site_id | Refinery | Cluster | Capacity (bbl/day) |
 |---|---|---|---|
@@ -13,25 +13,6 @@ operating (SI Table 2, notes).
 
 *Cluster and capacity from SI Table 1.*
 
-**In brief.** In 2021, each refinery accounted for a similar share of California's
-refining output value and refinery-supported jobs:
-
-| | P66 Wilmington | Valero Benicia |
-|---|---|---|
-| Share of state output value and jobs | 7.7% | 7.2% |
-| Jobs, including supply-chain and spending effects | about 6,700 | about 6,300 |
-| Premature deaths from refinery PM2.5 | 27.6 (9.6% of state) | 6.6 (2.3% of state) |
-
-Their health impacts are very different. The two process similar volumes of
-crude, and Benicia's per-barrel emission factors are, if anything, higher. The
-gap therefore comes from location: how each refinery's emissions disperse over
-the surrounding population.
-
-**Sources.** Everything below is drawn from the code in this repo and from the
-paper draft, *Health, labor, and equity in the low-carbon transition of
-California's petroleum refineries* (Environmental Research Letters), and its
-Supplementary Information. "Section X" refers to the main text; "SI Note X",
-"SI Table X" and "SI Fig. X" refer to the SI.
 
 ---
 
@@ -41,9 +22,6 @@ Supplementary Information. "Section X" refers to the main text; "SI Note X",
 - [Key concepts](#key-concepts) (each says which files it applies to)
 - [Column definitions](#column-definitions)
 - [Caveats](#caveats)
-- [Other files in this folder](#other-files-in-this-folder)
-- [Reproducing the outputs](#reproducing-the-outputs)
-- [Questions and answers](#questions-and-answers)
 
 ---
 
@@ -55,7 +33,7 @@ Four files are shared. They are referred to below by short names.
 |---|---|---|---|
 | **snapshot** | `refinery_2021_snapshot.csv` | 2021 | Refinery totals: jobs and compensation (direct, indirect, induced, total), output value, and health. One row per refinery × metric. |
 | **annual** | `refinery_level_health_labor_annual.csv` | Each year 2020–2045. **Filter to `year == 2021`** (216 rows) | Health and **direct** labor, split by demographic group. One row per refinery × year × demographic group × metric. |
-| **demographics** | `refinery_demographics_fig_inputs_2021.csv` | 2021 | Marginal deaths and direct FTE jobs by demographic group, with **per-capita rates and a disparity index**. Data behind the demographic figures. |
+| **demographics** | `refinery_demographics_fig_inputs_2021.csv` | 2021 | Marginal deaths and direct FTE jobs by demographic group, with **per-capita rates and a disparity index**. |
 | **production_ghg** | `refinery_level_production_ghg.csv` | Each year 2020–2045 | Refined product output, crude throughput and GHG emissions. One row per refinery × year. |
 
 **How the 2021 files fit together.** They are consistent with each other:
@@ -567,53 +545,3 @@ For context on how representative that year is:
   paper's 2014–2019 historical average of about 630 million bge per year
   (Section 3.1).
 - Both focus refineries' 2021 throughput is the same as in 2020.
-
----
-
-## Other files in this folder
-
-These are not part of the shared set but are produced by the same scripts.
-
-| File | Contents |
-|---|---|
-| `refinery_level_health_labor.csv` | The annual file summed over 2020–2045, with added scenario descriptors and `metric_desc` / `unit_desc` columns |
-| `refinery_level_production_by_fuel.csv` | Annual production by fuel, in barrels of each fuel, with statewide totals and shares |
-| `refinery_demographics_fig_inputs_cumulative_2020_2045.csv` | demographics for the cumulative 2020–2045 period (population base 2020) |
-| `fig_2021_labor.png`, `fig_2021_health.png`, `fig_2021_shares.png` | Figures from the snapshot |
-| `fig_demographics_{totals,per_capita}_{2021,cumulative_2020_2045}.png` | Health and direct labor by DAC status, poverty and race |
-| `fig_refinery_map.png` | Location of the two refineries among all 16, with points sized by capacity |
-
----
-
-## Reproducing the outputs
-
-The scripts mirror the published pipeline in `R/` (each section cites the
-`file:line` it reproduces). They do not modify the pipeline.
-
-**Requirements**
-- A built `targets` store (`_targets/`) in the repo root.
-- Access to confidential data in `data/confidential-data/`. The store's copies of
-  the labor multipliers are blank stubs, so the scripts read the real ones from
-  disk.
-- The published outputs in `outputs/rev-submission/` (used for validation
-  checks).
-
-Run from the **repo root**, in this order:
-
-```sh
-Rscript extras/refinery-level-analysis/refinery_level_health_labor.R      # annual, production_ghg, cumulative + by-fuel files
-Rscript extras/refinery-level-analysis/refinery_2021_snapshot.R           # snapshot + its figures
-Rscript extras/refinery-level-analysis/refinery_demographic_figs.R        # demographics (2021, the default) + figures
-Rscript extras/refinery-level-analysis/refinery_demographic_figs.R cumulative
-Rscript extras/refinery-level-analysis/refinery_map.R
-```
-
-`refinery_demographic_figs.R` reads the annual CSV, so it must run after
-`refinery_level_health_labor.R`. Each script prints validation checks to the
-console, including reconciliation against the pipeline's published state totals.
-
----
-
-## Questions and answers
-
-*Answers to questions raised while reviewing these outputs.*
