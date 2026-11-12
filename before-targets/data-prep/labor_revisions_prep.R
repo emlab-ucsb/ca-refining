@@ -27,6 +27,13 @@ library(janitor)
 PATH.CM <- '~/Dropbox/ou/ncomms-revisions'
 setwd(PATH.CM)
 
+## LODES YEAR FOR COMMUTING SHARES (DIRECT MULTIPLIERS)
+## 2020 = main results (Methods 2.6) -> writes direct_multipliers_tract.csv
+## 2019 = robustness check (SI Figs 12-13) -> writes direct_multipliers_tract_2019.csv
+## set lodes_year in _targets.R to match the file the pipeline should read
+lodes_year <- 2020
+if (!lodes_year %in% c(2019, 2020)) stop("lodes_year must be 2019 or 2020")
+
 ### define function for "not in"
 "%!in%" <- function(x, y) !("%in%"(x, y))
 
@@ -65,7 +72,7 @@ statewide <- left_join(statewide,fte,by=c("IndustryCode"="Implan546Index")) %>%
 
 ### ADD UP WORKERS FROM BLOCK TO TRACT LEVEL
 
-df.tract <- fread('ca_od_main_JT02_2019.csv') %>%
+df.tract <- fread(paste0('ca_od_main_JT02_', lodes_year, '.csv')) %>%
   mutate(w_tract_geocode = substr(as.character(w_geocode),1,10), 
          h_tract_geocode = substr(as.character(h_geocode),1,10)) %>% 
   filter(h_tract_geocode != "6037980004" & h_tract_geocode != "6037980030" & h_tract_geocode != "6111980000") %>% 
@@ -173,7 +180,8 @@ summary(test$SI01_share)
 
 # EXPORT FILES TO CSV FOR TRACEY 
 
-fwrite(direct.multipliers,'direct_multipliers_tract_2019.csv')
+fwrite(direct.multipliers,
+       ifelse(lodes_year == 2019, 'direct_multipliers_tract_2019.csv', 'direct_multipliers_tract.csv'))
 fwrite(statewide.indir.indu,'indirect_induced_multipliers_state.csv')
 
 

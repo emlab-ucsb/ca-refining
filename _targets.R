@@ -77,11 +77,19 @@ list(
   # Coefficient from Krewski et al (2009) for mortality impact
   tar_target(name = ref_threshold, command = 0.6),
 
+  ## LODES year for the commuting shares in the direct labor multipliers
+  ## 2020 = main results (Methods 2.6); 2019 = robustness check (SI Figs 12-13)
+  tar_target(name = lodes_year, command = 2020), ## UPDATE WITH (2020 or 2019)
+
   # list save paths (UPDATE VERSION AS NEEDED)
   tar_target(name = version, command = "test-no-conf-data"),
   tar_target(
     name = iteration,
-    command = paste0("cuf=", ref_threshold, "_beta-scenario=", beta_scenario)
+    command = paste0(
+      "cuf=", ref_threshold, "_beta-scenario=", beta_scenario,
+      ## 2019 LODES runs get a suffix so they never overwrite main results
+      if (lodes_year == 2019) "_lodes=2019" else ""
+    )
   ),
 
   # Set run type and stop if unknown run type
@@ -444,10 +452,17 @@ list(
   ),
   tar_target(
     name = file_direct_multipliers,
-    command =  { 
+    command =  {
+      if (!lodes_year %in% c(2019, 2020)) {
+        stop("lodes_year must be 2019 or 2020, not ", lodes_year)
+      }
       if (!isTRUE(confidential_data_access)) {
         file.path(main_path,
                   "intermediate-outputs/direct_multipliers_tract_blank.csv")
+      } else if (lodes_year == 2019) {
+      file.path(
+        main_path,
+        "confidential-data/direct_multipliers_tract_2019.csv")
       } else {
       file.path(
         main_path,
