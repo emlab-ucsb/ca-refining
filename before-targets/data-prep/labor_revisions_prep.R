@@ -24,8 +24,16 @@ library(cowplot)
 library(janitor)
 
 #PATH.CM <- '/Users/chrismalloy/Library/CloudStorage/GoogleDrive-cmalloy@ucsb.edu/Shared drives/emlab/projects/current-projects/calepa-cn/data-staged-for-deletion/labor/ncomms-revisions'
-PATH.CM <- '~/Dropbox/ou/ncomms-revisions'
-setwd(PATH.CM)
+#PATH.CM <- '~/Dropbox/ou/ncomms-revisions'
+#setwd(PATH.CM)
+
+## DATA PATHS
+## run from the repo root; uses the same data folder as the targets pipeline
+## (data_config.R is created by setup_data_paths.R and defines data_path)
+source("data_config.R")
+implan_path <- file.path(data_path, "confidential-data/multipliers/statewide")
+labor_path <- file.path(data_path, "data-files/labor/ncomms-revisions")
+out_path <- file.path(data_path, "confidential-data")
 
 ## LODES YEAR FOR COMMUTING SHARES (DIRECT MULTIPLIERS)
 ## 2020 = main results (Methods 2.6) -> writes direct_multipliers_tract.csv
@@ -43,12 +51,12 @@ letters_only <- function(x) !grepl("[^A-Za-z*-]", x)
 
 # EMPLOYMENT MULTIPLIERS (FROM IMPLAN)
 #multipliers/statewide/output-value/
-rev.statewide <- fread('implan-multipliers/20250423-statewide_ca_refining-Detail Economic Indicators_2020dollars_OUTPUT.csv') %>% 
+rev.statewide <- fread(file.path(implan_path, 'output-value/20250423-statewide_ca_refining-Detail Economic Indicators_2020dollars_OUTPUT.csv')) %>%
   dplyr::select(OriginRegion,DestinationRegion,IndustryCode,ImpactType,Employment,EmployeeCompensation) %>% 
   rename(emp.rev = Employment, 
          ec.rev = EmployeeCompensation)
 #multipliers/statewide/labor-income/
-li.statewide <- fread('implan-multipliers/20250423-statewide_ca_refining-Detail Economic Indicators_2020dollars_LI.csv') %>% 
+li.statewide <- fread(file.path(implan_path, 'labor-income/20250423-statewide_ca_refining-Detail Economic Indicators_2020dollars_LI.csv')) %>%
   dplyr::select(OriginRegion,DestinationRegion,IndustryCode,ImpactType,Employment,EmployeeCompensation) %>% 
   rename(emp.li = Employment, 
          ec.li = EmployeeCompensation)
@@ -58,7 +66,7 @@ rm(rev.statewide,li.statewide)
 
 # IMPLAN JOB-YEARS TO FTE CONVERSION 
 
-fte <- read_excel('Emp_FTE and W&S_EC_546 Industry Scheme.xlsx',sheet="2022",skip=1) %>% 
+fte <- read_excel(file.path(labor_path, 'Emp_FTE and W&S_EC_546 Industry Scheme.xlsx'),sheet="2022",skip=1) %>%
   dplyr::select(Implan546Index,ECtoWSInc,FTEperTotalEmp) 
 
 ## CONVERT JOB-YEARS TO FTE JOB-YEARS AND COMPENSATION TO WAGE AND SALARY INCOME FOR LABOR INCOME MULTIPLIER
@@ -72,7 +80,7 @@ statewide <- left_join(statewide,fte,by=c("IndustryCode"="Implan546Index")) %>%
 
 ### ADD UP WORKERS FROM BLOCK TO TRACT LEVEL
 
-df.tract <- fread(paste0('ca_od_main_JT02_', lodes_year, '.csv')) %>%
+df.tract <- fread(file.path(labor_path, paste0('ca_od_main_JT02_', lodes_year, '.csv'))) %>%
   mutate(w_tract_geocode = substr(as.character(w_geocode),1,10), 
          h_tract_geocode = substr(as.character(h_geocode),1,10)) %>% 
   filter(h_tract_geocode != "6037980004" & h_tract_geocode != "6037980030" & h_tract_geocode != "6111980000") %>% 
@@ -181,7 +189,7 @@ summary(test$SI01_share)
 # EXPORT FILES TO CSV FOR TRACEY 
 
 fwrite(direct.multipliers,
-       ifelse(lodes_year == 2019, 'direct_multipliers_tract_2019.csv', 'direct_multipliers_tract.csv'))
-fwrite(statewide.indir.indu,'indirect_induced_multipliers_state.csv')
+       file.path(out_path, ifelse(lodes_year == 2019, 'direct_multipliers_tract_2019.csv', 'direct_multipliers_tract.csv')))
+fwrite(statewide.indir.indu, file.path(out_path, 'indirect_induced_multipliers_state.csv'))
 
 
