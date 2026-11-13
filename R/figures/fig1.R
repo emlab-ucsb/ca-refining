@@ -45,7 +45,6 @@ create_figure_1 <- function(
   raw_ct_2019,
   health_weighted,
   refining_mortality,
-  labor_2019,
   ca_regions,
   raw_pop_income_2021,
   cpi2020,
@@ -1553,11 +1552,6 @@ create_figure_1 <- function(
 
   ## merge counties to census tracts
   ## -----------------------------------------------------------------
-
-  # ## join with spatial data 2019
-  # census_tract_labor_2019_sp <- raw_ct_2019 |>
-  #   rename(census_tract = GEOID) |>
-  #   left_join(census_tract_labor_2020)
 
   # Create the expanded data
   census_tracts_l_expanded <- expand_grid(
