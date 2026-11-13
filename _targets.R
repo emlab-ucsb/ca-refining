@@ -1589,7 +1589,7 @@ list(
       
       if (!isTRUE(confidential_data_access)) {
         
-        fread('data/intermediate-outputs/annual_labor_outputs.csv',
+        fread(file.path(main_path, 'intermediate-outputs/annual_labor_outputs.csv'),
               colClasses = list(character = "census_tract"))
       } else {
         
@@ -1621,7 +1621,7 @@ list(
       
       if (!isTRUE(confidential_data_access)) {
         
-        fread('data/intermediate-outputs/state_annual_labor_outputs.csv')
+        fread(file.path(main_path, 'intermediate-outputs/state_annual_labor_outputs.csv'))
       } else {
         
         calc_labor_all_impacts_outputs(
